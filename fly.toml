@@ -9,7 +9,7 @@ primary_region = "ord"
   PORT = "8080"
   HOST = "0.0.0.0"
   DATABASE_PATH = "/data/helios.sqlite"
-  PUBLIC_ORIGINS = "https://helioshtml.com,https://www.helioshtml.com"
+  PUBLIC_ORIGINS = "https://helioshtml.com,https://www.helioshtml.com,https://helios-ai-laws.fly.dev"
 
 [[mounts]]
   source = "helios_data"
