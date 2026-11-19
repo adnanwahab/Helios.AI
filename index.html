@@ -1,70 +1,181 @@
-<div>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1220">
+  <title>Helios.AI — Merged Experiences</title>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: #121b2d;
+      --line: #26344e;
+      --text: #e7eef9;
+      --muted: #9fb1cc;
+      --active: #7ce4cf;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
 
-    <script type="importmap">
-      {
-        "imports": {
-          "three": "https://unpkg.com/three@0.166.1/build/three.module.js"
-        }
+    .app {
+      height: 100%;
+      display: grid;
+      grid-template-rows: 64px 1fr;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, #101a2b, #0e1727);
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+
+    .title {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: .02em;
+      white-space: nowrap;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tab[aria-selected="true"] {
+      color: #07101d;
+      background: var(--active);
+      border-color: transparent;
+    }
+
+    .hint {
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .views {
+      position: relative;
+      min-height: 0;
+    }
+
+    .view {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: none;
+      background: #0b1220;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    @media (max-width: 900px) {
+      .topbar {
+        height: auto;
+        align-items: flex-start;
+        flex-direction: column;
       }
-    </script>
+      .hint { white-space: normal; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="title">Helios.AI · Merged index</div>
+      <nav class="tabs" aria-label="Choose page">
+        <button class="tab" id="tab-helios-ai" type="button" role="tab" aria-selected="true" aria-controls="view-helios-ai">HELIOS AI Landing Page</button>
+        <button class="tab" id="tab-demo" type="button" role="tab" aria-selected="false" aria-controls="view-demo">100 Shared Goals</button>
+        <button class="tab" id="tab-unified" type="button" role="tab" aria-selected="false" aria-controls="view-unified">Helios Unified</button>
+        <button class="tab" id="tab-lab" type="button" role="tab" aria-selected="false" aria-controls="view-lab">Communal Science Lab</button>
+      </nav>
+      <div class="hint">Both originals are preserved and embedded.</div>
+    </header>
 
-    <canvas></canvas>
-    <script type="module">
-      import * as THREE from "three";
+    <main class="views">
+      <iframe
+        id="view-helios-ai"
+        class="view active"
+        title="HELIOS AI Landing Page"
+        src="helios_ai_landing_page.html"
+        loading="lazy"
+      ></iframe>
 
-      const canvas = document.querySelector("canvas");
-      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      <iframe
+        id="view-demo"
+        class="view"
+        title="100 Shared Goals"
+        src="helios_100_frontend_demo.html"
+        loading="lazy"
+      ></iframe>
 
-      const scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x0f172a);
+      <iframe
+        id="view-unified"
+        class="view"
+        title="Helios Unified"
+        src="helios-unified.html"
+        loading="lazy"
+      ></iframe>
 
-      const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
-      camera.position.set(0, 1, 4);
+      <iframe
+        id="view-lab"
+        class="view"
+        title="Communal Science Lab"
+        src="communal_science_lab_webgpu%20(1).html"
+        loading="lazy"
+      ></iframe>
+    </main>
+  </div>
 
-      const ambient = new THREE.AmbientLight(0xffffff, 0.45);
-      scene.add(ambient);
+  <script>
+    const tabs = {
+      lab: document.getElementById('tab-lab'),
+      heliosAi: document.getElementById('tab-helios-ai'),
+      demo: document.getElementById('tab-demo'),
+      unified: document.getElementById('tab-unified')
+    };
 
-      const dir = new THREE.DirectionalLight(0xffffff, 1.2);
-      dir.position.set(3, 4, 2);
-      scene.add(dir);
+    const views = {
+      lab: document.getElementById('view-lab'),
+      heliosAi: document.getElementById('view-helios-ai'),
+      demo: document.getElementById('view-demo'),
+      unified: document.getElementById('view-unified')
+    };
 
-      const geometry = new THREE.TorusKnotGeometry(0.8, 0.28, 180, 24);
-      const material = new THREE.MeshStandardMaterial({
-        color: 0x60a5fa,
-        roughness: 0.28,
-        metalness: 0.7
-      });
-      const mesh = new THREE.Mesh(geometry, material);
-      scene.add(mesh);
-
-      const floor = new THREE.Mesh(
-        new THREE.PlaneGeometry(10, 10),
-        new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 1 })
-      );
-      floor.rotation.x = -Math.PI / 2;
-      floor.position.y = -1.4;
-      scene.add(floor);
-
-      function resize() {
-        const width = window.innerWidth;
-        const height = window.innerHeight;
-        renderer.setSize(width, height, false);
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
+    function activate(which) {
+      for (const key of Object.keys(tabs)) {
+        const isActive = key === which;
+        tabs[key].setAttribute('aria-selected', String(isActive));
+        views[key].classList.toggle('active', isActive);
       }
+    }
 
-      window.addEventListener("resize", resize);
-      resize();
-
-      function animate(time) {
-        const t = time * 0.001;
-        mesh.rotation.x = t * 0.45;
-        mesh.rotation.y = t * 0.8;
-        renderer.render(scene, camera);
-        requestAnimationFrame(animate);
-      }
-
-      requestAnimationFrame(animate);
-    </script>
-</div>
+    tabs.lab.addEventListener('click', () => activate('lab'));
+    tabs.heliosAi.addEventListener('click', () => activate('heliosAi'));
+    tabs.demo.addEventListener('click', () => activate('demo'));
+    tabs.unified.addEventListener('click', () => activate('unified'));
+  </script>
+</body>
+</html>
