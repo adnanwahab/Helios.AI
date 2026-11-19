@@ -1,0 +1,14 @@
+[build]
+  publish = "."
+
+# Same-origin proxy: cookies and CSRF remain scoped to helioshtml.com.
+[[redirects]]
+  from = "/api/*"
+  to = "https://helios-ai-laws.fly.dev/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/laws"
+  to = "/helios_100_frontend_demo.html"
+  status = 200

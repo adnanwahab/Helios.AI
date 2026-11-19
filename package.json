@@ -1,0 +1,18 @@
+{
+  "name": "helios-ai",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "bun server.js",
+    "dev": "bun --watch server.js",
+    "test": "bun test",
+    "backup": "bun scripts/backup.js",
+    "test:browser": "playwright test"
+  },
+  "engines": {
+    "bun": ">=1.3.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0"
+  }
+}
