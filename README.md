@@ -13,10 +13,11 @@ Helios AI is a civic tool that reads what everyone in a community says they need
 ## Running locally
 
 ```sh
-bunx serve .
+bun install
+bun run start
 ```
 
-Then open http://localhost:3000/.
+Then open http://localhost:3000/ or http://localhost:3000/laws. The Bun backend stores the original 100 goals, new proposals and amendment/revision history in SQLite (`.data/helios.sqlite` locally, `/data/helios.sqlite` on Fly). Browser-local demo notes remain local. See [backend and deployment documentation](docs/backend.md) for API, review, Fly volume, Netlify routing and backup instructions.
 
 
 

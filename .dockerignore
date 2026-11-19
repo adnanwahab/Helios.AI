@@ -1,0 +1,9 @@
+.git
+.DS_Store
+.data
+.env
+.env.*
+node_modules
+test-results
+playwright-report
+*.sqlite*
