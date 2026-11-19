@@ -1,3 +1,5 @@
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
 import {defineConfig} from '@playwright/test';
 const port=Number(process.env.HELIOS_TEST_PORT||3101),baseURL=`http://127.0.0.1:${port}`;
-export default defineConfig({testDir:'./test/browser',testMatch:'**/*.e2e.js',workers:1,timeout:30000,outputDir:'/private/tmp/helios-browser',use:{baseURL,browserName:'chromium',channel:process.env.CI?undefined:'chrome',trace:'retain-on-failure'},webServer:{command:'bun --no-env-file server.js',url:baseURL+'/api/health',env:{PORT:String(port),HOST:'127.0.0.1',DATABASE_PATH:`/private/tmp/helios-browser-${process.pid}-${Date.now()}.sqlite`},reuseExistingServer:false}});
+export default defineConfig({testDir:'./test/browser',testMatch:'**/*.e2e.js',workers:1,timeout:30000,outputDir:process.env.HELIOS_ARTIFACTS||join(tmpdir(),'helios-browser'),use:{baseURL,browserName:'chromium',channel:process.env.CI?undefined:'chrome',trace:'retain-on-failure'},webServer:{command:'bun --no-env-file server.js',url:baseURL+'/api/health',env:{PORT:String(port),HOST:'127.0.0.1',DATABASE_PATH:join(tmpdir(),`helios-browser-${process.pid}-${Date.now()}.sqlite`)},reuseExistingServer:false}});
