@@ -1,0 +1,831 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#070b14">
+  <meta name="description" content="HELIOSAI — a particle universe, a reflection journal, 180 nations across wealth and health, and ten civic proposals.">
+  <title>HELIOSAI — Imagine. Reflect. Build.</title>
+  <style>
+    :root{color-scheme:dark;--bg:#080c15;--bg2:#0c1220;--panel:#111927;--line:rgba(175,205,220,.14);--text:#eaf5f3;--muted:#92a5ad;--green:#a3f3d9;--gold:#f2c594;--lavender:#b6a6ff;--max:1250px;--radius:20px}
+    *,*::before,*::after{box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:90px}
+    body{margin:0;background:var(--bg);color:var(--text);font:15px/1.65 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;overflow-x:hidden}
+    body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 55% 36% at 82% 13%,rgba(32,84,92,.19),transparent 80%),radial-gradient(ellipse 40% 45% at 10% 43%,rgba(49,38,94,.13),transparent 84%)}
+    a{color:inherit;text-decoration:none}button,input,textarea{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed}button:focus-visible,a:focus-visible,textarea:focus-visible,input:focus-visible{outline:2px solid var(--green);outline-offset:4px}
+    .skip{position:absolute;left:-10000px;z-index:999;background:#fff;color:#000;padding:10px}.skip:focus{left:10px;top:10px}
+    .shell{width:min(calc(100% - 64px),var(--max));margin-inline:auto;position:relative;z-index:1}
+    .topbar{height:76px;display:flex;align-items:center;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;background:rgba(8,12,21,.82);backdrop-filter:blur(22px)}
+    .bar-inner{display:flex;justify-content:space-between;align-items:center;gap:24px}
+    .brand{font-size:20px;font-weight:770;letter-spacing:.24em;display:flex;align-items:center;gap:13px;white-space:nowrap}
+    .brand i{width:27px;height:27px;display:inline-block;border:1px solid var(--green);border-radius:50%;position:relative;box-shadow:0 0 24px rgba(119,237,217,.2)}
+    .brand i::before,.brand i::after{content:"";position:absolute;border:1px solid rgba(163,243,217,.62);border-radius:50%;inset:6px 1px;transform:rotate(-45deg)}
+    .brand i::after{inset:7px 9px;transform:rotate(45deg);background:var(--green);box-shadow:0 0 12px var(--green)}
+    .brand em{font-style:normal;color:var(--green)}
+    .navlinks{display:flex;align-items:center;gap:31px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#aabec5}
+    .navlinks a:hover,.footer a:hover{color:var(--green)}
+    .top-pill{border:1px solid rgba(163,243,217,.33);padding:10px 16px;border-radius:100px;color:#bff8e8;font-size:12px;font-weight:700;white-space:nowrap;transition:background .2s}
+    .top-pill:hover{background:rgba(163,243,217,.1)}
+    .hero{min-height:700px;padding:76px 0 64px;display:grid;grid-template-columns:46% 54%;align-items:center;gap:0;position:relative}
+    .hero::after{content:"";height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);position:absolute;bottom:0;left:0;right:0}
+    .eyebrow{display:inline-flex;align-items:center;gap:11px;font-size:11px;font-weight:780;text-transform:uppercase;letter-spacing:.24em;color:var(--green)}
+    .eyebrow::before{content:"";width:22px;height:1px;background:currentColor}
+    .hero h1{font-size:clamp(58px,6.5vw,95px);font-weight:530;line-height:1.04;letter-spacing:-.065em;margin:25px 0 28px;max-width:680px;font-family:Georgia,"Times New Roman",serif}
+    .hero h1 em{font-weight:400;font-style:italic;color:var(--green)}
+    .hero-lede{font-size:17px;color:#b5c4c9;max-width:460px;line-height:1.85;margin:0 0 32px}
+    .hero-actions{display:flex;align-items:flex-start;flex-direction:column;gap:13px;width:min(100%,570px)}
+    /* Screenshot-inspired input: a dark, rounded writing surface and cyan send key. */
+    .hero-journal{width:100%;margin:0}
+    .hero-compose{display:flex;align-items:center;gap:16px;min-height:145px;padding:17px 17px 17px 30px;border:2px solid #365362;border-radius:44px;background:linear-gradient(110deg,#101f2f,#101c2b 72%,#0c1b26);box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 18px 70px rgba(0,0,0,.14);transition:border-color .2s,box-shadow .2s}
+    .hero-compose:focus-within{border-color:#73dcd8;box-shadow:0 0 0 4px rgba(124,239,228,.10),0 18px 70px rgba(0,0,0,.14)}
+    .hero-compose textarea{flex:1;min-width:0;min-height:94px;max-height:260px;padding:8px 0;border:0;outline:none;outline-offset:0;resize:vertical;background:transparent;color:#eaf7f8;font-size:clamp(18px,2.1vw,25px);line-height:1.4;letter-spacing:-.02em}
+    .hero-compose textarea:focus-visible{outline:none}
+    .hero-compose textarea::placeholder{color:#8da7b2;opacity:1}
+    .hero-compose button{width:84px;height:84px;flex:none;border:0;border-radius:29px;display:grid;place-items:center;background:linear-gradient(145deg,#8ff9e7,#74dcea);color:#052330;transition:transform .18s,filter .18s}
+    .hero-compose button:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.08)}
+    .hero-compose button:disabled{opacity:.5}
+    .hero-compose button svg{width:41px;height:41px}
+    .hero-hint{font-size:11px;line-height:1.5;color:#8299a5;margin-top:9px;padding-left:5px}
+    .hero-journal-status{font-size:12px;line-height:1.5;min-height:18px;color:#9eb6bf;padding-left:5px}
+    .hero-journal-status.success{color:#adf4de}.hero-journal-status.error{color:#ffb9ae}
+    .hero-actions .ghost-link{margin-top:3px}
+    .primary{display:inline-flex;align-items:center;gap:17px;background:var(--green);color:#0b1a1b;padding:13px 22px;font-size:13px;border:1px solid var(--green);border-radius:8px;font-weight:800;transition:transform .2s,background .2s}
+    .primary:hover{transform:translateY(-2px);background:#ccffe9}
+    .ghost-link{font-size:13px;font-weight:750;color:#b7e9e0;text-decoration:underline;text-decoration-color:#4b8178;text-underline-offset:6px}
+    .micro-process{margin-top:51px;display:flex;align-items:center;gap:10px;color:#91a6af;letter-spacing:.1em;font-size:10px;text-transform:uppercase;flex-wrap:wrap}
+    .micro-process span{color:var(--green)}.micro-process b{font-weight:400;color:#586773}
+    .hero-art{min-width:0;height:610px;position:relative;isolation:isolate;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
+    .hero-art::before{content:"";position:absolute;inset:7% -10% 10%;background:radial-gradient(circle at 54% 50%,rgba(96,255,202,.09),transparent 43%),radial-gradient(ellipse at 53% 50%,rgba(65,94,165,.12),transparent 64%);pointer-events:none}
+    #particles{width:100%;height:100%;position:absolute;inset:0;touch-action:pan-y;display:block;z-index:-1}
+    .particle-controls{position:absolute;right:0;top:20px;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;padding:6px;background:rgba(9,16,27,.7);border:1px solid rgba(169,219,210,.16);border-radius:40px;backdrop-filter:blur(12px)}
+    .particle-controls button{border:0;border-radius:30px;background:transparent;color:#9eb0b9;padding:6px 12px;font-size:11px;font-weight:680;letter-spacing:.04em;transition:background .2s,color .2s}
+    .particle-controls button[aria-pressed=true]{color:#06171a;background:var(--green)}
+    .orb-label{position:absolute;left:0;bottom:48px;max-width:210px;color:#78949a;font-size:10px;text-transform:uppercase;letter-spacing:.18em;line-height:1.8}
+    .orb-label strong{display:block;font-size:11px;color:#b4d8d0;font-weight:650}
+    .pause-button{position:absolute;bottom:46px;right:0;background:rgba(11,20,34,.8);border:1px solid var(--line);border-radius:30px;color:#b0c8ce;font-size:11px;padding:7px 12px}
+    .orb-caption{position:absolute;top:80px;left:0;font-size:10px;text-transform:uppercase;letter-spacing:.17em;color:#7f9ca6}
+    .divider-line{width:100%;border:0;border-top:1px solid var(--line);margin:0}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;padding:35px 0;border-bottom:1px solid var(--line)}
+    .stat strong{font-family:Georgia,serif;font-size:33px;font-weight:450;line-height:1;color:#dfece9;display:block}.stat span{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:#82959f}
+    .section{padding:120px 0 70px}.section-kicker{font-size:12px;letter-spacing:.21em;text-transform:uppercase;color:var(--green);font-weight:780}
+    .section-title{font-family:Georgia,serif;font-size:clamp(37px,4.1vw,59px);font-weight:450;letter-spacing:-.055em;line-height:1.15;margin:16px 0 23px}
+    .section-title em{font-weight:400;color:var(--green)}
+    .section-copy{color:#9eb2bc;max-width:470px;font-size:15px;line-height:1.88}
+    .journal-layout{display:grid;grid-template-columns:33% 1fr;gap:min(8vw,110px);align-items:start}
+    .journal-intro{position:sticky;top:125px}
+    .private-notice{display:flex;gap:12px;align-items:flex-start;border-top:1px solid var(--line);padding-top:22px;margin-top:42px;color:#8dabb0;font-size:12px;line-height:1.7;max-width:355px}
+    .private-notice svg{flex:none;margin-top:2px;color:var(--green)}
+    .chat-card{border:1px solid rgba(179,223,222,.16);background:linear-gradient(155deg,rgba(21,31,47,.95),rgba(10,17,30,.96));border-radius:18px;min-height:595px;box-shadow:0 20px 90px rgba(0,0,0,.28);overflow:hidden;position:relative}
+    .chat-top{height:73px;border-bottom:1px solid var(--line);padding:19px 25px;display:flex;align-items:center;justify-content:space-between;gap:15px}
+    .chat-top strong{font-size:15px;font-weight:800;letter-spacing:.02em}.chat-top small{display:block;color:#7d969d;font-size:11px;margin-top:1px}
+    .online-dot{display:inline-block;vertical-align:middle;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:7px;box-shadow:0 0 12px rgba(163,243,217,.5)}
+    .chat-top-tag{font-size:10px;color:#94b9b7;border:1px solid rgba(163,243,217,.22);border-radius:40px;padding:5px 10px;white-space:nowrap}
+    .chat-feed{height:315px;overflow:auto;overscroll-behavior:contain;padding:27px 27px 10px;display:flex;flex-direction:column;gap:16px;scrollbar-color:#3b6068 transparent;scrollbar-width:thin}
+    .msg{max-width:86%;display:flex;gap:12px;align-items:flex-start}.msg.user{margin-left:auto;flex-direction:row-reverse}
+    .msg-avatar{height:29px;width:29px;border:1px solid rgba(168,250,221,.4);border-radius:9px;flex:none;display:grid;place-items:center;color:#b7e9da;font-family:Georgia,serif;font-size:15px;background:rgba(158,255,214,.08)}
+    .msg.user .msg-avatar{background:rgba(169,159,255,.1);border-color:rgba(169,159,255,.27);color:#d8cfff}
+    .bubble{color:#d1dfe1;border:1px solid var(--line);padding:12px 15px;border-radius:3px 15px 15px 15px;background:rgba(255,255,255,.028);font-size:13px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}
+    .msg.user .bubble{background:rgba(157,239,215,.09);border-color:rgba(157,239,215,.17);border-radius:15px 3px 15px 15px}
+    .bubble-meta{margin:0 0 4px;color:#84aaa9;text-transform:uppercase;letter-spacing:.13em;font-size:9px;font-weight:800}
+    .prompt-chips{display:flex;gap:8px;flex-wrap:wrap;padding:9px 27px 18px}
+    .prompt-chips button{font-size:11px;padding:7px 11px;color:#b1c4c8;background:rgba(255,255,255,.025);border-radius:40px;border:1px solid rgba(180,213,216,.19)}
+    .prompt-chips button:hover{border-color:var(--green);color:var(--green)}
+    .composer{border-top:1px solid var(--line);padding:19px 25px 21px;background:rgba(3,9,19,.28)}
+    .composer label{display:block;font-size:11px;color:#9db3bb;letter-spacing:.14em;text-transform:uppercase;font-weight:750;margin-bottom:9px}
+    .composer textarea{resize:vertical;min-height:100px;max-height:320px;width:100%;border:1px solid rgba(154,195,200,.25);background:rgba(3,9,16,.65);color:#e2f1ee;border-radius:10px;padding:14px;line-height:1.6;font-size:13px;display:block}
+    .composer textarea::placeholder{color:#718995}
+    .composer-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:15px;flex-wrap:wrap}
+    .left-actions{display:flex;align-items:center;gap:15px}
+    .subtle-button{padding:9px 13px;background:transparent;border:1px solid rgba(166,212,211,.27);border-radius:8px;color:#c1d1d3;font-size:12px;font-weight:750}
+    .subtle-button:hover{border-color:var(--green);color:var(--green)}
+    .chat-send{background:var(--green);color:#051916;border:1px solid var(--green);padding:10px 16px;border-radius:8px;font-size:12px;font-weight:800}
+    .composer-help{font-size:10px;color:#758e98;margin-top:12px;line-height:1.5}
+    .section-header{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:37px}.section-header .section-copy{max-width:390px}
+    .bills-section{padding-top:130px;padding-bottom:140px}
+    .bill-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px}
+    .filter{border:1px solid rgba(151,192,200,.22);background:transparent;color:#93acb4;border-radius:40px;font-size:11px;font-weight:760;padding:8px 15px}
+    .filter[aria-pressed=true]{background:rgba(163,243,217,.12);border-color:rgba(163,243,217,.56);color:var(--green)}
+    .bill-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    .bill-card{background:linear-gradient(115deg,rgba(20,30,45,.82),rgba(13,22,34,.88));border:1px solid rgba(153,191,202,.18);border-radius:13px;padding:25px 27px;min-height:238px;display:flex;flex-direction:column;transition:transform .2s,border-color .2s,box-shadow .2s}
+    .bill-card:hover,.bill-card.is-selected{border-color:rgba(163,243,217,.48);box-shadow:0 12px 42px rgba(0,0,0,.17);transform:translateY(-2px)}
+    .bill-top{display:flex;justify-content:space-between;gap:16px;color:var(--green);font-size:11px;font-weight:800;letter-spacing:.15em}
+    .bill-top .category{color:#7e9ba2;font-size:9px;letter-spacing:.18em;text-transform:uppercase}
+    .bill-card h3{margin:20px 0 11px;font-size:20px;line-height:1.35;font-weight:640;letter-spacing:-.026em}
+    .bill-card p{font-size:13px;line-height:1.72;color:#a4b7bd;margin:0 0 17px}
+    .bill-expanded{color:#b7d4cb;font-size:13px;border-top:1px solid rgba(170,222,215,.18);padding-top:16px;line-height:1.7;margin-top:3px}
+    .bill-actions{display:flex;gap:15px;flex-wrap:wrap;margin-top:auto;align-items:center}
+    .bill-actions button{border:0;background:transparent;color:var(--green);padding:2px 0;font-size:11px;font-weight:780;letter-spacing:.025em}
+    .bill-actions .reflect-bill{color:#a4b9c0}.bill-actions button:hover{text-decoration:underline;text-underline-offset:4px}
+    .bill-card[hidden]{display:none}
+    .closing{border-top:1px solid var(--line);padding:73px 0 60px;display:flex;align-items:center;justify-content:space-between;gap:40px}
+    .closing h2{font-size:clamp(31px,3.9vw,53px);font-family:Georgia,serif;letter-spacing:-.05em;line-height:1.2;font-weight:450;margin:15px 0}
+    .closing p{font-size:13px;color:#8ba2ab}.closing .primary{white-space:nowrap}
+    footer{border-top:1px solid var(--line);padding:24px 0 40px;color:#75919a;font-size:11px}
+    .footer-line{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+    .equation{color:#96b5b0;letter-spacing:.045em}.equation b{color:#d3fce5;font-weight:650}
+    dialog{background:#121d2c;color:var(--text);border:1px solid rgba(168,222,218,.39);border-radius:16px;width:min(590px,calc(100vw - 30px));padding:0;box-shadow:0 40px 150px rgba(0,0,0,.7)}
+    dialog::backdrop{background:rgba(2,7,14,.83);backdrop-filter:blur(5px)}
+    .dialog-inner{padding:31px}.dialog-inner h2{font:450 31px/1.15 Georgia,serif;letter-spacing:-.03em;margin:7px 0 12px}.dialog-inner p{font-size:13px;color:#a9bac0;line-height:1.8}
+    .dialog-inner label.form-label{display:block;color:#bdd2d4;font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:11px;margin:18px 0 7px}
+    .dialog-inner textarea,.dialog-inner input[type=text]{background:#08121e;width:100%;border:1px solid rgba(173,211,214,.3);border-radius:8px;padding:12px;color:#e5f1f0;font-size:13px;line-height:1.5}
+    .dialog-inner textarea{height:145px;resize:vertical}
+    .consent-row{display:flex;align-items:flex-start;gap:10px;font-size:12px;color:#c0d4d5;line-height:1.6;margin:19px 0}.consent-row input{accent-color:#91dfc8;margin-top:4px}
+    .dialog-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:18px}
+    .status{font-size:12px;line-height:1.7;min-height:20px;margin-top:17px;color:#a5cac6}.status.error{color:#ffbfad}.status.success{color:#a4e8c3}.status a{text-decoration:underline}
+    .visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media(max-width:1000px){.hero{grid-template-columns:50% 50%;min-height:650px}.hero-art{height:530px}.hero h1{font-size:clamp(55px,7vw,75px)}.journal-layout{gap:35px;grid-template-columns:34% 1fr}.navlinks{gap:17px}}
+    @media(max-width:760px){.hero-actions{max-width:580px}.hero-compose{min-height:122px;border-radius:34px;padding:12px 12px 12px 21px;gap:10px}.hero-compose textarea{min-height:86px;font-size:19px}.hero-compose button{height:72px;width:72px;border-radius:23px}.hero-compose button svg{width:33px;height:33px}.shell{width:min(calc(100% - 34px),var(--max))}.topbar{height:66px}.navlinks{display:none}.brand{font-size:17px}.hero{padding:70px 0 20px;display:flex;flex-direction:column;align-items:stretch;min-height:unset}.hero h1{font-size:clamp(52px,11.5vw,74px);max-width:540px}.hero-lede{font-size:15px}.hero-art{height:450px;margin:20px -10px 0}.particle-controls{right:10px}.orb-label{left:12px}.pause-button{right:12px}.orb-caption{left:12px}.micro-process{margin-top:36px}.stats{gap:14px}.stat strong{font-size:27px}.stat span{font-size:9px}.section{padding:85px 0 45px}.journal-layout{display:block}.journal-intro{position:static;margin-bottom:33px}.private-notice{margin-top:22px}.section-header{display:block}.bills-section{padding:85px 0 100px}.bill-grid{grid-template-columns:1fr}.closing{display:block}.closing .primary{margin-top:17px}}
+    @media(max-width:430px){.hero-compose{min-height:111px;border-radius:28px;padding:10px 10px 10px 18px}.hero-compose textarea{min-height:78px;font-size:17px}.hero-compose button{width:63px;height:63px;border-radius:21px}.top-pill{padding:9px 11px;font-size:10px}.brand{letter-spacing:.1em}.hero-art{height:385px}.orb-label{bottom:23px}.pause-button{bottom:22px}.particle-controls{top:9px}.orb-caption{top:60px}.chat-top{padding:17px}.chat-feed{padding:20px 17px;height:310px}.prompt-chips{padding:10px 17px 17px}.composer{padding:17px}.chat-top-tag{display:none}.bill-card{padding:22px}.msg{max-width:94%}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+  </style>
+  <style>
+/* Wealth & Health of Nations, adapted as an interactive HELIOSAI 2036 scenario lab. */
+.futures-section{position:relative;padding:118px 0 109px;background:radial-gradient(ellipse 62% 40% at 60% 41%,rgba(33,88,103,.13),transparent 90%);border-top:1px solid rgba(153,210,217,.10);scroll-margin-top:68px}
+.futures-header{display:flex;align-items:end;justify-content:space-between;gap:30px;margin-bottom:34px}
+.futures-header .section-copy{margin-bottom:0;max-width:560px}
+.futures-header .section-title{max-width:780px;margin-bottom:10px}
+.futures-source-link{white-space:nowrap;color:#b9eede;font-size:12px;border-bottom:1px solid rgba(163,243,217,.35);padding-bottom:5px;align-self:end}
+.futures-source-link:hover{color:white}
+.futures-panel{border:1px solid rgba(164,218,215,.24);border-radius:22px;overflow:hidden;background:linear-gradient(150deg,#101e2d 0%,#091522 48%,#0a1722 100%);box-shadow:0 28px 110px rgba(0,0,0,.26),inset 0 1px rgba(255,255,255,.03)}
+.futures-panel-head{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:25px 31px 13px}
+.futures-panel-head strong{display:block;font-size:14px;letter-spacing:.03em}
+.futures-panel-head small{color:#88a3ac;display:block;font-size:11px;margin-top:3px;line-height:1.5}
+.futures-status{font-size:10px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;border-radius:100px;padding:7px 12px;border:1px solid rgba(142,241,221,.35);color:#98f0d4;white-space:nowrap}
+.futures-status.projected{border-color:rgba(239,184,134,.42);color:#f2bd8d;background:rgba(236,174,106,.07)}
+.futures-plot-wrap{position:relative;padding:0 12px 0 8px;isolation:isolate}
+.futures-svg{width:100%;height:auto;display:block;overflow:visible;touch-action:pan-y}
+.futures-svg text{user-select:none;pointer-events:none}
+.futures-svg .wf-guide{stroke:rgba(177,220,227,.10);stroke-width:1;stroke-dasharray:3 6}
+.futures-svg .wf-axis-text{font-size:12px;fill:#75949e;font-family:ui-sans-serif,system-ui,sans-serif}
+.futures-svg .wf-axis-label{font-size:11px;font-weight:750;letter-spacing:.14em;fill:#8faeb4;font-family:ui-sans-serif,system-ui,sans-serif}
+.futures-svg .wf-bubble{stroke-width:1.1;stroke:rgba(8,15,24,.62);cursor:pointer;transition:opacity .16s,stroke .16s,stroke-width .16s}
+.futures-svg .wf-bubble:hover,.futures-svg .wf-bubble:focus-visible{stroke:#eefdf3;stroke-width:3.2;outline:none}
+.futures-svg .wf-bubble.wf-selected{stroke:#fff3d3;stroke-width:3.2;filter:drop-shadow(0 0 8px rgba(255,243,199,.36))}
+.futures-tooltip{position:absolute;z-index:10;pointer-events:none;min-width:194px;max-width:260px;border:1px solid rgba(151,221,218,.45);background:rgba(7,18,27,.98);border-radius:12px;box-shadow:0 18px 45px rgba(0,0,0,.5);padding:12px 14px;color:#e8f8f5;font-size:12px;line-height:1.5}
+.futures-tooltip b{font-size:14px;color:white;display:block}.futures-tooltip small{font-size:10px;color:#90b3b9;letter-spacing:.06em;text-transform:uppercase}.futures-tooltip .metric{display:flex;justify-content:space-between;gap:18px;border-top:1px solid rgba(178,221,216,.13);padding:3px 0}
+.futures-tooltip .metric:first-of-type{margin-top:7px}.futures-tooltip .metric span{color:#8da7ae}.futures-tooltip .metric strong{color:#edfaf7;font-variant-numeric:tabular-nums}
+.futures-plot-footer{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0px 31px 18px;flex-wrap:wrap}
+.futures-legend{display:flex;align-items:center;flex-wrap:wrap;gap:8px 15px}
+.futures-legend button{display:inline-flex;align-items:center;gap:7px;border:0;padding:5px 0;background:transparent;font-size:11px;color:#8baab2;transition:color .18s,opacity .18s}
+.futures-legend button[aria-pressed="true"]{color:#dcf0ec}
+.futures-legend button[aria-pressed="false"]{opacity:.35}
+.futures-legend .swatch{width:8px;height:8px;display:inline-block;border-radius:50%;box-shadow:0 0 14px color-mix(in srgb,var(--swatch),transparent 50%);background:var(--swatch)}
+.futures-legend button:hover{color:white}
+.futures-size-key{white-space:nowrap;font-size:10px;color:#6d8b98;letter-spacing:.02em}
+.futures-controls{border-top:1px solid rgba(175,216,210,.13);padding:22px 32px 28px;background:rgba(2,12,19,.24)}
+.futures-timeline-head{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:16px}
+.futures-year-box{display:flex;align-items:center;gap:16px}
+.futures-year-box strong{font-family:Georgia,serif;font-weight:400;font-size:38px;letter-spacing:-.06em;line-height:1;color:#f0f7ee;font-variant-numeric:tabular-nums}
+.futures-year-box span{font-size:11px;color:#86a7b0;max-width:140px;line-height:1.5}
+.futures-timeline-actions{display:flex;align-items:center;gap:11px}
+.futures-control-btn{border:1px solid rgba(145,206,205,.29);background:rgba(35,60,71,.25);border-radius:8px;color:#b6e9df;padding:10px 17px;font-size:12px;font-weight:760;transition:background .18s,transform .18s}
+.futures-control-btn:hover:not(:disabled){background:rgba(116,230,213,.12);transform:translateY(-1px)}
+.futures-control-btn.accent{color:#09191a;background:#a4f2df;border-color:#a4f2df}
+.futures-control-btn.accent:hover{background:#d3fff0}
+.futures-timeline{width:100%;margin:0;accent-color:#a3efdd;cursor:pointer;height:18px;display:block}
+.futures-timeline-labels{display:flex;justify-content:space-between;gap:10px;color:#6d8b95;font-size:10px;letter-spacing:.05em;margin:3px 1px 21px}
+.futures-timeline-labels .projection-marker{color:#f0c595}
+.futures-divider{border:0;border-top:1px solid rgba(171,216,212,.12);margin:0 0 19px}
+.futures-scenarios{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px 20px}
+.futures-scenario-intro{font-size:11px;color:#92aab1}
+.futures-scenario-buttons{display:flex;flex-wrap:wrap;gap:7px}
+.futures-scenario-buttons button{border:1px solid rgba(147,201,205,.28);border-radius:100px;background:transparent;color:#829fa9;font-size:11px;padding:7px 13px;white-space:nowrap}
+.futures-scenario-buttons button[aria-pressed="true"]{background:rgba(163,243,217,.16);border-color:rgba(163,243,217,.62);color:#c8f9e8}
+.futures-scenario-buttons button:hover{border-color:#b5ebd5}
+.futures-details{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:center;padding:22px 30px;border-top:1px solid rgba(175,216,210,.13);background:rgba(8,14,24,.48)}
+.futures-details strong{font-size:14px;letter-spacing:.02em;color:#f5f7f0}.futures-details p{color:#8eabb3;font-size:12px;margin:4px 0 0;line-height:1.55}
+.futures-details button{color:#a9eadb;font-size:11px;font-weight:740;border:0;border-bottom:1px solid #6bb7a8;padding:5px 0;background:transparent;white-space:nowrap}
+.futures-note{font-size:11px;line-height:1.8;color:#77949f;margin:16px 0 0;max-width:1080px}
+.futures-note a{color:#a9e9dc;text-decoration:underline;text-underline-offset:3px}
+.futures-note strong{color:#c9decf}
+@media(max-width:900px){.futures-header{display:block}.futures-source-link{display:inline-block;margin-top:12px}.futures-panel-head{padding:20px 22px 10px}.futures-controls{padding:20px 24px 27px}.futures-plot-footer{padding:0 24px 14px}}
+@media(max-width:760px){.futures-section{padding:80px 0 90px}.futures-plot-wrap{padding:0 4px}.futures-svg{min-height:295px}.futures-panel{border-radius:16px}.futures-panel-head{align-items:flex-start;padding:16px 16px 8px}.futures-panel-head strong{font-size:12px}.futures-status{font-size:9px;padding:5px 8px}.futures-plot-footer{padding:2px 18px 18px;gap:8px}.futures-legend{gap:4px 12px}.futures-legend button{font-size:10px}.futures-controls{padding:18px 17px 22px}.futures-year-box strong{font-size:33px}.futures-control-btn{padding:9px 11px;font-size:11px}.futures-timeline-actions{gap:6px}.futures-details{grid-template-columns:1fr;gap:10px;padding:18px}.futures-details button{justify-self:start}.futures-note{font-size:10px}}
+@media(max-width:450px){.futures-panel-head{gap:7px}.futures-svg{min-height:255px}.futures-timeline-head{align-items:flex-start}.futures-year-box span{font-size:10px}.futures-plot-footer{gap:4px}.futures-legend{gap:3px 11px}.futures-size-key{display:none}.futures-scenarios{align-items:flex-start}.futures-scenario-buttons button{font-size:10px;padding:6px 10px}.futures-timeline-labels{font-size:9px}}
+
+
+.futures-country-picker{display:flex;align-items:center;gap:8px;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#83a5ad;white-space:nowrap}
+.futures-country-picker select{width:164px;min-width:0;border:1px solid rgba(166,225,215,.28);background:#122533;border-radius:8px;color:#e0f4ed;padding:7px 10px;font-size:11px;letter-spacing:0;text-transform:none}
+@media(max-width:760px){.futures-country-picker{width:100%;justify-content:space-between;padding-top:5px}.futures-country-picker select{width:210px}}
+@media(max-width:430px){.futures-timeline-labels span:nth-child(2),.futures-timeline-labels span:nth-child(3),.futures-timeline-labels span:nth-child(5){display:none}.futures-timeline-labels span:nth-child(4){font-size:9px}}
+  </style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar"><div class="shell bar-inner">
+  <a class="brand" href="#top" aria-label="HELIOSAI home"><i aria-hidden="true"></i><span>HELIOS<em>AI</em></span></a>
+  <nav class="navlinks" aria-label="Site"><a href="#universe">Particle universe</a><a href="#journal">Journal + chat</a><a href="#futures">World futures</a><a href="#bills">10 bills</a></nav>
+  <a class="top-pill" href="https://civic-synthesis.fly.dev/" target="_blank" rel="noopener noreferrer">Civic Synthesis ↗</a>
+</div></header>
+<main id="main"><div class="shell" id="top">
+  <section class="hero" id="universe" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <div class="eyebrow">An experiment in collective imagination</div>
+      <h1 id="hero-title">What if we could <em>think</em> together?</h1>
+      <p class="hero-lede">One thought can become a conversation. One conversation can become a proposal. And a proposal can become a better possible world.</p>
+      <div class="hero-actions">
+        <form id="hero-journal-form" class="hero-journal" aria-label="Send a thought to HappyBearLandia">
+          <div class="hero-compose">
+            <label class="visually-hidden" for="hero-journal-input">Your thought</label>
+            <textarea id="hero-journal-input" name="text" rows="3" maxlength="10000" placeholder="What's on your mind?" required aria-describedby="hero-journal-hint hero-journal-status"></textarea>
+            <button type="submit" id="hero-journal-send" aria-label="Send thought to HappyBearLandia" title="Send to HappyBearLandia">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 24h32M27 11l13 13-13 13"/></svg>
+            </button>
+          </div>
+          <div id="hero-journal-hint" class="hero-hint">Enter to send · Shift+Enter for a new line · Sends to HappyBearLandia (not a private draft)</div>
+          <div id="hero-journal-status" class="hero-journal-status" role="status" aria-live="polite"></div>
+        </form>
+        <a class="ghost-link" href="#futures">Explore world futures through 2036 ↗</a>
+        <a class="ghost-link" href="#bills">Explore the 10 bills</a>
+      </div>
+      <div class="micro-process"><span>Imagine</span><b>→</b><span>Reflect</span><b>→</b><span>Deliberate</span><b>→</b><span>Learn</span></div>
+    </div>
+    <div class="hero-art" id="particle-stage">
+      <canvas id="particles" aria-label="An interactive field of particles that can form an orbit, HELIOS, or ten constellations" role="img"></canvas>
+      <div class="orb-caption">HELIOS / a living field of ideas</div>
+      <div class="particle-controls" role="group" aria-label="Particle visualization modes">
+        <button type="button" data-mode="orbit" aria-pressed="true">Orbit</button><button type="button" data-mode="word" aria-pressed="false">HELIOS</button><button type="button" data-mode="bills" aria-pressed="false">10 bills</button>
+      </div>
+      <div class="orb-label"><strong id="particle-caption">01 / Possibility field</strong><span id="particle-subcaption">Move your pointer through the particles</span></div>
+      <button type="button" id="motion-toggle" class="pause-button" aria-pressed="false">Pause motion Ⅱ</button>
+    </div>
+  </section>
+  <div class="stats" aria-label="Helios design in three parts"><div class="stat"><strong>01<span style="color:var(--green)">.</span></strong><span>Living particle system</span></div><div class="stat"><strong>02<span style="color:var(--green)">.</span></strong><span>Journal + conversation</span></div><div class="stat"><strong>10<span style="color:var(--green)">.</span></strong><span>Ideas to explore</span></div></div>
+</div>
+<section id="journal" class="section"><div class="shell journal-layout">
+  <div class="journal-intro">
+    <span class="section-kicker">01 / The Journal</span>
+    <h2 class="section-title">Everything begins with a <em>thought.</em></h2>
+    <p class="section-copy">Write what you notice. Wonder aloud. Explore what could change. HELIOS helps turn reflection into a more useful question.</p>
+    <div class="private-notice"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg><span><strong>Private reflection below.</strong> This chat stays in the open tab; only excerpts you explicitly review go to Civic Synthesis. The separate large input above sends to HappyBearLandia when you press Enter or the arrow.</span></div>
+  </div>
+  <div class="chat-card" aria-label="Journal and reflection workspace">
+    <div class="chat-top"><div><strong><span class="online-dot" aria-hidden="true"></span>Journal with HELIOS</strong><small>A space to think out loud</small></div><span class="chat-top-tag">PRIVATE SESSION</span></div>
+    <div id="chat-feed" class="chat-feed" role="log" aria-live="polite" aria-label="Journal conversation"><div class="msg"><div class="msg-avatar" aria-hidden="true">✧</div><div class="bubble"><div class="bubble-meta">HELIOS / REFLECTIVE PROMPT</div>What’s one thing about the world you wish worked differently? Begin anywhere. We can turn the thought into a question worth exploring.</div></div></div>
+    <div class="prompt-chips" aria-label="Reflection ideas"><button type="button" data-prompt="What would make my neighborhood feel more connected?">Belonging</button><button type="button" data-prompt="How could we make public decisions more transparent?">Democracy</button><button type="button" data-prompt="What if everyone had a personal AI teacher?">Learning</button></div>
+    <form id="journal-form" class="composer"><label for="journal-input">Your journal entry</label>
+      <textarea id="journal-input" maxlength="10000" placeholder="I've been thinking about…" required></textarea>
+      <div class="composer-actions"><div class="left-actions"><button type="submit" class="chat-send">Reflect privately ↗</button><button type="button" class="subtle-button" id="open-share">Review to share ↗</button></div><span id="count" style="font-size:10px;color:#708995">0 / 10,000</span></div>
+      <div class="composer-help">Ctrl / ⌘ + Enter to reflect · Sharing is a separate public action, never automatic.</div>
+    </form>
+  </div>
+</div></section>
+<section id="futures" class="futures-section" aria-labelledby="futures-heading"><div class="shell">
+  <div class="futures-header">
+    <div><span class="section-kicker">02 / The world, across time</span>
+      <h2 class="section-title" id="futures-heading">The wealth &amp; health of nations.<br><em>And what comes next.</em></h2>
+      <p class="section-copy">180 nations. Two centuries of change. Continue beyond the historical record to explore one of many possible worlds in <strong>2036</strong>.</p>
+    </div>
+    <a class="futures-source-link" href="https://observablehq.com/@mbostock/the-wealth-health-of-nations" target="_blank" rel="noopener noreferrer">Original chart by Mike Bostock ↗</a>
+  </div>
+  <div class="futures-panel">
+    <div class="futures-panel-head">
+      <div><strong>WEALTH × HEALTH / 180 NATIONS</strong><small>Horizontal: income per person · Vertical: life expectancy · Bubble area: population</small></div>
+      <span id="wf-status" class="futures-status" role="status">HISTORICAL · THROUGH 2009</span>
+    </div>
+    <div id="wf-plot-wrap" class="futures-plot-wrap">
+      <svg id="world-futures-chart" class="futures-svg" viewBox="0 0 1000 545" aria-label="Wealth and health of 180 nations through time" role="group"></svg>
+      <div id="wf-tooltip" class="futures-tooltip" role="tooltip" hidden></div>
+    </div>
+    <div class="futures-plot-footer">
+      <div id="wf-legend" class="futures-legend" role="group" aria-label="Toggle world regions"></div>
+      <div class="futures-country-picker"><label for="wf-country-picker">Spotlight nation</label><select id="wf-country-picker" aria-label="Choose a nation to spotlight"></select></div>
+    </div>
+    <div class="futures-controls">
+      <div class="futures-timeline-head">
+        <div class="futures-year-box"><strong id="wf-year-label" aria-live="off">2009</strong><span id="wf-year-kind">Historical series · sampled anchors</span></div>
+        <div class="futures-timeline-actions"><button type="button" class="futures-control-btn" id="wf-play" aria-pressed="false">▶ Play through time</button><button type="button" class="futures-control-btn accent" id="wf-jump">See 2036 ↗</button></div>
+      </div>
+      <label for="wf-year" class="visually-hidden">Explore year between 1800 and 2036</label>
+      <input id="wf-year" class="futures-timeline" type="range" min="1800" max="2036" step="1" value="2009" aria-describedby="wf-year-kind wf-scenario-hint">
+      <div class="futures-timeline-labels"><span>1800</span><span>1900</span><span>1950</span><span>2009 / LAST HISTORICAL YEAR</span><span class="projection-marker">2026</span><span class="projection-marker">2036 / FUTURE</span></div>
+      <hr class="futures-divider">
+      <div class="futures-scenarios"><div class="futures-scenario-intro" id="wf-scenario-hint">Scenario choices apply only after 2009.</div>
+        <div class="futures-scenario-buttons" role="group" aria-label="Choose illustrative future scenario">
+          <button type="button" data-wf-scenario="trend" aria-pressed="true">Trend continuation</button>
+          <button type="button" data-wf-scenario="flourishing" aria-pressed="false">Faster progress</button>
+          <button type="button" data-wf-scenario="stress" aria-pressed="false">Slower progress</button>
+        </div>
+      </div>
+    </div>
+    <div class="futures-details" aria-live="polite">
+      <div><strong id="wf-country-name">China · Historical 2009</strong><p id="wf-country-description">Select a country bubble to see its measurements or hypothetical future.</p></div>
+      <button type="button" id="wf-reflect">Reflect on this world ↗</button>
+    </div>
+  </div>
+  <p class="futures-note"><strong>Read the boundary:</strong> 1800–2009 values are sampled from the older <a href="https://observablehq.com/@mbostock/the-wealth-health-of-nations" target="_blank" rel="noopener noreferrer">Gapminder / Mike Bostock dataset</a> at seven anchor years, with interpolation between them. Data before 1950 is especially sparse. <strong>2010–2036 is entirely hypothetical</strong>: simple damped 1990–2009 trends with optional income and life-expectancy adjustments. These are exploratory scenarios, not updated observations, statistically validated forecasts, or estimated impacts of HELIOSAI's bills.</p>
+</div></section>
+<section id="bills" class="bills-section"><div class="shell">
+  <div class="section-header"><div><span class="section-kicker">03 / The proposals</span><h2 class="section-title">Ten bills.<br><em>A thousand possibilities.</em></h2></div><p class="section-copy">Ten ambitious starting points for a flourishing civilization. These are proposals to discuss and test—not laws that have been passed.</p></div>
+  <div class="bill-filters" role="group" aria-label="Filter proposed bills"><button class="filter" data-filter="all" aria-pressed="true">All 10</button><button class="filter" data-filter="technology" aria-pressed="false">Technology</button><button class="filter" data-filter="civic" aria-pressed="false">Civic systems</button><button class="filter" data-filter="public" aria-pressed="false">Public life</button><button class="filter" data-filter="learning" aria-pressed="false">Learning</button></div>
+  <div id="bill-grid" class="bill-grid" aria-live="polite"></div>
+</div></section>
+<section class="shell closing"><div><span class="section-kicker">From thought to public imagination</span><h2>What would you like<br>to make possible?</h2><p>Your journal can begin as privately as a question.</p></div><a class="primary" href="#journal">Write your first thought <span aria-hidden="true">↗</span></a></section>
+</main>
+<footer><div class="shell footer-line"><span>© HELIOSAI · A civic moonshot initiative</span><span class="equation"><b>reflect open</b> + muse + grok + gemini + claude + openAI = <b>helioasAI</b></span><a href="https://civic-synthesis.fly.dev/journal" target="_blank" rel="noopener noreferrer">Civic journal ↗</a></div></footer>
+<dialog id="share-dialog" aria-labelledby="share-title"><div class="dialog-inner">
+  <div class="section-kicker">Deliberate public sharing</div><h2 id="share-title">Share an excerpt with Civic Synthesis</h2>
+  <p>Exactly the text below will be published to a civic journal feed if accepted. Remove anything private or identifying. No AI inference or vote is requested. Public copies may persist even after deletion.</p>
+  <form id="share-form"><label class="form-label" for="share-text">Exact public excerpt</label><textarea id="share-text" maxlength="10000" required></textarea>
+    <label class="form-label" for="share-author">Public display name (optional)</label><input id="share-author" type="text" maxlength="120" placeholder="Helios visitor">
+    <label class="consent-row"><input id="share-consent" type="checkbox" required><span>I understand this exact excerpt and display name will be public, and I want to publish it to Civic Synthesis.</span></label>
+    <div class="dialog-actions"><button class="chat-send" id="share-submit" type="submit">Publish to Civic Synthesis ↗</button><button type="button" class="subtle-button" id="cancel-share">Cancel</button></div>
+    <div id="share-status" class="status" role="status" aria-live="polite"></div>
+  </form>
+</div></dialog>
+<script>
+(() => {
+  'use strict';
+  const BILLS = [
+    {title:'One Self-Driving Car in Every City Act',category:'technology',tag:'MOBILITY',summary:'Deploy at least one autonomous vehicle in every willing city worldwide, beginning with safety-validated pilots.',detail:'Use SMS, email, and shared digital infrastructure to dramatically reduce coordination and deployment costs. Target: 100× lower implementation costs as the system scales — a hypothesis to test, not an assumed result.'},
+    {title:'Equal Opportunity to Become President Act',category:'civic',tag:'REPRESENTATION',summary:'Amend the U.S. Constitution so naturalized American citizens can run for President.',detail:'Citizenship by choice should not automatically disqualify someone from the country’s highest office.'},
+    {title:'The Pensieve Invention Act (2026)',category:'technology',tag:'MEMORY',summary:'Launch a 2026 grand challenge for Neuralink and other researchers to build the first practical, privacy-preserving digital Pensieve.',detail:'A system for remembering, exploring, visualizing, and sharing human thoughts and memories, with strong consent and neural-data protections.'},
+    {title:'Dynamicland in Every Country Act',category:'public',tag:'COMMUNAL COMPUTING',summary:'Establish at least one Dynamicland-inspired public computing laboratory in every willing country.',detail:'Create physical spaces where children, scientists, artists, and communities can collaboratively program and explore ideas in the real world.'},
+    {title:'The 100 Possible Futures Act',category:'technology',tag:'SIMULATION',summary:'Before major public policies are adopted, provide decision-makers with simulations of 100 plausible futures.',detail:'Use HappyBearLandia and other open simulation tools to compare housing, health, education, economic opportunity, happiness, and environmental outcomes. Publish assumptions and uncertainty.'},
+    {title:'The 24-Hour Civic Innovation Act',category:'civic',tag:'RAPID PILOTS',summary:'Make it possible for any person to propose an idea and, when it meets safety, legal, and funding requirements, see a small authorized pilot begin within 24 hours.',detail:'A great idea submitted today could begin changing the world tomorrow.'},
+    {title:'The Daily Democracy Act',category:'civic',tag:'PARTICIPATION',summary:'Give every citizen the opportunity to participate in voluntary daily digital civic deliberation and voting.',detail:'Connect Civic Synthesis with public proposals, transparent reasoning, policy simulations, and existing democratic institutions. Preserve privacy, accessibility, and constitutional decision-making.'},
+    {title:'The Government Learning Ledger Act',category:'civic',tag:'EVIDENCE',summary:'Require public programs to publish their goals, predictions, evidence, observed outcomes, and lessons learned.',detail:'Create an open, inspectable learning system so governments can improve policies based on what actually works, rather than repeatedly making the same mistakes.'},
+    {title:'The Third Places for Everyone Act',category:'public',tag:'BELONGING',summary:'Help every community create welcoming, affordable places beyond home and work.',detail:'Libraries, parks, gardens, workshops, recreation centers, and community spaces should make friendship, play, creativity, and belonging easier.'},
+    {title:'The Universal AI Teacher Act',category:'learning',tag:'EDUCATION',summary:'Give every person access to a free, multilingual, personalized AI learning companion.',detail:'Make excellent tutoring available regardless of income or location, with human educators, trustworthy content, privacy protections, and opportunities for lifelong learning.'}
+  ];
+  const $ = (id) => document.getElementById(id);
+  // A separate, explicitly labeled sender. Enter submits once; Shift+Enter writes a line break.
+  const heroForm=$('hero-journal-form'),heroInput=$('hero-journal-input'),heroButton=$('hero-journal-send'),heroStatus=$('hero-journal-status');
+  const HAPPYBEAR_JOURNAL_URL='https://happybearlandia.fly.dev/api/journal';
+  let heroSubmitting=false;
+  heroInput.addEventListener('keydown',(event)=>{
+    if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing&&event.keyCode!==229){
+      event.preventDefault();
+      if(!heroSubmitting)heroForm.requestSubmit();
+    }
+  });
+  heroForm.addEventListener('submit',async(event)=>{
+    event.preventDefault();
+    const text=heroInput.value.trim();
+    if(!text||heroSubmitting)return;
+    heroSubmitting=true;
+    heroButton.disabled=true;
+    heroInput.readOnly=true;
+    heroStatus.className='hero-journal-status';
+    heroStatus.textContent='Sending to HappyBearLandia…';
+    try{
+      const response=await fetch(HAPPYBEAR_JOURNAL_URL,{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({text})
+      });
+      const type=(response.headers.get('content-type')||'').toLowerCase();
+      let result=null;
+      if(type.includes('json')){ try {result=await response.json()} catch {} }
+      if(!response.ok){
+        throw new Error((result&&typeof result.error==='string'&&result.error)||`HTTP ${response.status}`);
+      }
+      // Avoid treating an unrelated SPA HTML fallback as a confirmed API acceptance.
+      if(!type.includes('json')||!result||result.ok===false||result.error){
+        throw new Error('The endpoint did not confirm a JSON journal response');
+      }
+      heroStatus.className='hero-journal-status success';
+      heroStatus.textContent='Sent to HappyBearLandia.';
+      heroInput.value='';
+      heroInput.dispatchEvent(new Event('input',{bubbles:true}));
+    }catch(error){
+      heroStatus.className='hero-journal-status error';
+      heroStatus.textContent=`Delivery not confirmed: ${error?.message||'network error'}. Your text is kept here. Check before retrying; the server may have received it.`;
+    }finally{
+      heroSubmitting=false;
+      heroButton.disabled=false;
+      heroInput.readOnly=false;
+    }
+  });
+  const grid = $('bill-grid');
+  let selectedBill = -1;
+  for (const [index, bill] of BILLS.entries()) {
+    const card = document.createElement('article'); card.className='bill-card';card.id=`bill-${String(index+1).padStart(2,'0')}`;card.dataset.category=bill.category;
+    const top=document.createElement('div');top.className='bill-top';const num=document.createElement('span');num.textContent=String(index+1).padStart(2,'0')+' / 10';const category=document.createElement('span');category.className='category';category.textContent=bill.tag;top.append(num,category);
+    const title=document.createElement('h3');title.textContent=bill.title;
+    const summary=document.createElement('p');summary.textContent=bill.summary;
+    const detail=document.createElement('div');detail.className='bill-expanded';detail.hidden=true;detail.textContent=bill.detail;
+    const actions=document.createElement('div');actions.className='bill-actions';
+    const reveal=document.createElement('button');reveal.type='button';reveal.textContent='Read proposal +';reveal.setAttribute('aria-expanded','false');reveal.addEventListener('click',()=>{
+      const open=detail.hidden;detail.hidden=!open;reveal.setAttribute('aria-expanded',String(open));reveal.textContent=open?'Close proposal −':'Read proposal +';
+      document.querySelectorAll('.bill-card').forEach(c=>c.classList.remove('is-selected'));if(open)card.classList.add('is-selected');selectedBill=open?index:-1;
+      setMode('bills');
+    });
+    const reflect=document.createElement('button');reflect.type='button';reflect.className='reflect-bill';reflect.textContent='Reflect on this ↗';reflect.addEventListener('click',()=>{
+      $('journal-input').value=`What would it take to make “${bill.title}” work fairly and safely? `;updateCount();$('journal').scrollIntoView({behavior:reduceMotion?'auto':'smooth'});$('journal-input').focus({preventScroll:true});selectedBill=index;setMode('bills');
+    });
+    actions.append(reveal,reflect);card.append(top,title,summary,detail,actions);grid.append(card);
+  }
+  document.querySelectorAll('[data-filter]').forEach(btn=>btn.addEventListener('click',()=>{
+    const filter=btn.dataset.filter;
+    document.querySelectorAll('[data-filter]').forEach(b=>b.setAttribute('aria-pressed',String(b===btn)));
+    document.querySelectorAll('.bill-card').forEach(card=>{card.hidden=filter!=='all'&&card.dataset.category!==filter});
+  }));
+  const feed=$('chat-feed'), journal=$('journal-input'), count=$('count');
+  const drafts=[];
+  function updateCount(){count.textContent=`${journal.value.length.toLocaleString()} / 10,000`;if(journal.value)typingEnergy=Math.min(1.5,typingEnergy+.2)}
+  journal.addEventListener('input',updateCount);
+  document.querySelectorAll('[data-prompt]').forEach(btn=>btn.addEventListener('click',()=>{journal.value=btn.dataset.prompt;updateCount();journal.focus()}));
+  function addMessage(kind,body){
+    const msg=document.createElement('div');msg.className='msg'+(kind==='user'?' user':'');
+    const avatar=document.createElement('div');avatar.className='msg-avatar';avatar.setAttribute('aria-hidden','true');avatar.textContent=kind==='user'?'○':'✧';
+    const bubble=document.createElement('div');bubble.className='bubble';const meta=document.createElement('div');meta.className='bubble-meta';meta.textContent=kind==='user'?'YOUR JOURNAL ENTRY':'HELIOS / LOCAL REFLECTION';const text=document.createElement('span');text.textContent=body;bubble.append(meta,text);msg.append(avatar,bubble);feed.append(msg);feed.scrollTop=feed.scrollHeight;
+  }
+  function promptFor(text){
+    const t=text.toLowerCase();
+    if(/bill|law|government|democra|vote|civic|public|politic/.test(t))return 'Who would benefit from that change, and who might experience unintended consequences? What evidence would help us decide?';
+    if(/school|learn|teacher|education|student/.test(t))return 'What would an ideal learning day look like for the person with the fewest resources? How could we test that idea?';
+    if(/home|housing|rent|city|transit|bus|car|traffic/.test(t))return 'Imagine the same neighborhood five years from now with this problem improved. What is visibly different? Which metric would reveal progress?';
+    if(/friend|lonely|belong|park|community|connect/.test(t))return 'Where might this happen in everyday life? What small experiment could help people feel more welcome, without leaving anyone out?';
+    return 'What would change if this idea worked? What is one assumption you would want to test before making it a public proposal?';
+  }
+  function reflect(){const text=journal.value.trim();if(!text)return;drafts.push(text);addMessage('user',text);addMessage('helios',promptFor(text));journal.value='';updateCount();typingEnergy=2;setMode('word');}
+  $('journal-form').addEventListener('submit',e=>{e.preventDefault();reflect()});
+  journal.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();reflect()}});
+  const dialog=$('share-dialog'), shareText=$('share-text'), shareStatus=$('share-status'), consent=$('share-consent'), shareSubmit=$('share-submit');
+  $('open-share').addEventListener('click',()=>{
+    shareText.value=journal.value.trim() || drafts.at(-1) || '';
+    consent.checked=false;shareStatus.textContent='';shareStatus.className='status';shareSubmit.disabled=false;
+    if(dialog.showModal)dialog.showModal();else dialog.setAttribute('open','');
+    shareText.focus();
+  });
+  function closeShare(){if(dialog.close)dialog.close();else dialog.removeAttribute('open')}
+  $('cancel-share').addEventListener('click',closeShare);
+  dialog.addEventListener('click',e=>{if(e.target===dialog)closeShare()});
+  function voterIdentity(){
+    const key='heliosai-civic-publisher-id-v1';
+    try {let id=localStorage.getItem(key);if(!id){id='helios-'+(crypto.randomUUID?.()||String(Date.now())+'-'+Math.random().toString(36).slice(2));localStorage.setItem(key,id)}return id}
+    catch{return 'helios-ephemeral-'+(crypto.randomUUID?.()||Math.random().toString(36).slice(2))}
+  }
+  $('share-form').addEventListener('submit',async (event)=>{
+    event.preventDefault();
+    const text=shareText.value.trim();if(!text||!consent.checked)return;
+    shareSubmit.disabled=true;shareStatus.className='status';shareStatus.textContent='Publishing the reviewed excerpt…';
+    // Civic Synthesis currently exposes a public journal API. Never transmit a private reflection automatically.
+    const payload={kind:'journal',text,author:$('share-author').value.trim()||'Helios visitor',inference:'none',labels:[],source:'heliosai'};
+    try{
+      const response=await fetch('https://civic-synthesis.fly.dev/api/publish_draft',{
+        method:'POST',headers:{'Content-Type':'application/json','x-voter-id':voterIdentity()},credentials:'omit',body:JSON.stringify(payload)
+      });
+      let data={};try{data=await response.json()}catch{}
+      if(!response.ok)throw new Error(typeof data.error==='string'?data.error:`Civic Synthesis returned HTTP ${response.status}`);
+      if(data.status==='pending'){
+        shareStatus.textContent='Submitted for moderation. It is not yet visible in the public feed.';shareStatus.className='status success';
+      }else if(data.ok===true&&(data.entryId||data.entry?.id)){
+        shareStatus.className='status success';shareStatus.textContent='Published to Civic Synthesis. No vote was cast. ';
+        const link=document.createElement('a');link.href='https://civic-synthesis.fly.dev/journal';link.target='_blank';link.rel='noopener noreferrer';link.textContent='Open public journal ↗';shareStatus.append(link);typingEnergy=2;setMode('bills');
+      }else{
+        shareStatus.className='status error';shareStatus.textContent='The server replied, but the publication result is unclear. Check the public journal before trying again.';
+      }
+      if(shareStatus.classList.contains('success'))consent.checked=false;
+    }catch(err){shareStatus.className='status error';shareStatus.textContent=`Publication could not be confirmed: ${err?.message||'network error'}. Check the public journal before retrying; resubmitting may duplicate the excerpt.`;}
+    finally{shareSubmit.disabled=false}
+  });
+  // Lightweight dependency-free 3D particle field. Works from a single static HTML file.
+  const canvas=$('particles'),stage=$('particle-stage'),ctx=canvas.getContext('2d',{alpha:true});
+  const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let mode='orbit',paused=reduceMotion,frame=0,lastTime=0,stageW=600,stageH=550,dpr=1,raf=0,typingEnergy=0;
+  const pointer={x:1e5,y:1e5,active:false};
+  const palette=['#92e7d5','#b9f3dd','#f7cfa4','#9bade9','#6dbbca'];
+  const N=reduceMotion?550:(innerWidth<700?950:1600);
+  const points=Array.from({length:N},(_,i)=>({x:(Math.random()-.5)*600,y:(Math.random()-.5)*600,z:(Math.random()-.5)*380,tx:0,ty:0,tz:0,seed:Math.random()*Math.PI*2,size:.65+Math.random()*1.65,color:palette[i%palette.length],cluster:i%10}));
+  const golden=Math.PI*(3-Math.sqrt(5));
+  const targetScale=()=>Math.min(stageW,stageH)/610;
+  function wordTargets(){
+    const off=document.createElement('canvas');off.width=820;off.height=260;const oc=off.getContext('2d');oc.clearRect(0,0,820,260);oc.fillStyle='white';oc.font='900 170px Arial, sans-serif';oc.textAlign='center';oc.textBaseline='middle';oc.fillText('HELIOS',410,132);
+    const pix=oc.getImageData(0,0,820,260).data,candidates=[];
+    for(let y=12;y<260;y+=5)for(let x=10;x<810;x+=5)if(pix[(y*820+x)*4+3]>120)candidates.push([x,y]);
+    return candidates;
+  }
+  const letterPixels=wordTargets();
+  function setTargets(){
+    const scale=targetScale();
+    points.forEach((p,i)=>{
+      if(mode==='orbit'){
+        const y=1-2*(i+.5)/N,r=Math.sqrt(Math.max(0,1-y*y)),a=golden*i;
+        const wave=1+.08*Math.sin(a*3);p.tx=Math.cos(a)*r*202*scale*wave;p.ty=y*203*scale;p.tz=Math.sin(a)*r*202*scale;
+      }else if(mode==='word'){
+        const cell=letterPixels[(i*23)%letterPixels.length]||[410,130];
+        p.tx=(cell[0]-410)*.67*scale+(Math.random()-.5)*3;p.ty=(cell[1]-130)*.67*scale;p.tz=(Math.random()-.5)*18*scale;
+      }else{
+        const c=i%10;const angle=-Math.PI/2+c/10*Math.PI*2;const rad=(c%2===0?200:171)*scale;
+        const u=(i*.61803398875)%1, v=(i*.372137)%1;const a=u*Math.PI*2,r=Math.sqrt(v)*(selectedBill===c?43:27)*scale;
+        p.tx=Math.cos(angle)*rad+Math.cos(a)*r;p.ty=Math.sin(angle)*rad*.78+Math.sin(a)*r;p.tz=Math.sin(i*2.399)*28*scale;
+      }
+    });
+  }
+  function setMode(next){mode=next;document.querySelectorAll('[data-mode]').forEach(btn=>btn.setAttribute('aria-pressed',String(btn.dataset.mode===mode)));
+    const captions={orbit:['01 / Possibility field','Move your pointer through the particles'],word:['02 / A shared intelligence','An idea becomes a signal'],bills:['03 / Ten starting points','Explore the ten proposals below']};
+    $('particle-caption').textContent=captions[mode][0];$('particle-subcaption').textContent=captions[mode][1];setTargets();if(paused)drawFrame(performance.now(),true);
+  }
+  document.querySelectorAll('[data-mode]').forEach(btn=>btn.addEventListener('click',()=>setMode(btn.dataset.mode)));
+  function resize(){const r=stage.getBoundingClientRect();stageW=Math.max(300,r.width);stageH=Math.max(300,r.height);dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(stageW*dpr);canvas.height=Math.round(stageH*dpr);canvas.style.width=stageW+'px';canvas.style.height=stageH+'px';ctx.setTransform(dpr,0,0,dpr,0,0);setTargets();if(paused)drawFrame(performance.now(),true)}
+  if('ResizeObserver' in window)new ResizeObserver(resize).observe(stage);else window.addEventListener('resize',resize);
+  stage.addEventListener('pointermove',e=>{const r=stage.getBoundingClientRect();pointer.x=e.clientX-r.left-stageW/2;pointer.y=e.clientY-r.top-stageH/2;pointer.active=true});stage.addEventListener('pointerleave',()=>pointer.active=false);
+  const projected=[];
+  function drawFrame(now,staticOnly=false){
+    if(!ctx)return;const delta=Math.min(2.5,Math.max(.5,(now-lastTime)/16.67||1));lastTime=now;frame+=paused?0:delta;
+    ctx.clearRect(0,0,stageW,stageH);const midX=stageW*.5,midY=stageH*.51;
+    const maxR=170*targetScale();
+    if(!paused)typingEnergy=Math.max(0,typingEnergy-delta*.018);
+    const ambient=ctx.createRadialGradient(midX,midY,0,midX,midY,Math.max(stageW,stageH)*.56);ambient.addColorStop(0,`rgba(79,192,176,${.085+Math.min(.18,typingEnergy*.10)})`);ambient.addColorStop(.3,'rgba(31,95,115,.04)');ambient.addColorStop(1,'rgba(8,12,21,0)');ctx.fillStyle=ambient;ctx.fillRect(0,0,stageW,stageH);
+    ctx.save();ctx.translate(midX,midY);
+    if(mode==='orbit'){
+      ctx.strokeStyle='rgba(110,190,190,.105)';ctx.lineWidth=1;
+      for(let k=0;k<3;k++){ctx.beginPath();ctx.ellipse(0,0,maxR*(1.1+k*.27),maxR*(.30+k*.13),-.45,0,Math.PI*2);ctx.stroke();}
+    }
+    if(mode==='bills'){
+      ctx.strokeStyle='rgba(153,220,205,.12)';ctx.lineWidth=.75;ctx.beginPath();
+      for(let j=0;j<10;j++){let a=-Math.PI/2+j/10*Math.PI*2,r=(j%2?171:200)*targetScale();let x=Math.cos(a)*r,y=Math.sin(a)*r*.78;if(!j)ctx.moveTo(x,y);else ctx.lineTo(x,y)}ctx.closePath();ctx.stroke();
+    }
+    const rot=mode==='word'?0:frame*.0021;
+    const cy=Math.cos(rot),sy=Math.sin(rot),cx=Math.cos(-.21),sx=Math.sin(-.21);
+    projected.length=0;
+    for(const p of points){
+      if(!staticOnly){p.x+=(p.tx-p.x)*.042*delta;p.y+=(p.ty-p.y)*.042*delta;p.z+=(p.tz-p.z)*.042*delta}
+      else {p.x=p.tx;p.y=p.ty;p.z=p.tz}
+      let x=p.x,z=p.z,y=p.y;
+      if(mode!=='word'){const nx=x*cy-z*sy,nz=x*sy+z*cy;x=nx;z=nz;const ny=y*cx-z*sx;y=ny;z=y*sx+z*cx;}
+      const perspective=610/(610+z);let px=x*perspective,py=y*perspective;
+      if(pointer.active&&!paused){const dx=px-pointer.x,dy=py-pointer.y,dist=Math.hypot(dx,dy);if(dist<98&&dist>1){const push=(1-dist/98)**2*22;px+=dx/dist*push;py+=dy/dist*push}}
+      const flicker=paused?1:(.72+.28*Math.sin(frame*.03+p.seed));
+      projected.push({x:px,y:py,z,r:p.size*perspective*(mode==='bills'&&selectedBill===p.cluster?1.5:1),color:p.color,alpha:Math.max(.16,Math.min(1,(.55+(z/600)))*flicker)});
+    }
+    projected.sort((a,b)=>b.z-a.z);
+    ctx.globalCompositeOperation='screen';
+    for(const p of projected){ctx.globalAlpha=p.alpha;ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();if(p.r>1.6){ctx.globalAlpha=p.alpha*.11;ctx.beginPath();ctx.arc(p.x,p.y,p.r*3.2,0,Math.PI*2);ctx.fill()}}
+    if(mode==='orbit'){
+      const sun=ctx.createRadialGradient(0,0,1,0,0,46);sun.addColorStop(0,'rgba(255,238,183,.6)');sun.addColorStop(.17,'rgba(184,245,216,.32)');sun.addColorStop(1,'rgba(113,205,201,0)');ctx.globalAlpha=1;ctx.fillStyle=sun;ctx.beginPath();ctx.arc(0,0,46,0,Math.PI*2);ctx.fill();
+    }
+    if(mode==='bills'){
+      ctx.font='700 10px ui-sans-serif,system-ui';ctx.textAlign='center';ctx.textBaseline='middle';
+      for(let j=0;j<10;j++){const a=-Math.PI/2+j/10*Math.PI*2,r=(j%2?171:200)*targetScale();const x=Math.cos(a)*r,y=Math.sin(a)*r*.78;
+        ctx.globalAlpha=1;ctx.fillStyle='#081621';ctx.beginPath();ctx.arc(x,y,14,0,Math.PI*2);ctx.fill();ctx.strokeStyle=j===selectedBill?'#f1cc96':'rgba(160,239,211,.7)';ctx.lineWidth=1;ctx.stroke();ctx.fillStyle=j===selectedBill?'#f1cc96':'#b6f3e0';ctx.fillText(String(j+1),x,y+.4)}
+    }
+    ctx.restore();ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
+    if(!paused)raf=requestAnimationFrame(drawFrame);
+  }
+  $('motion-toggle').addEventListener('click',()=>{paused=!paused;$('motion-toggle').setAttribute('aria-pressed',String(paused));$('motion-toggle').textContent=paused?'Resume motion ▶':'Pause motion Ⅱ';cancelAnimationFrame(raf);lastTime=performance.now();if(!paused)raf=requestAnimationFrame(drawFrame)});
+  if(reduceMotion){$('motion-toggle').setAttribute('aria-pressed','true');$('motion-toggle').textContent='Resume motion ▶'}
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(raf)}else if(!paused){lastTime=performance.now();raf=requestAnimationFrame(drawFrame)}});
+  resize();if(!paused)raf=requestAnimationFrame(drawFrame);
+})();
+</script>
+<script>
+/*
+ * Historical anchor samples (180 nations, 1800–2009) derived from the
+ * Gapminder nations.json used in Mike Bostock's Wealth & Health of Nations.
+ * Data source: https://github.com/openbrainsrc/Radian/blob/master/examples/data/nations.json
+ * Anchors are sampled at 1800, 1850, 1900, 1950, 1970, 1990, 2009 and
+ * stored as bounded 16-bit coordinates for a small fully-offline chart.
+ * In-between historical years are interpolated — this is a reduced-resolution
+ * rendering of the original, not a current-data series. No 2010–2036 values
+ * are observed; those are calculated as explicitly labeled scenarios.
+ */
+(() => {
+  'use strict';
+  const YEARS = [1800,1850,1900,1950,1970,1990,2009];
+  const REGIONS = 'Sub-Saharan Africa|South Asia|Middle East & North Africa|America|Europe & Central Asia|East Asia & Pacific'.split('|');
+  const NAMES = "Angola|Benin|Botswana|Burkina Faso|Burundi|Cameroon|Cape Verde|Chad|Comoros|Congo, Dem. Rep.|Congo, Rep.|Cote d'Ivoire|Equatorial Guinea|Eritrea|Ethiopia|Gabon|Ghana|Guinea|Guinea-Bissau|Kenya|Lesotho|Liberia|Madagascar|Malawi|Mali|Mauritania|Mauritius|Mayotte|Mozambique|Namibia|Niger|Nigeria|Reunion|Rwanda|Sao Tome and Principe|Senegal|Sierra Leone|Somalia|South Africa|Sudan|Swaziland|Tanzania|Togo|Uganda|Zambia|Zimbabwe|Afghanistan|Bangladesh|Bhutan|India|Maldives|Nepal|Pakistan|Sri Lanka|Algeria|Bahrain|Djibouti|Iraq|Israel|Jordan|Kuwait|Lebanon|Libya|Morocco|Oman|Qatar|Saudi Arabia|Tunisia|United Arab Emirates|West Bank and Gaza|Yemen, Rep.|Argentina|Aruba|Barbados|Belize|Bolivia|Brazil|Canada|Chile|Colombia|Costa Rica|Cuba|Ecuador|El Salvador|French Guiana|Grenada|Guadeloupe|Guatemala|Guyana|Haiti|Honduras|Jamaica|Martinique|Mexico|Netherlands Antilles|Nicaragua|Panama|Paraguay|Peru|Puerto Rico|Suriname|Trinidad and Tobago|United States|Uruguay|Albania|Armenia|Austria|Azerbaijan|Belarus|Belgium|Bosnia and Herzegovina|Bulgaria|Croatia|Cyprus|Denmark|Estonia|Finland|France|Georgia|Germany|Greece|Hungary|Iceland|Ireland|Italy|Kazakhstan|Latvia|Lithuania|Luxembourg|Macedonia, FYR|Malta|Moldova|Montenegro|Netherlands|Norway|Poland|Portugal|Romania|Serbia|Slovak Republic|Slovenia|Spain|Sweden|Switzerland|Tajikistan|Turkey|Turkmenistan|Ukraine|United Kingdom|Uzbekistan|Australia|Brunei|Cambodia|China|Fiji|French Polynesia|Hong Kong, China|Indonesia|Japan|Korea, Dem. Rep.|Korea, Rep.|Macao, China|Malaysia|Micronesia, Fed. Sts.|Mongolia|Myanmar|New Caledonia|New Zealand|Papua New Guinea|Philippines|Samoa|Singapore|Solomon Islands|Taiwan|Thailand|Timor-Leste|Tokelau|Tonga|Vietnam|Vanuatu".split('|');
+  // Each nation = one region byte and 7 × (income, life, population) unsigned 16-bit pairs.
+  // Income & population use logarithmic quantization; life expectancy is linear.
+  const B64 =
+  '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';
+  if (!NAMES.length || !B64) throw new Error('Missing historical nation anchors');
+  const binary=atob(B64);
+  const BYTES_PER_NATION = 1 + YEARS.length * 6;
+  if (binary.length !== NAMES.length * BYTES_PER_NATION) throw new Error('Invalid historical nation data length');
+  const decode=(q,min,max,log)=>log?min*Math.pow(max/min,q/65535):min+(max-min)*q/65535;
+  let offset=0;
+  const countries=NAMES.map(name=>{
+    const region=REGIONS[binary.charCodeAt(offset++)];
+    const anchors=YEARS.map(year=>{
+      const read=()=>{const q=binary.charCodeAt(offset++)*256+binary.charCodeAt(offset++);return q};
+      return {
+        year,
+        income:decode(read(),200,150000,true),
+        lifeExpectancy:decode(read(),10,105,false),
+        population:decode(read(),1000,2e9,true)
+      };
+    });
+    return {name,region,anchors};
+  });
+  Object.defineProperty(window,'HELIOS_NATIONS',{value:{countries,regions:REGIONS,anchorYears:YEARS},configurable:false,writable:false});
+})();
+
+</script>
+<script>
+/* HELIOSAI Wealth & Health chart. Offline SVG; no external libraries or network requests. */
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const root = $('world-futures-chart');
+  if (!root) return;
+  const historical = window.HELIOS_NATIONS;
+  if (!historical || historical.countries.length !== 180) {
+    $('wf-status').textContent = 'Historical chart unavailable';
+    $('wf-status').classList.add('projected');
+    return;
+  }
+  const {countries,regions,anchorYears} = historical;
+  const NS = 'http://www.w3.org/2000/svg';
+  const W=1000, H=545, left=84, right=953, top=44, bottom=471;
+  const COLORS = {
+    'Sub-Saharan Africa':'#e6a0b9',
+    'South Asia':'#f3c77f',
+    'Middle East & North Africa':'#bbadfb',
+    'America':'#83d7c9',
+    'Europe & Central Asia':'#83b9f2',
+    'East Asia & Pacific':'#ff9e80'
+  };
+  const SCENARIOS={
+    trend:{label:'Trend continuation',income:0,life:0},
+    flourishing:{label:'Faster progress',income:0.015,life:0.15},
+    stress:{label:'Slower progress',income:-0.018,life:-0.12}
+  };
+  const STATE={year:2009,scenario:'trend',selected:'China',enabled:new Set(regions),playing:false,raf:0,last:null,hovered:null};
+  const allCircles=new Map();
+  const create=(tag,attrs={},parent=root)=>{
+    const el=document.createElementNS(NS,tag);
+    for(const [key,value] of Object.entries(attrs))el.setAttribute(key,String(value));
+    parent.append(el);return el;
+  };
+  const x=(value)=>{
+    const z=(Math.log(Math.max(200,Math.min(150000,value)))-Math.log(200))/(Math.log(150000)-Math.log(200));
+    return left+z*(right-left);
+  };
+  const y=(value)=>bottom-(Math.max(10,Math.min(100,value))-10)/90*(bottom-top);
+  const radius=(value)=>Math.max(2.3,Math.min(48,1.5+Math.sqrt(Math.max(0,value)/1e6)*1.53));
+  const fmtMoney=(v)=>'$'+Math.round(v).toLocaleString('en-US');
+  const fmtPeople=(v)=>v>=1e9?(v/1e9).toFixed(2)+'B':v>=1e6?(v/1e6).toFixed(1)+'M':Math.round(v).toLocaleString('en-US');
+  const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+  const interpolate=(a,b,t)=>a+(b-a)*t;
+  const anchorSample=(country,year)=>{
+    const rows=country.anchors;
+    if(year<=anchorYears[0])return rows[0];
+    if(year>=2009)return rows.at(-1);
+    for(let i=1;i<rows.length;i++){
+      if(year<=rows[i].year){
+        const a=rows[i-1],b=rows[i],t=(year-a.year)/(b.year-a.year);
+        return {income:interpolate(a.income,b.income,t),lifeExpectancy:interpolate(a.lifeExpectancy,b.lifeExpectancy,t),population:interpolate(a.population,b.population,t)};
+      }
+    }
+    return rows.at(-1);
+  };
+  // A minimal, deliberately illustrative scenario: continue damped 1990–2009
+  // country trends with preset adjustments. 2010–2036 is NOT observed data.
+  const futureSample=(country,year,scenario)=>{
+    const prev=country.anchors.at(-2),base=country.anchors.at(-1),years=19,t=year-2009;
+    const incomeRate=clamp(Math.log(base.income/Math.max(prev.income,1))/years,-0.025,0.065)*0.75;
+    const lifeRate=clamp((base.lifeExpectancy-prev.lifeExpectancy)/years,-0.12,0.48)*0.78;
+    const popRate=clamp(Math.log(base.population/Math.max(prev.population,1))/years,-0.018,0.04)*0.82;
+    const scenarioChange=SCENARIOS[scenario];
+    return {
+      income:clamp(base.income*Math.exp(clamp(incomeRate+scenarioChange.income,-0.045,0.085)*t),200,150000),
+      lifeExpectancy:clamp(base.lifeExpectancy+(lifeRate+scenarioChange.life)*t,10,96),
+      population:Math.max(1000,base.population*Math.exp(popRate*t))
+    };
+  };
+  const valueAt=(country,year,scenario=STATE.scenario)=>year<=2009?anchorSample(country,year):futureSample(country,year,scenario);
+  // Fixed frame with muted Cartesian guides, following the original chart's log-income design.
+  const bg=create('rect',{x:left,y:top,width:right-left,height:bottom-top,rx:6,fill:'rgba(9,21,33,.33)'});
+  const ghost=create('text',{x:right-7,y:bottom-22,'text-anchor':'end','font-family':'Georgia,serif','font-size':158,fill:'#a9cbbf','fill-opacity':.07,'letter-spacing':'-.075em'});
+  const xTicks=[200,500,1000,2500,5000,10000,25000,50000,100000];
+  const yTicks=[20,30,40,50,60,70,80,90];
+  for(const v of xTicks){const px=x(v);create('line',{x1:px,x2:px,y1:top,y2:bottom,class:'wf-guide'});const label=v>=1000?(v/1000)+'k':String(v);const tx=create('text',{x:px,y:bottom+20,'text-anchor':'middle',class:'wf-axis-text'});tx.textContent=label;}
+  for(const v of yTicks){const py=y(v);create('line',{x1:left,x2:right,y1:py,y2:py,class:'wf-guide'});const tx=create('text',{x:left-14,y:py+4,'text-anchor':'end',class:'wf-axis-text'});tx.textContent=v;}
+  const labelY=create('text',{x:left,y:23,class:'wf-axis-label'});labelY.textContent='↑ LIFE EXPECTANCY / YEARS';
+  const labelX=create('text',{x:right,y:H-12,'text-anchor':'end',class:'wf-axis-label'});labelX.textContent='INCOME PER PERSON / LOGARITHMIC SCALE →';
+  const plotBg=create('rect',{x:left,y:top,width:right-left,height:bottom-top,fill:'transparent'});
+  const historicTrail=create('path',{fill:'none',stroke:'#e9e4c4','stroke-width':2.2,'stroke-opacity':.74,'stroke-linecap':'round','stroke-linejoin':'round','pointer-events':'none'});
+  const futureTrail=create('path',{fill:'none',stroke:'#f9c68c','stroke-width':2.3,'stroke-dasharray':'5 7','stroke-opacity':.9,'stroke-linecap':'round','pointer-events':'none'});
+  const bubbles=create('g',{'aria-label':'Country bubbles'},root);
+  // Render the largest populations first so smaller countries remain clickable.
+  [...countries].sort((a,b)=>b.anchors.at(-1).population-a.anchors.at(-1).population).forEach(country=>{
+    const circle=create('circle',{class:'wf-bubble',cx:0,cy:0,r:2,fill:COLORS[country.region],tabindex:'0',role:'button','aria-label':country.name+' — show country data'},bubbles);
+    const title=create('title',{},circle);title.textContent=country.name;
+    circle.addEventListener('click',()=>selectCountry(country.name));
+    circle.addEventListener('focus',()=>showTooltip(country,circle));
+    circle.addEventListener('blur',hideTooltip);
+    circle.addEventListener('mouseenter',()=>showTooltip(country,circle));
+    circle.addEventListener('mousemove',()=>showTooltip(country,circle));
+    circle.addEventListener('mouseleave',hideTooltip);
+    circle.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();selectCountry(country.name);}});
+    allCircles.set(country.name,circle);
+  });
+  const tip=$('wf-tooltip'),plotWrap=$('wf-plot-wrap');
+  function showTooltip(country,circle){
+    const v=valueAt(country,STATE.year),box=circle.getBoundingClientRect(),parent=plotWrap.getBoundingClientRect();
+    STATE.hovered=country.name;
+    tip.innerHTML='';
+    const title=document.createElement('b');title.textContent=country.name;tip.append(title);
+    const subtitle=document.createElement('small');subtitle.textContent=country.region+' · '+(STATE.year>2009?'2036 horizon scenario'.replace('2036',String(STATE.year)):'Historical series');tip.append(subtitle);
+    for(const [label,val] of [['Income',fmtMoney(v.income)],['Life',v.lifeExpectancy.toFixed(1)+' years'],['Population',fmtPeople(v.population)]]){
+      const row=document.createElement('div');row.className='metric';const l=document.createElement('span'),n=document.createElement('strong');l.textContent=label;n.textContent=val;row.append(l,n);tip.append(row);
+    }
+    tip.hidden=false;
+    const tw=tip.offsetWidth||230,th=tip.offsetHeight||130;
+    let px=box.left-parent.left+box.width/2+18,py=box.top-parent.top-th-12;
+    if(px+tw>parent.width-9)px=box.left-parent.left-tw-17;
+    if(py<8)py=box.bottom-parent.top+12;
+    tip.style.left=clamp(px,7,Math.max(7,parent.width-tw-7))+'px';
+    tip.style.top=clamp(py,6,Math.max(6,parent.height-th-6))+'px';
+  }
+  function hideTooltip(){STATE.hovered=null;tip.hidden=true;}
+  function renderTrail(){
+    const selected=countries.find(d=>d.name===STATE.selected);
+    if(!selected||!STATE.enabled.has(selected.region)){historicTrail.setAttribute('d','');futureTrail.setAttribute('d','');return;}
+    const historicYears=[...anchorYears.filter(t=>t<=Math.min(STATE.year,2009)),Math.min(STATE.year,2009)].filter((v,i,a)=>i===0||v!==a[i-1]);
+    const points=historicYears.map(t=>{const a=valueAt(selected,t);return [x(a.income),y(a.lifeExpectancy)]});
+    historicTrail.setAttribute('d',points.map((a,i)=>(i?'L':'M')+a[0].toFixed(2)+','+a[1].toFixed(2)).join(' '));
+    if(STATE.year<=2009){futureTrail.setAttribute('d','');return;}
+    const futureYears=[2009];for(let t=2012;t<STATE.year;t+=3)futureYears.push(t);futureYears.push(STATE.year);
+    futureTrail.setAttribute('d',futureYears.map((t,i)=>{const a=valueAt(selected,t);return (i?'L':'M')+x(a.income).toFixed(2)+','+y(a.lifeExpectancy).toFixed(2)}).join(' '));
+  }
+  function updateDetails(){
+    const c=countries.find(d=>d.name===STATE.selected);
+    if(!c)return;
+    const a=valueAt(c,STATE.year),old=valueAt(c,2009);
+    $('wf-country-name').textContent=c.name+' · '+(STATE.year>2009?'Illustrative '+STATE.year:'Historical '+STATE.year);
+    const line=`${fmtMoney(a.income)} income / person  ·  ${a.lifeExpectancy.toFixed(1)} years of life  ·  ${fmtPeople(a.population)} people`;
+    const delta=STATE.year>2009?` · Compared with 2009: ${(100*(a.income/old.income-1)>=0?'+':'')+(100*(a.income/old.income-1)).toFixed(0)}% modeled income, ${(a.lifeExpectancy-old.lifeExpectancy>=0?'+':'')+(a.lifeExpectancy-old.lifeExpectancy).toFixed(1)} modeled years.`:'';
+    $('wf-country-description').textContent=line+delta;
+  }
+  function render(){
+    const isFuture=STATE.year>2009;
+    root.setAttribute('aria-label',`180 nations, year ${STATE.year}, ${isFuture?'illustrative scenario':'historical data'}. Income per person horizontal, life expectancy vertical, bubble area represents population.`);
+    ghost.textContent=STATE.year;
+    ghost.setAttribute('fill-opacity',isFuture?.095:.055);
+    $('wf-year-label').textContent=STATE.year;
+    $('wf-year').value=STATE.year;
+    $('wf-year-kind').textContent=isFuture?'Illustrative projection · not measured':'Historical series · sampled anchors';
+    $('wf-status').textContent=isFuture?'SCENARIO · NOT OBSERVED':'HISTORICAL · THROUGH 2009';
+    $('wf-status').classList.toggle('projected',isFuture);
+    $('wf-scenario-hint').textContent=isFuture?'Projection from 2009, not a prediction. Change assumptions below.':'Scenario choices apply only after 2009.';
+    const result=[];
+    for(const c of countries){
+      const v=valueAt(c,STATE.year);const circle=allCircles.get(c.name);const shown=STATE.enabled.has(c.region);
+      circle.setAttribute('cx',x(v.income).toFixed(2));circle.setAttribute('cy',y(v.lifeExpectancy).toFixed(2));circle.setAttribute('r',radius(v.population).toFixed(2));
+      circle.setAttribute('fill-opacity',shown?.72:.02);
+      circle.setAttribute('stroke-opacity',shown?1:0);
+      circle.style.pointerEvents=shown?'auto':'none';
+      circle.classList.toggle('wf-selected',shown&&c.name===STATE.selected);
+      circle.setAttribute('aria-hidden',shown?'false':'true');
+      circle.setAttribute('tabindex',shown?'0':'-1');
+    }
+    renderTrail();updateDetails();
+    if(!tip.hidden)hideTooltip();
+  }
+  const picker=$('wf-country-picker');
+  [...countries].sort((a,b)=>a.name.localeCompare(b.name)).forEach(c=>{const opt=document.createElement('option');opt.value=c.name;opt.textContent=c.name;picker.append(opt);});
+  picker.value=STATE.selected;
+  picker.addEventListener('change',e=>selectCountry(e.target.value));
+  const legend=$('wf-legend');
+  for(const region of regions){
+    const btn=document.createElement('button');btn.type='button';btn.setAttribute('aria-pressed','true');btn.title='Toggle '+region;
+    const swatch=document.createElement('span');swatch.className='swatch';swatch.style.setProperty('--swatch',COLORS[region]);
+    const label=document.createElement('span');label.textContent=region;btn.append(swatch,label);
+    btn.addEventListener('click',()=>{
+      if(STATE.enabled.has(region)){if(STATE.enabled.size===1)return;STATE.enabled.delete(region)}else STATE.enabled.add(region);
+      btn.setAttribute('aria-pressed',String(STATE.enabled.has(region)));render();
+    });
+    legend.append(btn);
+  }
+  function setYear(value){STATE.year=clamp(Math.round(value),1800,2036);render()}
+  function stop(){STATE.playing=false;STATE.last=null;cancelAnimationFrame(STATE.raf);$('wf-play').textContent='▶ Play through time';$('wf-play').setAttribute('aria-pressed','false');}
+  function tick(ts){
+    if(!STATE.playing)return;
+    if(STATE.last!==null){const dt=Math.min(100,ts-STATE.last);STATE.floatYear+=dt/1000*18;if(STATE.floatYear>=2036){setYear(2036);stop();return;}setYear(STATE.floatYear);}
+    STATE.last=ts;STATE.raf=requestAnimationFrame(tick);
+  }
+  $('wf-play').addEventListener('click',()=>{
+    if(STATE.playing){stop();return;}
+    if(STATE.year>=2036)setYear(1800);
+    STATE.playing=true;STATE.last=null;STATE.floatYear=STATE.year;$('wf-play').textContent='Ⅱ Pause';$('wf-play').setAttribute('aria-pressed','true');STATE.raf=requestAnimationFrame(tick);
+  });
+  $('wf-year').addEventListener('input',event=>{stop();setYear(Number(event.target.value))});
+  $('wf-jump').addEventListener('click',()=>{stop();setYear(2036)});
+  document.querySelectorAll('[data-wf-scenario]').forEach(btn=>btn.addEventListener('click',()=>{
+    STATE.scenario=btn.dataset.wfScenario;
+    document.querySelectorAll('[data-wf-scenario]').forEach(other=>other.setAttribute('aria-pressed',String(other===btn)));
+    render();
+  }));
+  function selectCountry(name){STATE.selected=name;picker.value=name;render();}
+  $('wf-reflect').addEventListener('click',()=>{
+    const input=$('journal-input');if(!input)return;
+    const scene=STATE.year>2009?`${STATE.year} under the ${SCENARIOS[STATE.scenario].label.toLowerCase()} scenario`:`${STATE.year} in the historical record`;
+    input.value=`I was exploring ${STATE.selected} in ${scene}. What could improve health and opportunity there, and how could we test whether a proposed policy helps?`;
+    input.dispatchEvent(new Event('input',{bubbles:true}));
+    location.hash='journal';input.focus();
+  });
+  if('IntersectionObserver' in window){
+    // Avoid consuming animation frames after the chart scrolls out of view.
+    const observer=new IntersectionObserver(entries=>{if(!entries[0].isIntersecting&&STATE.playing)stop();},{threshold:.04});observer.observe($('futures'));
+  }
+  document.addEventListener('visibilitychange',()=>{if(document.hidden&&STATE.playing)stop();});
+  render();
+})();
+
+</script>
+</body>
+</html>
