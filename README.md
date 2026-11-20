@@ -205,3 +205,8 @@ That feedback loop is what could turn a journaling app into a real democratic in
 
 data needed for app
 see everyone elses vote using deckgl map
+
+
+
+1. Congratulations you are now an emperor of happybearlandia, along with everyone else.
+2. HappyBearLandia - a network state that supports all nation governements.
