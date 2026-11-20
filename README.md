@@ -54,10 +54,10 @@ Helios AI is a civic tool that reads what everyone in a community says they need
 
 ```sh
 bun install
-bun run start
+bun run dev
 ```
 
-Then open http://localhost:3000/ or http://localhost:3000/laws. The Bun backend stores the original 100 goals, new proposals and amendment/revision history in SQLite (`.data/helios.sqlite` locally, `/data/helios.sqlite` on Fly). Browser-local demo notes remain local. See [backend and deployment documentation](docs/backend.md) for API, review, Fly volume, Netlify routing and backup instructions.
+Then open http://localhost:3000/ or http://localhost:3000/laws. Without `SUPABASE_DB_URL` the dev server keeps the 100 goals, proposals and amendment history in a local PGlite database (`.data/pglite`). Browser-local demo notes remain local. See [backend and deployment documentation](docs/backend.md) for the API, the Supabase database, the Netlify functions and the SQLite migration.
 
 
 
