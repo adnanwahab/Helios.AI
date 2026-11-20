@@ -12,3 +12,9 @@
   from = "/laws"
   to = "/helios_100_frontend_demo.html"
   status = 200
+
+# Email signup iframe (the form posts to /api/email/subscribe, proxied above).
+[[redirects]]
+  from = "/signup"
+  to = "/public/signup.html"
+  status = 200

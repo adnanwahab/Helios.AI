@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Get one email from Helios</title>
+<!--
+  Embeddable signup. Card:   <iframe src="https://helios-ai-laws.fly.dev/signup" title="Get one email from Helios" style="width:100%;max-width:420px;height:250px;border:0"></iframe>
+                    One line: <iframe src="https://helios-ai-laws.fly.dev/signup?layout=inline" title="Get one email from Helios" style="width:340px;height:44px;border:0"></iframe>
+  On success it posts {type:"helios:email-signup", status:"subscribed"} to the parent page.
+-->
+<style>
+  :root { --bg: #0b1220; --panel: #121b2d; --line: #26344e; --text: #e7eef9; --muted: #9fb1cc; --accent: #e8743b; --ok: #7ce4cf; --bad: #ff9b8a; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: transparent; color: var(--text); font: 15px/1.5 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .card { margin: 0; padding: 22px; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); }
+  .eyebrow { margin: 0 0 6px; font-size: 11px; font-weight: 700; letter-spacing: .12em; color: var(--accent); }
+  h1 { margin: 0 0 6px; font-size: 20px; line-height: 1.25; }
+  .lede { margin: 0 0 14px; color: var(--muted); }
+  form { display: flex; gap: 8px; }
+  input[type=email] { flex: 1; min-width: 0; height: 42px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg); color: var(--text); font: inherit; }
+  input[type=email]::placeholder { color: #6f819f; }
+  input[type=email]:focus-visible, button:focus-visible { outline: 2px solid var(--ok); outline-offset: 2px; }
+  input[aria-invalid=true] { border-color: var(--bad); }
+  button { flex: 0 0 auto; height: 42px; padding: 0 18px; border: 0; border-radius: 999px; background: var(--accent); color: #0b1220; font: inherit; font-weight: 700; cursor: pointer; }
+  button[disabled] { opacity: .6; cursor: progress; }
+  .fine { margin: 10px 0 0; font-size: 12px; color: var(--muted); }
+  .status { margin: 10px 0 0; font-size: 14px; }
+  .status.ok { color: var(--ok); }
+  .status.bad { color: var(--bad); }
+  .trap { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .status .retry { margin-left: 6px; padding: 0; height: auto; background: none; color: var(--ok); text-decoration: underline; font-weight: 600; }
+
+  /* One-line layout for headers and footers: fits a 44px-tall iframe. */
+  .inline .card { padding: 4px; border: 0; background: transparent; }
+  .inline .eyebrow, .inline h1, .inline .lede, .inline .fine { display: none; }
+  .inline input[type=email], .inline button { height: 34px; font-size: 13px; }
+  .inline button { padding: 0 14px; }
+  .inline .status { margin: 0; height: 34px; display: flex; align-items: center; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .inline .status:empty { display: none; }
+  .inline.has-status form { display: none; }
+</style>
+</head>
+<body>
+<main class="card">
+  <p class="eyebrow">HELIOS</p>
+  <h1>One idea, in your inbox in three days.</h1>
+  <p class="lede">Leave your email and we’ll send one email with a single idea to vote on: yes, no, or edit.</p>
+  <form id="signup" method="post" action="/api/email/subscribe" novalidate title="We’ll send one email in about three days with an idea to vote on.">
+    <label class="sr-only" for="email">Email address</label>
+    <input id="email" name="email" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="Email address" required>
+    <span class="trap" aria-hidden="true"><label for="company">Company</label><input id="company" name="company" type="text" tabindex="-1" autocomplete="off"></span>
+    <input type="hidden" name="layout" id="layout" value="">
+    <button id="submit" type="submit">Vote by email</button>
+  </form>
+  <p class="status" id="status" role="status" aria-live="polite"></p>
+  <p class="fine">One email. Unsubscribe anytime, and we delete your address.</p>
+</main>
+<script>
+(() => {
+  const params = new URLSearchParams(location.search);
+  const inline = params.get('layout') === 'inline';
+  const root = document.documentElement;
+  const form = document.getElementById('signup');
+  const input = document.getElementById('email');
+  const button = document.getElementById('submit');
+  const status = document.getElementById('status');
+  const messages = {
+    done: 'Thanks! Your one email arrives in about three days.',
+    invalid: 'Enter a valid email address.',
+    rate: 'Too many tries. Please wait a bit and try again.',
+    failed: 'Something went wrong. Please try again.',
+  };
+  root.classList.toggle('inline', inline);
+  document.getElementById('layout').value = inline ? 'inline' : '';
+  if (!inline) button.textContent = 'Sign up';
+
+  function show(kind, text) {
+    status.className = 'status ' + kind;
+    status.textContent = text;
+    root.classList.toggle('has-status', Boolean(text));
+    if (kind === 'bad' && inline) {
+      const retry = document.createElement('button');
+      retry.type = 'button';
+      retry.className = 'retry';
+      retry.textContent = 'Try again';
+      retry.addEventListener('click', () => { show('', ''); input.focus(); });
+      status.append(retry);
+    }
+  }
+  function sourceOrigin() {
+    try { return document.referrer ? new URL(document.referrer).origin : location.origin; } catch { return location.origin; }
+  }
+
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    const email = input.value.trim();
+    input.setAttribute('aria-invalid', String(!input.checkValidity() || !email));
+    if (!email || !input.checkValidity()) { show('bad', messages.invalid); return; }
+    button.disabled = true;
+    show('', '');
+    try {
+      const response = await fetch('/api/email/subscribe', {
+        method: 'POST',
+        headers: {'content-type': 'application/json'},
+        body: JSON.stringify({email, company: form.company.value, source: sourceOrigin()}),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(response.status === 429 ? messages.rate : data.error || messages.failed);
+      form.reset();
+      show('ok', messages.done);
+      if (window.parent !== window) window.parent.postMessage({type: 'helios:email-signup', status: 'subscribed'}, '*');
+    } catch (error) {
+      show('bad', error instanceof TypeError ? messages.failed : error.message);
+    } finally {
+      button.disabled = false;
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,438 @@
+// Email for Helios: an embeddable signup form, one email sent EMAIL_DELAY_HOURS
+// after signup (default 72h) through Resend, one-click unsubscribe, and a signed
+// Resend webhook that receives replies (inbound email).
+//
+// Wiring (server.js):  const email = createEmail({store, origins});
+//                      const handler = email.wrap(createApp({store, origins}));
+//                      email.start();   // and email.stop() on shutdown
+import {Problem, hash} from './store.js';
+import {createHmac, randomBytes, timingSafeEqual} from 'node:crypto';
+import {resolve} from 'node:path';
+
+const MINUTE = 60_000, HOUR = 60 * MINUTE, DAY = 24 * HOUR;
+const MAX_ATTEMPTS = 8;              // 1+2+4+…+128 min of backoff stays inside Resend's 24h idempotency window
+const RESEND_AFTER_MS = 30 * DAY;    // signing up again more than 30 days after the email schedules one more
+const SIGNUP_PAGE = resolve(import.meta.dir, '../public/signup.html');
+const BODY_LIMIT = 32768;            // matches Bun.serve maxRequestBodySize in server.js
+
+export function emailConfig(env = process.env) {
+  const text = value => (value || '').trim();
+  const url = (value, fallback) => (text(value) || fallback).replace(/\/+$/, '');
+  const hours = Number(env.EMAIL_DELAY_HOURS ?? 72);
+  return {
+    apiKey: text(env.RESEND_API_KEY),
+    from: text(env.EMAIL_FROM),                  // e.g. "Helios <hello@helioshtml.com>" on a domain verified in Resend
+    replyTo: text(env.EMAIL_REPLY_TO),           // optional: an address on your Resend receiving domain
+    webhookSecret: text(env.RESEND_WEBHOOK_SECRET),
+    publicUrl: url(env.PUBLIC_BASE_URL, 'https://helios-ai-laws.fly.dev'),
+    civicUrl: url(env.CIVIC_SYNTHESIS_URL, 'https://civic-synthesis.fly.dev'),
+    goalId: text(env.EMAIL_GOAL_ID) || 'HGA-078',
+    delayMs: Number.isFinite(hours) && hours >= 0 ? Math.round(hours * HOUR) : 72 * HOUR,
+    pollMs: Math.max(5, Number(env.EMAIL_POLL_SECONDS) || 60) * 1000,
+    apiBase: url(env.RESEND_API_URL, 'https://api.resend.com'),
+  };
+}
+
+export function normalizeEmail(value) {
+  if (typeof value !== 'string') return null;
+  const email = value.trim().toLowerCase();
+  if (email.length > 254) return null;
+  return /^[a-z0-9.!#$%&'*+/=?^_`{|}~-]{1,64}@(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/.test(email) ? email : null;
+}
+
+// On Fly the socket peer is Fly's proxy, so every visitor shares one address.
+// Fly-Client-IP carries the real client; it is only trusted when running on Fly.
+export function clientIP(request, fallback = 'unknown', env = process.env) {
+  const flyClient = env.FLY_APP_NAME ? request.headers.get('fly-client-ip')?.trim() : '';
+  return flyClient || fallback;
+}
+
+// Resend signs webhooks with Svix: HMAC-SHA256 over "id.timestamp.body" with the
+// base64 key after "whsec_"; the header holds space-separated "v1,<base64>" entries.
+export function verifyWebhook({secret, id, timestamp, signature, body, now = Date.now(), toleranceSeconds = 300}) {
+  if (!secret || !id || !timestamp || !signature || typeof body !== 'string') return false;
+  const seconds = Number(timestamp);
+  if (!Number.isInteger(seconds) || Math.abs(now / 1000 - seconds) > toleranceSeconds) return false;
+  const key = Buffer.from(secret.startsWith('whsec_') ? secret.slice(6) : secret, 'base64');
+  if (!key.length) return false;
+  const expected = createHmac('sha256', key).update(`${id}.${timestamp}.${body}`).digest();
+  return signature.split(' ').some(entry => {
+    const [version, value] = entry.split(',');
+    if (version !== 'v1' || !value) return false;
+    const given = Buffer.from(value, 'base64');
+    return given.length === expected.length && timingSafeEqual(given, expected);
+  });
+}
+
+// First meaningful line of a reply → yes | no | edit | unsubscribe | reply | empty.
+export function classifyReply(text = '', subject = '') {
+  const line = String(text || '').split(/\r?\n/).map(l => l.trim()).find(l => l && !l.startsWith('>')) || '';
+  const word = line.toLowerCase().replace(/[^a-z\s]/g, ' ').trim().split(/\s+/)[0] || '';
+  if (word === 'stop' || word === 'unsubscribe' || /^\s*unsubscribe\b/i.test(subject || '')) return 'unsubscribe';
+  if (['yes', 'yep', 'yeah', 'y', 'support'].includes(word)) return 'yes';
+  if (['no', 'nope', 'n', 'oppose'].includes(word)) return 'no';
+  if (word === 'edit') return 'edit';
+  return line ? 'reply' : 'empty';
+}
+
+const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'})[c]);
+const tagSafe = value => String(value).replace(/[^A-Za-z0-9_-]/g, '_').slice(0, 256);
+
+export function voteLinks(goal, config) {
+  const billId = goal?.sourceProposalId || null;
+  const base = billId ? `${config.civicUrl}/votes?bill=${encodeURIComponent(billId)}` : `${config.civicUrl}/votes`;
+  const link = vote => `${base}${base.includes('?') ? '&' : '?'}vote=${vote}&utm_source=helios&utm_medium=email&utm_campaign=day3`
+    + (vote === 'edit' && billId ? `#amendment-${encodeURIComponent(billId)}` : '');
+  return {yes: link('yes'), no: link('no'), edit: link('edit')};
+}
+
+export function buildMessage({subscriber, goal, config}) {
+  const links = voteLinks(goal, config);
+  const unsubscribe = `${config.publicUrl}/email/unsubscribe?id=${encodeURIComponent(subscriber.id)}&token=${encodeURIComponent(subscriber.token)}`;
+  const title = goal?.title || 'One plan to vote on';
+  const site = config.publicUrl.replace(/^https?:\/\//, '');
+  const source = goal?.sourceProposalId ? `${goal.sourceProposalId}${goal.sourceProposalTitle ? ' · ' + goal.sourceProposalTitle : ''}` : '';
+  const replyLine = config.replyTo ? 'Prefer email? Reply with yes, no, or your edit.' : '';
+  const days = Math.round(config.delayMs / DAY);
+  const when = days === 1 ? 'Yesterday' : days >= 2 && days <= 7 ? ['Two', 'Three', 'Four', 'Five', 'Six', 'Seven'][days - 2] + ' days ago' : 'Recently';
+  const opener = `${when} you signed up for Helios. Here is the one email we promised: a single idea people have put forward, and a quick way to say what you think.`;
+  const button = (label, href) => `<td align="center" width="33%" style="padding:0 4px"><a href="${escapeHtml(href)}" style="display:block;padding:13px 0;border-radius:999px;background:#0b1220;color:#ffffff;font:700 15px/1 Arial,Helvetica,sans-serif;text-decoration:none">${label}</a></td>`;
+
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(title)}</title></head>
+<body style="margin:0;padding:0;background:#f4f1ea">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0">One idea, about a minute: yes, no, or edit.</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f1ea"><tr><td align="center" style="padding:28px 14px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:16px">
+<tr><td style="padding:28px 28px 8px;font:700 14px/1.2 Arial,Helvetica,sans-serif;color:#e8743b;letter-spacing:.04em">☀ HELIOS</td></tr>
+<tr><td style="padding:4px 28px 0;font:16px/1.55 Arial,Helvetica,sans-serif;color:#1d2433">
+<p style="margin:0 0 14px">${opener}</p>
+</td></tr>
+<tr><td style="padding:6px 28px 4px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f7f8fb;border:1px solid #e3e7ef;border-radius:12px"><tr><td style="padding:18px 20px;font:15px/1.5 Arial,Helvetica,sans-serif;color:#1d2433">
+<div style="font:700 11px/1 Arial,Helvetica,sans-serif;letter-spacing:.08em;color:#6b7690;margin-bottom:8px">SHARED GOAL${goal?.id ? ' · ' + escapeHtml(goal.id) : ''}</div>
+<div style="font:700 20px/1.25 Arial,Helvetica,sans-serif;color:#0b1220;margin-bottom:8px">${escapeHtml(title)}</div>
+${goal?.sharedGoal ? `<div style="margin-bottom:10px">${escapeHtml(goal.sharedGoal)}</div>` : ''}
+${goal?.illustrativeLocalOption ? `<div style="color:#46506a"><strong>One way it could work:</strong> ${escapeHtml(goal.illustrativeLocalOption)}</div>` : ''}
+${source ? `<div style="margin-top:10px;font-size:13px;color:#6b7690">Based on ${escapeHtml(source)}</div>` : ''}
+</td></tr></table></td></tr>
+<tr><td style="padding:22px 28px 10px;font:700 17px/1.3 Arial,Helvetica,sans-serif;color:#0b1220">Would you support this?</td></tr>
+<tr><td style="padding:0 24px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>${button('Yes', links.yes)}${button('No', links.no)}${button('Edit', links.edit)}</tr></table></td></tr>
+<tr><td style="padding:14px 28px 24px;font:13px/1.5 Arial,Helvetica,sans-serif;color:#6b7690">Each button opens this idea on Civic Synthesis, where you confirm your answer. It is an advisory, non-binding vote, not an official election.${replyLine ? '<br>' + replyLine : ''}</td></tr>
+</table>
+<p style="max-width:560px;margin:16px auto 0;font:12px/1.5 Arial,Helvetica,sans-serif;color:#7b8194">You signed up for one email from Helios at ${escapeHtml(site)}, and this is it. Didn't sign up? You can ignore it.<br><a href="${escapeHtml(unsubscribe)}" style="color:#7b8194">Unsubscribe and delete my address</a></p>
+</td></tr></table></body></html>`;
+
+  const text = [
+    opener,
+    '',
+    `${goal?.id ? goal.id + ': ' : ''}${title}`,
+    goal?.sharedGoal || '',
+    goal?.illustrativeLocalOption ? `One way it could work: ${goal.illustrativeLocalOption}` : '',
+    source ? `Based on ${source}` : '',
+    '',
+    'Would you support this?',
+    `Yes:  ${links.yes}`,
+    `No:   ${links.no}`,
+    `Edit: ${links.edit}`,
+    '',
+    'Each link opens this idea on Civic Synthesis, where you confirm your answer. It is an advisory, non-binding vote, not an official election.',
+    replyLine,
+    '',
+    `You signed up for one email from Helios at ${site}, and this is it. Didn't sign up? You can ignore it.`,
+    `Unsubscribe and delete my address: ${unsubscribe}`,
+  ].filter((line, i, all) => line !== '' || all[i - 1] !== '').join('\n');
+
+  return {
+    from: config.from,
+    to: [subscriber.email],
+    subject: `Yes, no, or edit: ${title}`,
+    html,
+    text,
+    headers: {'List-Unsubscribe': `<${unsubscribe}>`, 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click'},
+    tags: [{name: 'campaign', value: 'day3'}, ...(goal?.id ? [{name: 'goal', value: tagSafe(goal.id)}] : [])],
+    ...(config.replyTo ? {reply_to: config.replyTo} : {}),
+  };
+}
+
+function page(title, body, status = 200) {
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${escapeHtml(title)} · Helios</title>
+<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0b1220;color:#e7eef9;font:16px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif}main{max-width:440px;margin:24px;padding:28px;border:1px solid #26344e;border-radius:16px;background:#121b2d}h1{margin:0 0 10px;font-size:22px}p{margin:0 0 16px;color:#9fb1cc}button{border:0;border-radius:999px;padding:12px 20px;background:#e8743b;color:#0b1220;font-weight:700;font-size:15px;cursor:pointer}a{color:#7ce4cf}</style></head>
+<body><main><h1>${escapeHtml(title)}</h1>${body}</main></body></html>`;
+  return new Response(html, {status, headers: {'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'no-referrer'}});
+}
+
+async function readBody(request, max) {
+  if (Number(request.headers.get('content-length') || 0) > max) throw new Problem(413, 'Request is too large.');
+  const reader = request.body?.getReader();
+  if (!reader) return '';
+  const chunks = [];
+  let size = 0;
+  while (true) {
+    const {done, value} = await reader.read();
+    if (done) break;
+    size += value.length;
+    if (size > max) { await reader.cancel(); throw new Problem(413, 'Request is too large.'); }
+    chunks.push(value);
+  }
+  return Buffer.concat(chunks).toString('utf8');
+}
+
+const cleanSource = value => {
+  try { const url = new URL(String(value)); return /^https?:$/.test(url.protocol) ? url.origin.slice(0, 200) : null; } catch { return null; }
+};
+
+export function createEmail({store, origins = [], config = emailConfig(), fetch: fetchImpl = globalThis.fetch, now = () => Date.now(), log = console, sendGapMs = 150} = {}) {
+  if (!store?.db) throw Error('Store required');
+  const db = store.db;
+  db.exec(`CREATE TABLE IF NOT EXISTS email_subscribers(
+    id TEXT PRIMARY KEY,
+    email TEXT,
+    email_hash TEXT NOT NULL UNIQUE,
+    status TEXT NOT NULL CHECK(status IN ('scheduled','sending','sent','failed','unsubscribed')),
+    send_at INTEGER NOT NULL,
+    generation INTEGER NOT NULL DEFAULT 1,
+    attempts INTEGER NOT NULL DEFAULT 0,
+    claimed_at INTEGER,
+    sent_at INTEGER,
+    resend_id TEXT,
+    goal_id TEXT,
+    last_error TEXT,
+    source TEXT,
+    token TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL);
+  CREATE INDEX IF NOT EXISTS email_subscribers_due ON email_subscribers(status,send_at);
+  CREATE TABLE IF NOT EXISTS email_inbound(
+    id TEXT PRIMARY KEY,
+    webhook_id TEXT,
+    from_address TEXT NOT NULL,
+    to_addresses TEXT NOT NULL,
+    subject TEXT,
+    message_id TEXT,
+    received_at TEXT,
+    subscriber_id TEXT,
+    intent TEXT,
+    text TEXT,
+    html TEXT,
+    authentication TEXT,
+    fetch_error TEXT,
+    created_at TEXT NOT NULL);
+  CREATE INDEX IF NOT EXISTS email_inbound_created ON email_inbound(created_at);`);
+
+  const iso = () => new Date(now()).toISOString();
+  const json = (data, status = 200, extra = {}) => Response.json(data, {status, headers: {'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', ...extra}});
+  const sleep = ms => (ms > 0 ? new Promise(r => setTimeout(r, ms)) : Promise.resolve());
+  let timer = null, running = false, warned = false;
+
+  function subscribe(rawEmail, {source = null} = {}) {
+    const email = normalizeEmail(rawEmail);
+    if (!email) throw new Problem(400, 'Enter a valid email address.');
+    const emailHash = hash(email), t = now(), stamp = iso();
+    db.transaction(() => {
+      const row = db.query('SELECT * FROM email_subscribers WHERE email_hash=?').get(emailHash);
+      if (!row) {
+        db.query(`INSERT INTO email_subscribers(id,email,email_hash,status,send_at,source,token,created_at,updated_at)
+          VALUES(?,?,?,'scheduled',?,?,?,?,?)`).run(crypto.randomUUID(), email, emailHash, t + config.delayMs, source, randomBytes(24).toString('base64url'), stamp, stamp);
+        return;
+      }
+      // Unsubscribed addresses stay unsubscribed; scheduled ones keep their original date.
+      const again = row.status === 'failed' || (row.status === 'sent' && row.sent_at < t - RESEND_AFTER_MS);
+      if (again) db.query(`UPDATE email_subscribers SET status='scheduled',email=?,send_at=?,generation=generation+1,attempts=0,
+        claimed_at=NULL,last_error=NULL,updated_at=? WHERE id=?`).run(email, t + config.delayMs, stamp, row.id);
+    }).immediate();
+  }
+
+  function unsubscribeById(id) {
+    return db.query(`UPDATE email_subscribers SET status='unsubscribed',email=NULL,claimed_at=NULL,updated_at=? WHERE id=? AND status!='unsubscribed'`).run(iso(), id).changes === 1;
+  }
+
+  function findByToken(id, token) {
+    if (typeof id !== 'string' || typeof token !== 'string' || id.length > 64 || token.length > 128) return null;
+    const row = db.query('SELECT * FROM email_subscribers WHERE id=?').get(id);
+    if (!row) return null;
+    const a = Buffer.from(token), b = Buffer.from(row.token);
+    return a.length === b.length && timingSafeEqual(a, b) ? row : null;
+  }
+
+  async function sendOne(id) {
+    const t = now();
+    const claim = db.query(`UPDATE email_subscribers SET status='sending',claimed_at=?,attempts=attempts+1,updated_at=?
+      WHERE id=? AND status='scheduled' AND send_at<=?`).run(t, iso(), id, t);
+    if (claim.changes !== 1) return false;
+    const subscriber = db.query('SELECT * FROM email_subscribers WHERE id=?').get(id);
+    let goal = null;
+    try { goal = store.detail(config.goalId).law; } catch { log.warn(`Email: goal ${config.goalId} not found; sending without goal details.`); }
+    let result;
+    try {
+      const response = await fetchImpl(config.apiBase + '/emails', {
+        method: 'POST',
+        headers: {'Authorization': 'Bearer ' + config.apiKey, 'Content-Type': 'application/json', 'Idempotency-Key': `helios-day3-${subscriber.id}-${subscriber.generation}`},
+        body: JSON.stringify(buildMessage({subscriber, goal, config})),
+        signal: AbortSignal.timeout(15000),
+      });
+      result = {status: response.status, ok: response.ok, data: await response.json().catch(() => ({}))};
+    } catch (error) {
+      result = {status: 0, ok: false, data: {message: error?.name || 'Network error'}};
+    }
+    if (result.ok && typeof result.data?.id === 'string') {
+      db.query(`UPDATE email_subscribers SET status='sent',sent_at=?,resend_id=?,goal_id=?,last_error=NULL,claimed_at=NULL,updated_at=? WHERE id=?`)
+        .run(now(), result.data.id, goal?.id || null, iso(), id);
+      return true;
+    }
+    const error = `${result.status || 'network'}: ${String(result.data?.message || result.data?.name || 'send failed').slice(0, 300)}`;
+    // Network errors, rate limits, Resend outages and key/domain problems are retried; other 4xx mean this address can't be sent to.
+    const retry = [0, 401, 403, 409, 429].includes(result.status) || result.status >= 500;
+    if (retry && subscriber.attempts < MAX_ATTEMPTS) {
+      db.query(`UPDATE email_subscribers SET status='scheduled',send_at=?,last_error=?,claimed_at=NULL,updated_at=? WHERE id=?`)
+        .run(now() + Math.min(6 * HOUR, MINUTE * 2 ** (subscriber.attempts - 1)), error, iso(), id);
+    } else {
+      db.query(`UPDATE email_subscribers SET status='failed',last_error=?,claimed_at=NULL,updated_at=? WHERE id=?`).run(error, iso(), id);
+    }
+    log.error(`Email: send failed (${error.slice(0, 80)})`);
+    return false;
+  }
+
+  async function tick({batch = 50} = {}) {
+    if (running) return {skipped: true};
+    running = true;
+    try {
+      if (!config.apiKey || !config.from) {
+        if (!warned) { log.warn('Email: RESEND_API_KEY and EMAIL_FROM are not set. Signups are stored and will send once both are configured.'); warned = true; }
+        return {sent: 0, configured: false};
+      }
+      const t = now();
+      // A crash mid-send leaves a claim behind; release it. The idempotency key stops a duplicate.
+      db.query(`UPDATE email_subscribers SET status='scheduled',claimed_at=NULL WHERE status='sending' AND claimed_at<?`).run(t - 10 * MINUTE);
+      const due = db.query(`SELECT id FROM email_subscribers WHERE status='scheduled' AND send_at<=? ORDER BY send_at LIMIT ?`).all(t, batch);
+      let sent = 0;
+      for (const [i, {id}] of due.entries()) {
+        if (i) await sleep(sendGapMs);                // Resend allows 10 requests/second per team
+        if (await sendOne(id)) sent++;
+      }
+      return {sent, configured: true};
+    } finally {
+      running = false;
+    }
+  }
+
+  async function fetchInboundContent(emailId) {
+    if (!config.apiKey) { db.query('UPDATE email_inbound SET fetch_error=? WHERE id=?').run('RESEND_API_KEY is not set', emailId); return; }
+    try {
+      const response = await fetchImpl(`${config.apiBase}/emails/receiving/${encodeURIComponent(emailId)}`, {headers: {'Authorization': 'Bearer ' + config.apiKey}, signal: AbortSignal.timeout(8000)});
+      if (!response.ok) throw Error('Resend returned ' + response.status);
+      const received = await response.json();
+      const text = typeof received.text === 'string' ? received.text.slice(0, 100000) : null;
+      const html = typeof received.html === 'string' ? received.html.slice(0, 200000) : null;
+      const intent = classifyReply(text ?? (html || '').replace(/<[^>]+>/g, '\n'), received.subject);
+      db.query('UPDATE email_inbound SET text=?,html=?,authentication=?,intent=?,fetch_error=NULL WHERE id=?')
+        .run(text, html, JSON.stringify(received.authentication ?? null), intent, emailId);
+      // Only act on "unsubscribe"/"stop" when the sender's domain authenticated, so a forged From can't unsubscribe someone.
+      const authenticated = received.authentication?.dmarc === 'pass' || received.authentication?.dkim === 'pass';
+      const row = db.query('SELECT subscriber_id FROM email_inbound WHERE id=?').get(emailId);
+      if (intent === 'unsubscribe' && authenticated && row?.subscriber_id) unsubscribeById(row.subscriber_id);
+    } catch (error) {
+      db.query('UPDATE email_inbound SET fetch_error=? WHERE id=?').run(String(error?.message || error).slice(0, 200), emailId);
+    }
+  }
+
+  async function receive(request) {
+    if (!config.webhookSecret) throw new Problem(503, 'Inbound email is not configured.');
+    const body = await readBody(request, BODY_LIMIT);
+    const h = request.headers;
+    if (!verifyWebhook({secret: config.webhookSecret, id: h.get('svix-id'), timestamp: h.get('svix-timestamp'), signature: h.get('svix-signature'), body, now: now()}))
+      throw new Problem(401, 'Invalid webhook signature.');
+    let event;
+    try { event = JSON.parse(body); } catch { throw new Problem(400, 'Invalid JSON.'); }
+    if (event?.type !== 'email.received') return json({ignored: true});
+    const data = event.data || {};
+    if (typeof data.email_id !== 'string' || !data.email_id || data.email_id.length > 100) throw new Problem(400, 'Missing email_id.');
+    const from = normalizeEmail(data.from);
+    const subscriber = from ? db.query('SELECT id FROM email_subscribers WHERE email_hash=?').get(hash(from)) : null;
+    const inserted = db.query(`INSERT OR IGNORE INTO email_inbound(id,webhook_id,from_address,to_addresses,subject,message_id,received_at,subscriber_id,created_at)
+      VALUES(?,?,?,?,?,?,?,?,?)`).run(data.email_id, h.get('svix-id'), from || String(data.from || '').slice(0, 254),
+      JSON.stringify(Array.isArray(data.to) ? data.to.slice(0, 50) : []), String(data.subject || '').slice(0, 998),
+      typeof data.message_id === 'string' ? data.message_id.slice(0, 998) : null, typeof data.created_at === 'string' ? data.created_at : null,
+      subscriber?.id || null, iso());
+    if (inserted.changes === 1) await fetchInboundContent(data.email_id);
+    return json({received: true});
+  }
+
+  // Answer for browsers posting the form without JavaScript: a tiny page that fits the same iframe.
+  function formResult(kind, status, inline) {
+    const text = {done: 'Thanks! Your one email arrives in about three days.', invalid: 'Enter a valid email address.', rate: 'Too many tries. Please wait a bit and try again.', failed: 'Something went wrong. Please try again.'}[kind];
+    const back = kind === 'done' ? '' : ` <a href="/signup${inline ? '?layout=inline' : ''}" style="color:#7ce4cf">Try again</a>`;
+    const style = inline ? 'margin:0;height:44px;display:flex;align-items:center;padding:0 8px;white-space:nowrap' : 'margin:0;padding:22px;border:1px solid #26344e;border-radius:16px;background:#121b2d';
+    const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Helios email signup</title></head>
+<body style="margin:0;background:transparent;color:${kind === 'done' ? '#7ce4cf' : '#ff9b8a'};font:${inline ? 13 : 15}px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif"><p role="status" style="${style}">${text}${back}</p></body></html>`;
+    return new Response(html, {status, headers: {'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff'}});
+  }
+
+  async function signup(request, url, ip) {
+    const type = (request.headers.get('content-type') || '').toLowerCase();
+    const isForm = type.startsWith('application/x-www-form-urlencoded');
+    let inline = false;
+    try {
+      if (![url.origin, ...origins].includes(request.headers.get('origin'))) throw new Problem(403, 'A same-origin request is required.');
+      if (!isForm && !type.startsWith('application/json')) throw new Problem(415, 'Use application/json.');
+      const raw = await readBody(request, 4096);
+      let body;
+      if (isForm) body = Object.fromEntries(new URLSearchParams(raw));
+      else { try { body = JSON.parse(raw); } catch { throw new Problem(400, 'Invalid JSON.'); } }
+      if (!body || typeof body !== 'object' || Array.isArray(body)) throw new Problem(400, 'Invalid request.');
+      inline = body.layout === 'inline';
+      store.limit('email-signup:' + hash(ip), 20, HOUR);
+      // "company" is a hidden field people never see; bots that fill it get the normal answer and nothing is stored.
+      if (!(typeof body.company === 'string' && body.company.trim())) subscribe(body.email, {source: cleanSource(body.source)});
+      return isForm ? formResult('done', 200, inline) : json({ok: true, message: 'Thanks! Watch your inbox in about three days.'}, 202);
+    } catch (error) {
+      if (!isForm || !(error instanceof Problem)) throw error;
+      return formResult(error.status === 429 ? 'rate' : error.status === 400 ? 'invalid' : 'failed', error.status, inline);
+    }
+  }
+
+  async function unsubscribe(request, url) {
+    const id = url.searchParams.get('id'), token = url.searchParams.get('token');
+    const row = findByToken(id, token);
+    if (request.method === 'POST') {
+      // Mail apps send RFC 8058 one-click POSTs here; the browser form does too.
+      await readBody(request, 1024).catch(() => '');
+      if (!row) return page('This link is not valid', '<p>We couldn’t find that subscription. It may already be deleted.</p>', 404);
+      unsubscribeById(row.id);
+      return page('You’re unsubscribed', '<p>We won’t email you again, and we’ve deleted your email address.</p>');
+    }
+    if (!row) return page('This link is not valid', '<p>We couldn’t find that subscription. It may already be deleted.</p>', 404);
+    if (row.status === 'unsubscribed') return page('You’re unsubscribed', '<p>We won’t email you again, and your email address is deleted.</p>');
+    const action = `/email/unsubscribe?id=${encodeURIComponent(id)}&token=${encodeURIComponent(token)}`;
+    return page('Unsubscribe from Helios?', `<p>We’ll stop any email to ${escapeHtml(row.email)} and delete the address.</p><form method="post" action="${escapeHtml(action)}"><button type="submit">Unsubscribe</button></form>`);
+  }
+
+  async function handle(request, ip = 'local') {
+    const url = new URL(request.url), path = url.pathname, method = request.method;
+    const only = allowed => (allowed.includes(method) ? null : json({error: 'Method not allowed'}, 405, {Allow: allowed.join(', ')}));
+    try {
+      if (path === '/signup' || path === '/signup.html') {
+        const refused = only(['GET', 'HEAD']); if (refused) return refused;
+        return new Response(method === 'HEAD' ? null : Bun.file(SIGNUP_PAGE), {headers: {'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache', 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'strict-origin-when-cross-origin'}});
+      }
+      if (path === '/api/email/subscribe') return only(['POST']) ?? await signup(request, url, ip);
+      if (path === '/email/unsubscribe') return only(['GET', 'HEAD', 'POST']) ?? await unsubscribe(request, url);
+      if (path === '/api/email/inbound') return only(['POST']) ?? await receive(request);
+      return null;
+    } catch (error) {
+      if (error instanceof Problem) return json({error: error.message}, error.status);
+      log.error('Email request failed:', error?.name || 'Error');
+      return json({error: 'The request could not be completed.'}, 500);
+    }
+  }
+
+  return {
+    config, handle, tick, subscribe, sendOne,
+    wrap: next => async (request, ip) => (await handle(request, ip)) ?? next(request, ip),
+    start() {
+      if (timer) return;
+      const run = () => tick().catch(error => log.error('Email scheduler failed:', error?.name || 'Error'));
+      timer = setInterval(run, config.pollMs);
+      setTimeout(run, 5000);
+    },
+    stop() { clearInterval(timer); timer = null; },
+  };
+}

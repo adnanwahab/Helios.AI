@@ -193,3 +193,15 @@ The most important product feature is the sentence each participant sees when th
 **"Last week, you told us what mattered. Here's what the world heard, what people disagreed about, and what changed."**
 
 That feedback loop is what could turn a journaling app into a real democratic institution people voluntarily return to every week.
+
+
+
+
+
+1. blockers
+2. story humor
+3. compute (webgpu on phones - not possible to process all data w/o this)
+4. manufacturing
+
+data needed for app
+see everyone elses vote using deckgl map
