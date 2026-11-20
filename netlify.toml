@@ -1,19 +1,41 @@
+# Publish only the built static folder. Source, data, scripts and .git are not served.
 [build]
-  publish = "."
+  command = "node scripts/build-netlify.mjs"
+  publish = "dist"
+  functions = "netlify/functions"
 
-# Same-origin proxy: cookies and CSRF remain scoped to helioshtml.com.
-[[redirects]]
-  from = "/api/*"
-  to = "https://helios-ai-laws.fly.dev/api/:splat"
-  status = 200
-  force = true
+[build.environment]
+  NODE_VERSION = "22"
+
+# /api/*, /email/unsubscribe and /proxy/ycr/* are served by netlify/functions/api.mjs
+# (paths declared in that file). The backend runs on Supabase Postgres.
 
 [[redirects]]
   from = "/laws"
   to = "/helios_100_frontend_demo.html"
   status = 200
 
-# Email signup iframe (the form posts to /api/email/subscribe, proxied above).
+[[redirects]]
+  from = "/embed/helios-ai"
+  to = "/helios_ai_landing_page.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/goals"
+  to = "/helios_100_frontend_demo.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/unified"
+  to = "/helios-unified.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/dynamicland"
+  to = "/communal_science_lab_webgpu%20(1).html"
+  status = 200
+
+# Email signup iframe (the form posts to /api/email/subscribe, served by the function).
 [[redirects]]
   from = "/signup"
   to = "/public/signup.html"
