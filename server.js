@@ -3,7 +3,7 @@ import {createEmail,clientIP} from './src/email.js';
 import {timingSafeEqual} from 'node:crypto';
 import {resolve} from 'node:path';
 const root=import.meta.dir;
-const staticFiles=new Set(['index.html','helios_ai_landing_page.html','helios_100_frontend_demo.html','helios-unified.html','health_wealth_of_nations.html','communal_science_lab_webgpu (1).html','communal_science_lab_webgpu_merged_source.html','heliosai_downloaded_index1.html','public/goals.js','public/persistence.css']);
+const staticFiles=new Set(['index.html','helios_ai_landing_page.html','helios_100_frontend_demo.html','helios-unified.html','health_wealth_of_nations.html','communal_science_lab_webgpu (1).html','communal_science_lab_webgpu_merged_source.html','heliosai_downloaded_index1.html','public/goals.js','public/persistence.css','public/favicon.ico','public/favicon.svg','public/favicon-16x16.png','public/favicon-32x32.png','public/apple-touch-icon.png','public/site.webmanifest','public/android-chrome-192x192.png','public/android-chrome-512x512.png']);
 const staticAliases=new Map([
  ['helios_ai_landing_page','helios_ai_landing_page.html'],
  ['helios_100_frontend_demo','helios_100_frontend_demo.html'],
