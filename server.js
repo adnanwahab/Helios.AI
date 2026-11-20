@@ -20,6 +20,7 @@ const embedRoutes=new Map([
 const YCR_PRIMARY_ORIGIN='https://www.openresearchlab.org';
 const YCR_PROXY_PREFIX='/proxy/ycr';
 const YCR_ALLOWED_ORIGINS=new Set(['https://ycr.org','https://www.ycr.org','https://openresearchlab.org','https://www.openresearchlab.org']);
+
 const equal=(a,b)=>{if(typeof a!=='string'||typeof b!=='string')return false;const x=Buffer.from(a),y=Buffer.from(b);return x.length===y.length&&timingSafeEqual(x,y);};
 const rewriteYcrLocation=(location)=>{try{const u=new URL(location,YCR_PRIMARY_ORIGIN);if(YCR_ALLOWED_ORIGINS.has(u.origin))return `${YCR_PROXY_PREFIX}${u.pathname}${u.search}${u.hash}`;return location;}catch{return location;}};
 const rewriteYcrText=(text)=>text
