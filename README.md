@@ -1,5 +1,45 @@
 # Helios.AI
 
+Helios merges everyone's jorunal ammendment to a consitution.
+
+1. new bus stop to french place
+2. pls make a bridge from new york to france
+![bus_stop](image_1.png)
+![bridge](bridge.png)
+
+20 journals → 20 possible changes
+What someone writes in their journal	What HELIOS proposes
+🚌 "Please put a bus stop near my house."	Neighborhood Mobility Act — Improve transit access in underserved neighborhoods.
+🌉 "Build a bridge from New York to France."	Transatlantic Connection Initiative — Study radically better ways to cross oceans.
+🏡 "My rent is too expensive. I want to live near my friends."	Affordable Homes Initiative — Make it easier to build homes where people want to live.
+🌳 "I wish every street had trees."	Green Streets Initiative — Expand neighborhood shade and urban forests.
+🐕 "I want to bring my dog on the bus."	Pet-Friendly Transit Pilot — Test safe, accessible pet policies on public transit.
+🍕 "Everyone should get free pizza on Fridays."	Community Meals Pilot — Test neighborhood gatherings and shared meals.
+💻 "I wish everyone could learn to code for free."	Universal Learning Initiative — Expand free access to digital education.
+❤️ "I'm lonely. I wish there were somewhere to meet people."	Third Places for Everyone Act — Create accessible public spaces for friendship and community.
+🏥 "My mom waited six months to see a doctor."	Timely Healthcare Access Initiative — Reduce unreasonable delays in essential care.
+🧠 "I want an AI that remembers everything I learn."	Personal Knowledge Freedom Act — Give people control over portable, private AI memory.
+🚲 "Cars drive too fast near my school."	Safe Streets Initiative — Improve pedestrian safety around schools.
+🌊 "My street floods every time it rains."	Flood Resilience Initiative — Upgrade drainage infrastructure where risks are highest.
+🧑‍🚀 "I want to visit the Moon someday."	Space Access Initiative — Support safe, increasingly accessible space exploration.
+🗳️ "I don't know what my mayor voted for yesterday."	Transparent Government Act — Make public decisions easy to find and understand.
+🏖️ "I wish I had more time with my family."	Work-Life Balance Initiative — Explore shorter workweeks and flexible work arrangements.
+🧬 "Why can't scientists share their discoveries for free?"	Open Science Initiative — Expand public access to publicly funded research.
+🎮 "I want to explore my city 100 years in the future."	Public Simulation Initiative — Let communities explore possible futures before making policy decisions.
+🌍 "I wish I could talk to anyone, regardless of language."	Universal Translation Initiative — Expand access to multilingual communication tools.
+🧪 "I want a communal science lab in every city."	Public Science Labs Initiative — Establish shared spaces for experimentation and invention.
+🕊️ "Why can't countries solve disagreements without wars?"	Peaceful Cooperation Initiative — Strengthen international conflict prevention and mediation.
+
+"Today I got rejected from an apartment by an AI. Nobody could tell me why. I couldn't even talk to a human.
+
+I don't think computers should be allowed to make important decisions about our lives without explaining themselves.
+
+Maybe everyone should have the right to ask why?"
+
+
+Helios HTML is a ice cream model. It's sole purpose is to create new flavors of ice cream.!
+Ice cream tastes good when you smoke weed. I highly reccomend this.
+
 Helios AI is a civic tool that reads what everyone in a community says they need and groups the needs people share, like safer crossings or later clinic hours. It then drafts a plan in which every line links back to the needs behind it, so you can always see why it says what it says. Helios drafts and revises, but people vote, and nothing becomes the plan without their approval.
 
 ## What's in this repo
@@ -210,3 +250,8 @@ see everyone elses vote using deckgl map
 
 1. Congratulations you are now an emperor of happybearlandia, along with everyone else.
 2. HappyBearLandia - a network state that supports all nation governements.
+3. https://www.amazon.com/dp/0226458083?lv=shuf&hvlocphy=9060296&hvptwo=&hvnetw=g&mcid=&hvext=374113057759&hvadid=812928502684&language=en_US&hvpone=&hvlocint=&hvcampaign=23946687805&hydadcr=11477_13715379_2515069&hvpos=&hvdev=c&hvdvcmdl=&hvocijid=2715868225355794285--&hvqmt=a&hvexpln=0&tag=smgglusdsadts-20&hvtargid=kwl-2484167636399&adgrpid=195855866805&hvrand=2715868225355794285&channelId=500&ref_=&plpRedirect=mhFallback&th=1
+
+# happy bear landia has 2 responsiblities
+1. visualize constitution of each country / city
+2. simulate how edits to that document would affect simulation behavior
