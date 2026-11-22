@@ -26,7 +26,7 @@
     .app {
       height: 100%;
       display: grid;
-      grid-template-rows: auto 1fr;
+      grid-template-rows: auto 1fr auto;
       grid-template-columns: minmax(0, 1fr);
     }
 
@@ -99,6 +99,45 @@
 
     .view.active {
       display: block;
+    }
+
+    .byline {
+      display: flex;
+      justify-content: center;
+      padding: 8px 14px 10px;
+      border-top: 1px solid var(--line);
+      background: #0e1727;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: .04em;
+    }
+
+    .byline a { text-decoration: none; display: inline-flex; }
+
+    .byline span {
+      display: inline-block;
+      white-space: pre;
+      animation: rainbow 2.4s linear infinite, bob 1.2s ease-in-out infinite;
+      animation-delay: calc(var(--i) * -0.15s), calc(var(--i) * 0.08s);
+    }
+
+    @keyframes rainbow {
+      0%    { color: #ff4d4d; }
+      16.6% { color: #ff9f1c; }
+      33.3% { color: #ffe14d; }
+      50%   { color: #4dff88; }
+      66.6% { color: #4dc3ff; }
+      83.3% { color: #a66bff; }
+      100%  { color: #ff4d4d; }
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-3px); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .byline span { animation: rainbow 2.4s linear infinite; animation-delay: calc(var(--i) * -0.15s); }
     }
 
     @media (max-width: 900px) {
@@ -192,6 +231,10 @@
         loading="lazy"
       ></iframe>
     </main>
+
+    <footer class="byline">
+      <a href="https://happybearlandia.fly.dev/" target="_blank" rel="noopener" aria-label="by happybear"><span style="--i:0">b</span><span style="--i:1">y</span><span style="--i:2"> </span><span style="--i:3">h</span><span style="--i:4">a</span><span style="--i:5">p</span><span style="--i:6">p</span><span style="--i:7">y</span><span style="--i:8">b</span><span style="--i:9">e</span><span style="--i:10">a</span><span style="--i:11">r</span></a>
+    </footer>
   </div>
 
   <script>
