@@ -11,6 +11,7 @@ const pages = [
   'index.html',
   'helios_ai_landing_page.html',
   'helios_hippie_landing.html',
+  'world_plan_simulator.html',
   'helios_100_frontend_demo.html',
   'helios-unified.html',
   'helios_notion_preview.html',
