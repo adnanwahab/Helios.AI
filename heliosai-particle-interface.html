@@ -35,6 +35,15 @@
  .status.show{display:block}.status.error{color:#ffc7b8}.status.success{color:#a7f7d9}
  .status a,.status button{color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
  .status button{background:none;border:0;padding:0}
+ .local-guard-note{font-size:11px;line-height:1.6;color:#9eb6c5;padding:7px 6px 0}
+ #moderation-dialog{color:#eaf8fc;background:#101d2b;border:1px solid rgba(255,196,173,.38);border-radius:22px;width:min(470px,calc(100vw - 32px));max-height:calc(100dvh - 40px);padding:0;box-shadow:0 32px 110px rgba(0,0,0,.7)}
+ #moderation-dialog::backdrop{background:rgba(3,9,20,.82);backdrop-filter:blur(8px)}
+ .moderation-content{padding:30px}
+ .moderation-kicker{font-size:10px;color:#efb9ab;font-weight:800;letter-spacing:.16em;text-transform:uppercase;margin:0 0 18px}
+ .moderation-content h2{font-size:26px;line-height:1.2;letter-spacing:-.035em;margin:0 0 13px}
+ .moderation-content p{font-size:15px;line-height:1.65;margin:0 0 16px;color:#d5e2eb}
+ .moderation-content .moderation-context{font-size:12px;color:#a7b9c8}
+ .moderation-content button{color:#082329;background:#8cecdc;border:0;border-radius:12px;padding:12px 20px;font-weight:750;cursor:pointer}
  footer{text-align:center;font-size:10px;line-height:1.6;font-weight:600;letter-spacing:.16em;color:#a4becb;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
  footer b{font-weight:750;color:var(--mint)}
  @media(max-width:720px){.layout{padding:14px 16px calc(22px + var(--safe-bottom))}main{padding-bottom:clamp(54px,9vh,92px)}.composer{border-radius:20px;padding:10px 10px 10px 17px;gap:10px}textarea{min-height:56px;font-size:16px;padding:12px 0 5px}.submit{width:50px;height:50px;border-radius:15px}.halo{top:38%;width:110vw}footer{font-size:9px;letter-spacing:.10em}}
@@ -45,6 +54,15 @@
 <div class="backdrop" aria-hidden="true"></div>
 <div class="halo" aria-hidden="true"></div>
 <canvas id="particle-canvas" aria-hidden="true"></canvas>
+<dialog id="moderation-dialog" aria-labelledby="moderation-title" aria-describedby="moderation-message">
+ <div class="moderation-content">
+  <p class="moderation-kicker">HELIOS · Local safety review</p>
+  <h2 id="moderation-title">sorry, you can't send that.</h2>
+  <p id="moderation-message">if you disagree pls email local city hall</p>
+  <p id="moderation-context" class="moderation-context">An automated local Llama Guard check can make mistakes. Your message was not sent.</p>
+  <form method="dialog"><button id="moderation-close" type="submit">Close and edit</button></form>
+ </div>
+</dialog>
 <div class="layout">
  <main>
   <div class="composer-region">
@@ -57,6 +75,7 @@
     </button>
    </form>
    <div class="status" id="status" role="status" aria-live="polite"></div>
+   <div class="local-guard-note">On Send, local Llama Guard 3-1B checks your draft using WebGPU. First use downloads about 1.8 GB of model files. Your draft is sent to Civic Synthesis only after you confirm publication.</div>
   </div>
  </main>
  <footer>REFLECT OPEN <b>+</b> 5 TRANSFORMERS <b>=</b> HELIOSAI</footer>
@@ -70,6 +89,23 @@
  const send=document.getElementById('send');
  const sendLabel=document.getElementById('send-label');
  const status=document.getElementById('status');
+ const moderationDialog=document.getElementById('moderation-dialog');
+ const moderationTitle=document.getElementById('moderation-title');
+ const moderationMessage=document.getElementById('moderation-message');
+ const moderationContext=document.getElementById('moderation-context');
+ moderationDialog.addEventListener('close',()=>message.focus({preventScroll:true}));
+ function showModerationModal(kind){
+   if(kind==='unsafe'){
+     moderationTitle.textContent="sorry, you can't send that.";
+     moderationMessage.textContent="if you disagree pls email local city hall";
+     moderationContext.textContent="An automated local Llama Guard check can make mistakes. Your message was not sent. You can close this and edit your draft.";
+   }else{
+     moderationTitle.textContent="We couldn't check that message";
+     moderationMessage.textContent="The local WebGPU safety model is unavailable. Nothing was sent.";
+     moderationContext.textContent="Try a supported browser/device, check your connection and available memory, or try again. This local check is not a substitute for server moderation.";
+   }
+   if(!moderationDialog.open)moderationDialog.showModal();
+ }
  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
  const mobile=matchMedia('(max-width: 720px)').matches;
  const N=mobile?4300:11500;
@@ -219,9 +255,29 @@
    }}
  form.addEventListener('submit',async e=>{
    e.preventDefault();const value=message.value.trim();if(!value||send.dataset.loading==='true')return;
-   if(!window.confirm('Publish this message publicly to Civic Synthesis? Others may be able to read it. Do not include private or identifying information.'))return;
-   send.dataset.loading='true';sendLabel.textContent='Transmitting…';send.disabled=true;status.className='status';burst=.18;
+   send.dataset.loading='true';sendLabel.textContent='Checking locally…';send.disabled=true;status.className='status';burst=.18;
    try{
+     let verdict;
+     try{
+       const {checkLocalMessage}=await import('./public/local-llama-guard.js');
+       verdict=await checkLocalMessage(value,{onProgress:text=>show('info',text)});
+     }catch{verdict={status:'unavailable'}}
+     if(verdict?.status==='unsafe'){
+       show('error','Local safety screening blocked this message. It was not sent.');
+       showModerationModal('unsafe');
+       return;
+     }
+     if(verdict?.status!=='safe'){
+       show('error','Local safety screening could not complete. It was not sent.');
+       showModerationModal('unavailable');
+       return;
+     }
+     if(!window.confirm('Local screening completed. Publish this message publicly to Civic Synthesis? Others may be able to read it. Do not include private or identifying information.')){
+       status.className='status';
+       return;
+     }
+     sendLabel.textContent='Transmitting…';
+     status.className='status';
      const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),15000);
      let response;
      try{response=await fetch('https://civic-synthesis.fly.dev/api/publish_draft',{
