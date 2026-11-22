@@ -1,6 +1,8 @@
 // Build a fork-safe, static GitHub Pages preview without exposing the Bun backend.
 import { copyFile, cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { buildPlanDocument } from '../src/notion.js';
+import seedCatalog from '../data/catalog.json' with { type: 'json' };
 
 const root = process.cwd();
 const out = join(root, 'dist-pages');
@@ -21,6 +23,11 @@ for (const name of demos) {
 }
 await cp(join(root, 'public'), join(out, 'public'), { recursive: true });
 
+// The Notion screen reads /api/notion/preview on the live app; Pages gets a build-time snapshot.
+const notionPage = (await readFile(join(root, 'helios_notion_preview.html'), 'utf8')).replaceAll('href="/public/', 'href="./public/');
+await writeFile(join(out, 'helios_notion_preview.html'), notionPage);
+await writeFile(join(out, 'notion-preview.json'), JSON.stringify(buildPlanDocument(seedCatalog)));
+
 let index = await readFile(join(root, 'index.html'), 'utf8');
 function replaceRequired(from, to) {
   if (!index.includes(from)) throw new Error('Expected entry-page route missing: ' + from);
@@ -33,6 +40,7 @@ index = index.replaceAll('href="/public/', 'href="./public/');
 index = index.replaceAll('src="/public/', 'src="./public/');
 replaceRequired('src="/embed/helios-ai"', 'src="./helios_ai_landing_page.html"');
 replaceRequired('src="/embed/hippie"', 'src="./helios_hippie_landing.html"');
+replaceRequired('src="/embed/notion"', 'src="./helios_notion_preview.html"');
 replaceRequired('src="/embed/goals"', 'src="./helios_100_frontend_demo.html"');
 replaceRequired('src="/embed/unified"', 'src="./helios-unified.html"');
 replaceRequired('src="/embed/dynamicland"', 'src="./communal_science_lab_webgpu%20(1).html"');
