@@ -47,6 +47,7 @@ Helios AI is a civic tool that reads what everyone in a community says they need
 - `index.html` — merged entry page with tabs that switch between the embedded pages
 - `helios_ai_landing_page.html` — the Helios AI landing page
 - `helios_hippie_landing.html` — HeliosAI hippie-style landing page ("8 billion people, one big circle")
+- `helios_fork.html` — "Fork Helios" page with a GitHub fork button and setup steps for forks (`/embed/fork`)
 - `helios_100_frontend_demo.html` — 100 Shared Goals demo
 - `helios-unified.html` — Helios Unified (Universe · Communal Science Lab · Futures)
 - `communal_science_lab_webgpu (1).html` — the Communal Science Lab (WebGPU)

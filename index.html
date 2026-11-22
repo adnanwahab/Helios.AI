@@ -125,6 +125,7 @@
         <button class="tab" id="tab-lab" type="button" role="tab" aria-selected="false" aria-controls="view-lab">Dynamicland (Local)</button>
         <button class="tab" id="tab-pensieve" type="button" role="tab" aria-selected="false" aria-controls="view-pensieve">Digital Pensieve</button>
         <button class="tab" id="tab-ycr" type="button" role="tab" aria-selected="false" aria-controls="view-ycr">YC Research</button>
+        <button class="tab" id="tab-fork" type="button" role="tab" aria-selected="false" aria-controls="view-fork">Fork Helios</button>
       </nav>
       <iframe
         class="signup"
@@ -191,6 +192,14 @@
         src="/proxy/ycr/"
         loading="lazy"
       ></iframe>
+
+      <iframe
+        id="view-fork"
+        class="view"
+        title="Fork Helios"
+        src="/embed/fork"
+        loading="lazy"
+      ></iframe>
     </main>
   </div>
 
@@ -202,7 +211,8 @@
       demo: document.getElementById('tab-demo'),
       unified: document.getElementById('tab-unified'),
       pensieve: document.getElementById('tab-pensieve'),
-      ycr: document.getElementById('tab-ycr')
+      ycr: document.getElementById('tab-ycr'),
+      fork: document.getElementById('tab-fork')
     };
 
     const views = {
@@ -212,7 +222,8 @@
       demo: document.getElementById('view-demo'),
       unified: document.getElementById('view-unified'),
       pensieve: document.getElementById('view-pensieve'),
-      ycr: document.getElementById('view-ycr')
+      ycr: document.getElementById('view-ycr'),
+      fork: document.getElementById('view-fork')
     };
 
     function activate(which) {
@@ -230,6 +241,7 @@
     tabs.unified.addEventListener('click', () => activate('unified'));
     tabs.pensieve.addEventListener('click', () => activate('pensieve'));
     tabs.ycr.addEventListener('click', () => activate('ycr'));
+    tabs.fork.addEventListener('click', () => activate('fork'));
   </script>
 </body>
 </html>
