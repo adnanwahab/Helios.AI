@@ -117,18 +117,15 @@
     .byline span {
       display: inline-block;
       white-space: pre;
-      animation: rainbow 2.4s linear infinite, bob 1.2s ease-in-out infinite;
-      animation-delay: calc(var(--i) * -0.15s), calc(var(--i) * 0.08s);
+      color: hsl(calc(var(--i) * 30deg) 100% 65%);
+      text-shadow: 0 0 8px currentColor;
+      animation: hue-cycle 3s linear infinite, bob 1.2s ease-in-out infinite;
+      animation-delay: 0s, calc(var(--i) * 0.08s);
     }
 
-    @keyframes rainbow {
-      0%    { color: #ff4d4d; }
-      16.6% { color: #ff9f1c; }
-      33.3% { color: #ffe14d; }
-      50%   { color: #4dff88; }
-      66.6% { color: #4dc3ff; }
-      83.3% { color: #a66bff; }
-      100%  { color: #ff4d4d; }
+    @keyframes hue-cycle {
+      from { filter: hue-rotate(0deg); }
+      to   { filter: hue-rotate(360deg); }
     }
 
     @keyframes bob {
@@ -137,7 +134,7 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .byline span { animation: rainbow 2.4s linear infinite; animation-delay: calc(var(--i) * -0.15s); }
+      .byline span { animation: hue-cycle 3s linear infinite; }
     }
 
     @media (max-width: 900px) {
