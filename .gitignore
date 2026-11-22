@@ -7,3 +7,5 @@ node_modules/
 *.sqlite*
 test-results/
 playwright-report/
+dist/
+.netlify/
