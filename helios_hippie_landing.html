@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HeliosAI · 8 billion people, one big circle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shrikhand&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+  :root { --cream:#FFF3D6; --ink:#2B1607; --orange:#E8571C; --mustard:#F2A93B; --magenta:#B8336A; --plum:#8A2A50; --teal:#1F6F6B; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--cream); color:var(--ink); font-family:'DM Sans', sans-serif; }
+  a { color:var(--ink); } a:hover { color:var(--magenta); }
+  .display { font-family:'Shrikhand', serif; font-weight:400; }
+  .wrap { max-width:1240px; margin:0 auto; }
+  .eyebrow { margin:0; font-weight:700; letter-spacing:.18em; text-transform:uppercase; font-size:15px; color:var(--plum); }
+  .pill { display:inline-flex; align-items:center; min-height:44px; text-decoration:none; padding:18px 34px; border-radius:999px; font-weight:700; font-size:19px; border:3px solid var(--ink); color:var(--ink); }
+  .pill.shadow { box-shadow:6px 6px 0 var(--ink); }
+
+  header { padding:24px 32px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  .brand { display:flex; align-items:center; gap:12px; text-decoration:none; font-size:30px; }
+  nav { display:flex; gap:28px; font-weight:500; font-size:17px; }
+  nav a { text-decoration:none; }
+  .nav-cta { background:var(--ink); color:var(--cream); text-decoration:none; padding:12px 26px; border-radius:999px; font-weight:700; min-height:44px; display:inline-flex; align-items:center; }
+  .nav-cta:hover { color:var(--mustard); }
+
+  .hero { overflow:hidden; padding:48px 32px 0; }
+  .hero .wrap { display:flex; flex-direction:column; align-items:center; text-align:center; gap:24px; }
+  .hero h1 { margin:0; font-size:112px; line-height:.95; color:var(--magenta); }
+  .hero p.lede { margin:0; max-width:720px; font-size:22px; line-height:1.5; }
+  .ctas { display:flex; gap:16px; flex-wrap:wrap; justify-content:center; }
+  .arch { position:relative; width:100%; max-width:980px; height:440px; margin-top:24px; }
+  .sunburst { position:absolute; inset:0; border-radius:490px 490px 0 0; border:4px solid var(--ink); border-bottom:none;
+    background:repeating-conic-gradient(from 0deg at 50% 100%, var(--mustard) 0deg 9deg, var(--orange) 9deg 18deg, var(--magenta) 18deg 27deg, var(--cream) 27deg 36deg); }
+  .sun { position:absolute; left:50%; bottom:-150px; width:400px; height:400px; margin-left:-200px; animation:spin 60s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .sun { animation:none; } }
+
+  .vibe { background:var(--ink); color:var(--cream); padding:180px 32px 96px; }
+  .vibe .wrap { max-width:1100px; display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:48px; align-items:center; }
+  .vibe h2 { margin:0; font-size:64px; line-height:1; color:var(--mustard); }
+  .vibe p { margin:0 0 18px; font-size:20px; line-height:1.6; }
+
+  .how { padding:96px 32px; }
+  .how .wrap { display:flex; flex-direction:column; gap:48px; }
+  .how header { all:unset; display:flex; flex-direction:column; gap:12px; align-items:center; text-align:center; }
+  .how h2 { margin:0; font-size:64px; line-height:1; }
+  .steps { display:grid; grid-template-columns:repeat(4, 1fr); gap:24px; }
+  .step { border:3px solid var(--ink); border-radius:28px; padding:28px; display:flex; flex-direction:column; gap:14px; box-shadow:6px 6px 0 var(--ink); }
+  .step .n { font-size:48px; line-height:1; }
+  .step h3 { margin:0; font-size:24px; }
+  .step p { margin:0; font-size:17px; line-height:1.55; }
+
+  .circle { background:var(--teal); color:var(--cream); padding:96px 32px; }
+  .circle .wrap { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:32px; text-align:center; }
+  .stat { display:flex; flex-direction:column; gap:8px; align-items:center; }
+  .stat .big { font-size:72px; line-height:1; color:var(--mustard); }
+  .stat span:last-child { font-size:19px; font-weight:500; }
+
+  .final { padding:112px 32px; text-align:center; }
+  .final .wrap { max-width:860px; display:flex; flex-direction:column; gap:28px; align-items:center; }
+  .final h2 { margin:0; font-size:76px; line-height:1; color:var(--magenta); }
+  .final p { margin:0; font-size:21px; line-height:1.55; }
+
+  footer { background:var(--ink); color:var(--cream); padding:40px 32px; }
+  footer .wrap { display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; font-size:16px; }
+
+  @media (max-width:900px) {
+    .hero h1 { font-size:56px; }
+    .steps { grid-template-columns:1fr; }
+    nav { display:none; }
+    .arch { height:260px; }
+    .sun { width:260px; height:260px; margin-left:-130px; bottom:-100px; }
+    .vibe h2, .how h2 { font-size:44px; }
+    .final h2 { font-size:48px; }
+  }
+</style>
+</head>
+<body>
+<header class="wrap">
+  <a class="brand display" href="#top">
+    <svg width="44" height="44" viewBox="0 0 200 200" aria-hidden="true"><g class="rays" data-stroke="#E8571C" data-width="10"></g><circle cx="100" cy="100" r="46" fill="#F2A93B" stroke="#2B1607" stroke-width="6"/></svg>
+    HeliosAI
+  </a>
+  <nav aria-label="Main">
+    <a href="#vibe">The Vibe</a>
+    <a href="#how">How It Flows</a>
+    <a href="#circle">The Circle</a>
+  </nav>
+  <a class="nav-cta" href="https://helios-ai-laws.fly.dev" target="_top">Pass it on</a>
+</header>
+
+<section class="hero" id="top">
+  <div class="wrap">
+    <p class="eyebrow">Peace · Love · Collective Intelligence</p>
+    <h1 class="display">8 billion people.<br>One big circle.</h1>
+    <p class="lede">Imagine the whole planet sitting cross-legged on the same lawn, passing it to the left, saying what they actually need. HeliosAI listens to every one of them, and gently rolls it all into one plan.</p>
+    <div class="ctas">
+      <a class="pill shadow" style="background:var(--orange)" href="https://helios-ai-laws.fly.dev" target="_top">Join the circle</a>
+      <a class="pill" style="background:var(--cream)" href="#how">How it flows</a>
+    </div>
+    <div class="arch">
+      <div class="sunburst"></div>
+      <svg class="sun" viewBox="0 0 200 200" role="img" aria-label="HeliosAI sun symbol">
+        <g class="rays" data-stroke="#2B1607" data-width="7"></g>
+        <circle cx="100" cy="100" r="50" fill="#F2A93B" stroke="#2B1607" stroke-width="5"/>
+        <circle cx="100" cy="100" r="34" fill="#FFF3D6" stroke="#2B1607" stroke-width="4"/>
+        <g class="leaves" fill="#1F6F6B" stroke="#2B1607" stroke-width="2"></g>
+        <circle cx="100" cy="100" r="5" fill="#2B1607"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="vibe" id="vibe">
+  <div class="wrap">
+    <h2 class="display">Far out governance, man.</h2>
+    <div>
+      <p>No lobbyists. No 2,000-page bills nobody read. Just everyone's daily journal, heard at once, and a sun-sized AI that's chill enough to find the overlap.</p>
+      <p>HeliosAI doesn't rule. It harmonizes. Think less "overlord," more "the friend at the bonfire who remembers what everyone said."</p>
+    </div>
+  </div>
+</section>
+
+<section class="how" id="how">
+  <div class="wrap">
+    <header>
+      <p class="eyebrow">How it flows</p>
+      <h2 class="display">Breathe in. Breathe out. Pass it on.</h2>
+    </header>
+    <div class="steps">
+      <article class="step" style="background:#F2A93B"><span class="n display">01</span><h3>Journal</h3><p>Everyone writes what is on their mind today. Hopes, gripes, dreams, the pothole on Elm Street.</p></article>
+      <article class="step" style="background:#E8571C"><span class="n display">02</span><h3>Needs</h3><p>HeliosAI gently reads every entry and finds the real needs underneath the noise.</p></article>
+      <article class="step" style="background:#F6B5C9"><span class="n display">03</span><h3>Vote</h3><p>The circle votes on the needs that matter most. Daily, easy, no suits required.</p></article>
+      <article class="step" style="background:#9FD3C7"><span class="n display">04</span><h3>One Plan</h3><p>All of it rolls into a single plan, mapped and visualized, so everyone can see where we are headed.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="circle" id="circle">
+  <div class="wrap">
+    <div class="stat"><span class="big display">8B</span><span>people in the circle</span></div>
+    <div class="stat"><span class="big display">1</span><span>shared plan</span></div>
+    <div class="stat"><span class="big display">24/7</span><span>good vibes, always listening</span></div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <h2 class="display">Let the sun<br>do the thinking.</h2>
+    <p>Write one journal entry today. Light up the circle. Watch eight billion small wishes turn into one warm plan.</p>
+    <a class="pill shadow" style="background:var(--mustard); font-size:20px" href="https://helios-ai-laws.fly.dev" target="_top">Start your first entry</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="display" style="font-size:24px; color:var(--mustard)">HeliosAI</span>
+    <span>Grown with love in Katy, Texas · Stay groovy</span>
+  </div>
+</footer>
+
+<script>
+  // Draw the original HeliosAI sun: 16 wavy rays and a 5-leaf mandala.
+  const NS = 'http://www.w3.org/2000/svg';
+  for (const g of document.querySelectorAll('g.rays')) {
+    for (let i = 0; i < 16; i++) {
+      const p = document.createElementNS(NS, 'path');
+      p.setAttribute('d', 'M100 2 C112 22 88 30 100 52');
+      p.setAttribute('fill', 'none');
+      p.setAttribute('stroke', g.dataset.stroke);
+      p.setAttribute('stroke-width', g.dataset.width);
+      p.setAttribute('stroke-linecap', 'round');
+      p.setAttribute('transform', `rotate(${i * 22.5} 100 100)`);
+      g.appendChild(p);
+    }
+  }
+  const leaves = [[0, 70, 8], [45, 74, 7], [-45, 74, 7], [90, 80, 5], [-90, 80, 5]];
+  for (const g of document.querySelectorAll('g.leaves')) {
+    for (const [deg, tip, w] of leaves) {
+      const p = document.createElementNS(NS, 'path');
+      p.setAttribute('d', `M100 100 C${100 - w} 92 ${100 - w} ${tip + 6} 100 ${tip} C${100 + w} ${tip + 6} ${100 + w} 92 100 100 Z`);
+      p.setAttribute('transform', `rotate(${deg} 100 100)`);
+      g.appendChild(p);
+    }
+  }
+</script>
+</body>
+</html>

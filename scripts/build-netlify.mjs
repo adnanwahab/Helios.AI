@@ -8,6 +8,7 @@ const out = join(root, 'dist');
 const pages = [
   'index.html',
   'helios_ai_landing_page.html',
+  'helios_hippie_landing.html',
   'helios_100_frontend_demo.html',
   'helios-unified.html',
   'health_wealth_of_nations.html',
