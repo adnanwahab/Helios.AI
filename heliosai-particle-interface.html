@@ -32,7 +32,7 @@
  .submit svg{width:22px;height:22px}
  .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
  .status{font-size:12px;line-height:1.6;color:#c1d5e2;padding:12px 6px 0;display:none;max-width:700px;text-shadow:0 1px 10px #050a13}
- .status.show{display:block}.status.error{color:#ffc7b8}.status.success{color:#a7f7d9}
+ .status.show{display:block}.status.error,.status.blocked{color:#ffc7b8}.status.success{color:#a7f7d9}
  .status a,.status button{color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
  .status button{background:none;border:0;padding:0}
  .local-guard-note{font-size:11px;line-height:1.6;color:#9eb6c5;padding:7px 6px 0}
@@ -263,12 +263,12 @@
        verdict=await checkLocalMessage(value,{onProgress:text=>show('info',text)});
      }catch{verdict={status:'unavailable'}}
      if(verdict?.status==='unsafe'){
-       show('error','Local safety screening blocked this message. It was not sent.');
+       show('blocked','Local safety screening blocked this message. It was not sent.');
        showModerationModal('unsafe');
        return;
      }
      if(verdict?.status!=='safe'){
-       show('error','Local safety screening could not complete. It was not sent.');
+       show('blocked','Local safety screening could not complete. It was not sent.');
        showModerationModal('unavailable');
        return;
      }
