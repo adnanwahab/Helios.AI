@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>World Plan Simulator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: sober civic almanac; the numbers decide, nothing shouts.
+   IDEA: a year-long ledger — every day is one page written by 8.2 billion people.
+   PICTURE: the world map, each region a bubble coloured by what its people wrote about most today.
+   COLOUR and TYPE: engineering datasheet — cobalt strip, white, black, pale cobalt zones; Space Grotesk + Inter.
+   LAYOUT: strip, controls, map beside today's page, then plan + vote, then the year chart, then method. */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#0a0d18);--ink:light-dark(#0b0b0b,#f0efec);--ink2:light-dark(#4a4a48,#c3c2b7);--mute:light-dark(#6b6b68,#9a9a92);--zone:light-dark(#eef2ff,#121a33);--line:light-dark(#d9dcea,#262d47);--land:light-dark(#dfe5fb,#1b2544);--cobalt:#1240e0;--surf:light-dark(#ffffff,#0a0d18);
+--c0:light-dark(#2a78d6,#3987e5);--c1:light-dark(#eb6834,#d95926);--c2:light-dark(#1baf7a,#199e70);--c3:light-dark(#eda100,#c98500);--c4:light-dark(#e87ba4,#d55181);--c5:light-dark(#008300,#0ca30c);--c6:light-dark(#6250d6,#9085e9);--c7:light-dark(#e34948,#e66767)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:"Space Grotesk",Inter,sans-serif;font-weight:600;margin:0;text-wrap:balance}
+h1{font-size:clamp(26px,3.6vw,44px);line-height:1.08}
+h2{font-size:24px;line-height:1.15}
+.strip{background:var(--cobalt);color:#fff;padding:clamp(22px,3.4vw,44px) max(5vw,16px) 22px}
+.strip p{margin:12px 0 0;max-width:70ch;color:#dfe6ff}
+.band{padding:clamp(22px,3.4vw,48px) max(5vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+.controls{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;background:var(--zone);padding:14px max(5vw,16px);border-bottom:1px solid var(--line)}
+.controls .wrap{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;width:100%}
+button{font:600 15px Inter,sans-serif;min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--cobalt);outline-offset:2px}
+button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.day{flex:1 1 280px;display:flex;gap:12px;align-items:center}
+.day input{flex:1;accent-color:var(--cobalt);height:44px}
+.daylab{font:600 15px "Space Grotesk",sans-serif;white-space:nowrap;min-width:8.5em}
+.grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:28px;align-items:start}
+@media(max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
+.fig{position:relative;min-height:340px}.fig>svg{position:absolute;inset:0;width:100%;height:100%}
+#map{min-height:0;aspect-ratio:2.35;background:var(--zone);border-radius:10px}
+.page{border:1px solid var(--line);border-radius:10px;padding:18px 20px;background:var(--bg)}
+.page .no{font:600 13px Inter,sans-serif;color:var(--mute)}
+.stat{display:flex;flex-wrap:wrap;gap:6px 24px;margin:10px 0 14px}
+.stat b{display:block;font:600 22px "Space Grotesk",sans-serif;white-space:nowrap}
+.stat span{font-size:13px;color:var(--ink2)}
+.rows{display:grid;gap:7px}
+.row{display:grid;grid-template-columns:8.5em minmax(0,1fr) 3.4em;gap:10px;align-items:center;font-size:14px}
+.row.wide{grid-template-columns:minmax(0,15em) minmax(0,1fr) 3.4em}@media(max-width:600px){.row.wide{grid-template-columns:minmax(0,1fr) 3em}.row.wide .track{grid-column:1/-1;grid-row:2}}
+.row .v{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.track{height:12px;background:var(--zone);border-radius:3px;position:relative}
+.bar{height:100%;border-radius:0 4px 4px 0}
+.tick{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);left:50%}
+.sw{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:7px;vertical-align:-1px}
+.entries{margin:14px 0 0;padding:0;list-style:none;display:grid;gap:10px}
+.entries li{font-size:15px;border-left:3px solid var(--line);padding:2px 0 2px 12px}
+.entries small{display:block;color:var(--mute);font-size:13px}
+.events{font-size:14px;color:var(--ink2);margin:12px 0 0}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:36px}
+@media(max-width:800px){.two{grid-template-columns:minmax(0,1fr)}}
+.big{font:600 clamp(44px,6vw,68px)/1 "Space Grotesk",sans-serif;font-variant-numeric:tabular-nums}
+.verdict{font:600 17px Inter,sans-serif;margin:8px 0 16px}
+.note{font-size:13px;color:var(--mute);margin:10px 0 0}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px;margin:10px 0}
+.legend span{white-space:nowrap}
+#year{min-height:260px}
+.tip{position:absolute;pointer-events:none;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;box-shadow:0 4px 18px #0002;display:none;min-width:170px;z-index:2}
+.method{max-width:75ch}
+.method p,.method li{color:var(--ink2)}
+table{border-collapse:collapse;width:100%;font-size:14px}th,td{text-align:right;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}th:first-child,td:first-child{text-align:left}
+.scroll{overflow-x:auto}
+summary{cursor:pointer;font-weight:600;min-height:44px;display:flex;align-items:center}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+@media(max-width:600px){.row{grid-template-columns:6.6em minmax(0,1fr) 3em;font-size:13px}}
+</style>
+</head>
+<body>
+<header class="strip"><div class="wrap">
+  <h1 id="finding">A world plan from 8.2 billion people</h1>
+  <p id="sub">Simulated: every person writes one page a day for a year. Their needs are added up, a plan is drafted from them, and each region votes.</p>
+</div></header>
+
+<div class="controls"><div class="wrap">
+  <div class="day"><button id="play" aria-label="Play the year">Play</button><input id="d" type="range" min="1" max="365" value="365" aria-label="Day of the year"><span class="daylab" id="dlab"></span></div>
+  <div class="seg" role="group" aria-label="How the plan is drafted and voted">
+    <button data-m="people" aria-pressed="true">One plan · one person one vote</button>
+    <button data-m="regions" aria-pressed="false">One plan · one region one vote</button>
+    <button data-m="hybrid" aria-pressed="false">Shared core + local top-ups</button>
+  </div>
+  <button id="reroll">New world</button>
+</div></div>
+
+<main>
+<section class="band"><div class="wrap grid">
+  <div>
+    <div class="fig" id="map" role="img" aria-label="World map: each region's bubble is sized by population and coloured by its top need today"><svg id="mapsvg"></svg></div>
+    <div class="legend" id="legend"></div>
+    <p class="note">Simplified outlines. Bubble area = population; colour = what that region wrote about most on this page. Hover or tap a bubble for its needs. Click the chart below to jump to a day.</p>
+  <h2 style="margin-top:22px;font-size:20px">Needs across the year</h2>
+  <p class="note" style="font-size:15px;color:var(--ink2)">Share of all pages written about each need, day by day, people-weighted. Seasons, monsoons and one-off crises move the lines.</p>
+    <div class="fig" id="year"><svg id="yearsvg"></svg><div class="tip" id="tip"></div></div>
+  </div>
+  <article class="page" aria-live="polite">
+    <div class="no" id="pno"></div>
+    <h2 id="pdate"></h2>
+    <div class="stat">
+      <div><b id="writers"></b><span>people writing today</span></div>
+      <div><b id="pages"></b><span>pages read so far</span></div>
+    </div>
+    <h3 style="font-size:16px;margin:0 0 8px">What the world wrote about today</h3>
+    <div class="rows" id="today"></div>
+    <p class="events" id="events"></p>
+    <ul class="entries" id="entries"></ul>
+    <p class="note">Sample entries are generated from templates, not written by real people.</p>
+  </article>
+</div></section>
+
+<section class="band" style="background:var(--zone)"><div class="wrap two">
+  <div>
+    <h2>The plan drafted from the pages so far</h2>
+    <p class="note" id="planmode" style="font-size:15px;color:var(--ink2)"></p>
+    <div class="rows" id="plan" style="margin-top:14px"></div>
+  </div>
+  <div>
+    <h2>The vote</h2>
+    <div class="big" id="approval"></div>
+    <div class="verdict" id="verdict"></div>
+    <div class="rows" id="vote"></div>
+    <p class="note">Passes only with a double majority: at least 60% worldwide <i>and</i> over 50% in every region (black tick). Support is modelled from how closely the plan matches each region's own needs.</p>
+  </div>
+</div></section>
+
+
+
+<section class="band" style="background:var(--zone)"><div class="wrap method">
+  <h2>How the simulation works</h2>
+  <ol>
+    <li><b>People.</b> Ten regions with populations from the UN's World Population Prospects 2024 (mid-2025, ≈8.2 billion in total).</li>
+    <li><b>Pages.</b> Each person writes one page a day. What a region writes about comes from a baseline weight per need, plus seasons (heat, winter energy, South Asia's monsoon, the school year), fourteen random crises, and daily noise.</li>
+    <li><b>Needs.</b> Pages add up into person-days per need. Each region's own priorities are sharpened (squared and renormalised) so top concerns stand out.</li>
+    <li><b>Plan.</b> One budget split across eight packages, weighted either by people or equally by region. "Shared core + local top-ups" spends 60% on the shared plan and lets each region spend 40% on its own top needs.</li>
+    <li><b>Vote.</b> Each region's support depends on how closely the plan matches its needs (overlap), passed through a normal curve to allow for disagreement inside every region.</li>
+  </ol>
+  <p><b>What this can and cannot tell you.</b> No real journals are used. The baseline weights, crisis timing and support curve are assumptions chosen to be plausible, not measured. The local top-up option wins partly by construction, since it gives every region more of what it asked for. The real question it raises is whether people would accept 40% of a world budget being spent regionally. Even here no option reaches 100% in every region: unanimity is not what a vote of 8 billion produces.</p>
+  <details><summary>Table: each region's needs on this page</summary><div class="scroll" id="tbl"></div></details>
+</div></section>
+</main>
+
+<script>
+// World plan simulation core (synthetic). Shared by the page and node checks.
+const NEEDS=['Water & food','Health care','Housing','Jobs & income','Education & internet','Energy','Climate safety','Safety & justice'];
+const NEED_SHORT=['Water & food','Health','Housing','Jobs','Education','Energy','Climate','Safety'];
+// Population in millions, approx. UN WPP 2024 medium variant, mid-2025. lon/lat = bubble position.
+const REGIONS=[
+ {id:'nam',name:'Northern America',pop:388,lon:-100,lat:45,south:false,w:[0.25,0.9,0.9,0.7,0.35,0.4,0.5,0.6]},
+ {id:'lac',name:'Latin America & Caribbean',pop:665,lon:-60,lat:-12,south:true,w:[0.55,0.7,0.7,0.8,0.55,0.4,0.6,0.9]},
+ {id:'eur',name:'Europe',pop:744,lon:18,lat:52,south:false,w:[0.25,0.7,0.8,0.6,0.3,0.7,0.5,0.4]},
+ {id:'nawa',name:'North Africa & West Asia',pop:576,lon:35,lat:28,south:false,w:[0.75,0.6,0.6,0.8,0.45,0.5,0.7,0.7]},
+ {id:'ssa',name:'Sub-Saharan Africa',pop:1270,lon:22,lat:-2,south:true,w:[0.95,0.9,0.6,0.8,0.75,0.8,0.7,0.6]},
+ {id:'cas',name:'Central Asia',pop:80,lon:66,lat:46,south:false,w:[0.55,0.6,0.5,0.8,0.5,0.7,0.5,0.5]},
+ {id:'sas',name:'Southern Asia',pop:2083,lon:78,lat:21,south:false,w:[0.75,0.8,0.7,0.8,0.6,0.6,0.8,0.5]},
+ {id:'eas',name:'Eastern Asia',pop:1645,lon:114,lat:36,south:false,w:[0.3,0.8,0.8,0.7,0.4,0.4,0.6,0.3]},
+ {id:'sea',name:'South-Eastern Asia',pop:690,lon:110,lat:6,south:false,w:[0.5,0.7,0.6,0.7,0.45,0.4,0.8,0.4]},
+ {id:'oce',name:'Oceania',pop:47,lon:140,lat:-25,south:true,w:[0.3,0.6,0.9,0.5,0.35,0.4,0.7,0.3]},
+];
+const EVENT_NAMES=['Grain price spike','Disease outbreak','Rent surge','Factory layoffs','Network outage','Power outages','Flooding','Unrest'];
+const PACKAGES=['Water, sanitation & food security','Universal primary care','Affordable housing build-out','Jobs guarantee & income floor','Schooling, skills & broadband','Clean, reliable energy grid','Climate adaptation & disaster readiness','Fair policing & courts'];
+
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+
+function simulate(seed){
+  const rnd=mulberry32(seed), R=REGIONS.length, K=NEEDS.length, D=365;
+  const events=[];
+  for(let i=0;i<14;i++){const r=Math.floor(rnd()*R),k=Math.floor(rnd()*K),start=Math.floor(rnd()*330),len=8+Math.floor(rnd()*28),mag=.6+rnd()*.9;events.push({r,k,start,len,mag,name:EVENT_NAMES[k]})}
+  const share=[]; // share[d][r][k], sums to 1 over k
+  for(let d=0;d<D;d++){
+    const s=Math.sin(2*Math.PI*(d-80)/365), summerN=Math.max(s,0), winterN=Math.max(-s,0);
+    const day=[];
+    for(let r=0;r<R;r++){
+      const g=REGIONS[r], v=g.w.slice();
+      if(!g.south){v[6]+=.3*summerN;v[0]+=.15*summerN}else{v[6]+=.25*winterN;v[0]+=.12*winterN}
+      if(['eur','nam','cas','eas'].includes(g.id))v[5]+=.35*winterN;
+      if(g.id==='sas'&&d>=152&&d<=273){v[6]+=.45;v[0]+=.2}
+      if(g.id==='sea'&&d>=150&&d<=300)v[6]+=.25;
+      if(d>=228&&d<=262)v[4]+=.2;
+      for(const e of events)if(e.r===r&&d>=e.start&&d<e.start+e.len){const t=(d-e.start)/e.len;v[e.k]+=e.mag*Math.sin(Math.PI*Math.min(1,t*1.4))}
+      let sum=0;for(let k=0;k<K;k++){v[k]=Math.max(.02,v[k]*(1+.12*(rnd()-.5)));sum+=v[k]}
+      day.push(v.map(x=>x/sum));
+    }
+    share.push(day);
+  }
+  // cumulative person-days (millions) per region/need
+  const cum=[];let acc=REGIONS.map(()=>new Array(K).fill(0));
+  for(let d=0;d<D;d++){acc=acc.map((row,r)=>row.map((x,k)=>x+share[d][r][k]*REGIONS[r].pop));cum.push(acc)}
+  return {events,share,cum};
+}
+
+const SHARPEN=2;
+function norm(v){const s=v.reduce((a,b)=>a+b,0);return v.map(x=>x/s)}
+function regionNeed(cumRow){return norm(norm(cumRow).map(x=>x**SHARPEN))}
+function draftPlan(cumDay,mode){
+  const totalPop=REGIONS.reduce((a,g)=>a+g.pop,0), K=NEEDS.length, N=new Array(K).fill(0);
+  cumDay.forEach((row,r)=>{const w=mode==='regions'?1/REGIONS.length:REGIONS[r].pop/totalPop;const n=norm(row);for(let k=0;k<K;k++)N[k]+=w*n[k]});
+  return norm(N.map(x=>x**SHARPEN));
+}
+const LOCAL=.4;
+// "hybrid": 60% shared core (people-weighted) + 40% each region spends on its own top needs.
+function localPlan(plan,row,mode){if(mode!=='hybrid')return plan;const n=regionNeed(row);return plan.map((x,k)=>(1-LOCAL)*x+LOCAL*n[k])}
+function erf(x){const t=1/(1+.3275911*Math.abs(x)),y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-.284496736)*t+.254829592)*t*Math.exp(-x*x);return x>=0?y:-y}
+const SUPPORT_T=.80, SUPPORT_SD=.06;
+function vote(plan,cumDay,rule){
+  const totalPop=REGIONS.reduce((a,g)=>a+g.pop,0);
+  const regions=cumDay.map((row,r)=>{const n=regionNeed(row),pl=localPlan(plan,row,rule);let o=0;for(let k=0;k<n.length;k++)o+=Math.min(n[k],pl[k]);const support=.5*(1+erf((o-SUPPORT_T)/(SUPPORT_SD*Math.SQRT2)));return{overlap:o,support}});
+  const global=rule==='regions'?regions.reduce((a,x)=>a+x.support,0)/regions.length:regions.reduce((a,x,r)=>a+x.support*REGIONS[r].pop,0)/totalPop;
+  const min=Math.min(...regions.map(x=>x.support));
+  return{regions,global,min,passes:global>=.6&&min>=.5};
+}
+if(typeof module!=='undefined')module.exports={NEED_SHORT,EVENT_NAMES,PACKAGES,NEEDS,REGIONS,simulate,draftPlan,vote,regionNeed,localPlan};
+
+{
+const COL=['--c0','--c1','--c2','--c3','--c4','--c5','--c6','--c7'].map(v=>`var(${v})`);
+const SHORT={nam:'N. America',lac:'Latin America',eur:'Europe',nawa:'N. Africa & W. Asia',ssa:'Sub-Saharan Africa',cas:'Central Asia',sas:'South Asia',eas:'East Asia',sea:'Southeast Asia',oce:'Oceania'};
+const POS={nam:[-100,45,'a'],lac:[-60,-12,'b'],eur:[16,52,'a'],nawa:[38,27,'l'],ssa:[22,-4,'b'],cas:[64,50,'a'],sas:[78,21,'b'],eas:[112,38,'a'],sea:[118,0,'r'],oce:[138,-26,'b']};
+const LAND=[[[-168,66],[-140,70],[-95,72],[-80,62],[-60,55],[-52,47],[-70,42],[-76,35],[-81,25],[-97,25],[-97,18],[-87,15],[-83,9],[-79,8],[-92,15],[-105,20],[-112,29],[-118,33],[-124,40],[-124,48],[-135,58],[-150,60],[-165,60]],[[-50,60],[-42,60],[-20,70],[-20,80],[-60,82],[-70,76],[-55,70]],[[-79,8],[-60,10],[-50,0],[-35,-6],[-40,-22],[-48,-28],[-58,-38],[-65,-42],[-68,-52],[-74,-50],[-72,-35],[-71,-18],[-81,-5],[-78,2]],[[-10,36],[-9,43],[-2,44],[-5,48],[2,51],[8,54],[10,57],[5,60],[6,62],[15,69],[28,71],[40,67],[40,60],[30,55],[30,45],[28,41],[23,37],[20,40],[15,38],[12,42],[8,44],[3,42],[-5,36]],[[-5,50],[1,51],[-2,56],[-5,58],[-6,55]],[[-17,15],[-17,21],[-9,32],[-5,36],[10,37],[11,33],[20,31],[32,31],[34,28],[43,12],[51,12],[42,-2],[40,-15],[35,-24],[32,-29],[20,-35],[18,-29],[12,-18],[13,-6],[9,0],[9,4],[-8,4],[-13,8]],[[44,-25],[47,-25],[50,-15],[49,-12],[44,-17]],[[28,41],[36,36],[35,32],[43,13],[52,17],[57,22],[60,25],[67,24],[72,20],[77,8],[80,13],[88,22],[92,22],[98,16],[100,13],[103,1],[106,10],[109,13],[108,21],[117,23],[122,30],[120,36],[122,40],[127,40],[129,35],[130,43],[141,52],[160,60],[180,68],[180,72],[140,72],[110,77],[70,73],[60,69],[40,67],[40,60],[30,55],[30,45]],[[130,31],[135,34],[140,36],[142,40],[141,45],[139,40],[133,35]],[[109,1],[115,5],[119,5],[118,1],[116,-4],[110,-3]],[[95,5],[100,1],[106,-6],[102,-4]],[[131,-1],[141,-3],[150,-10],[141,-9],[136,-5]],[[120,18],[122,18],[126,7],[122,7]],[[114,-22],[122,-18],[130,-12],[137,-12],[142,-11],[146,-19],[153,-26],[150,-37],[141,-38],[135,-35],[131,-31],[115,-34]],[[172,-34],[178,-38],[174,-41],[167,-46],[171,-44]]];
+const TEMPL=[["The well ran dry again, so we bought water we can't really afford.","Rice cost more at the market today than last month.","The children skipped breakfast twice this week."],["Waited six hours at the clinic and they ran out of medicine.","My mother needs a specialist and the nearest one is two days away.","Couldn't afford the prescription, so I'm splitting the pills."],["Rent went up again; half my pay goes to it now.","Three families share this flat and the roof leaks.","We were told to leave by the end of the month."],["Lost my shift work. Looking for anything that pays daily.","I work two jobs and still can't save.","The factory closed and nobody here is hiring."],["My daughter's class has sixty students and one teacher.","The signal is too weak for my son to do homework online.","I want to learn a trade, but the course costs too much."],["The power cut out four times today.","Heating costs more than food this month.","We cook with wood because gas is too expensive."],["The heat made it impossible to work outside after noon.","Floodwater reached our door last night.","The rains came late and the crop failed."],["Someone was robbed on our street again; the police never came.","Had to pay a bribe to get a permit.","My court date was postponed for the third time."]];
+const MODE_TXT={people:'One budget, weighted by people: bigger regions shape it more. Everyone votes on the same plan.',regions:'One budget, each of the ten regions counts equally regardless of size. One region, one vote.',hybrid:'60% of the budget follows the people-weighted plan below; each region spends the other 40% on its own top needs.'};
+const MODE_NAME={people:'A single people-weighted plan',regions:'A single region-weighted plan',hybrid:'A shared core plus local top-ups'};
+const START=Date.UTC(2027,0,1), TOTAL=REGIONS.reduce((a,g)=>a+g.pop,0);
+const $=id=>document.getElementById(id);
+let seed=2027, sim=simulate(seed), day=365, mode='people', timer=null, hoverR=null;
+const pct=x=>(x*100).toFixed(x>=.995||x<.1?0:1)+'%';
+const dateOf=d=>new Date(START+(d-1)*864e5).toLocaleDateString('en-US',{month:'long',day:'numeric',timeZone:'UTC'});
+const topK=v=>v.indexOf(Math.max(...v));
+const legendHTML=NEED_SHORT.map((n,k)=>`<span><i class="sw" style="background:${COL[k]}"></i>${n}</span>`).join('');
+$('legend').innerHTML=legendHTML;
+function globalShare(d){const v=new Array(NEEDS.length).fill(0);sim.share[d].forEach((row,r)=>row.forEach((x,k)=>v[k]+=x*REGIONS[r].pop/TOTAL));return v}
+function rowsHTML(items,max,cls=''){return items.map(it=>`<div class="row ${cls}"><span>${it.sw!=null?`<i class="sw" style="background:${COL[it.sw]}"></i>`:''}${it.label}</span><div class="track">${it.tick?'<i class="tick"></i>':''}<div class="bar" style="width:${Math.min(100,it.v/max*100)}%;background:${it.color||COL[it.sw]}"></div></div><span class="v">${pct(it.v)}</span></div>`).join('')}
+function drawMap(){
+  const s=$('mapsvg'),W=s.clientWidth,H=s.clientHeight;if(!W)return;
+  const lon0=-170,lon1=180,lat0=76,lat1=-52, sc=Math.min(W/(lon1-lon0),H/(lat0-lat1)), ox=(W-(lon1-lon0)*sc)/2, oy=(H-(lat0-lat1)*sc)/2;
+  const P=(lo,la)=>[ox+(lo-lon0)*sc,oy+(lat0-la)*sc];
+  const narrow=W<520, rmax=Math.max(14,sc*20), d=day-1, out=[];
+  for(let lo=-150;lo<=180;lo+=30){const[a,b]=P(lo,lat0),[,c]=P(lo,lat1);out.push(`<line x1="${a}" y1="${b}" x2="${a}" y2="${c}" stroke="var(--line)"/>`)}
+  for(let la=-30;la<=60;la+=30){const[a,b]=P(lon0,la),[c]=P(lon1,la);out.push(`<line x1="${a}" y1="${b}" x2="${c}" y2="${b}" stroke="var(--line)"/>`)}
+  for(const poly of LAND)out.push(`<polygon points="${poly.map(p=>P(p[0],Math.min(p[1],lat0)).map(n=>n.toFixed(1)).join(',')).join(' ')}" fill="var(--land)" stroke="none"/>`);
+  REGIONS.forEach((g,r)=>{const[x,y]=P(POS[g.id][0],POS[g.id][1]),rad=rmax*Math.sqrt(g.pop/2083),k=topK(sim.share[d][r]),pos=POS[g.id][2];
+    let lx=x,ly=y+rad+15,anc='middle';if(pos==='a')ly=y-rad-(narrow?7:21);if(pos==='l'){lx=x-rad-6;ly=y-4;anc='end'}if(pos==='r'){lx=x+rad+6;ly=y-4;anc='start'}
+    out.push(`<g data-r="${r}" tabindex="0" role="button" aria-label="${g.name}: top need ${NEEDS[k]}" style="cursor:pointer"><circle cx="${x}" cy="${y}" r="${Math.max(rad+8,22)}" fill="transparent"/><circle cx="${x}" cy="${y}" r="${rad}" fill="${COL[k]}" stroke="var(--surf)" stroke-width="2" opacity="${hoverR==null||hoverR===r?1:.45}"/>
+    ${narrow?'':`<text x="${lx}" y="${ly}" text-anchor="${anc}" font-size="13" font-weight="600" fill="var(--ink)">${SHORT[g.id]}</text><text x="${lx}" y="${ly+15}" text-anchor="${anc}" font-size="12" fill="var(--ink2)">${NEED_SHORT[k]} · ${pct(sim.share[d][r][k])}</text>`}</g>`)});
+  if(hoverR!=null){const g=REGIONS[hoverR],[x,y]=P(POS[g.id][0],POS[g.id][1]),v=sim.share[d][hoverR],ord=v.map((x,k)=>k).sort((a,b)=>v[b]-v[a]).slice(0,4);
+    const bw=190,bh=24+ord.length*18,bx=Math.min(Math.max(8,x-bw/2),W-bw-8),by=y>H/2?Math.max(8,y-rmax-bh-10):Math.min(H-bh-8,y+rmax+10);
+    out.push(`<g pointer-events="none"><rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="8" fill="var(--bg)" stroke="var(--line)"/><text x="${bx+10}" y="${by+18}" font-size="13" font-weight="600" fill="var(--ink)">${g.name}</text>${ord.map((k,i)=>`<rect x="${bx+10}" y="${by+27+i*18}" width="10" height="10" rx="2" fill="${COL[k]}"/><text x="${bx+26}" y="${by+36+i*18}" font-size="12" fill="var(--ink)">${NEED_SHORT[k]} ${pct(v[k])}</text>`).join('')}</g>`)}
+  s.innerHTML=out.join('');
+}
+function drawYear(){
+  const s=$('yearsvg'),W=s.clientWidth,H=s.clientHeight;if(!W)return;
+  const m={l:W<520?34:44,r:12,t:12,b:28},iw=W-m.l-m.r,ih=H-m.t-m.b;
+  if(!sim.g)sim.g=sim.share.map((_,d)=>globalShare(d));
+  const ymax=Math.ceil(Math.max(...sim.g.flat())*20)/20, X=d=>m.l+d/364*iw, Y=v=>m.t+ih-v/ymax*ih, out=[];
+  for(let v=0;v<=ymax+1e-9;v+=.05){out.push(`<line x1="${m.l}" x2="${W-m.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="${m.l-6}" y="${Y(v)+4}" text-anchor="end" font-size="12" fill="var(--mute)">${Math.round(v*100)}%</text>`)}
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],md=[0,31,59,90,120,151,181,212,243,273,304,334];
+  md.forEach((dd,i)=>{if(W<520&&i%3)return;out.push(`<text x="${X(dd)}" y="${H-8}" font-size="12" fill="var(--mute)">${months[i]}</text>`)});
+  for(let k=0;k<NEEDS.length;k++)out.push(`<path d="${sim.g.map((v,d)=>(d?'L':'M')+X(d).toFixed(1)+','+Y(v[k]).toFixed(1)).join('')}" fill="none" stroke="${COL[k]}" stroke-width="2" stroke-linejoin="round"/>`);
+  out.push(`<line x1="${X(day-1)}" x2="${X(day-1)}" y1="${m.t}" y2="${m.t+ih}" stroke="var(--ink)" stroke-width="1.5"/>`);
+  s.innerHTML=out.join('');s.dataset.geo=JSON.stringify({l:m.l,iw});
+}
+function sample(d){const rnd=mulberry32(seed*1000+d),out=[];
+  for(let i=0;i<3;i++){let u=rnd()*TOTAL,r=0;while(u>REGIONS[r].pop){u-=REGIONS[r].pop;r++}
+    const act=sim.events.find(e=>e.r===r&&d>=e.start&&d<e.start+e.len);let k;
+    if(act&&rnd()<.6)k=act.k;else{let v=rnd(),row=sim.share[d][r];k=0;while(k<row.length-1&&v>row[k]){v-=row[k];k++}}
+    out.push({r,k,t:TEMPL[k][Math.floor(rnd()*3)]})}
+  return out}
+function render(){
+  const d=day-1, cum=sim.cum[d], planMode=mode==='regions'?'regions':'people', plan=draftPlan(cum,planMode), v=vote(plan,cum,mode);
+  $('dlab').textContent=`Page ${day} · ${dateOf(day)}`;$('d').value=day;
+  $('pno').textContent=`Page ${day} of 365`;$('pdate').textContent=dateOf(day)+', 2027';
+  $('writers').textContent=(TOTAL/1000).toFixed(2)+' billion';
+  const pg=TOTAL*1e6*day;$('pages').textContent=pg>=1e12?(pg/1e12).toFixed(2)+' trillion':(pg/1e9).toFixed(1)+' billion';
+  const gs=globalShare(d),ord=gs.map((x,k)=>k).sort((a,b)=>gs[b]-gs[a]);
+  $('today').innerHTML=rowsHTML(ord.map(k=>({label:NEED_SHORT[k],v:gs[k],sw:k})),gs[ord[0]]);
+  const act=sim.events.filter(e=>d>=e.start&&d<e.start+e.len);
+  $('events').textContent=act.length?'Crises today: '+act.map(e=>`${e.name.toLowerCase()} in ${SHORT[REGIONS[e.r].id]}`).join('; ')+'.':'No major crisis today.';
+  $('entries').innerHTML=sample(d).map(e=>`<li>“${e.t}”<small><i class="sw" style="background:${COL[e.k]}"></i>${NEED_SHORT[e.k]} · ${SHORT[REGIONS[e.r].id]}</small></li>`).join('');
+  $('planmode').textContent=MODE_TXT[mode];
+  const po=plan.map((x,k)=>k).sort((a,b)=>plan[b]-plan[a]),scale=mode==='hybrid'?.6:1;
+  $('plan').innerHTML=rowsHTML(po.map(k=>({label:PACKAGES[k],v:plan[k]*scale,sw:k})),plan[po[0]]*scale,'wide');
+  $('approval').textContent=pct(v.global);
+  const fails=v.regions.map((x,r)=>x.support<=.5?SHORT[REGIONS[r].id]:null).filter(Boolean);
+  $('verdict').textContent=(v.passes?'✓ Passes. ':'✕ Fails. ')+(fails.length?`No majority in ${fails.length>1?fails.slice(0,-1).join(', ')+' and '+fails[fails.length-1]:fails[0]}.`:(v.global>=.6?'Every region backs it.':'Under 60% worldwide.'));
+  const vo=v.regions.map((x,r)=>r).sort((a,b)=>v.regions[b].support-v.regions[a].support);
+  $('vote').innerHTML=rowsHTML(vo.map(r=>({label:SHORT[REGIONS[r].id],v:v.regions[r].support,color:'var(--ink2)',tick:true})),1);
+  const f3=fails.slice(0,3),nm=f3.length>1?f3.slice(0,-1).join(', ')+' and '+f3[f3.length-1]:f3.join('');
+  $('finding').textContent=`${MODE_NAME[mode]} wins ${pct(v.global)} of the world`+(v.passes?' and a majority in every region':fails.length?` but loses ${nm}${fails.length>3?' and others':''}`:' but falls short of 60%');
+  $('tbl').innerHTML=`<table><thead><tr><th>Region</th><th>People</th>${NEED_SHORT.map(n=>`<th>${n}</th>`).join('')}<th>Support</th></tr></thead><tbody>${REGIONS.map((g,r)=>`<tr><td>${g.name}</td><td>${(g.pop/1000).toFixed(2)} bn</td>${regionNeed(cum[r]).map(x=>`<td>${pct(x)}</td>`).join('')}<td>${pct(v.regions[r].support)}</td></tr>`).join('')}</tbody></table>`;
+  drawMap();drawYear();
+}
+const roMap=new ResizeObserver(drawMap);roMap.observe($('mapsvg'));
+const roYear=new ResizeObserver(drawYear);roYear.observe($('yearsvg'));
+$('d').addEventListener('input',e=>{day=+e.target.value;render()});
+document.querySelectorAll('[data-m]').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.m;document.querySelectorAll('[data-m]').forEach(x=>x.setAttribute('aria-pressed',x===b));render()}));
+$('reroll').addEventListener('click',()=>{seed=1+Math.floor(Math.random()*99999);sim=simulate(seed);render()});
+$('play').addEventListener('click',()=>{if(timer){clearInterval(timer);timer=null;$('play').textContent='Play';return}
+  if(day>=365)day=1;$('play').textContent='Pause';timer=setInterval(()=>{day=Math.min(365,day+2);render();if(day>=365){clearInterval(timer);timer=null;$('play').textContent='Play'}},50)});
+const mapSvg=$('mapsvg');
+const pick=e=>{const g=e.target.closest('g[data-r]');const r=g?+g.dataset.r:null;if(r!==hoverR){hoverR=r;drawMap()}};
+mapSvg.addEventListener('pointermove',pick);mapSvg.addEventListener('click',pick);mapSvg.addEventListener('pointerleave',()=>{hoverR=null;drawMap()});
+mapSvg.addEventListener('focusin',e=>{const g=e.target.closest('g[data-r]');if(g){hoverR=+g.dataset.r;drawMap();mapSvg.querySelector(`g[data-r="${hoverR}"]`)?.focus()}});
+const ys=$('yearsvg'),tip=$('tip');
+ys.addEventListener('pointermove',e=>{const geo=JSON.parse(ys.dataset.geo||'{}'),rect=ys.getBoundingClientRect(),x=e.clientX-rect.left,dd=Math.round((x-geo.l)/geo.iw*364);if(dd<0||dd>364){tip.style.display='none';return}
+  const v=sim.g[dd],o=v.map((_,k)=>k).sort((a,b)=>v[b]-v[a]);
+  tip.innerHTML=`<b>${dateOf(dd+1)}</b>`+o.map(k=>`<div><i class="sw" style="background:${COL[k]}"></i>${NEED_SHORT[k]} <span style="float:right;margin-left:12px">${pct(v[k])}</span></div>`).join('');
+  tip.style.display='block';tip.style.left=Math.min(x+14,rect.width-190)+'px';tip.style.top='10px'});
+ys.addEventListener('pointerleave',()=>tip.style.display='none');
+ys.addEventListener('click',e=>{const geo=JSON.parse(ys.dataset.geo||'{}'),x=e.clientX-ys.getBoundingClientRect().left,dd=Math.round((x-geo.l)/geo.iw*364);if(dd>=0&&dd<=364){day=dd+1;render()}});
+render();
+}
+</script>
+</body>
+</html>

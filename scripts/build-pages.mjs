@@ -12,6 +12,7 @@ await mkdir(out, { recursive: true });
 const demos = [
   'helios_ai_landing_page.html',
   'helios_hippie_landing.html',
+  'world_plan_simulator.html',
   'helios_100_frontend_demo.html',
   'helios-unified.html',
   'communal_science_lab_webgpu (1).html',
@@ -41,6 +42,7 @@ index = index.replaceAll('src="/public/', 'src="./public/');
 replaceRequired('src="/embed/helios-ai"', 'src="./helios_ai_landing_page.html"');
 replaceRequired('src="/embed/hippie"', 'src="./helios_hippie_landing.html"');
 replaceRequired('src="/embed/notion"', 'src="./helios_notion_preview.html"');
+replaceRequired('src="/embed/world-plan"', 'src="./world_plan_simulator.html"');
 replaceRequired('src="/embed/goals"', 'src="./helios_100_frontend_demo.html"');
 replaceRequired('src="/embed/unified"', 'src="./helios-unified.html"');
 replaceRequired('src="/embed/dynamicland"', 'src="./communal_science_lab_webgpu%20(1).html"');

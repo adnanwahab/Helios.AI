@@ -47,6 +47,7 @@ Helios AI is a civic tool that reads what everyone in a community says they need
 - `index.html` — merged entry page with tabs that switch between the embedded pages
 - `helios_ai_landing_page.html` — the Helios AI landing page
 - `helios_hippie_landing.html` — HeliosAI hippie-style landing page ("8 billion people, one big circle")
+- `world_plan_simulator.html` — World Plan Simulator: a synthetic year of daily journal pages from 8.2 billion people, turned into needs, a plan and a regional vote (served at `/embed/world-plan`)
 - `helios_100_frontend_demo.html` — 100 Shared Goals demo
 - `helios_notion_preview.html` — the plan as a Notion document, synced through the Notion API ([docs](docs/notion.md))
 - `helios-unified.html` — Helios Unified (Universe · Communal Science Lab · Futures)
