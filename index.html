@@ -26,7 +26,7 @@
     .app {
       height: 100%;
       display: grid;
-      grid-template-rows: auto 1fr;
+      grid-template-rows: auto 1fr auto;
       grid-template-columns: minmax(0, 1fr);
     }
 
@@ -99,6 +99,42 @@
 
     .view.active {
       display: block;
+    }
+
+    .byline {
+      display: flex;
+      justify-content: center;
+      padding: 8px 14px 10px;
+      border-top: 1px solid var(--line);
+      background: #0e1727;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: .04em;
+    }
+
+    .byline a { text-decoration: none; display: inline-flex; }
+
+    .byline span {
+      display: inline-block;
+      white-space: pre;
+      color: hsl(calc(var(--i) * 30deg) 100% 65%);
+      text-shadow: 0 0 8px currentColor;
+      animation: hue-cycle 3s linear infinite, bob 1.2s ease-in-out infinite;
+      animation-delay: 0s, calc(var(--i) * 0.08s);
+    }
+
+    @keyframes hue-cycle {
+      from { filter: hue-rotate(0deg); }
+      to   { filter: hue-rotate(360deg); }
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-3px); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .byline span { animation: hue-cycle 3s linear infinite; }
     }
 
     @media (max-width: 900px) {
@@ -192,6 +228,10 @@
         loading="lazy"
       ></iframe>
     </main>
+
+    <footer class="byline">
+      <a href="https://happybearlandia.fly.dev/" target="_blank" rel="noopener" aria-label="by happybear"><span style="--i:0">b</span><span style="--i:1">y</span><span style="--i:2"> </span><span style="--i:3">h</span><span style="--i:4">a</span><span style="--i:5">p</span><span style="--i:6">p</span><span style="--i:7">y</span><span style="--i:8">b</span><span style="--i:9">e</span><span style="--i:10">a</span><span style="--i:11">r</span></a>
+    </footer>
   </div>
 
   <script>
