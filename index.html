@@ -156,6 +156,7 @@
       <nav class="tabs" aria-label="Choose page">
         <button class="tab" id="tab-helios-ai" type="button" role="tab" aria-selected="true" aria-controls="view-helios-ai">HELIOS AI Landing Page</button>
         <button class="tab" id="tab-hippie" type="button" role="tab" aria-selected="false" aria-controls="view-hippie">HeliosAI · Hippie</button>
+        <button class="tab" id="tab-notion" type="button" role="tab" aria-selected="false" aria-controls="view-notion">Plan · Notion</button>
         <button class="tab" id="tab-demo" type="button" role="tab" aria-selected="false" aria-controls="view-demo">100 Shared Goals</button>
         <button class="tab" id="tab-unified" type="button" role="tab" aria-selected="false" aria-controls="view-unified">Helios Unified</button>
         <button class="tab" id="tab-lab" type="button" role="tab" aria-selected="false" aria-controls="view-lab">Dynamicland (Local)</button>
@@ -183,6 +184,14 @@
         class="view"
         title="HeliosAI Hippie Landing Page"
         src="/embed/hippie"
+        loading="lazy"
+      ></iframe>
+
+      <iframe
+        id="view-notion"
+        class="view"
+        title="Helios plan as a Notion document"
+        src="/embed/notion"
         loading="lazy"
       ></iframe>
 
@@ -239,6 +248,7 @@
       lab: document.getElementById('tab-lab'),
       heliosAi: document.getElementById('tab-helios-ai'),
       hippie: document.getElementById('tab-hippie'),
+      notion: document.getElementById('tab-notion'),
       demo: document.getElementById('tab-demo'),
       unified: document.getElementById('tab-unified'),
       pensieve: document.getElementById('tab-pensieve'),
@@ -249,6 +259,7 @@
       lab: document.getElementById('view-lab'),
       heliosAi: document.getElementById('view-helios-ai'),
       hippie: document.getElementById('view-hippie'),
+      notion: document.getElementById('view-notion'),
       demo: document.getElementById('view-demo'),
       unified: document.getElementById('view-unified'),
       pensieve: document.getElementById('view-pensieve'),
@@ -266,6 +277,7 @@
     tabs.lab.addEventListener('click', () => activate('lab'));
     tabs.heliosAi.addEventListener('click', () => activate('heliosAi'));
     tabs.hippie.addEventListener('click', () => activate('hippie'));
+    tabs.notion.addEventListener('click', () => activate('notion'));
     tabs.demo.addEventListener('click', () => activate('demo'));
     tabs.unified.addEventListener('click', () => activate('unified'));
     tabs.pensieve.addEventListener('click', () => activate('pensieve'));

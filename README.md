@@ -48,6 +48,7 @@ Helios AI is a civic tool that reads what everyone in a community says they need
 - `helios_ai_landing_page.html` — the Helios AI landing page
 - `helios_hippie_landing.html` — HeliosAI hippie-style landing page ("8 billion people, one big circle")
 - `helios_100_frontend_demo.html` — 100 Shared Goals demo
+- `helios_notion_preview.html` — the plan as a Notion document, synced through the Notion API ([docs](docs/notion.md))
 - `helios-unified.html` — Helios Unified (Universe · Communal Science Lab · Futures)
 - `communal_science_lab_webgpu (1).html` — the Communal Science Lab (WebGPU)
 
