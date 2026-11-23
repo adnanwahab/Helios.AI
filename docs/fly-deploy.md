@@ -35,11 +35,9 @@ fly config show -a helios-ai-laws
 Review `fly.toml`: it must preserve the existing `helios_data` mount at `/data` and the HTTP service's `internal_port = 8080`. The memory pinning helper (also called by `scripts/deploy-fly-safe.sh`) **fails closed** if those values are missing or multiple VM blocks are present. It edits only VM memory to `memory_mb = 1024`, keeping other Fly config fields intact and saving a private local backup. The repo intentionally does not track the actual `fly.toml` because it must be downloaded from the running app. **Run the helper before every future deploy** so an older saved `512 MB` VM setting cannot silently come back. `fly config save` may omit build-only settings. If the saved `[build]` stanza pins an old `image` that conflicts with Dockerfile builds, remove only that `image` field; leave mounts, services, checks and the app name unchanged.
 
 ```sh
-# The dot makes the build context explicit and loads THIS folder's .dockerignore.
-fly deploy . -a helios-ai-laws --config fly.toml --dockerfile Dockerfile
-fly status -a helios-ai-laws
-fly checks list -a helios-ai-laws
-curl -i https://helios-ai-laws.fly.dev/api/health
+# This wrapper pins memory, selects the repository as Docker build context,
+# checks old build-image settings, and verifies health after deploying.
+bash scripts/deploy-fly-safe.sh
 ```
 
 Expect a small build context, a healthy listener on `0.0.0.0:8080`, passing checks, and HTTP 200 from `/api/health`. Health now reports the actual database adapter (`pglite` or `supabase-postgres`) and actual runtime (`fly-machine`, `netlify-functions`, or `node-server`), not hardcoded labels. With the PGlite Fly configuration in this guide, expect `"storage":"pglite"` and `"runtime":"fly-machine"`. A successful health check also queries the catalog from the database.
