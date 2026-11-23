@@ -12,7 +12,7 @@ await mkdir(output, {recursive: true});
 const remote = process.env.PR_PREVIEW_URL?.trim() || '';
 if (remote) {
   const u = new URL(remote);
-  if (u.protocol !== 'https:' || !/^deploy-preview-\\d+--heliosailol\\.netlify\\.app$/.test(u.hostname)) {
+  if (u.protocol !== 'https:' || !/^deploy-preview-[0-9]+--heliosailol[.]netlify[.]app$/.test(u.hostname)) {
     throw new Error('Expected an HTTPS HeliosAI Netlify deploy-preview URL');
   }
 }
