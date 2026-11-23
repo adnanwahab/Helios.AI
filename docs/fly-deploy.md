@@ -11,16 +11,16 @@ Helios uses an allowlist in the repository's `.dockerignore`, so the context inc
 Start from a **clean checkout** of `adnanwahab/Helios.AI`. If an existing local branch cannot fast-forward, do not reset or delete local changes; clone to a separate folder instead.
 
 ```sh
-# Set REPO to your clean checkout, rather than Documents/GitHub.
-REPO="$HOME/Documents/GitHub/Helios.AI-recovery.gbNzGx"
+# A fresh checkout avoids local branch conflicts and nested repositories.
+REPO="$(mktemp -d "$HOME/Helios.AI-deploy.XXXXXX")"
+git clone --depth 1 --branch main https://github.com/adnanwahab/Helios.AI.git "$REPO"
 cd "$REPO"
 pwd
 git rev-parse --show-toplevel
 test -f Dockerfile && test -f .dockerignore && test -f netlify.toml && echo "Correct Docker context"
-git pull --ff-only origin main
 ```
 
-If your checkout uses a different name, update `REPO` accordingly. **Before deploying, `pwd` and `git rev-parse --show-toplevel` must point to the same HeliosAI repository root**. The `test` line must print `Correct Docker context`; otherwise, stop.
+If you already have a clean checkout, you can `cd` directly into its repository root instead of cloning again. **Before deploying, `pwd` and `git rev-parse --show-toplevel` must point to the same HeliosAI repository root**. The `test` line must print `Correct Docker context`; otherwise, stop.
 
 ## Preserve Fly config and deploy
 
