@@ -48,6 +48,7 @@ function replaceRequired(from, to) {
 // work in the original repo and in forks regardless of repository name.
 index = index.replaceAll('href="/public/', 'href="./public/');
 index = index.replaceAll('src="/public/', 'src="./public/');
+replaceRequired('href="/welcome"', 'href="./welcome.html"');
 replaceRequired('src="/embed/helios-ai"', 'src="./helios_ai_landing_page.html"');
 replaceRequired('src="/embed/hippie"', 'src="./helios_hippie_landing.html"');
 replaceRequired('src="/embed/fork"', 'src="./helios_fork.html"');
@@ -78,6 +79,11 @@ if (index.includes('src="/embed/') || index.includes('src="/proxy/') || index.in
   throw new Error('Server-only iframe route remains in Pages index');
 }
 await writeFile(join(out, 'index.html'), index);
+// All welcome links remain under a fork's GitHub Pages base path.
+const welcome = (await readFile(join(root, 'welcome.html'), 'utf8'))
+  .replaceAll('href="/laws"', 'href="./helios_100_frontend_demo.html"')
+  .replaceAll('href="/"', 'href="./index.html"');
+await writeFile(join(out, 'welcome.html'), welcome);
 
 // The server normally fetches and rewrites this third-party page. GitHub
 // Pages cannot proxy it and the remote site may disallow iframe embedding.
