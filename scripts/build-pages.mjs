@@ -64,7 +64,7 @@ index = index.replace('</style>', [
   '  @media (max-width:900px) { .pages-live-link { width:100%; } }',
   '</style>'
 ].join('\n'));
-index = index.replace('Helios.AI · Merged index', 'Helios.AI · Static preview');
+index = index.replace('<h1 class="title">', '<h1 class="title">Static preview · ');
 
 if (index.includes('src="/embed/') || index.includes('src="/proxy/') || index.includes('src="/signup')) {
   throw new Error('Server-only iframe route remains in Pages index');
