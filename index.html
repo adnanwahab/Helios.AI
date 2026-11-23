@@ -74,6 +74,9 @@
       max-width: 250px;
     }
 
+    .welcome-start { color:#09221c; background:var(--active); border-radius:999px; padding:10px 15px; font-size:13px; font-weight:800; white-space:nowrap; text-decoration:none; }
+    .welcome-start:focus-visible { outline:3px solid #ffdfa0; outline-offset:3px; }
+
     .tabs {
       display: flex;
       gap: 8px;
@@ -180,6 +183,7 @@
   <div class="app">
     <header class="topbar">
       <h1 class="title">Please vote. Eight billion people can't all be wrong. Actually, never mind.</h1>
+      <a class="welcome-start" href="/welcome" aria-label="New here? Read the HeliosAI participation guide">New here? Start here</a>
       <nav class="tabs" aria-label="Choose page">
         <button class="tab" id="tab-helios-ai" type="button" role="tab" aria-selected="true" aria-controls="view-helios-ai">HELIOS AI Landing Page</button>
         <button class="tab" id="tab-hippie" type="button" role="tab" aria-selected="false" aria-controls="view-hippie">HeliosAI · Hippie</button>
