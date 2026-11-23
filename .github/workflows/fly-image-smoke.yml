@@ -1,0 +1,35 @@
+name: Helios Fly image smoke
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  fly-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build deployment image
+        run: docker build --file Dockerfile --tag helios-ai-fly:test .
+      - name: Start in Fly-like environment and probe health endpoint
+        run: |
+          mkdir -p "$RUNNER_TEMP/helios-data"
+          docker run -d --name helios-fly-smoke \
+            -v "$RUNNER_TEMP/helios-data:/data" \
+            -e FLY_APP_NAME=helios-ai-laws \
+            -e HELIOS_PGLITE_DIR=/data/pglite \
+            -e PORT=8080 -e HOST=0.0.0.0 \
+            -p 127.0.0.1:18080:8080 helios-ai-fly:test
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:18080/api/health | grep -q '"seedCount":100'; then
+              echo "Healthy Fly-like container!"
+              exit 0
+            fi
+            sleep 2
+          done
+          docker logs helios-fly-smoke
+          exit 1
+      - name: Print container logs on failure
+        if: failure()
+        run: docker logs helios-fly-smoke || true
+      - name: Clean up container
+        if: always()
+        run: docker rm -f helios-fly-smoke || true

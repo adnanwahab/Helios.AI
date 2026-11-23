@@ -1,0 +1,17 @@
+# Never ship local secrets, data, Git state, or generated artifacts.
+.git
+.github
+node_modules
+dist
+.data
+.env
+.env.*
+!.env.example
+*.sqlite
+*.sqlite-*
+*.db
+*.log
+coverage
+playwright-report
+test-results
+.DS_Store
