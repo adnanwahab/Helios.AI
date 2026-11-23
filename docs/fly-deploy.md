@@ -27,21 +27,20 @@ If you already have a clean checkout, you can `cd` directly into its repository 
 ```sh
 fly auth whoami
 fly config save -a helios-ai-laws
+# The safe deploy wrapper will pin the 1 GB VM setting before deployment.
 fly volumes list -a helios-ai-laws
 fly config show -a helios-ai-laws
 ```
 
-Review `fly.toml`: it must preserve the existing `helios_data` mount at `/data` and the HTTP service's `internal_port = 8080`. `fly config save` may omit build-only settings. If the saved `[build]` stanza pins an old `image` that conflicts with Dockerfile builds, remove only that `image` field; leave mounts, services, checks and the app name unchanged.
+Review `fly.toml`: it must preserve the existing `helios_data` mount at `/data` and the HTTP service's `internal_port = 8080`. The memory pinning helper (also called by `scripts/deploy-fly-safe.sh`) **fails closed** if those values are missing or multiple VM blocks are present. It edits only VM memory to `memory_mb = 1024`, keeping other Fly config fields intact and saving a private local backup. The repo intentionally does not track the actual `fly.toml` because it must be downloaded from the running app. **Run the helper before every future deploy** so an older saved `512 MB` VM setting cannot silently come back. `fly config save` may omit build-only settings. If the saved `[build]` stanza pins an old `image` that conflicts with Dockerfile builds, remove only that `image` field; leave mounts, services, checks and the app name unchanged.
 
 ```sh
-# The dot makes the build context explicit and loads THIS folder's .dockerignore.
-fly deploy . -a helios-ai-laws --config fly.toml --dockerfile Dockerfile
-fly status -a helios-ai-laws
-fly checks list -a helios-ai-laws
-curl -i https://helios-ai-laws.fly.dev/api/health
+# This wrapper pins memory, selects the repository as Docker build context,
+# checks old build-image settings, and verifies health after deploying.
+bash scripts/deploy-fly-safe.sh
 ```
 
-Expect a small build context, a healthy listener on `0.0.0.0:8080`, passing checks, and HTTP 200 from `/api/health`.
+Expect a small build context, a healthy listener on `0.0.0.0:8080`, passing checks, and HTTP 200 from `/api/health`. Health now reports the actual database adapter (`pglite` or `supabase-postgres`) and actual runtime (`fly-machine`, `netlify-functions`, or `node-server`), not hardcoded labels. With the PGlite Fly configuration in this guide, expect `"storage":"pglite"` and `"runtime":"fly-machine"`. A successful health check also queries the catalog from the database.
 
 **Important:** A small Docker upload is not itself a cure for an existing Fly VM/Machines API timeout, old unhealthy Machine, or a Node.js out-of-memory crash. If an image builds successfully but the Machine replacement times out, check `fly machine status 8e7dd9c7600938 -a helios-ai-laws`, `fly scale show -a helios-ai-laws`, `fly volumes list -a helios-ai-laws`, and new logs before making further changes. Increasing RAM may be needed for PGlite, but preserve the attached volume. Do not repeatedly change secrets to fix a crashing image.
 

@@ -20,6 +20,7 @@ export async function createPGliteDatabase(dataDir) {
   await pg.waitReady;
   const normalize = result => ({rows: result.rows, rowCount: result.affectedRows ?? result.rows.length});
   return {
+    kind: 'pglite',
     async query(text, params = []) {
       return normalize(await pg.query(text, params));
     },

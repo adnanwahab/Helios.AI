@@ -20,6 +20,7 @@ export function createDatabase(env = process.env) {
   const ssl = env.SUPABASE_CA_CERT ? {ca: env.SUPABASE_CA_CERT, rejectUnauthorized: true} : {rejectUnauthorized: true};
   const pool = new pg.Pool({connectionString: connectionString(env), max: 2, idleTimeoutMillis: 10000, ssl});
   return {
+    kind: 'supabase-postgres',
     async query(text, params = []) {
       return normalize(await pool.query(text, params));
     },
