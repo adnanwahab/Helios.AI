@@ -13,6 +13,19 @@
 | `GET/POST /email/unsubscribe?id=…&token=…` | Confirmation page, and RFC 8058 one-click unsubscribe from mail apps |
 | `POST /api/email/inbound` | Resend `email.received` webhook (Svix signature required) |
 
+## Maintainer mailbox frame
+
+The merged homepage now includes a **Mail · Resend** tab, embedding `/embed/mail` (source: `helios_mail.html`). It lists up to 30 recent received emails from `email_inbound` and allows a maintainer to send plain-text messages through Resend.
+
+- `GET /api/email/mailbox` returns received messages and configuration status.
+- `POST /api/email/mailbox` sends a message using `{to, subject, text}` with Resend.
+- Both endpoints require `Authorization: Bearer <HELIOS_ADMIN_TOKEN>`. Sending also checks the request origin and is limited to 30 requests per hour.
+- The token is manually entered in the frame and held in memory only; it is never committed to source or browser storage.
+- `HELIOS_ADMIN_TOKEN` must be configured in Netlify as a server-side secret. The GitHub Pages mirror displays the frame, but sending and receiving require the live backend.
+- This is an operator mailbox, **not a public email composer**. Received email content is private; do not publish or expose the maintainer token. Emails display as plain text, never injected HTML.
+
+The inbound webhook still requires `RESEND_WEBHOOK_SECRET`, a configured receiving address, and a Resend `email.received` webhook. Receiving is not activated just by adding the frame.
+
 ## Setup
 
 1. **Sending domain.** In Resend, add and verify a domain you own (for example `helioshtml.com`) by adding the DNS records it shows.
