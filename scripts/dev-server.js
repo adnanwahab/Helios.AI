@@ -10,7 +10,7 @@ import {createRuntime} from '../src/runtime.js';
 
 const root = process.cwd();
 const dist = resolve(root, 'dist');
-const types = {'.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.svg': 'image/svg+xml', '.ico': 'image/x-icon'};
+const types = {'.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.ico': 'image/x-icon'};
 
 const toml = await readFile(join(root, 'netlify.toml'), 'utf8');
 const redirects = new Map([...toml.matchAll(/\[\[redirects\]\]\s*from\s*=\s*"([^"]+)"\s*to\s*=\s*"([^"]+)"/g)].map(m => [m[1], decodeURI(m[2])]));

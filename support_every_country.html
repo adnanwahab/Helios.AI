@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Support Every Country · Helios</title>
+<link rel="icon" href="/public/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@500;600&display=swap">
+<style>
+/* VOICE occasion: a proud, steady parade of flags for a screen or a stream
+   IDEA the big screen at an opening ceremony: one flag at a time, its name called beneath it
+   PICTURE the flag itself, large, waving and lit, over a haze of its own colours
+   COLOUR night stage #0b0d12, white ink, each flag's own colour for the rules beside the message
+   TYPE Anton for the called name, Inter for the message, counter and controls
+   LAYOUT flag centred, caption under it, counter top right, one control bar at the bottom; on a phone the name wraps to two lines and the bar stacks */
+:root{color-scheme:dark;--bg:#0b0d12;--ink:#f5f6f8;--mute:#a9afbc;--panel:#141821;--line:rgba(255,255,255,.16)}
+*{box-sizing:border-box;min-width:0}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden;-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:pointer}
+#fallback{position:fixed;display:none;object-fit:contain}
+#title{position:fixed;top:14px;left:max(16px,3vw);margin:0;font:600 clamp(15px,1.25vw,19px)/1.25 Inter,system-ui,sans-serif;letter-spacing:-.01em;transition:opacity .4s}
+#count{position:fixed;top:14px;right:max(16px,3vw);text-align:right;font:600 clamp(15px,1.3vw,24px)/1.25 Inter,system-ui,sans-serif;font-variant-numeric:tabular-nums;color:var(--mute);pointer-events:none}
+#count b{color:var(--ink);font-weight:600}
+#count small{display:block;font-size:13px;font-weight:500}
+#cap{position:fixed;text-align:center;pointer-events:none}
+.kick{display:flex;align-items:center;justify-content:center;gap:.7em;font:600 var(--ks,40px)/1.1 Inter,system-ui,sans-serif;letter-spacing:.3em;text-transform:uppercase;text-shadow:0 2px 8px rgba(0,0,0,.55)}
+.kick span{margin-right:-.3em}
+.kick i{flex:none;width:1.5em;height:max(2px,.07em);background:var(--acc,#fff);transition:background-color .4s}
+.kick.empty i{visibility:hidden}
+.names{display:grid;margin-top:var(--kg,20px)}
+.name{grid-area:1/1;margin:0;font:400 var(--ns,140px)/1.04 Anton,Impact,"Arial Narrow Bold",sans-serif;text-transform:uppercase;letter-spacing:.005em;text-wrap:balance;overflow-wrap:normal;text-shadow:0 .03em .14em rgba(0,0,0,.5);opacity:0}
+#bar{position:fixed;z-index:3;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(1080px,calc(100% - 24px));display:flex;align-items:center;gap:6px;padding:6px;background:rgba(18,21,29,.92);border:1px solid var(--line);border-radius:14px;transition:opacity .4s}
+.ib{flex:none;width:44px;height:44px;display:grid;place-items:center;padding:0;border:0;border-radius:10px;background:transparent;cursor:pointer}
+.ib:hover{background:rgba(255,255,255,.1)}
+.ib:active{background:rgba(255,255,255,.18)}
+.ib svg,.tb svg{width:22px;height:22px;fill:currentColor}
+#play{background:#fff;color:#0b0d12}
+#play:hover{background:#dfe2e9}
+.tb{flex:none;height:44px;padding:0 14px;display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;background:transparent;font-size:15px;font-weight:600;cursor:pointer;white-space:nowrap}
+.tb:hover{background:rgba(255,255,255,.08)}
+.tb[aria-expanded=true]{background:#fff;color:#0b0d12;border-color:#fff}
+.tb svg{width:18px;height:18px}
+:is(.ib,.tb,.chip,.tile,#msg,#q,#scrub):focus-visible{outline:2px solid #fff;outline-offset:2px}
+#scrub{flex:1;height:44px;margin:0 8px;background:transparent;-webkit-appearance:none;appearance:none;cursor:pointer}
+#scrub::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:linear-gradient(#fff,#fff) 0/var(--p,0%) 100% no-repeat,rgba(255,255,255,.24)}
+#scrub::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;margin-top:-7px;border:0;border-radius:50%;background:#fff}
+#scrub::-moz-range-track{height:4px;border-radius:2px;background:rgba(255,255,255,.24)}
+#scrub::-moz-range-progress{height:4px;border-radius:2px;background:#fff}
+#scrub::-moz-range-thumb{width:18px;height:18px;border:0;border-radius:50%;background:#fff}
+body.idle #bar,body.idle #title,body.clean #bar,body.clean #title{opacity:0;pointer-events:none}
+body.idle,body.idle #gl{cursor:none}
+.panel{position:fixed;z-index:5;background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 50px rgba(0,0,0,.5)}
+.panel h2{margin:0;font:600 19px/1.25 Inter,system-ui,sans-serif}
+#custom{right:max(12px,calc(50% - 540px));bottom:calc(var(--barh,70px) + 12px);width:min(430px,calc(100% - 24px));max-height:calc(100% - var(--barh,70px) - 40px);overflow:auto;padding:18px}
+.lab{display:block;margin:16px 0 8px;font-size:14px;font-weight:600;color:var(--mute)}
+#msg{width:100%;height:46px;padding:0 12px;border:1px solid rgba(255,255,255,.3);border-radius:10px;background:#0c0f15;font-size:16px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+#presets{margin-top:8px}
+.chip{height:44px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:transparent;font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap}
+.chip:hover{background:rgba(255,255,255,.08)}
+.chip[aria-pressed=true]{background:#fff;color:#0b0d12;border-color:#fff}
+.chip em{margin-left:6px;font-style:normal;opacity:.6;font-variant-numeric:tabular-nums}
+.keys{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:18px 0 0;font-size:14px;color:var(--mute)}
+.keys dt{color:var(--ink);font-weight:600}
+.keys dd{margin:0}
+.row{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+#grid{inset:0;display:grid;grid-template-rows:auto minmax(0,1fr);border:0;border-radius:0;background:var(--bg)}
+#grid header{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:14px max(16px,3vw)}
+#grid h2{flex:1 1 auto}
+#grid h2 span{color:var(--mute);font-weight:500;font-variant-numeric:tabular-nums}
+#q{flex:1 1 240px;max-width:440px;height:46px;padding:0 14px;border:1px solid rgba(255,255,255,.3);border-radius:10px;background:#0c0f15;font-size:16px}
+.gbody{overflow:auto;overscroll-behavior:contain;padding:4px max(16px,3vw) 28px}
+#tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:10px}
+.tile{display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 8px 12px;border:1px solid transparent;border-radius:12px;background:rgba(255,255,255,.05);font-size:13px;font-weight:500;line-height:1.25;text-align:center;cursor:pointer}
+.tile:hover{background:rgba(255,255,255,.1)}
+.tile[aria-current=true]{border-color:#fff}
+.tile i{display:block;width:100%;aspect-ratio:200/128;background:url(/public/flags/thumbs.webp) 0 0/1500% 1300% no-repeat}
+.tile span{min-height:2.5em}
+#empty{color:var(--mute)}
+#toast{position:fixed;z-index:9;top:60px;left:50%;transform:translateX(-50%);max-width:calc(100% - 32px);padding:10px 16px;border-radius:10px;background:#fff;color:#0b0d12;font-size:15px;font-weight:600;text-align:center;opacity:0;pointer-events:none;transition:opacity .3s}
+#toast.on{opacity:1}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:600px){
+#bar{flex-wrap:wrap;justify-content:space-between;row-gap:0}
+#scrub{order:-1;flex:1 0 100%;margin:0 8px}
+.tb{padding:0 12px}
+.tb .t{display:none}
+#custom{left:12px;right:12px;width:auto}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<canvas id="gl" role="img" aria-label="Waving flag"></canvas>
+<img id="fallback" alt="">
+<h1 id="title">Support every country</h1>
+<div id="count"><b id="cn">001</b> / <span id="ct">195</span><small id="creg"></small></div>
+<div id="cap">
+  <div class="kick"><i></i><span id="kick">Support</span><i></i></div>
+  <div class="names"><p class="name" id="n0"></p><p class="name" id="n1"></p></div>
+</div>
+<p class="sr" id="live" aria-live="polite"></p>
+
+<div id="bar" role="toolbar" aria-label="Playback">
+  <button class="ib" id="prev" type="button" aria-label="Previous flag"><svg viewBox="0 0 24 24"><path d="M6 5h2v14H6zM19 5v14L9 12z"/></svg></button>
+  <button class="ib" id="play" type="button" aria-label="Pause"><svg viewBox="0 0 24 24"><path id="pp" d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg></button>
+  <button class="ib" id="next" type="button" aria-label="Next flag"><svg viewBox="0 0 24 24"><path d="M16 5h2v14h-2zM5 5v14l10-7z"/></svg></button>
+  <input type="range" id="scrub" min="0" max="194" value="0" aria-label="Choose a flag">
+  <button class="tb" id="gridBtn" type="button" aria-expanded="false" aria-controls="grid" aria-label="All flags"><svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg><span class="t">All flags</span></button>
+  <button class="tb" id="customBtn" type="button" aria-expanded="false" aria-controls="custom" aria-label="Customize"><svg viewBox="0 0 24 24"><path d="M3 6h11v2H3zM18 6h3v2h-3zM14 4h4v6h-4zM3 16h3v2H3zM10 16h11v2H10zM6 14h4v6H6z"/></svg><span class="t">Customize</span></button>
+  <button class="ib" id="hideBtn" type="button" aria-label="Hide controls"><svg viewBox="0 0 24 24"><path d="M12 6c-4.6 0-8.3 3.2-9.8 6 1.5 2.8 5.2 6 9.8 6s8.3-3.2 9.8-6c-1.5-2.8-5.2-6-9.8-6zm0 10a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/><path d="M3.4 2 22 20.6 20.6 22 2 3.4z"/></svg></button>
+  <button class="ib" id="fsBtn" type="button" aria-label="Full screen"><svg viewBox="0 0 24 24"><path d="M4 4h6v2H6v4H4zM14 4h6v6h-2V6h-4zM4 14h2v4h4v2H4zM18 14h2v6h-6v-2h4z"/></svg></button>
+</div>
+
+<section class="panel" id="custom" hidden aria-label="Customize">
+  <h2>Customize</h2>
+  <label class="lab" for="msg">Message above each name</label>
+  <input id="msg" maxlength="28" autocomplete="off" spellcheck="false">
+  <div class="chips" id="presets"><button type="button" class="chip">Support</button><button type="button" class="chip">Stand with</button><button type="button" class="chip">I love</button><button type="button" class="chip">Pray for</button><button type="button" class="chip">Welcome</button></div>
+  <span class="lab">Seconds per flag</span>
+  <div class="chips" id="speed"></div>
+  <span class="lab">Countries</span>
+  <div class="chips" id="region"></div>
+  <span class="lab">Order</span>
+  <div class="chips" id="order"></div>
+  <dl class="keys"><dt>Space</dt><dd>Play or pause</dd><dt>&larr; &rarr;</dt><dd>Previous or next flag</dd><dt>G</dt><dd>All flags</dd><dt>H</dt><dd>Hide controls</dd><dt>F</dt><dd>Full screen</dd></dl>
+  <div class="row"><button class="tb" id="reset" type="button">Reset</button><button class="tb" id="done" type="button">Done</button></div>
+</section>
+
+<section class="panel" id="grid" hidden aria-label="All flags">
+  <header><h2>All flags <span id="gcount">195</span></h2><input id="q" type="search" placeholder="Search countries" autocomplete="off" aria-label="Search countries"><button class="tb" id="closeGrid" type="button">Close</button></header>
+  <div class="gbody"><div id="tiles"></div><p id="empty" hidden></p></div>
+</section>
+<div id="toast" role="status"></div>
+
+<script>
+{
+// [code, name, width/height, region, accent colour, wave phase]
+const C = [
+["af","Afghanistan",1.5,"Asia","#d32011",0.966],
+["al","Albania",1.4,"Europe","#ff0000",3.662],
+["dz","Algeria",1.5,"Africa","#00d26d",1.592],
+["ad","Andorra",1.4286,"Europe","#fedf00",5.85],
+["ao","Angola",1.5,"Africa","#d20930",0.907],
+["ag","Antigua and Barbuda",1.5,"Americas","#d21126",2.903],
+["ar","Argentina",1.6,"Americas","#74acdf",2.65],
+["am","Armenia",2.0,"Asia","#f2a800",2.692],
+["au","Australia",2.0,"Oceania","#0242d2",5.839],
+["at","Austria",1.5,"Europe","#ed2939",5.428],
+["az","Azerbaijan",2.0,"Asia","#ed2939",5.479],
+["bs","Bahamas",2.0,"Americas","#00b2d2",2.628],
+["bh","Bahrain",1.6667,"Asia","#d21126",3.396],
+["bd","Bangladesh",1.6667,"Asia","#f42a41",0.345],
+["bb","Barbados",1.5,"Americas","#ffc726",2.679],
+["by","Belarus",2.0,"Europe","#d13341",2.793],
+["be","Belgium",1.1538,"Europe","#fae042",2.701],
+["bz","Belize",1.6667,"Americas","#201ed2",1.21],
+["bj","Benin",1.5,"Africa","#fcd116",2.149],
+["bt","Bhutan",1.5,"Asia","#ffd520",3.957],
+["bo","Bolivia",1.4667,"Americas","#f0e53c",4.285],
+["ba","Bosnia and Herzegovina",2.0,"Europe","#fecb00",1.264],
+["bw","Botswana",1.5,"Africa","#75aadb",4.314],
+["br","Brazil",1.4286,"Americas","#00d24e",0.348],
+["bn","Brunei",2.0,"Asia","#f7e017",5.269],
+["bg","Bulgaria",1.6667,"Europe","#d62612",6.109],
+["bf","Burkina Faso",1.5,"Africa","#ef2b2d",2.6],
+["bi","Burundi",1.6667,"Africa","#d21126",4.087],
+["cv","Cabo Verde",1.7,"Africa","#0050d2",1.873],
+["kh","Cambodia",1.5625,"Asia","#e00025",4.198],
+["cm","Cameroon",1.5,"Africa","#fcd116",4.164],
+["ca","Canada",2.0,"Americas","#d52b1e",2.452],
+["cf","Central African Republic",1.5,"Africa","#ffce00",4.534],
+["td","Chad",1.5,"Africa","#fecb00",6.254],
+["cl","Chile",1.5,"Americas","#d52b1e",2.888],
+["cn","China",1.5,"Asia","#de2910",2.901],
+["co","Colombia",1.5,"Americas","#fcd116",2.428],
+["km","Comoros",1.6667,"Africa","#ffc61e",5.257],
+["cr","Costa Rica",1.6667,"Americas","#d21126",3.586],
+["ci","Côte d'Ivoire",1.5,"Africa","#f77f00",4.133],
+["hr","Croatia",2.0,"Europe","#ff0000",5.638],
+["cu","Cuba",2.0,"Americas","#003dd2",3.554],
+["cy","Cyprus",1.5,"Europe","#d57800",3.02],
+["cz","Czechia",1.5,"Europe","#d7141a",3.294],
+["cd","DR Congo",1.3333,"Africa","#007fff",1.262],
+["dk","Denmark",1.3214,"Europe","#d10c32",1.029],
+["dj","Djibouti",1.5,"Africa","#6ab2e7",3.111],
+["dm","Dominica",2.0,"Americas","#00d27b",5.151],
+["do","Dominican Republic",1.5,"Americas","#d21126",6.161],
+["ec","Ecuador",1.5,"Americas","#ffdd00",1.072],
+["eg","Egypt",1.5,"Africa","#d21126",5.05],
+["sv","El Salvador",1.7725,"Americas","#0057d2",0.807],
+["gq","Equatorial Guinea",1.5,"Africa","#e32118",1.004],
+["er","Eritrea",2.0,"Africa","#ea0437",5.837],
+["ee","Estonia",1.5714,"Europe","#4891d9",2.141],
+["sz","Eswatini",1.5,"Africa","#466ad2",3.844],
+["et","Ethiopia",2.0,"Africa","#fcdd09",0.432],
+["fj","Fiji",2.0,"Oceania","#69b3e7",5.296],
+["fi","Finland",1.6364,"Europe","#0056d2",5.41],
+["fr","France",1.5,"Europe","#ed2939",2.127],
+["ga","Gabon",1.3333,"Africa","#fcd116",4.149],
+["gm","Gambia",1.5,"Africa","#d21126",5.195],
+["ge","Georgia",1.5,"Asia","#ff0000",2.028],
+["de","Germany",1.6667,"Europe","#ffce00",5.936],
+["gh","Ghana",1.5,"Africa","#fcd116",0.881],
+["gr","Greece",1.5,"Europe","#0f70d2",1.577],
+["gd","Grenada",1.6667,"Americas","#fcd116",5.608],
+["gt","Guatemala",1.6,"Americas","#4998d2",0.86],
+["gn","Guinea",1.5,"Africa","#fcd116",5.059],
+["gw","Guinea-Bissau",2.0,"Africa","#fcd116",2.475],
+["gy","Guyana",1.6667,"Americas","#00d261",1.499],
+["ht","Haiti",1.6667,"Americas","#d21034",3.288],
+["hn","Honduras",2.0,"Americas","#0074d2",6.213],
+["hu","Hungary",2.0,"Europe","#d22b3f",2.93],
+["is","Iceland",1.3889,"Europe","#004dd2",5.019],
+["in","India",1.5,"Asia","#ff9933",3.959],
+["id","Indonesia",1.5,"Asia","#d21126",1.537],
+["ir","Iran",1.75,"Asia","#da0000",0.6],
+["iq","Iraq",1.5,"Asia","#d21126",3.307],
+["ie","Ireland",2.0,"Europe","#ff883e",1.963],
+["il","Israel",1.375,"Asia","#003fd2",0.476],
+["it","Italy",1.5,"Europe","#d22b38",1.728],
+["jm","Jamaica",2.0,"Americas","#fed100",0.708],
+["jp","Japan",1.5,"Asia","#d20032",5.448],
+["jo","Jordan",2.0,"Asia","#d21126",2.834],
+["kz","Kazakhstan",2.0,"Asia","#00b5d2",2.732],
+["ke","Kenya",1.5,"Africa","#d20000",3.744],
+["ki","Kiribati",2.0,"Oceania","#d11010",2.399],
+["kw","Kuwait",2.0,"Asia","#d21126",1.181],
+["kg","Kyrgyzstan",1.6667,"Asia","#ff0000",1.032],
+["la","Laos",1.5,"Asia","#d21126",1.955],
+["lv","Latvia",2.0,"Europe","#d23f4b",5.822],
+["lb","Lebanon",1.5,"Asia","#ed1c24",5.245],
+["ls","Lesotho",1.5,"Africa","#002ad2",1.659],
+["lr","Liberia",1.9,"Africa","#d20a34",5.515],
+["ly","Libya",2.0,"Africa","#e70013",3.936],
+["li","Liechtenstein",1.6667,"Europe","#d21126",2.272],
+["lt","Lithuania",1.6667,"Europe","#fdb913",4.475],
+["lu","Luxembourg",1.6667,"Europe","#ed2939",5.369],
+["mg","Madagascar",1.5,"Africa","#fc3d32",1.783],
+["mw","Malawi",1.5,"Africa","#d21126",2.96],
+["my","Malaysia",2.0,"Asia","#d20001",3.612],
+["mv","Maldives",1.5,"Asia","#d21034",3.745],
+["ml","Mali",1.5,"Africa","#fcd116",4.604],
+["mt","Malta",1.5,"Europe","#d2142b",6.243],
+["mh","Marshall Islands",1.9,"Oceania","#0050d2",5.627],
+["mr","Mauritania",1.5,"Africa","#d22b3f",4.024],
+["mu","Mauritius",1.5,"Africa","#ffd500",1.854],
+["mx","Mexico",1.75,"Americas","#d21126",0.99],
+["fm","Micronesia",1.9,"Oceania","#75b2dd",4.853],
+["md","Moldova",2.0,"Europe","#ffd200",2.041],
+["mc","Monaco",1.25,"Europe","#d21126",0.23],
+["mn","Mongolia",2.0,"Asia","#d22932",4.49],
+["me","Montenegro",2.0,"Europe","#d20308",0.107],
+["ma","Morocco",1.5,"Africa","#d22a30",5.316],
+["mz","Mozambique",1.5,"Africa","#fce100",6.161],
+["mm","Myanmar",1.5,"Asia","#fecb00",6.08],
+["na","Namibia",1.5,"Africa","#d21034",5.515],
+["nr","Nauru",2.0,"Oceania","#0047d2",0.079],
+["np","Nepal",0.8203,"Asia","#dc143c",1.494],
+["nl","Netherlands",1.5,"Europe","#d22130",3.112],
+["nz","New Zealand",2.0,"Oceania","#0242d2",2.781],
+["ni","Nicaragua",1.6667,"Americas","#006dd1",1.551],
+["ne","Niger",1.1667,"Africa","#e05206",2.407],
+["ng","Nigeria",2.0,"Africa","#00d27e",3.596],
+["kp","North Korea",2.0,"Asia","#ed1c27",5.913],
+["mk","North Macedonia",2.0,"Europe","#d20000",2.665],
+["no","Norway",1.375,"Europe","#ef2b2d",0.861],
+["om","Oman",2.0,"Asia","#db161b",0.14],
+["pk","Pakistan",1.5,"Asia","#64d193",0.771],
+["pw","Palau",1.6,"Oceania","#4aadd6",3.868],
+["ps","Palestine",2.0,"Asia","#d21126",3.0],
+["pa","Panama",1.5,"Americas","#d21034",0.701],
+["pg","Papua New Guinea",1.3333,"Oceania","#d21126",2.91],
+["py","Paraguay",1.8182,"Americas","#d52b1e",5.103],
+["pe","Peru",1.5,"Americas","#d91023",3.589],
+["ph","Philippines",2.0,"Asia","#d21126",2.362],
+["pl","Poland",1.6,"Europe","#dc143c",1.527],
+["pt","Portugal",1.5,"Europe","#ff0000",6.159],
+["qa","Qatar",2.5455,"Asia","#d1285a",0.052],
+["cg","Republic of the Congo",1.5,"Africa","#fbde4a",1.527],
+["ro","Romania",1.5,"Europe","#fcd116",5.49],
+["ru","Russia",1.5,"Europe","#d52b1e",0.547],
+["rw","Rwanda",1.5,"Africa","#00a1de",3.923],
+["kn","Saint Kitts and Nevis",1.5,"Americas","#d21126",2.175],
+["lc","Saint Lucia",2.0,"Americas","#66ccff",2.418],
+["vc","Saint Vincent and the Grenadines",1.5,"Americas","#fcd116",0.54],
+["ws","Samoa",2.0,"Oceania","#d21126",0.295],
+["sm","San Marino",1.3333,"Europe","#5eb6e4",4.579],
+["st","São Tomé and Príncipe",2.0,"Africa","#ffce00",0.808],
+["sa","Saudi Arabia",1.5,"Asia","#00d267",1.405],
+["sn","Senegal",1.5,"Africa","#fdef42",3.927],
+["rs","Serbia",1.5,"Europe","#d1393f",6.216],
+["sc","Seychelles",2.0,"Africa","#d62828",5.578],
+["sl","Sierra Leone",1.5,"Africa","#0078d1",0.295],
+["sg","Singapore",1.5,"Asia","#ed2939",2.665],
+["sk","Slovakia",1.5,"Europe","#ee1c25",5.224],
+["si","Slovenia",2.0,"Europe","#ed1c24",0.169],
+["sb","Solomon Islands",2.0,"Oceania","#005bd2",0.55],
+["so","Somalia",1.5,"Africa","#4189dd",0.871],
+["za","South Africa",1.5,"Africa","#e03c31",3.242],
+["kr","South Korea",1.5,"Asia","#d22f3b",2.466],
+["ss","South Sudan",2.0,"Africa","#da121a",1.451],
+["es","Spain",1.5,"Europe","#ffc400",5.197],
+["lk","Sri Lanka",2.0,"Asia","#ffb700",0.726],
+["sd","Sudan",2.0,"Africa","#d21034",3.218],
+["sr","Suriname",1.5,"Americas","#d20b34",5.874],
+["se","Sweden",1.6,"Europe","#0085d2",3.771],
+["ch","Switzerland",1.0,"Europe","#d52b1e",5.687],
+["sy","Syria",1.5,"Asia","#00d269",3.217],
+["tj","Tajikistan",2.0,"Asia","#d20000",0.277],
+["tz","Tanzania",1.5,"Africa","#00a3dd",4.303],
+["th","Thailand",1.5,"Asia","#d21f3e",1.934],
+["tl","Timor-Leste",2.0,"Asia","#dc241f",5.549],
+["tg","Togo",1.618,"Africa","#ffce00",0.935],
+["to","Tonga",2.0,"Oceania","#d20000",5.336],
+["tt","Trinidad and Tobago",1.6667,"Americas","#d21126",4.61],
+["tn","Tunisia",1.5,"Africa","#e70013",4.373],
+["tr","Türkiye",1.5,"Asia","#e30a17",5.997],
+["tm","Turkmenistan",1.5,"Asia","#30d27b",1.388],
+["tv","Tuvalu",2.0,"Oceania","#009cde",0.339],
+["ug","Uganda",1.5,"Africa","#fcdc04",1.786],
+["ua","Ukraine",1.5,"Europe","#ffd500",0.993],
+["ae","United Arab Emirates",2.0,"Asia","#ff0000",5.182],
+["gb","United Kingdom",2.0,"Europe","#d11030",4.63],
+["us","United States",1.9,"Americas","#d2283d",2.604],
+["uy","Uruguay",1.5,"Americas","#0046d2",0.668],
+["uz","Uzbekistan",2.0,"Asia","#22d243",5.15],
+["vu","Vanuatu",1.6667,"Oceania","#d21034",5.865],
+["va","Vatican City",1.0,"Europe","#ffe000",4.234],
+["ve","Venezuela",1.5,"Americas","#ffcc00",2.307],
+["vn","Vietnam",1.5,"Asia","#da251d",3.688],
+["ye","Yemen",1.5,"Asia","#d21126",5.043],
+["zm","Zambia",1.5,"Africa","#26d200",0.95],
+["zw","Zimbabwe",2.0,"Africa","#ffd200",1.256]
+];
+const ALIAS = {ci:"ivory coast",tr:"turkey",cz:"czech republic",sz:"swaziland",mm:"burma",cv:"cape verde",us:"usa united states of america",gb:"uk britain great britain england scotland wales northern ireland",va:"holy see",tl:"east timor",mk:"macedonia",cd:"democratic republic of the congo drc kinshasa",cg:"congo brazzaville",kp:"dprk korea",kr:"korea",ae:"uae emirates",fm:"federated states",ps:"state of palestine",la:"lao",bn:"brunei darussalam",ru:"russian federation",ir:"persia",nl:"holland",st:"sao tome",kn:"st kitts",lc:"st lucia",vc:"st vincent"};
+const REGIONS = ["All", "Africa", "Americas", "Asia", "Europe", "Oceania"];
+const SPEEDS = [1, 2, 3, 5, 10];
+const DEF = {msg: "Support", sec: 2, region: "All", order: "az"};
+const KEY = "support-every-country";
+const ASSETS = "/public/flags/";  // flag images; build-pages.mjs makes this relative
+const PLAY = "M8 5v14l11-7z", PAUSE = "M7 5h4v14H7zM13 5h4v14h-4z";
+const CNT = {};
+C.forEach(c => { CNT[c[3]] = (CNT[c[3]] || 0) + 1; });
+const HPI = Math.PI / 2, SEG = 96, NV = 2 * (SEG + 1);
+const $ = s => document.querySelector(s);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const easeIn = x => x * x * x, easeOut = x => 1 - (1 - x) ** 3, smooth = x => x * x * (3 - 2 * x);
+const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/’/g, "'").toLowerCase();
+const disp = s => s.replace(/'/g, "’");
+const slug = s => norm(s).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const now = () => performance.now() / 1000;
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const cv = $("#gl"), bar = $("#bar"), cap = $("#cap"), kick = $(".kick"), scrub = $("#scrub"), grid = $("#grid"), custom = $("#custom"), tiles = $("#tiles"), q = $("#q"), msgIn = $("#msg"), fb = $("#fallback");
+const names = [$("#n0"), $("#n1")];
+const st = {...DEF};
+const L = {vw: 1, vh: 1, bw: 1, bh: 1, ns: 100, lines: 1, cx: 0, cy: 0};
+const cache = new Map();
+let list = [], pos = 0, playing = true, cur = null, trans = null, lastT = 0, tok = 0, busy = false, nameCur = 0, built = false, idleT = 0, toastT = 0, down = null;
+
+function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
+function loadSaved() { try { return JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { return {}; } }
+function sanitize() {
+  st.msg = typeof st.msg === "string" ? st.msg.slice(0, 28) : DEF.msg;
+  st.sec = SPEEDS.includes(+st.sec) ? +st.sec : DEF.sec;
+  if (!REGIONS.includes(st.region)) st.region = DEF.region;
+  if (st.order !== "shuffle") st.order = "az";
+}
+function toast(s) { const t = $("#toast"); t.textContent = s; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2800); }
+
+// ---------- WebGL: blurred background, soft shadow, waving flag with a perspective flip ----------
+let gl = null, BG = null, FL = null, triBuf = null, meshBuf = null;
+try { gl = cv.getContext("webgl", {antialias: true, alpha: false, premultipliedAlpha: true}); } catch (e) { gl = null; }
+const VS_BG = "attribute vec2 a;varying vec2 v;void main(){v=a*.5+.5;gl_Position=vec4(a,0.,1.);}";
+const FS_BG = `precision mediump float;varying vec2 v;uniform sampler2D A,B;uniform float m,ra,rb,rv;
+vec2 cover(float r){vec2 u=vec2(v.x,1.-v.y);vec2 s=rv>r?vec2(1.,r/rv):vec2(rv/r,1.);return .5+(u-.5)*s/1.12;}
+void main(){vec3 c=mix(texture2D(A,cover(ra)).rgb,texture2D(B,cover(rb)).rgb,m);
+vec2 q=v*2.-1.;float g=1.-.3*clamp(dot(q,q),0.,2.);float y=clamp((.48-v.y)/.48,0.,1.);g*=1.-.45*y*y*(3.-2.*y);
+float n=fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453);
+gl_FragColor=vec4(c*.46*g+(n-.5)*.006,1.);}`;
+const VS_FLAG = `attribute vec2 a;uniform vec2 sz,ctr,res,pd;uniform float tm,ph,rot,sc,wv,yo,fo;varying vec2 vt;varying float sh,sp;
+void main(){vec2 e=a*(1.+2.*pd)-pd;float xf=e.x*sz.x,x=xf-.5*sz.x,y=(e.y-.5)*sz.y;
+float en=.22+.78*clamp(e.x,0.,1.),a1=.042*sz.y*wv,a2=.3*a1,lm=max(.963*sz.y,.9*sz.x),k1=6.2831853/lm,k2=k1/.48,o1=4.3332,o2=1.63*o1;
+float t1=k1*xf-o1*tm+ph,t2=k2*xf-o2*tm+1.7*ph,d=en*(a1*sin(t1)+a2*sin(t2));
+float sn=wv>0.?en*(a1*k1*cos(t1)+a2*k2*cos(t2))/(a1*k1+a2*k2):0.;
+float cr=cos(rot),sr=sin(rot),w=(fo+x*sr)/fo;vec2 s=ctr+vec2(x*cr,y+d+yo)*sc/w;
+gl_Position=vec4(vec2(s.x/res.x*2.-1.,1.-s.y/res.y*2.)*w,0.,w);
+vt=vec2(a.x+en*.22*a1*cos(t1)/sz.x/(1.+2.*pd.x),a.y);sh=(1.-.17*sn)*(.5+.5*cr);sp=.118*pow(max(sn,0.),3.)*cr;}`;
+const FS_FLAG = `precision mediump float;uniform sampler2D tx;uniform float op,md;varying vec2 vt;varying float sh,sp;
+void main(){vec4 c=texture2D(tx,vt);if(md>.5){gl_FragColor=vec4(0.,0.,0.,c.a*.5*op);return;}
+gl_FragColor=vec4(min(c.rgb*sh+sp*c.a,vec3(c.a)),c.a)*op;}`;
+
+function program(vs, fs, uniforms) {
+  const p = gl.createProgram();
+  for (const [type, src] of [[gl.VERTEX_SHADER, vs], [gl.FRAGMENT_SHADER, fs]]) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+    gl.attachShader(p, s);
+  }
+  gl.bindAttribLocation(p, 0, "a"); gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+  const u = {};
+  uniforms.split(" ").forEach(n => { u[n] = gl.getUniformLocation(p, n); });
+  return {p, u};
+}
+function buffer(data) { const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW); return b; }
+if (gl) {
+  try {
+    BG = program(VS_BG, FS_BG, "A B m ra rb rv");
+    FL = program(VS_FLAG, FS_FLAG, "sz ctr res pd tm ph rot sc wv yo fo tx op md");
+    triBuf = buffer(new Float32Array([-1, -1, 3, -1, -1, 3]));
+    const m = new Float32Array(NV * 2);
+    for (let i = 0; i <= SEG; i++) m.set([i / SEG, 0, i / SEG, 1], i * 4);
+    meshBuf = buffer(m);
+  } catch (e) { console.error(e); gl = null; }
+}
+function texture(src) {
+  const t = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, t);
+  gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, src);
+  for (const [k, v] of [[gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE], [gl.TEXTURE_MIN_FILTER, gl.LINEAR], [gl.TEXTURE_MAG_FILTER, gl.LINEAR]]) gl.texParameteri(gl.TEXTURE_2D, k, v);
+  return t;
+}
+function canvas2d(w, h) { const c = document.createElement("canvas"); c.width = w; c.height = h; return [c, c.getContext("2d", {willReadFrequently: true})]; }
+function blurChannel(a, w, h, r, n) {
+  const t = new Float32Array(a.length), k = 2 * r + 1;
+  for (let pass = 0; pass < n; pass++) {
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { let s = 0; for (let d = -r; d <= r; d++) s += a[y * w + clamp(x + d, 0, w - 1)]; t[y * w + x] = s / k; }
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { let s = 0; for (let d = -r; d <= r; d++) s += t[clamp(y + d, 0, h - 1) * w + x]; a[y * w + x] = s / k; }
+  }
+}
+function blurImage(ctx, w, h, r, n, alphaOnly) {
+  const im = ctx.getImageData(0, 0, w, h), d = im.data, a = new Float32Array(w * h);
+  for (const ch of alphaOnly ? [3] : [0, 1, 2]) {
+    for (let i = 0; i < w * h; i++) a[i] = d[i * 4 + ch];
+    blurChannel(a, w, h, r, n);
+    for (let i = 0; i < w * h; i++) d[i * 4 + ch] = a[i];
+  }
+  if (alphaOnly) for (let i = 0; i < w * h; i++) d[i * 4] = d[i * 4 + 1] = d[i * 4 + 2] = 0;
+  ctx.putImageData(im, 0, 0);
+}
+async function decode(code) {
+  const res = await fetch(ASSETS + code + ".webp");
+  if (!res.ok) throw new Error("HTTP " + res.status);
+  const blob = await res.blob();
+  if (window.createImageBitmap) { try { return await createImageBitmap(blob); } catch (e) {} }
+  return new Promise((ok, no) => { const u = URL.createObjectURL(blob), im = new Image(); im.onload = () => { ok(im); URL.revokeObjectURL(u); }; im.onerror = no; im.src = u; });
+}
+function build(i, img) {
+  const r = C[i][2], w = img.width, h = img.height, P = 2;
+  let [c, x] = canvas2d(w + 2 * P, h + 2 * P);
+  x.drawImage(img, P, P, w, h);
+  const tex = texture(c);
+  const sw = 64, sh = Math.max(10, Math.round(64 / r)), SP = 8;
+  [c, x] = canvas2d(sw + 2 * SP, sh + 2 * SP);
+  x.drawImage(img, SP, SP, sw, sh); blurImage(x, sw + 2 * SP, sh + 2 * SP, 2, 2, true);
+  const stex = texture(c);
+  const bw = 96, bh = Math.max(16, Math.round(96 / r));
+  [c, x] = canvas2d(bw, bh);
+  x.fillStyle = "#12141c"; x.fillRect(0, 0, bw, bh); x.drawImage(img, 0, 0, bw, bh); blurImage(x, bw, bh, 3, 3, false);
+  const btex = texture(c);
+  if (img.close) img.close();
+  return {i, r, ph: C[i][5], tex, pad: [P / w, P / h], stex, spad: [SP / sw, SP / sh], btex, ba: bw / bh};
+}
+function release(f) {
+  if (!f || f === cur || (trans && (f === trans.from || f === trans.to))) return;
+  gl.deleteTexture(f.tex); gl.deleteTexture(f.stex); gl.deleteTexture(f.btex);
+}
+function getFlag(i) {
+  let p = cache.get(i);
+  if (p) { cache.delete(i); cache.set(i, p); return p; }
+  p = decode(C[i][0]).then(img => build(i, img));
+  p.catch(() => cache.delete(i));
+  cache.set(i, p);
+  if (cache.size > 12) { const [k, old] = cache.entries().next().value; cache.delete(k); old.then(release, () => {}); }
+  return p;
+}
+function flagSize(r) { return r >= L.bw / L.bh ? [L.bw, L.bw / r] : [L.bh * r, L.bh]; }
+function drawBg(A, B, m) {
+  gl.disable(gl.BLEND);
+  gl.useProgram(BG.p);
+  gl.bindBuffer(gl.ARRAY_BUFFER, triBuf); gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+  gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, A.btex);
+  gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, B.btex);
+  gl.uniform1i(BG.u.A, 0); gl.uniform1i(BG.u.B, 1);
+  gl.uniform1f(BG.u.m, m); gl.uniform1f(BG.u.ra, A.ba); gl.uniform1f(BG.u.rb, B.ba); gl.uniform1f(BG.u.rv, L.vw / L.vh);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+}
+function drawFlag(f, t, rot, sc, op) {
+  if (op <= .003 || Math.abs(rot) >= HPI - .001) return;
+  const [fw, fh] = flagSize(f.r), u = FL.u;
+  gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+  gl.useProgram(FL.p);
+  gl.bindBuffer(gl.ARRAY_BUFFER, meshBuf); gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+  gl.uniform2f(u.sz, fw, fh); gl.uniform2f(u.ctr, L.cx, L.cy); gl.uniform2f(u.res, L.vw, L.vh);
+  gl.uniform1f(u.tm, t); gl.uniform1f(u.ph, f.ph); gl.uniform1f(u.rot, rot); gl.uniform1f(u.sc, sc); gl.uniform1f(u.fo, 2.3 * L.bw); gl.uniform1f(u.op, op);
+  gl.activeTexture(gl.TEXTURE0); gl.uniform1i(u.tx, 0);
+  gl.uniform2f(u.pd, f.spad[0], f.spad[1]); gl.uniform1f(u.wv, 0); gl.uniform1f(u.yo, .04 * fh); gl.uniform1f(u.md, 1);
+  gl.bindTexture(gl.TEXTURE_2D, f.stex); gl.drawArrays(gl.TRIANGLE_STRIP, 0, NV);
+  gl.uniform2f(u.pd, f.pad[0], f.pad[1]); gl.uniform1f(u.wv, reduce ? 0 : 1); gl.uniform1f(u.yo, 0); gl.uniform1f(u.md, 0);
+  gl.bindTexture(gl.TEXTURE_2D, f.tex); gl.drawArrays(gl.TRIANGLE_STRIP, 0, NV);
+}
+function frame() {
+  requestAnimationFrame(frame);
+  const t = now();
+  if (playing && !busy && !trans && cur && list.length > 1 && t - lastT >= st.sec) go(1);
+  if (!gl) return;
+  gl.viewport(0, 0, cv.width, cv.height);
+  if (!cur) { gl.clearColor(.043, .051, .071, 1); gl.clear(gl.COLOR_BUFFER_BIT); return; }
+  let p = 0;
+  if (trans) { p = Math.min(1, (t - trans.t0) / trans.dur); if (p >= 1) { cur = trans.to; trans = null; } }
+  const A = trans ? trans.from : cur, B = trans ? trans.to : cur;
+  drawBg(A, B, trans ? smooth(p) : 0);
+  if (!trans) drawFlag(cur, t, 0, 1, 1);
+  else if (reduce) { drawFlag(A, t, 0, 1, 1 - p); drawFlag(B, t, 0, 1, p); }
+  else {
+    const dip = 1 - .04 * Math.sin(Math.PI * p);
+    if (p < .5) drawFlag(A, t, trans.dir * HPI * easeIn(p / .5), dip, 1);
+    else drawFlag(B, t, -trans.dir * HPI * (1 - easeOut((p - .5) / .5)), dip, 1);
+  }
+}
+
+// ---------- layout and caption ----------
+function fit(el) {
+  if (!el.textContent) return;
+  let s = L.ns;
+  el.style.whiteSpace = L.lines > 1 ? "normal" : "nowrap";
+  el.style.fontSize = s + "px";
+  for (let k = 0; k < 18 && (el.scrollWidth > el.clientWidth + 1 || (L.lines > 1 && el.scrollHeight > s * 1.04 * L.lines + 6)); k++) {
+    s *= .93; el.style.fontSize = s + "px";
+  }
+}
+function placeFallback() {
+  if (!cur) return;
+  const [w, h] = flagSize(C[cur.i][2]);
+  Object.assign(fb.style, {display: "block", left: L.cx - w / 2 + "px", top: L.cy - h / 2 + "px", width: w + "px", height: h + "px"});
+}
+function layout() {
+  const vw = innerWidth, vh = innerHeight, barH = bar.offsetHeight + 12;
+  document.documentElement.style.setProperty("--barh", barH + "px");
+  const portrait = vh > vw * 1.05, pad = Math.max(16, vw * .03);
+  const ns = portrait ? clamp(vw * .105, 28, 76) : clamp(Math.min(vw * .076, vh * .13), 30, 150);
+  const ks = Math.max(13, ns * .33), lines = portrait ? 2 : 1, kg = ns * .2;
+  const textH = ks * 1.1 + kg + ns * 1.04 * lines, gap = Math.max(16, ns * .36), top = 56;
+  const avail = vh - barH - 12 - top;
+  let bh = Math.max(40, (avail - textH - gap) * .86);
+  const bw = Math.min(vw - 2 * pad, bh * 1.926);
+  if (portrait) bh = Math.min(bh, bw * .85);
+  const outer = bh / .86, y0 = top + Math.max(0, (avail - outer - gap - textH) / 2);
+  Object.assign(L, {vw, vh, bw, bh, ns, lines, cx: vw / 2, cy: y0 + outer / 2});
+  Object.assign(cap.style, {top: y0 + outer + gap + "px", left: pad + "px", right: pad + "px"});
+  cap.style.setProperty("--ns", ns + "px"); cap.style.setProperty("--ks", ks + "px"); cap.style.setProperty("--kg", kg + "px");
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  cv.width = Math.round(vw * dpr); cv.height = Math.round(vh * dpr);
+  names.forEach(fit);
+  if (!gl) placeFallback();
+}
+function setCaption(i, instant, dur) {
+  const inc = names[1 - nameCur], out = names[nameCur], c = C[i];
+  inc.textContent = disp(c[1]); fit(inc);
+  kick.style.setProperty("--acc", c[4]);
+  cv.setAttribute("aria-label", `Flag of ${c[1]}`);
+  for (const el of names) if (el.getAnimations) el.getAnimations().forEach(a => a.cancel());
+  out.style.opacity = "0"; inc.style.opacity = "1";
+  if (!instant && out.textContent && inc.animate) {
+    const ms = dur * 1000;
+    out.animate([{opacity: 1, transform: "none"}, {opacity: 0, transform: "translateY(-.16em)"}], {duration: ms * .45, easing: "ease-in"});
+    inc.animate([{opacity: 0, transform: "translateY(.2em)"}, {opacity: 1, transform: "none"}], {duration: ms * .58, delay: ms * .42, easing: "cubic-bezier(.2,.7,.2,1)", fill: "backwards"});
+  }
+  nameCur = 1 - nameCur;
+  if (!playing) $("#live").textContent = `${st.msg} ${c[1]}`;
+}
+function updCount() {
+  const n = list.length;
+  $("#cn").textContent = String(pos + 1).padStart(n >= 100 ? 3 : 2, "0");
+  $("#ct").textContent = n;
+  $("#creg").textContent = st.region === "All" ? "" : st.region;
+  scrub.max = Math.max(0, n - 1); scrub.value = pos;
+  scrub.style.setProperty("--p", (n > 1 ? pos / (n - 1) * 100 : 0) + "%");
+  scrub.setAttribute("aria-valuetext", C[list[pos]][1]);
+}
+
+// ---------- playback ----------
+function buildList(keep) {
+  const l = C.map((_, i) => i).filter(i => st.region === "All" || C[i][3] === st.region);
+  if (st.order === "shuffle") {
+    let s = Date.now() % 2147483646 + 1;
+    for (let k = l.length - 1; k > 0; k--) { s = s * 16807 % 2147483647; const j = s % (k + 1); [l[k], l[j]] = [l[j], l[k]]; }
+  }
+  list = l;
+  const p = list.indexOf(keep);
+  pos = p < 0 ? 0 : p;
+  updCount();
+  return p >= 0;
+}
+function setHash() {
+  if (playing || !list.length) return;
+  try { history.replaceState(null, "", "#" + slug(C[list[pos]][1])); } catch (e) {}
+}
+function fromHash() {
+  let h = "";
+  try { h = decodeURIComponent(location.hash.slice(1)).toLowerCase(); } catch (e) {}
+  return h ? C.findIndex(c => slug(c[1]) === h || c[0] === h) : -1;
+}
+function markTile() { for (const b of tiles.children) b.setAttribute("aria-current", String(+b.dataset.i === list[pos])); }
+function afterNav() { if (!playing) setHash(); if (built) markTile(); }
+async function show(p, dir = 1, instant = false) {
+  if (!list.length) return;
+  pos = ((p % list.length) + list.length) % list.length;
+  const i = list[pos], my = ++tok;
+  updCount();
+  busy = true;
+  if (!gl) {
+    cur = {i}; fb.src = ASSETS + C[i][0] + ".webp"; fb.alt = `Flag of ${C[i][1]}`;
+    placeFallback(); setCaption(i, true); lastT = now(); busy = false; afterNav();
+    return;
+  }
+  let f;
+  try { f = await getFlag(i); } catch (e) {
+    if (my === tok) { busy = false; lastT = now(); toast(`Couldn't load the flag of ${C[i][1]}.`); }
+    return;
+  }
+  if (my !== tok) return;
+  busy = false;
+  for (const d of [1, -1, 2]) getFlag(list[(pos + d + list.length) % list.length]).catch(() => {});
+  if (trans) { cur = trans.to; trans = null; }
+  lastT = now();
+  if (f === cur) { afterNav(); return; }
+  const quick = instant || !cur, dur = Math.min(.4, st.sec * .4);
+  setCaption(i, quick, dur);
+  if (quick) cur = f; else trans = {from: cur, to: f, t0: lastT, dur, dir};
+  afterNav();
+}
+function go(d) { return show(pos + d, d); }
+function wake() {
+  document.body.classList.remove("idle");
+  clearTimeout(idleT);
+  idleT = setTimeout(() => { if (playing && grid.hidden && custom.hidden) document.body.classList.add("idle"); }, 2600);
+}
+function setPlaying(v) {
+  playing = v;
+  $("#pp").setAttribute("d", v ? PAUSE : PLAY);
+  $("#play").setAttribute("aria-label", v ? "Pause" : "Play");
+  lastT = now(); wake();
+  if (!v && list.length) { setHash(); $("#live").textContent = `${st.msg} ${C[list[pos]][1]}`; }
+}
+function setClean(v) {
+  document.body.classList.toggle("clean", v);
+  if (v) toast("Controls hidden. Press H or tap the screen to bring them back.");
+}
+async function toggleFs() {
+  try { if (document.fullscreenElement) await document.exitFullscreen(); else await document.documentElement.requestFullscreen(); }
+  catch (e) { toast("Full screen isn't available in this view."); }
+}
+
+// ---------- settings ----------
+function chips(el, items, curV, label) {
+  el.innerHTML = items.map(v => `<button type="button" class="chip" data-v="${v}" aria-pressed="${String(v) === String(curV)}">${label(v)}</button>`).join("");
+}
+function renderChips() {
+  chips($("#speed"), SPEEDS, st.sec, v => `${v} s`);
+  chips($("#region"), REGIONS, st.region, v => `${v}<em>${v === "All" ? C.length : CNT[v]}</em>`);
+  chips($("#order"), ["az", "shuffle"], st.order, v => v === "az" ? "A to Z" : "Shuffle");
+}
+function applyMsg() {
+  st.msg = msgIn.value.slice(0, 28);
+  $("#kick").textContent = st.msg.trim() || " ";
+  kick.classList.toggle("empty", !st.msg.trim());
+  save();
+}
+function setRegion(r, keep) {
+  st.region = r; save(); renderChips();
+  if (!buildList(keep)) show(0, 1);
+}
+function openCustom() { closeGrid(false); custom.hidden = false; $("#customBtn").setAttribute("aria-expanded", "true"); wake(); }
+function closeCustom() { custom.hidden = true; $("#customBtn").setAttribute("aria-expanded", "false"); }
+
+// ---------- all flags ----------
+function buildTiles() {
+  tiles.innerHTML = C.map((c, i) => `<button type="button" class="tile" data-i="${i}"><i style="background-position:${(i % 15) / 14 * 100}% ${Math.floor(i / 15) / 12 * 100}%"></i><span>${disp(c[1]).replace(/&/g, "&amp;").replace(/</g, "&lt;")}</span></button>`).join("");
+  built = true;
+}
+function filterTiles() {
+  const s = norm(q.value.trim());
+  let n = 0;
+  for (const b of tiles.children) {
+    const c = C[+b.dataset.i], ok = !s || norm(c[1]).includes(s) || (ALIAS[c[0]] || "").includes(s);
+    b.hidden = !ok; if (ok) n++;
+  }
+  const em = $("#empty");
+  em.hidden = n > 0; em.textContent = n ? "" : `No country matches “${q.value.trim()}”.`;
+  $("#gcount").textContent = s ? `${n} of ${C.length}` : String(C.length);
+}
+function openGrid(focus) {
+  closeCustom();
+  if (!built) buildTiles();
+  q.value = ""; filterTiles(); markTile();
+  grid.hidden = false; $("#gridBtn").setAttribute("aria-expanded", "true");
+  const b = tiles.querySelector('[aria-current="true"]');
+  if (b) b.scrollIntoView({block: "center"});
+  if (focus) q.focus({preventScroll: true});
+  wake();
+}
+function closeGrid(restore = true) {
+  if (grid.hidden) return;
+  grid.hidden = true; $("#gridBtn").setAttribute("aria-expanded", "false");
+  if (restore) $("#gridBtn").focus({preventScroll: true});
+}
+function pick(i) {
+  if (!list.includes(i)) { st.region = "All"; save(); renderChips(); buildList(list[pos]); }
+  const p = list.indexOf(i);
+  setPlaying(false);
+  show(p, p >= pos ? 1 : -1);
+}
+
+// ---------- events ----------
+$("#play").addEventListener("click", () => setPlaying(!playing));
+$("#next").addEventListener("click", () => go(1));
+$("#prev").addEventListener("click", () => go(-1));
+$("#gridBtn").addEventListener("click", () => { if (grid.hidden) openGrid(false); else closeGrid(); });
+$("#customBtn").addEventListener("click", () => { if (custom.hidden) openCustom(); else closeCustom(); });
+$("#done").addEventListener("click", closeCustom);
+$("#closeGrid").addEventListener("click", () => closeGrid());
+$("#hideBtn").addEventListener("click", () => setClean(true));
+$("#fsBtn").addEventListener("click", toggleFs);
+$("#fsBtn").hidden = !(document.fullscreenEnabled && document.documentElement.requestFullscreen);
+scrub.addEventListener("input", () => { const v = +scrub.value; if (v !== pos) show(v, v > pos ? 1 : -1, true); });
+msgIn.addEventListener("input", applyMsg);
+$("#presets").addEventListener("click", e => { const b = e.target.closest(".chip"); if (b) { msgIn.value = b.textContent; applyMsg(); } });
+$("#speed").addEventListener("click", e => { const b = e.target.closest(".chip"); if (b) { st.sec = +b.dataset.v; save(); renderChips(); } });
+$("#region").addEventListener("click", e => { const b = e.target.closest(".chip"); if (b) setRegion(b.dataset.v, list[pos]); });
+$("#order").addEventListener("click", e => { const b = e.target.closest(".chip"); if (b) { st.order = b.dataset.v; save(); renderChips(); buildList(list[pos]); } });
+$("#reset").addEventListener("click", () => { Object.assign(st, DEF); msgIn.value = st.msg; applyMsg(); renderChips(); buildList(list[pos]); toast("Settings reset."); });
+tiles.addEventListener("click", e => { const b = e.target.closest(".tile"); if (b) { closeGrid(); pick(+b.dataset.i); } });
+q.addEventListener("input", filterTiles);
+q.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); const b = tiles.querySelector(".tile:not([hidden])"); if (b) b.click(); } });
+cv.addEventListener("pointerdown", e => { down = {x: e.clientX, y: e.clientY, idle: document.body.classList.contains("idle"), panel: !custom.hidden}; });
+cv.addEventListener("pointercancel", () => { down = null; });
+cv.addEventListener("pointerup", e => {
+  if (!down) return;
+  const d = down, dx = e.clientX - d.x, dy = e.clientY - d.y;
+  down = null;
+  if (d.panel) { closeCustom(); return; }
+  if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.3) { go(dx < 0 ? 1 : -1); return; }
+  if (Math.hypot(dx, dy) > 12) return;
+  if (document.body.classList.contains("clean")) setClean(false);
+  else if (!d.idle) setPlaying(!playing);
+});
+cv.addEventListener("webglcontextlost", e => e.preventDefault());
+cv.addEventListener("webglcontextrestored", () => location.reload());
+document.addEventListener("pointerdown", e => { if (!custom.hidden && !custom.contains(e.target) && !$("#customBtn").contains(e.target) && e.target !== cv) closeCustom(); });
+for (const ev of ["pointermove", "pointerdown", "keydown"]) addEventListener(ev, wake, {passive: true});
+addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    if (!grid.hidden) closeGrid(); else if (!custom.hidden) closeCustom(); else if (document.body.classList.contains("clean")) setClean(false);
+    return;
+  }
+  const t = e.target, range = t === scrub;
+  if ((t.tagName === "INPUT" && !range) || e.metaKey || e.ctrlKey || e.altKey || !grid.hidden) return;
+  const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+  if (k === " ") { if (t.tagName !== "BUTTON") { e.preventDefault(); setPlaying(!playing); } }
+  else if ((k === "ArrowRight" || k === "ArrowLeft") && !range) { e.preventDefault(); go(k === "ArrowRight" ? 1 : -1); }
+  else if (k === "Home" && !range) { e.preventDefault(); show(0, -1); }
+  else if (k === "End" && !range) { e.preventDefault(); show(list.length - 1, 1); }
+  else if (k === "g" || k === "/") { e.preventDefault(); openGrid(true); }
+  else if (k === "c") { if (custom.hidden) openCustom(); else closeCustom(); }
+  else if (k === "h") setClean(!document.body.classList.contains("clean"));
+  else if (k === "f" && !$("#fsBtn").hidden) toggleFs();
+});
+addEventListener("hashchange", () => { const i = fromHash(); if (i >= 0 && i !== list[pos]) pick(i); });
+addEventListener("resize", layout);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+
+// ---------- start ----------
+function start(saved) {
+  saved = saved || {};
+  Object.assign(st, loadSaved(), saved.st || {});
+  sanitize();
+  msgIn.value = st.msg; applyMsg(); renderChips();
+  let first = typeof saved.idx === "number" ? saved.idx : 0;
+  const h = fromHash();
+  if (h >= 0) first = h;
+  if (h >= 0 || saved.playing === false) playing = false;
+  if (!buildList(first) && h >= 0) { st.region = "All"; renderChips(); buildList(first); }
+  setPlaying(playing);
+  layout();
+  show(pos, 1, true);
+  requestAnimationFrame(frame);
+}
+if (window.claude && window.claude.hot && window.claude.hot.snapshot) window.claude.hot.snapshot(() => ({st: {...st}, idx: list[pos], playing}));
+if (window.claude && window.claude.hot && window.claude.hot.ready) window.claude.hot.ready(start);
+else start((window.claude && window.claude.hot && window.claude.hot.data) || {});
+}
+</script>
+</body>
+</html>

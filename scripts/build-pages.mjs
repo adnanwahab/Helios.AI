@@ -29,6 +29,13 @@ await cp(join(root, 'public'), join(out, 'public'), { recursive: true });
 // The Notion screen reads /api/notion/preview on the live app; Pages gets a build-time snapshot.
 const notionPage = (await readFile(join(root, 'helios_notion_preview.html'), 'utf8')).replaceAll('href="/public/', 'href="./public/');
 await writeFile(join(out, 'helios_notion_preview.html'), notionPage);
+
+// The flags page loads its images from /public/flags/; Pages serves the site under a subpath.
+const flagsPage = (await readFile(join(root, 'support_every_country.html'), 'utf8'))
+  .replaceAll('"/public/', '"./public/')
+  .replaceAll('url(/public/', 'url(./public/');
+if (/["(]\/public\//.test(flagsPage)) throw new Error('Root-relative /public/ path left in support_every_country.html');
+await writeFile(join(out, 'support_every_country.html'), flagsPage);
 await writeFile(join(out, 'notion-preview.json'), JSON.stringify(buildPlanDocument(seedCatalog)));
 
 let index = await readFile(join(root, 'index.html'), 'utf8');
@@ -47,6 +54,7 @@ replaceRequired('src="/embed/fork"', 'src="./helios_fork.html"');
 replaceRequired('src="/embed/notion"', 'src="./helios_notion_preview.html"');
 replaceRequired('src="/embed/world-plan"', 'src="./world_plan_simulator.html"');
 replaceRequired('src="/embed/goals"', 'src="./helios_100_frontend_demo.html"');
+replaceRequired('src="/embed/flags"', 'src="./support_every_country.html"');
 replaceRequired('src="/embed/unified"', 'src="./helios-unified.html"');
 replaceRequired('src="/embed/dynamicland"', 'src="./communal_science_lab_webgpu%20(1).html"');
 replaceRequired('src="/embed/mail"', 'src="./helios_mail.html"');
