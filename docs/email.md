@@ -41,7 +41,7 @@ The scheduled run sends at most 50 emails and stops starting new sends after 7 s
 ## Embedding the form elsewhere
 
 ```html
-<iframe src="https://helioshtml.com/signup" title="Get one email from Helios" style="width:100%;max-width:420px;height:250px;border:0"></iframe>
+<iframe src="https://helioshtml.com/signup" title="Get one email from Helios" style="width:100%;max-width:420px;height:280px;border:0"></iframe>
 <iframe src="https://helioshtml.com/signup?layout=inline" title="Get one email from Helios" style="width:340px;height:44px;border:0"></iframe>
 ```
 
