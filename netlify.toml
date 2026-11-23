@@ -35,6 +35,17 @@
   to = "/helios_notion_preview.html"
   status = 200
 
+# Support Every Country: all 195 flags waving, one at a time, with "Support <country>".
+[[redirects]]
+  from = "/flags"
+  to = "/support_every_country.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/flags"
+  to = "/support_every_country.html"
+  status = 200
+
 [[redirects]]
   from = "/embed/world-plan"
   to = "/world_plan_simulator.html"
