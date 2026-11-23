@@ -1,5 +1,9 @@
 # Helios.AI
 
+**First-time participants:** [Start here](https://helios-ai-laws.fly.dev/welcome) to explore editorial draft goals, private demo notes, and optional public proposals/amendments. These are not government ballots.
+
+**Maintainers:** [Data safety and launch checklist](docs/data-safety-and-launch.md) covers Fly volume snapshots, isolated persistence tests, and careful participant onboarding. The production Fly volume must never be replaced to run tests.
+
 Helios merges everyone's jorunal ammendment to a consitution.
 
 1. new bus stop to french place

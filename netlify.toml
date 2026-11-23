@@ -26,6 +26,11 @@
   status = 200
 
 [[redirects]]
+  from = "/welcome"
+  to = "/welcome.html"
+  status = 200
+
+[[redirects]]
   from = "/embed/notion"
   to = "/helios_notion_preview.html"
   status = 200
