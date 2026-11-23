@@ -33,7 +33,7 @@ fly volumes list -a helios-ai-laws
 fly config show -a helios-ai-laws
 ```
 
-Review `fly.toml`: it must preserve the existing `helios_data` mount at `/data` and the HTTP service's `internal_port = 8080`. `fly config save` may omit build-only settings. If the saved `[build]` stanza pins an old `image` that conflicts with Dockerfile builds, remove only that `image` field; leave mounts, services, checks and the app name unchanged.
+Review `fly.toml`: it must preserve the existing `helios_data` mount at `/data` and the HTTP service's `internal_port = 8080`. The memory pinning helper **fails closed** if those values are missing or multiple VM blocks are present. It edits only VM memory to `memory_mb = 1024`, keeping other Fly config fields intact and saving a private local backup. The repo intentionally does not track the actual `fly.toml` because it must be downloaded from the running app. **Run the helper before every future deploy** so an older saved `512 MB` VM setting cannot silently come back. `fly config save` may omit build-only settings. If the saved `[build]` stanza pins an old `image` that conflicts with Dockerfile builds, remove only that `image` field; leave mounts, services, checks and the app name unchanged.
 
 ```sh
 # The dot makes the build context explicit and loads THIS folder's .dockerignore.
