@@ -13,7 +13,16 @@ const headings = text => {
     body: text.slice(match.index + match[0].length, i + 1 < headers.length ? headers[i + 1].index : text.length),
   }));
 };
-const field = (section, key, expected) => new RegExp(\`^[ \\t]*\${key}[ \\t]*=[ \\t]*['\"]?\${expected}['\"]?[ \\t]*(?:#.*)?$\`, 'm').test(section.body);
+const field = (section, key, expected) => {
+  const line = section.body.split(/\r?\n/).find(s => {
+    const value = s.trimStart();
+    return value.startsWith(key) && value.slice(key.length).trimStart().startsWith('=');
+  });
+  if (!line) return false;
+  const raw = line.slice(line.indexOf('=') + 1).split('#')[0].trim();
+  const value = raw[0] === '"' || raw[0] === "'" ? raw.slice(1, -1) : raw;
+  return value === expected;
+};
 
 export function pinFlyMemory(text) {
   if (!/^\s*app\s*=\s*['"]helios-ai-laws['"](?:\s*#.*)?\s*$/m.test(text)) {
