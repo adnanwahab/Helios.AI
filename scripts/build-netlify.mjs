@@ -18,6 +18,9 @@ const pages = [
   'health_wealth_of_nations.html',
   'heliosai-particle-interface.html',
   'communal_science_lab_webgpu (1).html',
+  // Crawlers look for these at the site root.
+  'robots.txt',
+  'sitemap.xml',
 ];
 
 await rm(out, {recursive: true, force: true});
@@ -26,4 +29,4 @@ for (const name of pages) await copyFile(join(root, name), join(out, name));
 await cp(join(root, 'public'), join(out, 'public'), {recursive: true});
 // Fallback for the Notion screen if the API is unreachable.
 await writeFile(join(out, 'notion-preview.json'), JSON.stringify(buildPlanDocument(seedCatalog)));
-console.log(`Built Netlify static site in dist/ (${pages.length} pages plus public assets).`);
+console.log(`Built Netlify static site in dist/ (${pages.length} files plus public assets).`);
