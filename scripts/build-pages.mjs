@@ -13,6 +13,7 @@ const demos = [
   'helios_ai_landing_page.html',
   'helios_mail.html',
   'helios_hippie_landing.html',
+  'helios_fork.html',
   'world_plan_simulator.html',
   'helios_100_frontend_demo.html',
   'helios-unified.html',
@@ -42,6 +43,7 @@ index = index.replaceAll('href="/public/', 'href="./public/');
 index = index.replaceAll('src="/public/', 'src="./public/');
 replaceRequired('src="/embed/helios-ai"', 'src="./helios_ai_landing_page.html"');
 replaceRequired('src="/embed/hippie"', 'src="./helios_hippie_landing.html"');
+replaceRequired('src="/embed/fork"', 'src="./helios_fork.html"');
 replaceRequired('src="/embed/notion"', 'src="./helios_notion_preview.html"');
 replaceRequired('src="/embed/world-plan"', 'src="./world_plan_simulator.html"');
 replaceRequired('src="/embed/goals"', 'src="./helios_100_frontend_demo.html"');
