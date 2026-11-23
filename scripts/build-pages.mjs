@@ -11,6 +11,7 @@ await mkdir(out, { recursive: true });
 
 const demos = [
   'helios_ai_landing_page.html',
+  'helios_mail.html',
   'helios_hippie_landing.html',
   'world_plan_simulator.html',
   'helios_100_frontend_demo.html',
@@ -46,6 +47,7 @@ replaceRequired('src="/embed/world-plan"', 'src="./world_plan_simulator.html"');
 replaceRequired('src="/embed/goals"', 'src="./helios_100_frontend_demo.html"');
 replaceRequired('src="/embed/unified"', 'src="./helios-unified.html"');
 replaceRequired('src="/embed/dynamicland"', 'src="./communal_science_lab_webgpu%20(1).html"');
+replaceRequired('src="/embed/mail"', 'src="./helios_mail.html"');
 replaceRequired('src="/proxy/ycr/"', 'src="./pages-ycr.html"');
 
 // Email signup and shared proposal writes need the Bun backend. Do not

@@ -11,7 +11,7 @@ export async function createRuntime(options = {}) {
   const database = db ?? createDatabase(env);
   const store = await openStore(database);
   const originList = origins ?? (env.PUBLIC_ORIGINS || '').split(',').map(s => s.trim()).filter(Boolean);
-  const email = createEmail({store, origins: originList, config: emailConfig(env), ...emailOptions});
+  const email = createEmail({store, origins: originList, config: emailConfig(env), adminToken: 'adminToken' in options ? adminToken : (env.HELIOS_ADMIN_TOKEN || null), ...emailOptions});
   const notion = createNotionService({store, config: notionConfig(env), fetch: notionFetch});
   const app = createApp({
     store,

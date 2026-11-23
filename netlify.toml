@@ -60,3 +60,8 @@
   from = "/signup"
   to = "/public/signup.html"
   status = 200
+
+[[redirects]]
+  from = "/embed/mail"
+  to = "/helios_mail.html"
+  status = 200

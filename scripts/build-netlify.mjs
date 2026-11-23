@@ -9,6 +9,7 @@ const root = process.cwd();
 const out = join(root, 'dist');
 const pages = [
   'index.html',
+  'helios_mail.html',
   'helios_ai_landing_page.html',
   'helios_hippie_landing.html',
   'world_plan_simulator.html',
