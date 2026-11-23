@@ -10,7 +10,26 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/public/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/public/apple-touch-icon.png">
   <link rel="manifest" href="/public/site.webmanifest">
-  <title>Helios.AI — Merged Experiences</title>
+  <title>Helios.AI — Write a wish in your journal. Get a law.</title>
+  <meta name="description" content="Write what you wish for — a bus stop, free pizza on Fridays, a bridge to France — and Helios turns it into a bill everyone can vote yes, no, or edit on.">
+  <link rel="canonical" href="https://helioshtml.com/">
+  <!-- Link previews: iMessage, SMS, Slack, Discord, Facebook, LinkedIn, X -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Helios.AI">
+  <meta property="og:title" content="Helios.AI — Write a wish in your journal. Get a law.">
+  <meta property="og:description" content="Write what you wish for — a bus stop, free pizza on Fridays, a bridge to France — and Helios turns it into a bill everyone can vote yes, no, or edit on.">
+  <meta property="og:url" content="https://helioshtml.com/">
+  <meta property="og:image" content="https://helioshtml.com/public/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="A journal wish, &ldquo;Please build a bridge from New York to France,&rdquo; becomes the Transatlantic Connection Initiative.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Helios.AI — Write a wish in your journal. Get a law.">
+  <meta name="twitter:description" content="Write what you wish for — a bus stop, free pizza on Fridays, a bridge to France — and Helios turns it into a bill everyone can vote yes, no, or edit on.">
+  <meta name="twitter:image" content="https://helioshtml.com/public/og.png">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebSite","name":"Helios.AI","url":"https://helioshtml.com/","description":"Write what you wish for and Helios turns it into a bill everyone can vote yes, no, or edit on."}
+  </script>
   <style>
     :root {
       --bg: #0b1220;
@@ -26,7 +45,7 @@
     .app {
       height: 100%;
       display: grid;
-      grid-template-rows: auto 1fr;
+      grid-template-rows: auto 1fr auto;
       grid-template-columns: minmax(0, 1fr);
     }
 
@@ -45,6 +64,7 @@
     }
 
     .title {
+      margin: 0;
       font-size: 14px;
       font-weight: 700;
       letter-spacing: .02em;
@@ -101,6 +121,46 @@
       display: block;
     }
 
+    .byline {
+      display: flex;
+      justify-content: center;
+      padding: 8px 14px 10px;
+      border-top: 1px solid var(--line);
+      background: #0e1727;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: .04em;
+    }
+
+    .byline a { text-decoration: none; display: inline-flex; }
+    .byline { flex-wrap: wrap; gap: 12px 24px; }
+    .byline .contact-link { color: var(--active); font-size: 14px; font-weight: 700; letter-spacing: 0; align-items: center; }
+    .byline .contact-link:hover { text-decoration: underline; }
+    .byline .contact-link:focus-visible { outline: 2px solid var(--active); outline-offset: 3px; border-radius: 4px; }
+
+    .byline span {
+      display: inline-block;
+      white-space: pre;
+      color: hsl(calc(var(--i) * 30deg) 100% 65%);
+      text-shadow: 0 0 8px currentColor;
+      animation: hue-cycle 3s linear infinite, bob 1.2s ease-in-out infinite;
+      animation-delay: 0s, calc(var(--i) * 0.08s);
+    }
+
+    @keyframes hue-cycle {
+      from { filter: hue-rotate(0deg); }
+      to   { filter: hue-rotate(360deg); }
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-3px); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .byline span { animation: hue-cycle 3s linear infinite; }
+    }
+
     @media (max-width: 900px) {
       .topbar {
         height: auto;
@@ -116,14 +176,19 @@
 <body>
   <div class="app">
     <header class="topbar">
-      <div class="title">Helios.AI · Merged index</div>
+      <h1 class="title">Helios.AI · Merged index</h1>
       <nav class="tabs" aria-label="Choose page">
         <button class="tab" id="tab-helios-ai" type="button" role="tab" aria-selected="true" aria-controls="view-helios-ai">HELIOS AI Landing Page</button>
+        <button class="tab" id="tab-hippie" type="button" role="tab" aria-selected="false" aria-controls="view-hippie">HeliosAI · Hippie</button>
+        <button class="tab" id="tab-notion" type="button" role="tab" aria-selected="false" aria-controls="view-notion">Plan · Notion</button>
+        <button class="tab" id="tab-world-plan" type="button" role="tab" aria-selected="false" aria-controls="view-world-plan">World Plan Simulator</button>
         <button class="tab" id="tab-demo" type="button" role="tab" aria-selected="false" aria-controls="view-demo">100 Shared Goals</button>
         <button class="tab" id="tab-unified" type="button" role="tab" aria-selected="false" aria-controls="view-unified">Helios Unified</button>
         <button class="tab" id="tab-lab" type="button" role="tab" aria-selected="false" aria-controls="view-lab">Dynamicland (Local)</button>
         <button class="tab" id="tab-pensieve" type="button" role="tab" aria-selected="false" aria-controls="view-pensieve">Digital Pensieve</button>
+        <button class="tab" id="tab-mail" type="button" role="tab" aria-selected="false" aria-controls="view-mail">Mail · Resend</button>
         <button class="tab" id="tab-ycr" type="button" role="tab" aria-selected="false" aria-controls="view-ycr">YC Research</button>
+        <button class="tab" id="tab-fork" type="button" role="tab" aria-selected="false" aria-controls="view-fork">Fork Helios</button>
       </nav>
       <iframe
         class="signup"
@@ -138,6 +203,30 @@
         class="view active"
         title="HELIOS AI Landing Page"
         src="/embed/helios-ai"
+        loading="lazy"
+      ></iframe>
+
+      <iframe
+        id="view-hippie"
+        class="view"
+        title="HeliosAI Hippie Landing Page"
+        src="/embed/hippie"
+        loading="lazy"
+      ></iframe>
+
+      <iframe
+        id="view-notion"
+        class="view"
+        title="Helios plan as a Notion document"
+        src="/embed/notion"
+        loading="lazy"
+      ></iframe>
+
+      <iframe
+        id="view-world-plan"
+        class="view"
+        title="World Plan Simulator"
+        src="/embed/world-plan"
         loading="lazy"
       ></iframe>
 
@@ -175,6 +264,8 @@
         allowfullscreen
       ></iframe>
 
+      <iframe id="view-mail" class="view" title="Helios Mail · Resend inbox and compose" src="/embed/mail" loading="lazy"></iframe>
+
       <iframe
         id="view-ycr"
         class="view"
@@ -182,26 +273,48 @@
         src="/proxy/ycr/"
         loading="lazy"
       ></iframe>
+      <iframe
+        id="view-fork"
+        class="view"
+        title="Fork Helios"
+        src="/embed/fork"
+        loading="lazy"
+      ></iframe>
     </main>
+
+    <footer class="byline">
+      <a class="contact-link" href="mailto:hello@heliosai.lol" aria-label="Email HeliosAI at hello@heliosai.lol">✉ Email HeliosAI</a>
+      <a href="https://happybearlandia.fly.dev/" target="_blank" rel="noopener" aria-label="by happybear"><span style="--i:0">b</span><span style="--i:1">y</span><span style="--i:2"> </span><span style="--i:3">h</span><span style="--i:4">a</span><span style="--i:5">p</span><span style="--i:6">p</span><span style="--i:7">y</span><span style="--i:8">b</span><span style="--i:9">e</span><span style="--i:10">a</span><span style="--i:11">r</span></a>
+    </footer>
   </div>
 
   <script>
     const tabs = {
       lab: document.getElementById('tab-lab'),
       heliosAi: document.getElementById('tab-helios-ai'),
+      hippie: document.getElementById('tab-hippie'),
+      notion: document.getElementById('tab-notion'),
+      worldPlan: document.getElementById('tab-world-plan'),
       demo: document.getElementById('tab-demo'),
       unified: document.getElementById('tab-unified'),
       pensieve: document.getElementById('tab-pensieve'),
-      ycr: document.getElementById('tab-ycr')
+      mail: document.getElementById('tab-mail'),
+      ycr: document.getElementById('tab-ycr'),
+      fork: document.getElementById('tab-fork')
     };
 
     const views = {
       lab: document.getElementById('view-lab'),
       heliosAi: document.getElementById('view-helios-ai'),
+      hippie: document.getElementById('view-hippie'),
+      notion: document.getElementById('view-notion'),
+      worldPlan: document.getElementById('view-world-plan'),
       demo: document.getElementById('view-demo'),
       unified: document.getElementById('view-unified'),
       pensieve: document.getElementById('view-pensieve'),
-      ycr: document.getElementById('view-ycr')
+      mail: document.getElementById('view-mail'),
+      ycr: document.getElementById('view-ycr'),
+      fork: document.getElementById('view-fork')
     };
 
     function activate(which) {
@@ -214,10 +327,15 @@
 
     tabs.lab.addEventListener('click', () => activate('lab'));
     tabs.heliosAi.addEventListener('click', () => activate('heliosAi'));
+    tabs.hippie.addEventListener('click', () => activate('hippie'));
+    tabs.notion.addEventListener('click', () => activate('notion'));
+    tabs.worldPlan.addEventListener('click', () => activate('worldPlan'));
     tabs.demo.addEventListener('click', () => activate('demo'));
     tabs.unified.addEventListener('click', () => activate('unified'));
     tabs.pensieve.addEventListener('click', () => activate('pensieve'));
+    tabs.mail.addEventListener('click', () => activate('mail'));
     tabs.ycr.addEventListener('click', () => activate('ycr'));
+    tabs.fork.addEventListener('click', () => activate('fork'));
   </script>
 </body>
 </html>

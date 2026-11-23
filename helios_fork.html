@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b1220">
+<title>Fork Helios · Run your own Helios</title>
+<meta name="description" content="Helios is open source. Fork it on GitHub and run a Helios for your own neighborhood, city or group.">
+<style>
+  :root {
+    --bg: #0b1220;
+    --panel: #121b2d;
+    --panel-2: #0f1828;
+    --line: #26344e;
+    --text: #e7eef9;
+    --muted: #9fb1cc;
+    --active: #7ce4cf;
+    --sun: #f2a93b;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  a { color: var(--active); }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--active); outline-offset: 3px; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+  code, pre { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; }
+
+  /* Hero */
+  .hero { position: relative; overflow: hidden; padding: 88px 0 72px; text-align: center; border-bottom: 1px solid var(--line); }
+  .hero::before {
+    content: ""; position: absolute; left: 50%; top: -340px; width: 760px; height: 760px; margin-left: -380px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(242,169,59,.30) 0%, rgba(242,169,59,.08) 38%, rgba(11,18,32,0) 68%);
+    pointer-events: none;
+  }
+  .hero .wrap { position: relative; display: flex; flex-direction: column; align-items: center; gap: 22px; }
+  .eyebrow { margin: 0; font-size: 13px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--sun); }
+  h1 { margin: 0; font-size: clamp(40px, 7vw, 76px); line-height: 1.02; letter-spacing: -.02em; }
+  .lede { margin: 0; max-width: 640px; font-size: 19px; line-height: 1.6; color: var(--muted); }
+
+  .fork-btn {
+    display: inline-flex; align-items: center; gap: 12px; min-height: 56px; padding: 0 28px; border-radius: 12px;
+    background: #f6f8fa; color: #1f2328; border: 1px solid #d0d7de; text-decoration: none; font-size: 18px; font-weight: 700;
+    box-shadow: 0 0 0 6px rgba(124,228,207,.14), 0 10px 30px rgba(0,0,0,.35); transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .fork-btn:hover { transform: translateY(-1px); box-shadow: 0 0 0 8px rgba(124,228,207,.22), 0 14px 34px rgba(0,0,0,.4); color: #1f2328; }
+  .fork-btn svg { width: 22px; height: 22px; flex: none; }
+  .fork-btn .count { margin-left: 4px; padding: 2px 10px; border-radius: 999px; background: #e7ebef; font-size: 14px; font-weight: 700; }
+  .fork-btn .count[hidden] { display: none; }
+
+  .secondary { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; font-size: 15px; font-weight: 600; }
+  .secondary a { text-decoration: none; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; min-height: 44px; }
+  .secondary a:hover { color: var(--active); }
+  .repo { font-size: 14px; color: var(--muted); margin: 0; }
+  .repo code { color: var(--text); }
+
+  /* Sections */
+  section { padding: 72px 0; border-bottom: 1px solid var(--line); }
+  h2 { margin: 0 0 10px; font-size: 32px; letter-spacing: -.01em; }
+  .sub { margin: 0 0 36px; color: var(--muted); font-size: 17px; line-height: 1.6; max-width: 680px; }
+
+  .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; counter-reset: step; }
+  .steps li { counter-increment: step; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 10px; }
+  .steps li::before { content: counter(step); display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--active); color: #07101d; font-weight: 800; font-size: 15px; }
+  .steps h3 { margin: 0; font-size: 18px; }
+  .steps p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.55; }
+  .steps strong { color: var(--text); font-weight: 600; }
+
+  .url { margin-top: 22px; padding: 16px 18px; border: 1px dashed var(--line); border-radius: 12px; color: var(--muted); font-size: 15px; line-height: 1.5; }
+  .url code { color: var(--active); }
+
+  .terminal { position: relative; background: #070c16; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .terminal .bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--panel-2); color: var(--muted); font-size: 13px; }
+  .copy { border: 1px solid var(--line); background: var(--panel); color: var(--text); border-radius: 8px; padding: 6px 12px; min-height: 32px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .copy:hover { border-color: var(--active); }
+  pre { margin: 0; padding: 18px 20px; font-size: 14px; line-height: 1.7; color: var(--text); overflow-x: auto; }
+  pre .c { color: #6d809f; }
+  .note { margin: 14px 0 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
+
+  .split { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 24px; }
+  .card h3 { margin: 0 0 14px; font-size: 18px; }
+  .card ul { margin: 0; padding-left: 20px; color: var(--muted); font-size: 15px; line-height: 1.75; }
+  .card.yes h3 { color: var(--active); }
+  .card.no h3 { color: var(--sun); }
+
+  .soon { display: flex; flex-wrap: wrap; gap: 12px; }
+  .chip { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 999px; border: 1px dashed var(--line); color: var(--muted); font-size: 14px; font-weight: 600; }
+  .chip.live { border-style: solid; border-color: var(--active); color: var(--text); }
+  .chip small { font-weight: 500; opacity: .8; }
+
+  .final { text-align: center; border-bottom: 0; padding: 80px 0 96px; }
+  .final h2 { font-size: 36px; }
+  .final .sub { margin: 0 auto 28px; }
+
+  @media (max-width: 600px) {
+    .hero { padding: 64px 0 56px; }
+    section { padding: 56px 0; }
+    .fork-btn { width: 100%; justify-content: center; }
+  }
+  @media (prefers-reduced-motion: reduce) { .fork-btn { transition: none; } }
+</style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Open source · Fork it</p>
+      <h1>Run your own Helios</h1>
+      <p class="lede">Helios is open source. Fork it on GitHub and run a Helios for your own neighborhood, city, school or club. Your journals, your needs, your votes.</p>
+
+      <a class="fork-btn" id="fork" href="https://github.com/adnanwahab/Helios.AI/fork" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        Fork Helios on GitHub
+        <span class="count" id="fork-count" hidden></span>
+      </a>
+
+      <div class="secondary">
+        <a href="https://github.com/adnanwahab/Helios.AI" target="_blank" rel="noopener noreferrer">View the code ↗</a>
+        <a href="https://github.com/adnanwahab/Helios.AI/stargazers" target="_blank" rel="noopener noreferrer">★ Star <span id="star-count"></span></a>
+        <a href="https://github.com/adnanwahab/Helios.AI/issues" target="_blank" rel="noopener noreferrer">Suggest an idea ↗</a>
+      </div>
+      <p class="repo">Repository: <code>github.com/adnanwahab/Helios.AI</code> · Free GitHub account required</p>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <div class="wrap">
+        <h2>Put your fork online in three steps</h2>
+        <p class="sub">GitHub turns off Actions on new forks, so your copy won't publish a website until you switch it on. It takes about two minutes.</p>
+        <ol class="steps">
+          <li>
+            <h3>Turn on Actions</h3>
+            <p>In your fork, open the <strong>Actions</strong> tab and click <strong>enable workflows</strong>.</p>
+          </li>
+          <li>
+            <h3>Choose GitHub Pages</h3>
+            <p>Open <strong>Settings → Pages</strong>. Under <strong>Source</strong>, pick <strong>GitHub Actions</strong>.</p>
+          </li>
+          <li>
+            <h3>Deploy</h3>
+            <p>In <strong>Actions</strong>, run <strong>Deploy static preview to GitHub Pages</strong>, or just push a commit to <code>main</code>.</p>
+          </li>
+        </ol>
+        <p class="url">Your site appears at <code>https://YOUR-USERNAME.github.io/Helios.AI/</code> and updates every time you push to <code>main</code>.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <h2>Or run it on your computer</h2>
+        <p class="sub">You'll need <a href="https://bun.sh" target="_blank" rel="noopener noreferrer">Bun</a> and Node 22 or newer.</p>
+        <div class="terminal">
+          <div class="bar"><span>Terminal</span><button class="copy" type="button" id="copy">Copy</button></div>
+<pre id="cmds"><span class="c"># replace YOUR-USERNAME with your GitHub name</span>
+git clone https://github.com/YOUR-USERNAME/Helios.AI.git
+cd Helios.AI
+bun install
+bun run dev
+<span class="c"># then open http://localhost:3000</span></pre>
+        </div>
+        <p class="note">Locally, the 100 goals, proposals and amendment history are saved in a small database on your machine. See <a href="https://github.com/adnanwahab/Helios.AI/blob/main/docs/backend.md" target="_blank" rel="noopener noreferrer">docs/backend.md</a> to connect Supabase and deploy the full app.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <h2>What your fork includes</h2>
+        <p class="sub">The free GitHub Pages site is a static preview. The full app needs a server.</p>
+        <div class="split">
+          <div class="card yes">
+            <h3>Works on GitHub Pages</h3>
+            <ul>
+              <li>All the Helios landing pages and tabs</li>
+              <li>100 Shared Goals and Helios Unified</li>
+              <li>The Dynamicland science lab</li>
+              <li>Notes kept in each visitor's own browser</li>
+            </ul>
+          </div>
+          <div class="card no">
+            <h3>Needs the full app (server)</h3>
+            <ul>
+              <li>Email sign-up</li>
+              <li>Saving proposals and amendments for everyone</li>
+              <li>The YC Research proxy tab</li>
+            </ul>
+          </div>
+        </div>
+        <p class="note">Your fork never sends visitors' data to the original Helios. You run your own copy.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <h2>More ways to start</h2>
+        <p class="sub">GitHub is the first. Other ways to set up a Helios are on the way.</p>
+        <div class="soon">
+          <span class="chip live">GitHub <small>· available now</small></span>
+          <span class="chip">Notion <small>· coming later</small></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="final">
+      <div class="wrap">
+        <h2>Start a Helios where you live</h2>
+        <p class="sub">Fork it, change it, make it yours. People vote, and nothing becomes the plan without their approval.</p>
+        <a class="fork-btn" href="https://github.com/adnanwahab/Helios.AI/fork" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"><path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75v-.878a2.25 2.25 0 111.5 0v.878a2.25 2.25 0 01-2.25 2.25h-1.5v2.128a2.251 2.251 0 11-1.5 0V8.5h-1.5A2.25 2.25 0 013.5 6.25v-.878a2.25 2.25 0 111.5 0zM5 3.25a.75.75 0 10-1.5 0 .75.75 0 001.5 0zm6.75.75a.75.75 0 100-1.5.75.75 0 000 1.5zm-3 8.75a.75.75 0 10-1.5 0 .75.75 0 001.5 0z"/></svg>
+          Fork Helios
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Live fork and star counts from GitHub's public API. If the request fails
+    // (offline, rate limited), the buttons still work without numbers.
+    (async () => {
+      try {
+        const res = await fetch('https://api.github.com/repos/adnanwahab/Helios.AI', { headers: { Accept: 'application/vnd.github+json' } });
+        if (!res.ok) return;
+        const repo = await res.json();
+        const fmt = n => new Intl.NumberFormat('en', { notation: 'compact' }).format(n);
+        if (Number.isFinite(repo.forks_count)) {
+          const el = document.getElementById('fork-count');
+          el.textContent = fmt(repo.forks_count);
+          el.setAttribute('aria-label', repo.forks_count + ' forks');
+          el.hidden = false;
+        }
+        if (Number.isFinite(repo.stargazers_count)) {
+          document.getElementById('star-count').textContent = '· ' + fmt(repo.stargazers_count);
+        }
+      } catch (_) { /* counts are optional */ }
+    })();
+
+    // Copy the local-setup commands without the comment lines.
+    document.getElementById('copy').addEventListener('click', async (e) => {
+      const text = document.getElementById('cmds').innerText.split('\n').filter(l => l.trim() && !l.trim().startsWith('#')).join('\n');
+      try {
+        await navigator.clipboard.writeText(text);
+        e.target.textContent = 'Copied';
+      } catch (_) {
+        e.target.textContent = 'Select and copy';
+      }
+      setTimeout(() => { e.target.textContent = 'Copy'; }, 1800);
+    });
+  </script>
+</body>
+</html>

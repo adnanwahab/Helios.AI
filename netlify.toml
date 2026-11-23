@@ -21,6 +21,26 @@
   status = 200
 
 [[redirects]]
+  from = "/embed/hippie"
+  to = "/helios_hippie_landing.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/notion"
+  to = "/helios_notion_preview.html"
+  status = 200
+
+[[redirects]]
+  from = "/notion"
+  to = "/helios_notion_preview.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/world-plan"
+  to = "/world_plan_simulator.html"
+  status = 200
+
+[[redirects]]
   from = "/embed/goals"
   to = "/helios_100_frontend_demo.html"
   status = 200
@@ -39,4 +59,14 @@
 [[redirects]]
   from = "/signup"
   to = "/public/signup.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/mail"
+  to = "/helios_mail.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/fork"
+  to = "/helios_fork.html"
   status = 200
