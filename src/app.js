@@ -17,7 +17,7 @@ const rewriteYcrText = text => text
   .replace(/(["'`])\/api\//g, `$1${YCR_PROXY_PREFIX}/api/`)
   .replace(/https?:\/\/(?:www\.)?(?:ycr\.org|openresearchlab\.org)\//gi, `${YCR_PROXY_PREFIX}/`);
 
-export function createApp({store, email, notion = null, origins = [], adminToken = null, secure = true} = {}) {
+export function createApp({store, email, notion = null, origins = [], adminToken = null, secure = true, health = {storage: 'unknown', runtime: 'unknown'}} = {}) {
   if (!store) throw Error('Store required');
   const response = (data, status = 200, extra = {}) => Response.json(data, {status, headers: {'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', ...extra}});
 
