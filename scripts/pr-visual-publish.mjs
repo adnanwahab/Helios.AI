@@ -178,7 +178,7 @@ if (!hosted) {
   lines.push(`**Screenshot:** Not published (${run.conclusion === 'success' ? 'asset hosting failed' : 'capture failed'}). [View capture run](${sourceRun}).`, '');
 }
 lines.push(
-  `Screenshot source: local, credential-free PR build at \`${sha.slice(0,12)}\`. The Netlify link is a separate deployment.`,
+  `Screenshot source: ${run.event === 'workflow_dispatch' ? 'public Netlify deploy preview' : 'local, credential-free PR build'} at \`${sha.slice(0,12)}\`.`,
   `[Capture logs and downloadable artifacts](${sourceRun})`,
   '',
   '_Automatically refreshed after new commits. Preview screenshots contain only publicly visible UI; private inbox content and credentials are never captured._',
