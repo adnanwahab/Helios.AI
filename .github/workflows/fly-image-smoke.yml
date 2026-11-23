@@ -9,6 +9,18 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build deployment image
         run: docker build --file Dockerfile --tag helios-ai-fly:test .
+      - name: Verify production-only build context
+        run: |
+          docker run --rm --entrypoint sh helios-ai-fly:test -ec '
+            test -f /app/data/catalog.json
+            test -f /app/netlify.toml
+            test -f /app/dist/index.html
+            test ! -e /app/test
+            test ! -e /app/docs
+            test ! -e /app/.git
+            test ! -e /app/.data
+            test ! -e /app/.env
+          '
       - name: Start in Fly-like environment and probe health endpoint
         run: |
           mkdir -p "$RUNNER_TEMP/helios-data"

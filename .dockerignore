@@ -1,17 +1,46 @@
-# Never ship local secrets, data, Git state, or generated artifacts.
-.git
-.github
-node_modules
-dist
-.data
-.env
-.env.*
-!.env.example
-*.sqlite
-*.sqlite-*
-*.db
-*.log
-coverage
-playwright-report
-test-results
-.DS_Store
+# A *small, explicit* Fly/Docker build context.
+# Docker reads .dockerignore from the CONTEXT ROOT, not from a nested repo.
+# Always run: fly deploy . --dockerfile Dockerfile (from this repository's root).
+#
+# The runtime needs only package metadata, HTML pages, the application code,
+# the catalog, public assets, and Netlify redirect rules.
+# Default-deny local clones, datasets, node_modules, test artifacts and secrets.
+*
+!Dockerfile
+!package.json
+!bun.lock
+!netlify.toml
+!index.html
+!*.html
+!robots.txt
+!sitemap.xml
+!src/
+!src/**
+!scripts/
+!scripts/**
+!public/
+!public/**
+!data/
+!data/catalog.json
+
+# Defensive exclusions inside otherwise allowed directories.
+**/.git
+**/node_modules
+**/.env
+**/.env.*
+**/.data
+**/.DS_Store
+**/.netlify
+**/.cache
+**/.next
+**/.turbo
+**/dist
+**/dist-pages
+**/coverage
+**/test-results
+**/playwright-report
+**/*.sqlite
+**/*.sqlite-*
+**/*.db
+**/*.db-*
+**/*.log
