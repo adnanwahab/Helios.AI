@@ -7,21 +7,29 @@ import {chromium} from '@playwright/test';
 
 const output = resolve('pr-visual-output');
 await mkdir(output, {recursive: true});
-const dbPath = await mkdtemp(join(tmpdir(), 'helios-pr-visual-'));
+// Backfill historical PRs by rendering their deployed preview. Ordinary
+// pull_request runs still render an isolated, credential-free local build.
+const remote = process.env.PR_PREVIEW_URL?.trim() || '';
+if (remote) {
+  const u = new URL(remote);
+  if (u.protocol !== 'https:' || !/^deploy-preview-\\d+--heliosailol\\.netlify\\.app$/.test(u.hostname)) {
+    throw new Error('Expected an HTTPS HeliosAI Netlify deploy-preview URL');
+  }
+}
+const dbPath = remote ? null : await mkdtemp(join(tmpdir(), 'helios-pr-visual-'));
 const port = 3137;
-const base = `http://127.0.0.1:${port}`;
-const server = spawn(process.execPath, ['scripts/dev-server.js'], {
+const base = remote || `http://127.0.0.1:${port}`;
+const server = remote ? null : spawn(process.execPath, ['scripts/dev-server.js'], {
   env: {
     ...process.env, HOST: '127.0.0.1', PORT: String(port),
     SUPABASE_DB_URL: '', HELIOS_PGLITE_DIR: dbPath,
-    // No live credentials should ever be used when taking PR screenshots.
     RESEND_API_KEY: '', RESEND_WEBHOOK_SECRET: '', HELIOS_ADMIN_TOKEN: '',
     NOTION_TOKEN: '', NOTION_API_KEY: '',
   },
   stdio: ['ignore', 'pipe', 'pipe'],
 });
-server.stdout.on('data', chunk => process.stdout.write(chunk));
-server.stderr.on('data', chunk => process.stderr.write(chunk));
+server?.stdout.on('data', chunk => process.stdout.write(chunk));
+server?.stderr.on('data', chunk => process.stderr.write(chunk));
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function waitForServer() {
@@ -39,7 +47,7 @@ async function waitForServer() {
 
 let browser;
 try {
-  await waitForServer();
+  if (!remote) await waitForServer();
   browser = await chromium.launch({headless: true});
   const page = await browser.newPage({
     viewport: {width: 1440, height: 900}, deviceScaleFactor: 1,
@@ -55,15 +63,22 @@ try {
   await page.waitForTimeout(700);
   await page.screenshot({path: join(output, 'mobile.png'), animations: 'disabled'});
 
-  // The mail console is deliberately unauthenticated in screenshot mode.
   await page.setViewportSize({width: 1440, height: 900});
-  await page.locator('#tab-mail').click();
-  await page.frameLocator('#view-mail').getByRole('heading', {name: 'Helios · Mail'}).waitFor({timeout: 20000});
-  await page.screenshot({path: join(output, 'mail.png'), animations: 'disabled'});
-  console.log('Captured homepage desktop, homepage mobile, and private mail UI (locked).');
+  const mailTab = page.locator('#tab-mail');
+  if (await mailTab.count()) {
+    // Never unlock the operator console or enter any credentials.
+    await mailTab.click();
+    await page.frameLocator('#view-mail').getByRole('heading', {name: 'Helios · Mail'}).waitFor({timeout: 20000});
+    await page.screenshot({path: join(output, 'mail.png'), animations: 'disabled'});
+  } else {
+    console.log('Mail tab is absent in this historical PR; skipping that screenshot.');
+  }
+  console.log('Captured desktop and mobile screenshots from ' + (remote ? 'Netlify deployment' : 'local PR build'));
 } finally {
   await browser?.close().catch(() => {});
-  server.kill('SIGTERM');
-  await sleep(1000);
-  await rm(dbPath, {recursive: true, force: true}).catch(() => {});
+  if (server) {
+    server.kill('SIGTERM');
+    await sleep(1000);
+  }
+  if (dbPath) await rm(dbPath, {recursive: true, force: true}).catch(() => {});
 }
