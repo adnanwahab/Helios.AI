@@ -5,7 +5,7 @@
 import {createServer} from 'node:http';
 import {readFile, stat} from 'node:fs/promises';
 import {extname, join, resolve, sep} from 'node:path';
-import {createPGliteDatabase} from '../src/db-pglite.js';
+import {createPGliteDatabase, pgliteDataDir} from '../src/db-pglite.js';
 import {createRuntime} from '../src/runtime.js';
 
 const root = process.cwd();
@@ -16,7 +16,7 @@ const toml = await readFile(join(root, 'netlify.toml'), 'utf8');
 const redirects = new Map([...toml.matchAll(/\[\[redirects\]\]\s*from\s*=\s*"([^"]+)"\s*to\s*=\s*"([^"]+)"/g)].map(m => [m[1], decodeURI(m[2])]));
 const isApi = path => path.startsWith('/api/') || path === '/email/unsubscribe' || path === '/proxy/ycr' || path.startsWith('/proxy/ycr/');
 
-const db = process.env.SUPABASE_DB_URL ? undefined : await createPGliteDatabase(process.env.HELIOS_PGLITE_DIR || '.data/pglite');
+const db = process.env.SUPABASE_DB_URL ? undefined : await createPGliteDatabase(pgliteDataDir());
 const runtime = await createRuntime({db, secure: false});
 
 async function serveStatic(path, res, method) {
@@ -54,7 +54,10 @@ const server = createServer(async (req, res) => {
   res.end(Buffer.from(await response.arrayBuffer()));
 });
 
-const port = Number(process.env.PORT || 3000), host = process.env.HOST || '127.0.0.1';
+// On Fly, the service checks 0.0.0.0:8080; local development stays on 127.0.0.1:3000.
+const onFly = Boolean(process.env.FLY_APP_NAME);
+const port = Number(process.env.PORT || (onFly ? 8080 : 3000));
+const host = process.env.HOST || (onFly ? '0.0.0.0' : '127.0.0.1');
 server.listen(port, host, () => console.log(`Helios.AI dev server on http://${host}:${port}`));
 const stop = () => { server.close(); runtime.store.close(); process.exit(0); };
 process.on('SIGTERM', stop);
