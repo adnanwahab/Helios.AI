@@ -35,6 +35,11 @@
  .status.show{display:block}.status.error,.status.blocked{color:#ffc7b8}.status.success{color:#a7f7d9}
  .status a,.status button{color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
  .status button{background:none;border:0;padding:0}
+ .guard-choice{display:flex;align-items:center;gap:10px;margin:12px 6px 0;width:fit-content;font-size:13px;line-height:1.4;color:#e6f5fa;cursor:pointer}
+ .guard-choice input{width:18px;height:18px;flex:none;margin:0;accent-color:var(--mint);cursor:pointer}
+ .guard-choice input:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
+ .guard-choice .optional{color:#a2b6c5;font-weight:500}
+ .guard-choice input:disabled{cursor:wait}
  .local-guard-note{font-size:11px;line-height:1.6;color:#9eb6c5;padding:7px 6px 0}
  #moderation-dialog{color:#eaf8fc;background:#101d2b;border:1px solid rgba(255,196,173,.38);border-radius:22px;width:min(470px,calc(100vw - 32px));max-height:calc(100dvh - 40px);padding:0;box-shadow:0 32px 110px rgba(0,0,0,.7)}
  #moderation-dialog::backdrop{background:rgba(3,9,20,.82);backdrop-filter:blur(8px)}
@@ -75,7 +80,11 @@
     </button>
    </form>
    <div class="status" id="status" role="status" aria-live="polite"></div>
-   <div class="local-guard-note">On Send, local Llama Guard 3-1B checks your draft using WebGPU. First use downloads about 1.8 GB of model files. Your draft is sent to Civic Synthesis only after you confirm publication.</div>
+   <label class="guard-choice" for="local-guard-opt-in">
+    <input id="local-guard-opt-in" type="checkbox" autocomplete="off">
+    <span>Use local AI safety screening <span class="optional">(optional)</span></span>
+   </label>
+   <div class="local-guard-note" id="local-guard-help">Off by default. Checking the box downloads nothing. If you opt in, pressing Send starts a WebGPU check and may download about 1.8 GB of model files. Without it, you can still send after confirming public publication. Any separate Civic Synthesis rules still apply.</div>
   </div>
  </main>
  <footer>REFLECT OPEN <b>+</b> 5 TRANSFORMERS <b>=</b> HELIOSAI</footer>
@@ -88,6 +97,7 @@
  const form=document.getElementById('message-form');
  const send=document.getElementById('send');
  const sendLabel=document.getElementById('send-label');
+ const guardOptIn=document.getElementById('local-guard-opt-in');
  const status=document.getElementById('status');
  const moderationDialog=document.getElementById('moderation-dialog');
  const moderationTitle=document.getElementById('moderation-title');
@@ -255,24 +265,29 @@
    }}
  form.addEventListener('submit',async e=>{
    e.preventDefault();const value=message.value.trim();if(!value||send.dataset.loading==='true')return;
-   send.dataset.loading='true';sendLabel.textContent='Checking locally…';send.disabled=true;status.className='status';burst=.18;
+   const useLocalGuard=guardOptIn.checked;
+   send.dataset.loading='true';sendLabel.textContent=useLocalGuard?'Checking locally…':'Preparing to publish…';send.disabled=true;guardOptIn.disabled=true;status.className='status';burst=.18;
    try{
-     let verdict;
-     try{
-       const {checkLocalMessage}=await import('./public/local-llama-guard.js');
-       verdict=await checkLocalMessage(value,{onProgress:text=>show('info',text)});
-     }catch{verdict={status:'unavailable'}}
-     if(verdict?.status==='unsafe'){
-       show('blocked','Local safety screening blocked this message. It was not sent.');
-       showModerationModal('unsafe');
-       return;
+     // Opt-in is checked at Send time; merely opening the page or toggling
+     // the checkbox must never import the model runtime or start a download.
+     if(useLocalGuard){
+       let verdict;
+       try{
+         const {checkLocalMessage}=await import('./public/local-llama-guard.js');
+         verdict=await checkLocalMessage(value,{onProgress:text=>show('info',text)});
+       }catch{verdict={status:'unavailable'}}
+       if(verdict?.status==='unsafe'){
+         show('blocked','Local safety screening blocked this message. It was not sent.');
+         showModerationModal('unsafe');
+         return;
+       }
+       if(verdict?.status!=='safe'){
+         show('blocked','Local safety screening could not complete. It was not sent.');
+         showModerationModal('unavailable');
+         return;
+       }
      }
-     if(verdict?.status!=='safe'){
-       show('blocked','Local safety screening could not complete. It was not sent.');
-       showModerationModal('unavailable');
-       return;
-     }
-     if(!window.confirm('Local screening completed. Publish this message publicly to Civic Synthesis? Others may be able to read it. Do not include private or identifying information.')){
+     if(!window.confirm((useLocalGuard?'Local AI screening completed. ':'Local AI screening was skipped. ')+'Publish this message publicly to Civic Synthesis? Others may be able to read it. Do not include private or identifying information.')){
        status.className='status';
        return;
      }
@@ -295,7 +310,7 @@
      else if(err instanceof TypeError||/403|origin|cors|fetch/i.test(String(err?.message)))detail+=' Cross-origin publishing may be blocked by Civic Synthesis security settings.';
      else if(err?.message)detail+=` ${String(err.message).slice(0,180)}`;
      show('error',detail);
-   }finally{send.dataset.loading='false';sendLabel.textContent='Send signal';refresh()}
+   }finally{guardOptIn.disabled=false;send.dataset.loading='false';sendLabel.textContent='Send signal';refresh()}
  });
  try{if(!gl)throw Error('WebGL2 unavailable');initGL();locs()}
  catch(err){console.warn('Helios particle fallback',err)}

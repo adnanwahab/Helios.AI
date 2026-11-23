@@ -1,61 +1,84 @@
-# Local Llama Guard refusal modal (HELIOS particle composer)
+# Optional browser-local Llama Guard (HELIOS particle composer)
 
-## What this PR adds
+## User choice and download behavior
 
-The `heliosai-particle-interface.html` Send action now runs a **browser-local
-Llama Guard 3-1B safety preflight** before the existing explicit confirmation
-to publish publicly to Civic Synthesis. When the model returns `unsafe`, the
-HTML `<dialog>` presents the requested text exactly:
+The particle composer (`heliosai-particle-interface.html`) displays a clearly
+labeled **Use local AI safety screening (optional)** checkbox. It is **unchecked
+by default on every new page load**, and the preference is not written to local
+storage or cookies.
+
+- **Unchecked:** the user can Send normally. Helios shows the existing explicit
+  confirmation that the message will be published publicly to Civic Synthesis.
+  If confirmed, the same `/api/publish_draft` call is used. This option skips
+  *only* the browser-local model. It does not change any independent server rules.
+- **Checked:** there is **no download just from checking the checkbox**, typing,
+  or opening the page. When the user then presses **Send**, Helios dynamically
+  imports `public/local-llama-guard.js`, checks for secure-context WebGPU support,
+  and loads the Llama Guard model if needed.
+- **Safe verdict:** the public-publication confirmation is still mandatory.
+- **Unsafe verdict:** a modal explains that the message was not sent. The user can
+  close it and edit the preserved draft.
+- **Unavailable / inference failure / unrecognized output:** a distinct error
+  modal appears, the draft stays intact, and nothing is published. The user may
+  uncheck the optional local screening box before trying again.
+- The checkbox is temporarily disabled during an active Send request so the
+  displayed choice cannot change halfway through an in-progress check.
+
+No model, tokenizer, or Transformers.js runtime is preloaded when the page is
+opened or when the checkbox is merely selected. The browser may cache model
+files after a consented download; this UI does not clear that browser cache.
+
+## Refusal modal
+
+For a model `unsafe` verdict the requested wording is:
 
 > sorry, you can't send that.
 >
 > if you disagree pls email local city hall
 
-The original unsent draft remains editable. Closing the modal restores
-keyboard focus. Escape closes the dialog. No address or message is sent to
-any city hall. There is no inferred user location.
+The original unsent draft remains editable. Closing the modal returns keyboard
+focus to the message. No email is sent to city hall; there is no inferred user
+location. The wording is not a claim that city hall administers Helios appeals.
 
-If WebGPU, memory, network, model download or inference is unavailable, the
-submission is **not sent** and a different diagnostic modal is shown. Unknown
-model outputs are never interpreted as `safe`. No automatic retries of the
-public POST are added.
+## Model and runtime
 
-## Inference and deployment
+- Model: `onnx-community/Llama-Guard-3-1B`.
+- Client runtime: `@huggingface/transformers@4.3.2` from jsDelivr, dynamically
+  imported **only during an opted-in Send**.
+- Inference: WebGPU, ONNX `q4f16`; the first opted-in run may download
+  approximately **1.8 GB** of model files.
+- User draft text is sent to in-browser inference, not a model API. Only after
+  explicit publication confirmation does the existing Civic Synthesis
+  submission endpoint receive the message.
 
-- Model: `onnx-community/Llama-Guard-3-1B`, Llama Guard 3-1B
-  ONNX weights (subject to the Llama 3.2 license).
-- Runtime: `@huggingface/transformers@4.3.2`, dynamically imported from
-  jsDelivr *only when a user attempts to send*.
-- Inference: `device: 'webgpu'`, `dtype: 'q4f16'`; first download is
-  about **1.8 GB** and requires sufficient GPU memory, an HTTPS page or
-  localhost and a supported browser. This combination is based on published
-  model files/API documentation, not yet verified by an end-to-end GPU run.
-- Browser downloads model assets and runtime from the configured public
-  CDNs; the draft text is passed only into browser inference.
-- No new Netlify function, secret or third-party moderation API is added.
-  The existing Netlify and GitHub Pages builders already copy the `public/`
-  directory, so the module remains available as a same-origin import.
+## Safety and product limitations
 
-## Important limitations
+Local screening is an optional client-side UX feature, **not an enforceable
+security boundary**. Even a mandatory checkbox could be bypassed by a custom
+client calling the public API directly. Civic Synthesis must independently
+validate submissions as necessary. This PR does not add or verify server-side
+moderation, a moderation appeals route, or any new backend enforcement.
 
-**This is a client-side UX gate, not trustworthy enforcement.** A custom
-client can bypass it and POST directly to
-`https://civic-synthesis.fly.dev/api/publish_draft`. Server-controlled
-moderation and a human review/appeal route must be implemented on the Civic
-Synthesis backend before any promise of comprehensive enforcement.
-
-Llama Guard's broad taxonomy includes legitimate civic speech (e.g., topics
-about medicine, sex, political systems or elections) and its output can be
-wrong. This initial UI blocks the model's literal `unsafe` verdict; do not
-interpret that as a reliable conclusion about legality or civic legitimacy.
-Before rollout, test political disagreement, quotation, self-reports,
-multilingual input, privacy and vulnerable-group discussions for disparate
-false positives. Maintain a real appeal channel rather than implying that
-an unspecified city hall is responsible for Helios moderation.
+Llama Guard can misclassify legitimate civic discussion (e.g. criticism of
+public policy, elections or health systems). Test multilingual input, quoted
+material, sensitive public-policy topics and false positives on supported
+devices before promising production reliability. Since the opt-in model is
+large and WebGPU-dependent, the unchecked experience must remain usable.
 
 ## Validation
 
-Run `node --test test/local-llama-guard.test.js` for deterministic verdict
-parsing. A real WebGPU smoke test must be performed on a supported device
-with time and memory for the model download. Verify blocked, unavailable,
-allowed + publication-confirmation, Escape/focus, and server error paths.
+Automated browser tests (`test/browser/local-guard-opt-in.e2e.js`) use a mock
+publishing endpoint and a stub local guard module. They verify:
+
+1. Default unchecked: no import/download request, including after Send.
+2. Checking the box alone: still no module load; opting in and pressing Send
+   runs the guard, and `unsafe` blocks publishing while retaining the draft.
+3. `safe` still requires separate confirmation; cancel sends nothing.
+4. Model unavailable: distinct modal, no POST, original draft retained.
+
+Parser tests: `node --test test/local-llama-guard.test.js`.
+Full browser suite: `bun run test:browser`.
+
+A **real WebGPU inference smoke test** still requires a supported browser/GPU,
+time and memory for the model download. CI stubs the model and does not claim
+to verify real model weights or GPU inference.
