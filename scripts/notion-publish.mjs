@@ -12,7 +12,10 @@ if (remote) {
 }
 
 const {createRuntime} = await import('../src/runtime.js');
-const db = process.env.SUPABASE_DB_URL ? undefined : await (await import('../src/db-pglite.js')).createPGliteDatabase(process.env.HELIOS_PGLITE_DIR || '.data/pglite');
+const db = process.env.SUPABASE_DB_URL ? undefined : await (async () => {
+  const {createPGliteDatabase, pgliteDataDir} = await import('../src/db-pglite.js');
+  return createPGliteDatabase(pgliteDataDir());
+})();
 const runtime = await createRuntime({db, secure: false});
 try {
   const result = await runtime.notion.publish();
