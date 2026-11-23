@@ -38,6 +38,13 @@ jobs:
         run: |
           mkdir -p pr-visual-output
           printf '{"number":%s,"head_sha":"%s"}\n' "$PR_NUMBER" "$PR_HEAD_SHA" > pr-visual-output/manifest.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check screenshot and publishing script syntax
+        run: |
+          node --check scripts/pr-visual-capture.mjs
+          node --check scripts/pr-visual-publish.mjs
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.4.2
