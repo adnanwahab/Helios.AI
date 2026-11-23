@@ -51,7 +51,7 @@ export function createApp({store, email, notion = null, origins = [], adminToken
 
     if (method === 'GET' && path === '/api/health') {
       const {goals} = await store.catalog();
-      return response({status: 'ok', storage: 'supabase-postgres', runtime: 'netlify-functions', schemaVersion: 1, seedCount: 100, proposalCount: goals.length, catalogHash: store.catalogHash});
+      return response({status: 'ok', storage: health.storage, runtime: health.runtime, schemaVersion: 1, seedCount: 100, proposalCount: goals.length, catalogHash: store.catalogHash});
     }
     if (method === 'GET' && path === '/api/session') {
       if (!(await store.authenticate(cookie))) await store.limit('session-issue:' + hash(remoteIP), 120, 3600000);
