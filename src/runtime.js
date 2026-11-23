@@ -22,6 +22,7 @@ export async function createRuntime(options = {}) {
     store,
     email,
     notion,
+    health,
     origins: originList,
     adminToken: 'adminToken' in options ? adminToken : (env.HELIOS_ADMIN_TOKEN || null),
     secure: secure ?? env.HELIOS_INSECURE_COOKIES !== '1',
