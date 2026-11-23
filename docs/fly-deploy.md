@@ -27,6 +27,8 @@ If you already have a clean checkout, you can `cd` directly into its repository 
 ```sh
 fly auth whoami
 fly config save -a helios-ai-laws
+# Preserve the existing config and pin the VM to the 1 GB size that fixed Fly's OOM kills.
+node scripts/pin-fly-memory.mjs fly.toml
 fly volumes list -a helios-ai-laws
 fly config show -a helios-ai-laws
 ```
