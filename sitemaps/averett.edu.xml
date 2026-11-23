@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This sitemap was dynamically generated on November 22, 2026 at 9:02 am by All in One SEO v5.0.5.1 - the original SEO plugin for WordPress. -->
+
+<?xml-stylesheet type="text/xsl" href="https://www.averett.edu/default-sitemap.xsl?sitemap=root"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+	<sitemap>
+		<loc><![CDATA[https://www.averett.edu/post-sitemap.xml]]></loc>
+		<lastmod><![CDATA[2026-11-20T21:17:44+00:00]]></lastmod>
+	</sitemap>
+	<sitemap>
+		<loc><![CDATA[https://www.averett.edu/post-sitemap2.xml]]></loc>
+		<lastmod><![CDATA[2017-05-12T22:17:22+00:00]]></lastmod>
+	</sitemap>
+	<sitemap>
+		<loc><![CDATA[https://www.averett.edu/page-sitemap.xml]]></loc>
+		<lastmod><![CDATA[2026-11-13T16:25:33+00:00]]></lastmod>
+	</sitemap>
+</sitemapindex>

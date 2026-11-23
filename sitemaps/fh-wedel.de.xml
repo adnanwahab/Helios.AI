@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="/typo3/sysext/seo/Resources/Public/CSS/Sitemap.xsl"?>
+
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    
+        <sitemap>
+            <loc>https://www.fh-wedel.de/sitemap.xml?sitemap=pages&amp;cHash=f90bca65fad793ff3c60bb308a461dcd</loc>
+            <lastmod>2026-11-20T15:03:48+01:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://www.fh-wedel.de/sitemap.xml?sitemap=news&amp;cHash=6cd001482d361bf20fe744eff88fb907</loc>
+            <lastmod>2026-11-11T11:56:57+01:00</lastmod>
+        </sitemap>
+    
+</sitemapindex>

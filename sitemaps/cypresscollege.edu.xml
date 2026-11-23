@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--generator='jetpack-16.2'-->
+<!--Jetpack_Sitemap_Buffer_Master_XMLWriter-->
+<?xml-stylesheet type="text/xsl" href="//www.cypresscollege.edu/sitemap-index.xsl"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+ <sitemap>
+  <loc>https://www.cypresscollege.edu/sitemap-index-1.xml</loc>
+  <lastmod>2026-11-20T23:24:49Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>https://www.cypresscollege.edu/image-sitemap-index-1.xml</loc>
+  <lastmod>2026-11-20T23:24:13Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>https://www.cypresscollege.edu/video-sitemap-1.xml</loc>
+  <lastmod>2026-11-20T23:24:13Z</lastmod>
+ </sitemap>
+</sitemapindex>

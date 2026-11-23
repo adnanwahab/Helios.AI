@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Este mapa del sitio lo generó All in One SEO vv4.8.4.1 dinámicamente el 22/11/2026 a las 11:11 AM - el plugin SEO original para WordPress. -->
+
+<?xml-stylesheet type="text/xsl" href="https://www.unica.cu/default-sitemap.xsl?sitemap=root"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+	<sitemap>
+		<loc><![CDATA[https://www.unica.cu/page-sitemap.xml]]></loc>
+		<lastmod><![CDATA[2026-07-06T06:43:03+00:00]]></lastmod>
+	</sitemap>
+	<sitemap>
+		<loc><![CDATA[https://www.unica.cu/elementskit_template-sitemap.xml]]></loc>
+		<lastmod><![CDATA[2026-09-14T15:08:39+00:00]]></lastmod>
+	</sitemap>
+</sitemapindex>

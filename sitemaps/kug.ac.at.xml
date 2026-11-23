@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="/typo3/sysext/seo/Resources/Public/CSS/Sitemap.xsl"?>
+
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    
+        <sitemap>
+            <loc>https://www.kug.ac.at/sitemap/pages/sitemap.xml</loc>
+            <lastmod>2026-11-17T10:43:15+01:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://www.kug.ac.at/sitemap/pages/sitemap.xml?page=1&amp;cHash=86502b768b0526176c82c405c7298062</loc>
+            <lastmod>2026-11-17T10:43:15+01:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://www.kug.ac.at/sitemap/persons/sitemap.xml</loc>
+            <lastmod>2026-11-20T12:20:01+01:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://www.kug.ac.at/sitemap/persons/sitemap.xml?page=1&amp;cHash=86502b768b0526176c82c405c7298062</loc>
+            <lastmod>2026-11-20T12:20:01+01:00</lastmod>
+        </sitemap>
+    
+</sitemapindex>

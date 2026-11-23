@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--generator='jetpack-16.5-a.3'-->
+<!--Jetpack_Sitemap_Buffer_Master_XMLWriter-->
+<?xml-stylesheet type="text/xsl" href="//usma.ac.pa/sitemap-index.xsl"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+ <sitemap>
+  <loc>https://usma.ac.pa/sitemap-1.xml</loc>
+  <lastmod>2026-11-18T18:33:06Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>https://usma.ac.pa/image-sitemap-index-1.xml</loc>
+  <lastmod>2026-11-18T06:17:47Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>https://usma.ac.pa/video-sitemap-1.xml</loc>
+  <lastmod>2026-10-05T10:42:20Z</lastmod>
+ </sitemap>
+</sitemapindex>

@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?><?xml-stylesheet type='text/xsl' href='https://pu-kumamoto.ac.jp/sys/wp-content/plugins/google-sitemap-generator/sitemap.xsl'?><!-- sitemap-generator-url='http://www.arnebrachhold.de' sitemap-generator-version='4.1.25' -->
+<!-- generated-on='2026年11月22日 2:22 PM' -->
+<sitemapindex xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/siteindex.xsd' xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>	<sitemap>
+		<loc>https://www.pu-kumamoto.ac.jp/sitemap-misc.xml</loc>
+		<lastmod>2026-11-20T07:10:59+00:00</lastmod>
+	</sitemap>
+	<sitemap>
+		<loc>https://www.pu-kumamoto.ac.jp/news_cat-sitemap.xml</loc>
+		<lastmod>2026-11-20T07:10:59+00:00</lastmod>
+	</sitemap>
+	<sitemap>
+		<loc>https://www.pu-kumamoto.ac.jp/english_news_cat-sitemap.xml</loc>
+		<lastmod>2026-11-20T07:10:59+00:00</lastmod>
+	</sitemap>
+	<sitemap>
+		<loc>https://www.pu-kumamoto.ac.jp/english-sitemap.xml</loc>
+		<lastmod>2026-06-04T04:40:56+00:00</lastmod>
+	</sitemap>
+	<sitemap>
+		<loc>https://www.pu-kumamoto.ac.jp/researcher-sitemap.xml</loc>
+		<lastmod>2026-11-18T02:27:28+00:00</lastmod>
+	</sitemap>
+	<sitemap>
+		<loc>https://www.pu-kumamoto.ac.jp/news-sitemap.xml</loc>
+		<lastmod>2026-11-20T05:14:51+00:00</lastmod>
+	</sitemap>
+	<sitemap>
+		<loc>https://www.pu-kumamoto.ac.jp/news-sitemap2.xml</loc>
+		<lastmod>2026-11-20T05:14:51+00:00</lastmod>
+	</sitemap>
+	<sitemap>
+		<loc>https://www.pu-kumamoto.ac.jp/english-news-sitemap.xml</loc>
+		<lastmod>2023-01-13T00:45:19+00:00</lastmod>
+	</sitemap>
+	<sitemap>
+		<loc>https://www.pu-kumamoto.ac.jp/chinese-sitemap.xml</loc>
+		<lastmod>2023-06-12T00:49:59+00:00</lastmod>
+	</sitemap>
+	<sitemap>
+		<loc>https://www.pu-kumamoto.ac.jp/korean-sitemap.xml</loc>
+		<lastmod>2023-06-12T00:51:03+00:00</lastmod>
+	</sitemap>
+	<sitemap>
+		<loc>https://www.pu-kumamoto.ac.jp/page-sitemap.xml</loc>
+		<lastmod>2026-11-20T07:10:59+00:00</lastmod>
+	</sitemap>
+</sitemapindex><!-- Request ID: 24dda62fbc4deb2eacc74276849b21bb; Queries for sitemap: 12; Total queries: 107; Seconds: 0; Memory for sitemap: 1KB; Total memory: 20MB -->

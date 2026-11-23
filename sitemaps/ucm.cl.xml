@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>https://www.ucm.cl/sitemap-basictemplate.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://www.ucm.cl/sitemap-newsdetail.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://www.ucm.cl/sitemap-eventdetail.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://www.ucm.cl/sitemap-newslist.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://www.ucm.cl/sitemap-academiccalendareventslist.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://www.ucm.cl/sitemap-peopledetail.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://www.ucm.cl/sitemap-programdetail.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://www.ucm.cl/sitemap-eventslist.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://www.ucm.cl/sitemap-programslist.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://www.ucm.cl/sitemap-searchresults.xml</loc>
+  </sitemap>
+</sitemapindex>

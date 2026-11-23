@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+                          http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+  <url>
+    <loc>https://www.jooust.ac.ke/jooust-contacts/</loc>
+    <lastmod>2026-11-12T23:14:00+07:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>http://www.jooust.ac.ke/iso4/</loc>
+    <lastmod>2026-11-12T23:14:00+07:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://www.jooust.ac.ke/index.php/component/content/featured</loc>
+    <lastmod>2026-11-12T23:14:00+07:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://www.jooust.ac.ke/index.php/about-jooust/jooust-profile</loc>
+    <lastmod>2026-11-12T23:14:00+07:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://www.jooust.ac.ke/index.php/department-of-natural-resource-management</loc>
+    <lastmod>2026-11-12T23:14:00+07:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://www.jooust.ac.ke/index.php/school-of-agricultural-and-food-sciences</loc>
+    <lastmod>2026-11-12T23:14:00+07:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://www.jooust.ac.ke/index.php/vice-chancellor</loc>
+    <lastmod>2026-11-12T23:14:00+07:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://www.jooust.ac.ke/index.php/about-jooust/conferences</loc>
+    <lastmod>2026-11-12T23:14:00+07:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://www.jooust.ac.ke/index.php/jooust-academics/schools</loc>
+    <lastmod>2026-11-12T23:14:00+07:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+
+</urlset>

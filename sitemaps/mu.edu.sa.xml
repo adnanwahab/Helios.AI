@@ -1,0 +1,724 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://w3.org/1999/xhtml">
+  <url>
+    <loc>https://www.mu.edu.sa/ar</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/faculties</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/faculties" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/faculties" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/faculties</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/faculties" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/faculties" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/programs</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/programs" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/programs" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/programs</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/programs" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/programs" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/page/Admission-and-registration</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/page/Admission-and-registration" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/page/Admission-and-registration" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/page/Admission-and-registration</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/page/Admission-and-registration" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/page/Admission-and-registration" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/faculty/applied-college</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/faculty/applied-college" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/faculty/applied-college" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/faculty/applied-college</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/faculty/applied-college" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/faculty/applied-college" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/faculty/college-of-applied-medical-sciences</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/faculty/college-of-applied-medical-sciences" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/faculty/college-of-applied-medical-sciences" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/faculty/college-of-applied-medical-sciences</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/faculty/college-of-applied-medical-sciences" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/faculty/college-of-applied-medical-sciences" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/faculty/college-of-business-administration</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/faculty/college-of-business-administration" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/faculty/college-of-business-administration" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/faculty/college-of-business-administration</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/faculty/college-of-business-administration" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/faculty/college-of-business-administration" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/faculty/college-of-computer-and-information-sciences</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/faculty/college-of-computer-and-information-sciences" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/faculty/college-of-computer-and-information-sciences" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/faculty/college-of-computer-and-information-sciences</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/faculty/college-of-computer-and-information-sciences" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/faculty/college-of-computer-and-information-sciences" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/faculty/college-of-dentistry</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/faculty/college-of-dentistry" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/faculty/college-of-dentistry" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/faculty/college-of-dentistry</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/faculty/college-of-dentistry" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/faculty/college-of-dentistry" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/faculty/college-of-education</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/faculty/college-of-education" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/faculty/college-of-education" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/faculty/college-of-education</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/faculty/college-of-education" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/faculty/college-of-education" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/faculty/college-of-engineering</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/faculty/college-of-engineering" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/faculty/college-of-engineering" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/faculty/college-of-engineering</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/faculty/college-of-engineering" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/faculty/college-of-engineering" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/faculty/college-of-medicine</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/faculty/college-of-medicine" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/faculty/college-of-medicine" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/faculty/college-of-medicine</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/faculty/college-of-medicine" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/faculty/college-of-medicine" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/faculty/college-of-nursing</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/faculty/college-of-nursing" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/faculty/college-of-nursing" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/faculty/college-of-nursing</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/faculty/college-of-nursing" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/faculty/college-of-nursing" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/faculty/%D9%83%D9%84%D9%8A%D8%A9-%D8%A7%D9%84%D8%B9%D9%84%D9%88%D9%85</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/faculty/%D9%83%D9%84%D9%8A%D8%A9-%D8%A7%D9%84%D8%B9%D9%84%D9%88%D9%85" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/faculty/college-of-science" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/faculty/college-of-science</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/faculty/college-of-science" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/faculty/%D9%83%D9%84%D9%8A%D8%A9-%D8%A7%D9%84%D8%B9%D9%84%D9%88%D9%85" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/faculty/college-of-sharia-and-law</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/faculty/college-of-sharia-and-law" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/faculty/college-of-sharia-and-law" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/faculty/college-of-sharia-and-law</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/faculty/college-of-sharia-and-law" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/faculty/college-of-sharia-and-law" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/vice-rectorates/university-rector</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/vice-rectorates/university-rector" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/vice-rectorates/university-rector" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/vice-rectorates/university-rector</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/vice-rectorates/university-rector" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/vice-rectorates/university-rector" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/executives</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/executives" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/executives" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/executives</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/executives" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/executives" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/vice-rectorates/vice-rectors-office-educational-affairs</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/vice-rectorates/vice-rectors-office-educational-affairs" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/vice-rectorates/vice-rectors-office-educational-affairs" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/vice-rectorates/vice-rectors-office-educational-affairs</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/vice-rectorates/vice-rectors-office-educational-affairs" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/vice-rectorates/vice-rectors-office-educational-affairs" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/vice-rectorates/%D9%88%D9%83%D8%A7%D9%84%D8%A9-%D8%A7%D9%84%D8%AC%D8%A7%D9%85%D8%B9%D8%A9-%D9%84%D9%84%D8%AF%D8%B1%D8%A7%D8%B3%D8%A7%D8%AA-%D8%A7%D9%84%D8%B9%D9%84%D9%8A%D8%A7-%D9%88%D8%A7%D9%84%D8%A8%D8%AD%D8%AB-%D8%A7%D9%84%D8%B9%D9%84%D9%85%D9%8A</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/vice-rectorates/%D9%88%D9%83%D8%A7%D9%84%D8%A9-%D8%A7%D9%84%D8%AC%D8%A7%D9%85%D8%B9%D8%A9-%D9%84%D9%84%D8%AF%D8%B1%D8%A7%D8%B3%D8%A7%D8%AA-%D8%A7%D9%84%D8%B9%D9%84%D9%8A%D8%A7-%D9%88%D8%A7%D9%84%D8%A8%D8%AD%D8%AB-%D8%A7%D9%84%D8%B9%D9%84%D9%85%D9%8A" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/vice-rectorates/vice-rectors-office-graduate-studies-and-scientific-research" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/vice-rectorates/vice-rectors-office-graduate-studies-and-scientific-research</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/vice-rectorates/vice-rectors-office-graduate-studies-and-scientific-research" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/vice-rectorates/%D9%88%D9%83%D8%A7%D9%84%D8%A9-%D8%A7%D9%84%D8%AC%D8%A7%D9%85%D8%B9%D8%A9-%D9%84%D9%84%D8%AF%D8%B1%D8%A7%D8%B3%D8%A7%D8%AA-%D8%A7%D9%84%D8%B9%D9%84%D9%8A%D8%A7-%D9%88%D8%A7%D9%84%D8%A8%D8%AD%D8%AB-%D8%A7%D9%84%D8%B9%D9%84%D9%85%D9%8A" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/vice-rectorates/vice-rectors-office-development-and-investment</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/vice-rectorates/vice-rectors-office-development-and-investment" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/vice-rectorates/vice-rectors-office-development-and-investment" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/vice-rectorates/vice-rectors-office-development-and-investment</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/vice-rectorates/vice-rectors-office-development-and-investment" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/vice-rectorates/vice-rectors-office-development-and-investment" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/deanships-administrations</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/deanships-administrations" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/deanships-administrations" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/deanships-administrations</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/deanships-administrations" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/deanships-administrations" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/pages/administrations</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/pages/administrations" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/pages/administrations" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/pages/administrations</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/pages/administrations" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/pages/administrations" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/administration-offices/deanship-of-admission-and-registration</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/administration-offices/deanship-of-admission-and-registration" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/administration-offices/deanship-of-admission-and-registration" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/administration-offices/deanship-of-admission-and-registration</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/administration-offices/deanship-of-admission-and-registration" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/administration-offices/deanship-of-admission-and-registration" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/administration-offices/deanship-of-development-and-quality</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/administration-offices/deanship-of-development-and-quality" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/administration-offices/deanship-of-development-and-quality" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/administration-offices/deanship-of-development-and-quality</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/administration-offices/deanship-of-development-and-quality" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/administration-offices/deanship-of-development-and-quality" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/administration-offices/deanship-of-graduate-studies-and-scientific-research</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/administration-offices/deanship-of-graduate-studies-and-scientific-research" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/administration-offices/deanship-of-graduate-studies-and-scientific-research" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/administration-offices/deanship-of-graduate-studies-and-scientific-research</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/administration-offices/deanship-of-graduate-studies-and-scientific-research" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/administration-offices/deanship-of-graduate-studies-and-scientific-research" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/administration-offices/deanship-of-information-technology-and-e-learning</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/administration-offices/deanship-of-information-technology-and-e-learning" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/administration-offices/deanship-of-information-technology-and-e-learning" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/administration-offices/deanship-of-information-technology-and-e-learning</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/administration-offices/deanship-of-information-technology-and-e-learning" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/administration-offices/deanship-of-information-technology-and-e-learning" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/administration-offices/deanship-of-student-affairs</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/administration-offices/deanship-of-student-affairs" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/administration-offices/deanship-of-student-affairs" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/administration-offices/deanship-of-student-affairs</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/administration-offices/deanship-of-student-affairs" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/administration-offices/deanship-of-student-affairs" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/scientific-research</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/scientific-research" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/scientific-research" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/scientific-research</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/scientific-research" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/scientific-research" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/research-chairs</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/research-chairs" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/research-chairs" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/research-chairs</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/research-chairs" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/research-chairs" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/eservices</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/eservices" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/eservices" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/eservices</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/eservices" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/eservices" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/eservices/internal-portal</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/eservices/internal-portal" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/eservices/internal-portal" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/eservices/internal-portal</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/eservices/internal-portal" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/eservices/internal-portal" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/eservices/committees-and-councils</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/eservices/committees-and-councils" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/eservices/committees-and-councils" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/eservices/committees-and-councils</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/eservices/committees-and-councils" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/eservices/committees-and-councils" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/eservices/research-ethics-system</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/eservices/research-ethics-system" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/eservices/research-ethics-system" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/eservices/research-ethics-system</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/eservices/research-ethics-system" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/eservices/research-ethics-system" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/eservices/irtiqa</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/eservices/irtiqa" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/eservices/irtiqa" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/eservices/irtiqa</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/eservices/irtiqa" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/eservices/irtiqa" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/statistics</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/statistics" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/statistics" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/statistics</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/statistics" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/statistics" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/opened-data</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/opened-data" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/opened-data" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/opened-data</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/opened-data" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/opened-data" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/community-work</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/community-work" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/community-work" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/community-work</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/community-work" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/community-work" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/e-participation</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/e-participation" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/e-participation" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/e-participation</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/e-participation" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/e-participation" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/tools-guides</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/tools-guides" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/tools-guides" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/tools-guides</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/tools-guides" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/tools-guides" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/news</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/news" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/news" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/news</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/news" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/news" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/media-center-page</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/media-center-page" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/media-center-page" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/media-center-page</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/media-center-page" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/media-center-page" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/contacts</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/contacts" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/contacts" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/contacts</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/contacts" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/contacts" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/faqs</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/faqs" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/faqs" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/faqs</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/faqs" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/faqs" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/sitemap</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/sitemap" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/sitemap" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/sitemap</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/sitemap" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/sitemap" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/ar/general/171326</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/general/171326" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/general/171326" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.mu.edu.sa/en/general/171326</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mu.edu.sa/en/general/171326" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.mu.edu.sa/ar/general/171326" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+</urlset>

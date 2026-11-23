@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- HOME -->
+  <url>
+    <loc>https://www.universidaddeleon.edu.mx/</loc>
+    <lastmod>2026-04-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.00</priority>
+  </url>
+
+  <!-- PRINCIPALES -->
+  <url><loc>https://www.universidaddeleon.edu.mx/planteles</loc><lastmod>2026-04-20</lastmod></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/bachillerato</loc><lastmod>2026-04-20</lastmod></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas</loc><lastmod>2026-04-20</lastmod></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/posgrados</loc><lastmod>2026-04-20</lastmod></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/daes</loc><lastmod>2026-04-20</lastmod></url>
+
+  <!-- BACHILLERATO -->
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/bachillerato/bachillerato-semestral</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/bachillerato/bachillerato-semestral-hilario-medina</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/bachillerato/bachillerato-semestral-torres-landa</loc></url>
+
+  <!-- LICENCIATURAS -->
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas/administracion-de-empresas</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas/arquitectura</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas/artes-escenicas-y-produccion-de-espectaculos</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas/artes-plasticas</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas/comercio-internacional</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas/comunicacion</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas/contaduria-publica</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas/derecho</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas/desarrollo-de-negocios</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas/diseno-de-moda</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas/diseno-grafico</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas/finanzas</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas/gastronomia</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas/informatica-administrativa</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas/ingenieria-civil</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas/ingenieria-electromecanica-industrial</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas/ingenieria-en-computacion</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas/ingenieria-industrial-administrativa</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas/ingenieria-mecatronica</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas/mercadotecnia</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas/negocios-internacionales</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas/nutricion</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas/pedagogia</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas/psicologia</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas/psicologia-organizacional</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/licenciaturas/turismo-de-negocios</loc></url>
+
+  <!-- ESPECIALIDADES -->
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/especialidades/amparo</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/especialidades/derecho-fiscal</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/especialidades/derecho-procesal-penal</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/especialidades/desarrollo-organizacional</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/especialidades/diseno-arquitectonico</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/especialidades/diseno-de-paginas-web</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/especialidades/diseno-publicitario</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/especialidades/diseno-urbano</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/especialidades/ensenanza-universitaria</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/especialidades/estrategias-fiscales</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/especialidades/finanzas</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/especialidades/gestion-de-la-calidad</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/especialidades/gestion-de-negocios-internacionales</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/especialidades/logistica-global-y-administracion-de-la-cadena-de-suministros</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/especialidades/publicidad</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/especialidades/recursos-humanos</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/especialidades/relaciones-publicas</loc></url>
+
+  <!-- MAESTRÍAS -->
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/maestrias/derecho-fiscal</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/maestrias/derecho-procesal-penal</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/maestrias/desarrollo-organizacional</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/maestrias/diseno-publicitario</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/maestrias/diseno-urbano</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/maestrias/ensenanza-de-ingles-como-lengua-adicional-al-espanol</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/maestrias/ensenanza-universitaria</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/maestrias/estrategias-fiscales</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/maestrias/finanzas</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/maestrias/gestion-de-la-calidad</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/maestrias/gestion-de-negocios-internacionales</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/maestrias/publicidad</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/maestrias/recursos-humanos</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/educacion/maestrias/relaciones-publicas</loc></url>
+
+  <!-- GENERALES -->
+  <url><loc>https://www.universidaddeleon.edu.mx/test-vocacional</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/formacion-internacional</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/calendario</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/directorio</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/contacto</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/conocenos</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/convenios-institucionales</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/meritos-academicos</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/galeria-de-fotos</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/galeria-de-fotos-graduacion</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/revista-diversidades</loc></url>
+  <url><loc>https://www.universidaddeleon.edu.mx/revista-mentes</loc></url>
+
+</urlset>

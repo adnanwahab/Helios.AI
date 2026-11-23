@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>https://www.naba.it/es/sitemap.xml.gz</loc>
+    <lastmod>2026-11-22T02:00:39.513Z</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>https://www.naba.it/it/sitemap.xml.gz</loc>
+    <lastmod>2026-11-22T02:00:39.513Z</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>https://www.naba.it/en/sitemap.xml.gz</loc>
+    <lastmod>2026-11-22T02:00:39.513Z</lastmod>
+  </sitemap>
+</sitemapindex>

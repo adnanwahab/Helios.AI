@@ -1,0 +1,986 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+<url>
+  <loc>https://amity.edu/</loc>
+  <image:image>
+    <image:loc>https://amity.edu/favicon.ico</image:loc>
+  </image:image>
+</url>
+<url>
+  <loc>https://amity.edu/</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://amity.edu/greaternoida/course-list.aspx?fd=Computer%20Science/%20IT&amp;Programs=Diploma</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/greaternoida/course-list.aspx?fd=Engineering&amp;Programs=Diploma</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/greaternoida/course-list.aspx?fd=Fashion&amp;Programs=Diploma</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/greaternoida/course-list.aspx?fd=Management&amp;Programs=Diploma</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/index.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/admission-career-test.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/admissions-scholarship.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/admissions_guidelines.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/education-loan.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/faqsAdmission.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/pdf/admission_prospectus_2023.pdf</loc>
+  <lastmod>2023-06-05T03:31:23+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/pdf/admission_prospectus_bihar.pdf</loc>
+  <lastmod>2023-06-07T09:44:19+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/pdf/JHARKHANDProspectus2023.pdf</loc>
+  <lastmod>2023-06-16T05:52:16+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/pdf/Punjab-Prospectus-2023.pdf</loc>
+  <lastmod>2023-09-28T11:07:48+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/greaternoida/</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/kolkata/</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/ranchi/</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/bihar/</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/mohali/</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/mauritius/</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/ais/gurgaon43/</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/ais/aisv6/</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/ais/aisv1/</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/ais/pushpvihar/</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/ais/jagdishpur/</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/ais/vrindavanyojna/</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/ais/virajkhand/</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/ADMAA/publications.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/aii/</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/ditt/</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/astif/</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/summerschool/</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/career_amity.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/news.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/contact_us.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/about-university.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/about-recognition.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/about-academia.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/about-faculty.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/about-ranked-no1.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/global-exposure.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/leadership.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/testimonials.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/beyond-academics.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/about-quality.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/about-technologically-ahead.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/placement.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/student-life.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/about-stalwarts.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/about-industry.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/social-initiatives.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/amity-linkedin-partnership.aspx</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Actuarial%20Science&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Aeronautical%20-%20Automobile&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Aerospace&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Agriculture&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Animation&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Animation%20-%20Visual%20Graphics&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Anthropology&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Applied%20Sciences&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Architecture&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Avionics&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Banking%20-%20Finance&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Biotech&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Chemistry&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Commerce&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Communication&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Computer%20Science/%20IT&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Construction%20and%20Real%20Estate%20Management&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Data%20Sciences%20-%20Business%20Analytics&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Defence%20-%20Strategic%20Studies%20&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Defence%20Technology&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Design&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Earth%20-%20Environmental%20Sciences&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Economics&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Education&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Engineering&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=English%20literature&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Environment&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Fashion&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Film%20-%20Drama&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Finance&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Fine%20Arts&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Food%20Technology&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Foreign%20Languages&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Forensic%20Sciences&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Forestry%20-%20Wildlife%20Sciences&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Geo%20Informatics%20-%20Remote%20Sensing&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Health%20-%20Allied%20Sciences&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Health%20-%20Medical%20Sciences&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Health%20Sciences&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Hospital%20Administration&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Hotel%20Management%20Hospitality&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Insurance%20and%20Banking&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Interior%20Design&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=International%20Relations&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Journalism&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Journalism%20-%20Mass%20Communication&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Language&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Law&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Liberal%20Arts&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Management&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Marine%20Science&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Mass%20Communication&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Mathematics&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Medical&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Microbial%20Sciences&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Molecular%20Medicine%20-%20Stem%20Cell%20Research%20and%20Cancer%20Biology&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Nanotechnology&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Neuropsychology%20-%20Neurosciences&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Nuclear%20Science%20-%20Technology&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Nursing&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Occupational%20Therapy&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Optometry%20-%20Vision%20Sciences&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Organic%20Agriculture&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Performing%20Arts&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Pharmacy&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Physical%20Education&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Physics&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Physiology&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Physiotherapy&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Planning&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Psychology%20-%20Behavioural%20Science&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Public%20Policy&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Real%20Estate%20And%20Urban%20Infrastructure&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Sanskrit%20Studies&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Skill%20Development&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Social%20Science&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Social%20Work&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Solar%20-%20Alternate%20energy&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Space%20Sciences&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Special%20Education&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Statistics&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Telecom&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Travel%20-%20Tourism&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Virology%20-%20Immunology&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Wildlife%20Sciences&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Yoga%20Therapy&amp;Programs=Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Actuarial%20Science&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Advertising%20-%20PR&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Aeronautical%20-%20Automobile&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Aerospace&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Agriculture&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Anthropology&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Applied%20Sciences&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Architecture&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Avionics&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Banking%20-%20Finance&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Biotech&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Chemistry&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Clean%20-%20Sustainable%20Technology&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Click%20Chemistry&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Commerce&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Communication&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Computer%20Science/%20IT&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Construction%20and%20Real%20Estate%20Management&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Data%20Sciences%20-%20Business%20Analytics&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Defence%20-%20Strategic%20Studies%20&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Defence%20Technology&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Design&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Earth%20-%20Environmental%20Sciences&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Economics&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Education&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Engineering&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=English%20literature&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Environment&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Fashion&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Film%20-%20Drama&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Finance&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Fine%20Arts&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Food%20Technology&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Foreign%20Languages&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Forensic%20Sciences&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Forestry%20-%20Wildlife%20Sciences&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Geo%20Informatics%20-%20Remote%20Sensing&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Health%20-%20Allied%20Sciences&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Health%20-%20Medical%20Sciences&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Health%20Sciences&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Horticulture&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Hospital%20Administration&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Hospital%20Management%20-%20Administration&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Hotel%20Management%20Hospitality&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Insurance%20and%20Banking&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Interior%20Design&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=International%20Relations&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Journalism&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Journalism%20-%20Mass%20Communication&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Language&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Law&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Liberal%20Arts&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Logistic%20-%20Supply%20Chain%20Management&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Logistics&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://amity.edu/course-list.aspx?fd=Management&amp;Programs=Post%20Graduate</loc>
+  <lastmod>2023-12-15T07:52:09+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+
+
+</urlset>

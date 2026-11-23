@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?><?xml-stylesheet type='text/xml' href='//www.dmu.edu/?wds_sitemap_styling=1&#038;template=sitemapIndexBody'?><!-- SMARTCRAWL SITEMAP -->
+<sitemapindex
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/siteindex.xsd"
+	xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+			<sitemap><loc>https://www.dmu.edu/post-sitemap.xml</loc></sitemap>			<sitemap><loc>https://www.dmu.edu/post-sitemap2.xml</loc></sitemap>			<sitemap><loc>https://www.dmu.edu/post-sitemap3.xml</loc></sitemap>			<sitemap><loc>https://www.dmu.edu/post-sitemap4.xml</loc></sitemap>			<sitemap><loc>https://www.dmu.edu/post-sitemap5.xml</loc></sitemap>			<sitemap><loc>https://www.dmu.edu/post-sitemap6.xml</loc></sitemap>			<sitemap><loc>https://www.dmu.edu/post-sitemap7.xml</loc></sitemap>			<sitemap><loc>https://www.dmu.edu/page-sitemap.xml</loc></sitemap>			<sitemap><loc>https://www.dmu.edu/extras-sitemap.xml</loc></sitemap>	</sitemapindex>

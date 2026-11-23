@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="/typo3/sysext/seo/Resources/Public/CSS/Sitemap.xsl"?>
+
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    
+        <sitemap>
+            <loc>https://rsmu.ru/sitemap-type/pages/sitemap.xml</loc>
+            <lastmod>2026-11-21T21:46:35+03:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://rsmu.ru/sitemap-type/pages/sitemap.xml?page=1&amp;cHash=218f4c595c4bc1baa77822815f3fd4bd</loc>
+            <lastmod>2026-11-21T21:46:35+03:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://rsmu.ru/sitemap-type/pages/sitemap.xml?page=2&amp;cHash=f782466eca4207a841a61cbf73ad5f4b</loc>
+            <lastmod>2026-11-21T21:46:35+03:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://rsmu.ru/sitemap-type/pages/sitemap.xml?page=3&amp;cHash=3c5f268fd3941e85ff6550bbb6992e46</loc>
+            <lastmod>2026-11-21T21:46:35+03:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://rsmu.ru/sitemap-type/news/sitemap.xml</loc>
+            <lastmod>2026-05-20T16:55:17+03:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://rsmu.ru/sitemap-type/news/sitemap.xml?page=1&amp;cHash=218f4c595c4bc1baa77822815f3fd4bd</loc>
+            <lastmod>2026-05-20T16:55:17+03:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://rsmu.ru/sitemap-type/news/sitemap.xml?page=2&amp;cHash=f782466eca4207a841a61cbf73ad5f4b</loc>
+            <lastmod>2026-05-20T16:55:17+03:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://rsmu.ru/sitemap-type/news/sitemap.xml?page=3&amp;cHash=3c5f268fd3941e85ff6550bbb6992e46</loc>
+            <lastmod>2026-05-20T16:55:17+03:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://rsmu.ru/sitemap-type/news/sitemap.xml?page=4&amp;cHash=7ffc942c0e13391e39b5cf0d4dff2312</loc>
+            <lastmod>2026-05-20T16:55:17+03:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://rsmu.ru/sitemap-type/news/sitemap.xml?page=5&amp;cHash=dc47d62b8a29f86be1307d5626ef57c3</loc>
+            <lastmod>2026-05-20T16:55:17+03:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://rsmu.ru/sitemap-type/news/sitemap.xml?page=6&amp;cHash=a7fddad2e2dbc2ebeefcef4fb97edf5a</loc>
+            <lastmod>2026-05-20T16:55:17+03:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://rsmu.ru/sitemap-type/news/sitemap.xml?page=7&amp;cHash=0dc5391f8e9be579a531e4878e4a38d5</loc>
+            <lastmod>2026-05-20T16:55:17+03:00</lastmod>
+        </sitemap>
+    
+</sitemapindex>

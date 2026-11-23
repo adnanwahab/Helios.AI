@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<url><loc>https://uwaterloo.ca/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
+<url><loc>https://uwaterloo.ca/home</loc><lastmod>2023-02-09T00:00Z</lastmod><changefreq>monthly</changefreq></url>
+<url><loc>https://uwaterloo.ca/pathway/current-students</loc><lastmod>2022-09-29T15:58Z</lastmod><changefreq>monthly</changefreq></url>
+<url><loc>https://uwaterloo.ca/pathway/future-students</loc><lastmod>2022-05-30T19:59Z</lastmod><changefreq>monthly</changefreq></url>
+<url><loc>https://uwaterloo.ca/pathway/faculty</loc><lastmod>2022-12-06T04:41Z</lastmod><changefreq>monthly</changefreq></url>
+<url><loc>https://uwaterloo.ca/email</loc><lastmod>2023-02-15T16:35Z</lastmod><changefreq>monthly</changefreq></url>
+<url><loc>https://uwaterloo.ca/copyright</loc><lastmod>2023-01-06T19:26Z</lastmod><changefreq>monthly</changefreq></url>
+<url><loc>https://uwaterloo.ca/weather</loc><lastmod>2023-05-12T13:43Z</lastmod><changefreq>monthly</changefreq></url>
+<url><loc>https://uwaterloo.ca/pathway/staff</loc><lastmod>2022-12-06T04:42Z</lastmod><changefreq>monthly</changefreq></url>
+<url><loc>https://uwaterloo.ca/404</loc><lastmod>2016-11-08T17:11Z</lastmod><changefreq>monthly</changefreq></url>
+<url><loc>https://uwaterloo.ca/403</loc><lastmod>2016-11-08T17:11Z</lastmod><changefreq>monthly</changefreq></url>
+<url><loc>https://uwaterloo.ca/security-response</loc><changefreq>monthly</changefreq></url>
+</urlset>

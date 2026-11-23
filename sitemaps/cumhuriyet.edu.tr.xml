@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/css" href="/includes/sitemap.css?v=3"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <sitemap><loc>https://www.cumhuriyet.edu.tr/sitemap-sayfalar.xml</loc><xhtml:a href="https://www.cumhuriyet.edu.tr/sitemap-sayfalar.xml">https://www.cumhuriyet.edu.tr/sitemap-sayfalar.xml</xhtml:a><xhtml:div class="sm-ust"><xhtml:div class="sm-ust-ic"><xhtml:img class="sm-logo" src="https://www.cumhuriyet.edu.tr/logo.png" alt="Sivas Cumhuriyet Üniversitesi"/><xhtml:div class="sm-yazi"><xhtml:span class="sm-uni">Sivas Cumhuriyet Üniversitesi</xhtml:span><xhtml:span class="sm-birim">Kategori Haritaları</xhtml:span><xhtml:span class="sm-bilgi"><xhtml:span class="sm-rozet">Site Haritası</xhtml:span><xhtml:span>5 adres</xhtml:span><xhtml:span>Güncelleme: 22.11.2026 15:56</xhtml:span></xhtml:span></xhtml:div></xhtml:div></xhtml:div></sitemap>
+  <sitemap><loc>https://www.cumhuriyet.edu.tr/sitemap-haberler.xml</loc><lastmod>2026-11-22</lastmod><xhtml:a href="https://www.cumhuriyet.edu.tr/sitemap-haberler.xml">https://www.cumhuriyet.edu.tr/sitemap-haberler.xml</xhtml:a></sitemap>
+  <sitemap><loc>https://www.cumhuriyet.edu.tr/sitemap-haberler-2.xml</loc><lastmod>2026-11-22</lastmod><xhtml:a href="https://www.cumhuriyet.edu.tr/sitemap-haberler-2.xml">https://www.cumhuriyet.edu.tr/sitemap-haberler-2.xml</xhtml:a></sitemap>
+  <sitemap><loc>https://www.cumhuriyet.edu.tr/sitemap-etkinlikler.xml</loc><lastmod>2026-11-22</lastmod><xhtml:a href="https://www.cumhuriyet.edu.tr/sitemap-etkinlikler.xml">https://www.cumhuriyet.edu.tr/sitemap-etkinlikler.xml</xhtml:a></sitemap>
+  <sitemap><loc>https://www.cumhuriyet.edu.tr/sitemap-duyurular.xml</loc><lastmod>2026-11-20</lastmod><xhtml:a href="https://www.cumhuriyet.edu.tr/sitemap-duyurular.xml">https://www.cumhuriyet.edu.tr/sitemap-duyurular.xml</xhtml:a></sitemap>
+</sitemapindex>

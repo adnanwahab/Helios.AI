@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="/typo3/sysext/seo/Resources/Public/CSS/Sitemap.xsl"?>
+
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    
+        <sitemap>
+            <loc>https://www.dhbw.de/startseite/sitemap.xml?sitemap=pages&amp;cHash=13947ab5957f2b7b3857f5bdf50a6c70</loc>
+            <lastmod>2026-11-19T18:54:23+01:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://www.dhbw.de/startseite/sitemap.xml?sitemap=news&amp;cHash=6a308930265679f74749a6290ccc0603</loc>
+            <lastmod>2026-11-17T11:03:22+01:00</lastmod>
+        </sitemap>
+    
+</sitemapindex>

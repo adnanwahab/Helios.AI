@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <sitemap>
+        <loc>https://mseuf.edu.ph/sitemap_pages.xml</loc>
+            <lastmod>2026-11-22T00:00:01+08:00</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://mseuf.edu.ph/sitemap_posts.xml</loc>
+            <lastmod>2026-11-22T00:00:02+08:00</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://mseuf.edu.ph/sitemap_calendar.xml</loc>
+            <lastmod>2026-11-22T00:00:02+08:00</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://mseuf.edu.ph/sitemap_programs.xml</loc>
+            <lastmod>2026-11-22T00:00:02+08:00</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://mseuf.edu.ph/sitemap_research_publications.xml</loc>
+            <lastmod>2026-11-22T00:00:02+08:00</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://mseuf.edu.ph/sitemap_sustainability.xml</loc>
+            <lastmod>2026-11-22T00:00:02+08:00</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://mseuf.edu.ph/sitemap_sites.xml</loc>
+            <lastmod>2026-11-22T00:00:02+08:00</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://mseuf.edu.ph/sitemap_news.xml</loc>
+            <lastmod>2026-11-22T00:00:02+08:00</lastmod>
+    </sitemap>
+</sitemapindex>

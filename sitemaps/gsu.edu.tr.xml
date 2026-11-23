@@ -1,0 +1,686 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- ========================== -->
+  <!-- ANA SAYFALAR (Homepages)   -->
+  <!-- ========================== -->
+  <url>
+    <loc>https://gsu.edu.tr/</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/en/</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/fr/</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- ============================================= -->
+  <!-- ANA MENU - TURKCE / ENGLISH / FRANCAIS        -->
+  <!-- ============================================= -->
+
+  <!-- Guncel / Actuel -->
+  <url>
+    <loc>https://gsu.edu.tr/tr/guncel</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/guncel"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/actuel"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/actuel"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/en/actuel</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/guncel"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/actuel"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/actuel"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/fr/actuel</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/guncel"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/actuel"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/actuel"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Egitim / Education -->
+  <url>
+    <loc>https://gsu.edu.tr/tr/egitim</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/egitim"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/education"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/education"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/en/education</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/egitim"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/education"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/education"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/fr/education</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/egitim"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/education"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/education"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Arastirma / Research / Rechercher -->
+  <url>
+    <loc>https://gsu.edu.tr/tr/arastirma</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/arastirma"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/research"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/rechercher"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/en/research</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/arastirma"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/research"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/rechercher"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/fr/rechercher</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/arastirma"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/research"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/rechercher"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Is Birligi / Collaboration -->
+  <url>
+    <loc>https://gsu.edu.tr/tr/isbirligi</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/isbirligi"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/collaboration"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/collaboration"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/en/collaboration</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/isbirligi"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/collaboration"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/collaboration"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/fr/collaboration</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/isbirligi"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/collaboration"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/collaboration"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Uluslararasi / International -->
+  <url>
+    <loc>https://gsu.edu.tr/tr/uluslararasi</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/uluslararasi"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/international"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/international"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/en/international</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/uluslararasi"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/international"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/international"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/fr/international</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/uluslararasi"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/international"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/international"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Kesfet / Explore -->
+  <url>
+    <loc>https://gsu.edu.tr/tr/kesfet</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/kesfet"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/explore"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/explore"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/en/explore</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/kesfet"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/explore"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/explore"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/fr/explore</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/kesfet"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/explore"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/explore"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- ============================================= -->
+  <!-- KULLANICI SAYFALARI (TR / EN / FR)            -->
+  <!-- ============================================= -->
+
+  <!-- Ogrenci / Student / Etudiant -->
+  <url>
+    <loc>https://gsu.edu.tr/tr/ogrenci</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/ogrenci"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/student"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/etudiant"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/en/student</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/ogrenci"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/student"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/etudiant"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/fr/etudiant</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/ogrenci"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/student"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/etudiant"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Personel / Staff / Personnel -->
+  <url>
+    <loc>https://gsu.edu.tr/tr/personel</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/personel"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/staff"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/personnel"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/en/staff</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/personel"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/staff"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/personnel"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/fr/personnel</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/personel"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/staff"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/personnel"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- Mezun / Alumni / Anciens -->
+  <url>
+    <loc>https://gsu.edu.tr/tr/mezun</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/mezun"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/alumni"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/anciens"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/en/alumni</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/mezun"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/alumni"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/anciens"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/fr/anciens</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/mezun"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/alumni"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/anciens"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- Iletisim / Contact / Contacter -->
+  <url>
+    <loc>https://gsu.edu.tr/tr/iletisim</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/iletisim"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/contact"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/contacter"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/en/contact</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/iletisim"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/contact"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/contacter"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/fr/contacter</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/iletisim"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/contact"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/contacter"/>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- ============================================= -->
+  <!-- EGITIM ALT SAYFALARI (TR)                     -->
+  <!-- ============================================= -->
+  <url>
+    <loc>https://gsu.edu.tr/tr/egitim/tum-programlar</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/egitim/akademik-takvim</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/egitim/fakulteler</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/egitim/yuksekokullar</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/egitim/enstituler</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/egitim/uzaktan-egitim-sistemi</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/egitim/bireysel-gelisim</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/egitim/egitim-destek-birimleri</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- EGITIM ALT SAYFALARI (EN) -->
+  <url>
+    <loc>https://gsu.edu.tr/en/education/all-academic-programs</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/en/education/faculties</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/en/education/highschools</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/en/education/institutes</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- EGITIM ALT SAYFALARI (FR) -->
+  <url>
+    <loc>https://gsu.edu.tr/fr/education/tous-les-programmes-academiques</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/fr/education/facultes</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/fr/education/colleges</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/fr/education/instituts</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- ============================================= -->
+  <!-- ARASTIRMA ALT SAYFALARI (TR)                  -->
+  <!-- ============================================= -->
+  <url>
+    <loc>https://gsu.edu.tr/tr/arastirma/arastirma-merkezleri</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/arastirma/bilgi-kaynaklari</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/arastirma/akademik-tesvik</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/arastirma/etik-kurulu</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/arastirma/mukemmeliyet-kursusu</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- ============================================= -->
+  <!-- IS BIRLIGI ALT SAYFALARI (TR)                 -->
+  <!-- ============================================= -->
+  <url>
+    <loc>https://gsu.edu.tr/tr/isbirligi/teknoloji-transferi-uygulama-ve-arastirma-merkezi</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- ============================================= -->
+  <!-- ULUSLARARASI ALT SAYFALARI (TR)               -->
+  <!-- ============================================= -->
+  <url>
+    <loc>https://gsu.edu.tr/tr/uluslararasi/uluslararasilasma-politikasi</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/uluslararasi/uluslararasi-cerceve-anlasmalari</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/uluslararasi/erasmus-degisim-programi</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/uluslararasi/jean-monnet-eylemleri</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- ============================================= -->
+  <!-- KESFET ALT SAYFALARI (TR)                     -->
+  <!-- ============================================= -->
+  <url>
+    <loc>https://gsu.edu.tr/tr/kesfet/tarihce</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/kesfet/yerleskede-yasam</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/kesfet/sss</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/kesfet/mevzuat</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/kesfet/kampuste-yasam/yemek-menusu</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/kesfet/kampuste-yasam/yemek-menusu"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/explore/campus-life/meal-menu"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/explorer/campus/menu-repas"/>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/en/explore/campus-life/meal-menu</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/kesfet/kampuste-yasam/yemek-menusu"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/explore/campus-life/meal-menu"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/explorer/campus/menu-repas"/>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/fr/explorer/campus/menu-repas</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gsu.edu.tr/tr/kesfet/kampuste-yasam/yemek-menusu"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsu.edu.tr/en/explore/campus-life/meal-menu"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gsu.edu.tr/fr/explorer/campus/menu-repas"/>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- ============================================= -->
+  <!-- OGRENCI ALT SAYFALARI (TR)                    -->
+  <!-- ============================================= -->
+  <url>
+    <loc>https://gsu.edu.tr/tr/ogrenci/ogrenci-kabul</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/ogrenci/otomasyon-sistemi</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/ogrenci/ogretim-uyesi-yetistirme-programi</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/ogrenci/engelsiz-universite-birimi</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- OGRENCI ALT SAYFALARI (EN) -->
+  <url>
+    <loc>https://gsu.edu.tr/en/student/student-admission</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- ============================================= -->
+  <!-- PERSONEL ALT SAYFALARI (TR)                   -->
+  <!-- ============================================= -->
+  <url>
+    <loc>https://gsu.edu.tr/tr/personel/akademik-kadro</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/personel/idari-kadro</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- ============================================= -->
+  <!-- ILETISIM ALT SAYFALARI (TR)                   -->
+  <!-- ============================================= -->
+  <url>
+    <loc>https://gsu.edu.tr/tr/iletisim/iletisim-rehberi</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/iletisim/bilgi-edinme</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/iletisim/ulasim-bilgileri</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- ============================================= -->
+  <!-- HIZMETLER (TR)                                -->
+  <!-- ============================================= -->
+  <url>
+    <loc>https://gsu.edu.tr/tr/hizmetler/gsu-portal</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/hizmetler/webmail-sistemi</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- ============================================= -->
+  <!-- DUYURU KATEGORILERI (TR)                      -->
+  <!-- ============================================= -->
+  <url>
+    <loc>https://gsu.edu.tr/tr/duyurular/kategori/duyuru</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/duyurular/kategori/etkinlik</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://gsu.edu.tr/tr/duyurular/kategori/haber</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+</urlset>

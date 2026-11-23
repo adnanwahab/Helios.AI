@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url><loc>https://www.mcgill.ca/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
+<url><loc>https://www.mcgill.ca/fr/avis-de-confidentialite</loc><lastmod>2026-06-25T16:57Z</lastmod><changefreq>yearly</changefreq></url>
+<url><loc>https://www.mcgill.ca/fr/ressources-etudiants</loc><lastmod>2026-06-25T16:56Z</lastmod><changefreq>yearly</changefreq></url>
+<url><loc>https://www.mcgill.ca/fr/ressources-personnel</loc><lastmod>2026-06-25T16:39Z</lastmod><changefreq>yearly</changefreq></url>
+<url><loc>https://www.mcgill.ca/fr/accessibilite/guide-de-ressources-sur-laccessibilite-numerique</loc><lastmod>2026-04-20T21:09Z</lastmod><changefreq>yearly</changefreq></url>
+<url><loc>https://www.mcgill.ca/fr/avis-sur-les-temoins</loc><lastmod>2026-06-25T15:06Z</lastmod><changefreq>yearly</changefreq></url>
+<url><loc>https://www.mcgill.ca/fr/annexe-lavis-de-confidentialite-de-mcgill</loc><lastmod>2024-05-22T13:21Z</lastmod><changefreq>never</changefreq></url>
+<url><loc>https://www.mcgill.ca/fr/accessibilite</loc><lastmod>2025-02-14T15:12Z</lastmod><changefreq>yearly</changefreq></url>
+<url><loc>https://www.mcgill.ca/resources-services-faculty-staff</loc><lastmod>2026-06-25T16:52Z</lastmod><changefreq>yearly</changefreq></url>
+<url><loc>https://www.mcgill.ca/resources-services-students</loc><lastmod>2026-06-25T15:10Z</lastmod><changefreq>yearly</changefreq></url>
+<url><loc>https://www.mcgill.ca/digital-accessibility/digital-accessibility-resource-guide</loc><lastmod>2026-05-04T20:31Z</lastmod><changefreq>yearly</changefreq></url>
+<url><loc>https://www.mcgill.ca/cookie-notice</loc><lastmod>2026-06-25T15:05Z</lastmod><changefreq>yearly</changefreq></url>
+<url><loc>https://www.mcgill.ca/annex-mcgill-privacy-notice</loc><lastmod>2024-05-22T13:22Z</lastmod><changefreq>never</changefreq></url>
+<url><loc>https://www.mcgill.ca/digital-accessibility</loc><lastmod>2024-12-11T20:20Z</lastmod><changefreq>yearly</changefreq></url>
+<url><loc>https://www.mcgill.ca/403-forbidden</loc><lastmod>2019-02-11T16:30Z</lastmod><changefreq>never</changefreq></url>
+<url><loc>https://www.mcgill.ca/404</loc><lastmod>2019-02-11T16:32Z</lastmod><changefreq>never</changefreq></url>
+<url><loc>https://www.mcgill.ca/501</loc><lastmod>2019-02-11T16:32Z</lastmod><changefreq>never</changefreq></url>
+<url><loc>https://www.mcgill.ca/503-unavailable</loc><lastmod>2019-02-11T16:33Z</lastmod><changefreq>never</changefreq></url>
+<url><loc>https://www.mcgill.ca/privacy-notice</loc><lastmod>2026-06-25T16:51Z</lastmod><changefreq>yearly</changefreq></url>
+</urlset>

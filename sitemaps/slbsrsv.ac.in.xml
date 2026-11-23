@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="//slbsrsv.ac.in/sitemap.xsl"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url><loc>https://slbsrsv.ac.in/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
+<url><loc>https://slbsrsv.ac.in/faq</loc><priority>0.8</priority></url>
+<url><loc>https://slbsrsv.ac.in/about-us/history</loc></url>
+<url><loc>https://slbsrsv.ac.in/feedback</loc><priority>0.8</priority></url>
+<url><loc>https://slbsrsv.ac.in/website-policy</loc><priority>0.8</priority></url>
+<url><loc>https://slbsrsv.ac.in/help</loc><priority>0.8</priority></url>
+<url><loc>https://slbsrsv.ac.in/contactus</loc><priority>0.8</priority></url>
+<url><loc>https://slbsrsv.ac.in/disclaimer</loc><priority>0.8</priority></url>
+<url><loc>https://slbsrsv.ac.in/terms-conditions</loc><priority>0.8</priority></url>
+<url><loc>https://slbsrsv.ac.in/public-grievance</loc></url>
+<url><loc>https://slbsrsv.ac.in/site-map</loc><priority>0.8</priority></url>
+</urlset>

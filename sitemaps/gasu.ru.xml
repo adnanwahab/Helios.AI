@@ -1,0 +1,2503 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<url>
+	<loc>https://www.gasu.ru/</loc>
+	<lastmod>2019-12-03T06:15:31+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/?set-aa=normal</loc>
+	<lastmod>2019-12-03T06:15:36+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/en/</loc>
+	<lastmod>2019-12-03T06:15:40+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/common/</loc>
+	<lastmod>2019-12-03T06:15:40+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/</loc>
+	<lastmod>2019-12-03T06:15:41+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/student/</loc>
+	<lastmod>2019-12-03T06:15:42+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sotr/</loc>
+	<lastmod>2019-12-03T06:15:42+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/?set-aa=special</loc>
+	<lastmod>2019-12-03T06:15:43+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/priemnaya-komissiya/</loc>
+	<lastmod>2019-12-03T06:15:43+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/obr/</loc>
+	<lastmod>2019-12-03T06:15:46+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/history/</loc>
+	<lastmod>2019-12-03T06:15:44+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/academic_council/</loc>
+	<lastmod>2019-12-03T06:15:44+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/management/</loc>
+	<lastmod>2019-12-03T06:15:45+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/odp/</loc>
+	<lastmod>2019-12-03T06:15:45+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/otdel-pravovogo-obespecheniya/</loc>
+	<lastmod>2019-12-03T06:15:45+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/upravlenie-bukhgal/</loc>
+	<lastmod>2019-12-03T06:15:46+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/pfu/</loc>
+	<lastmod>2019-12-03T06:15:46+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/upravlenie-kadrov/</loc>
+	<lastmod>2019-12-03T06:15:47+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/uinf/</loc>
+	<lastmod>2019-12-03T06:15:47+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/upravlenie-hsv/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/kontraktnaya-sluzhba/</loc>
+	<lastmod>2019-12-03T06:15:47+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/protivodeystvie-korrupcii/</loc>
+	<lastmod>2019-12-03T06:15:47+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/dohody_ruk/</loc>
+	<lastmod>2019-12-03T06:15:47+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/international/</loc>
+	<lastmod>2019-12-03T06:15:47+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/ohrana-truda/</loc>
+	<lastmod>2019-12-03T06:15:48+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/best_stud/</loc>
+	<lastmod>2019-12-03T06:15:48+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/</loc>
+	<lastmod>2019-12-03T06:15:48+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/kalendar-events/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/prof-stud/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/prof-sotr/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/vopros/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/edu/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/edu/departments/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/edu/UMU/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/edu/metod-sovet/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/edu/obrazovatelnaya-deyatelnost/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/edu/otdel-ppits/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/edu/zaochnoe-obuchenie/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/edu/sentr-dopolnitelnogo-obrazovaniya/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/edu/konsultatsionnyy-tsentr-podderzhki-studentov/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/edu/regionalnyj-centr-finansovoj-gramotnosti/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/train/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/train/UVR/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/train/sentr-spp/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/train/sovet-vr/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/train/volonterskiy-tsentr/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/train/sovet-obuch/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/train/infmat-uvr/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/train/sovet-kuratorov/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/science/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/science/center-sci-innov/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/science/otdel-nti/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/science/otdel-pnpk/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/science/innovacionnyj-centr/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/science/bibl-izdatelskiy-centr/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/science/laboratorii/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/science/muzejnyj-kompleks/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/science/conf_gasu/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/culture-and-sport/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/culture-and-sport/mkc/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/culture-and-sport/dkz/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/culture-and-sport/cc/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/culture-and-sport/gorizont/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/culture-and-sport/burevestnik/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/esports/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/culture-and-sport/sportivnye-dostizheniya/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/culture-and-sport/bars/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/culture-and-sport/russkiy-ekstrim/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/culture-and-sport/sob-na-teletskom-ozere/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/culture-and-sport/platnye-fizkulturno-ozdorovitelnye-uslugi/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/contacts/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/contacts/phonebook/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/contacts/payment/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/contacts/symbols/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/offices/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/search/map.php</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/announce/5562/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/announce/8064/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/announce/8129/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/announce/8121/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/announce/8124/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/announce/8119/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/announce/8133/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/announce/7852/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/announce/7473/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/announce/6067/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/announce/6993/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/news/rss.php</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/news/8132/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/news/8131/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/news/8130/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/news/8113/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/news/8128/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/news/8127/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/news/8126/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/news/2019/12/itogi-tab.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/news/8125/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/news/8123/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/news/8122/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/news/8120/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/news/8117/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/news/8116/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/?PAGEN_1=2</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/?PAGEN_1=3</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/?PAGEN_1=4</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/?PAGEN_1=5</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/news/arkhiv-novostey/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/news/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/70let/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/edu/sentr-dopolnitelnogo-obrazovaniya/programmy-dopolnitelnogo-professionalnogo-obrazovaniya/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/resursy/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/erasmus/ru/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/train/sentr-spp/ovz.php</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/science/otdel-pnpk/vso/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/resursy/ostrov.jpg</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/students/2074/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/students/2075/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/students/2113/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/students/6028/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/students/6029/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/students/6043/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/students/6044/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/students/6045/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/students/6046/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/students/6047/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/students/6048/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/students/6049/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/students/6050/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/students/6051/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/students/6052/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/students/6053/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/students/6054/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/students/6056/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/students/6057/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/students/6058/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/students/6059/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/students/6061/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/announce/8118/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/news/8115/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/news/8114/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/news/8111/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/news/8110/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/news/8109/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/news/8108/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/news/8107/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/news/8106/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/en/rector.php</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/en/mascot.php</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/en/international-cooperation.php</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/en/departments.php</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/en/science/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/en/library.php</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/en/museums/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/en/agrobiological-station.php</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/en/cultural-centers/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/en/sports.php</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/struct/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/document/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/education/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/eduStandarts/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/employees/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/objects/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/grants/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/paid_edu/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/budget/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/vacant/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/ovz/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/inter/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/N575ot17052017.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/1085ot140714rosobrnadz.rtf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/actual_metod_recomendation_2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/796ot10062019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/applicants/the_admissions_committee/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/applicants/dormitory/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/applicants/virtualnyy-tur/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/Pravila_priema_gagu_26092019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/Pravila_priema_ak_31012019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Priem_Time.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Priem_Exam.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Priem_Olimp.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Priem_Prava.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Priem_Individ.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Priem_OVZ.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Priem_Distan.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-1/Pravila_Appeal_27042017.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prog_geografi_22.03.2018.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/plat_obraz_uslugi/Dogovor_platnie_obraz_usluga.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/plat_obraz_uslugi/Stoimost_obuch_30052019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/obs.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/z_mat_result.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/z_russ_result.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/z_ob_result.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/z_bio_result.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/z_ist_result.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/z_fiz_result.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/z_fizpod_result.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/z_tvor_result.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/z_russ_resultZ.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/mat_b_resultZ.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/ob_b_resultZ.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/fiz_b_resultZ.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/ist_b_resultZ.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/bio_b_resultZ.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/fizpod_b_resultZ.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/z_menvobr_result.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/z_pedrob_result.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/z_ruslit_result.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/z_socrab_result.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/z_tur_result.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/eko_m_resultZ.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/ruslit_m_resultZ.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_1379_2_29.07.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_1380_2_29.07.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_1381_2_01.08.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_1382_2_03.08.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_1385_2_08.08.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_427-3_22.08.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_428-3_22.08.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_433_3_28.08.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_1447_2_28.08.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_1448_2_28.08.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_595_3_22.11.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_596_3_22.11.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_1386_2_08.08.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_1387_2_08.08.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_429-3_22.08.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_434_3_28.08.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_593_3_22.11.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_594_3_22.11.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_1412-2_16.08.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_1413-2_16.08.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_1478-2_30.08.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_1479-2_30.08.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_1502-2_06.09.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_1633-2_16.09.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_1669-2_20.09.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_1703-2_25.09.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_1721-2_27.09.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_1934-2_22.10.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_2044-2_08.11.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_1445_2_28.08.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_1446_2_28.08.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_1477_2_30.08.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_1503-2_06.09.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_1634-2_16.09.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_1635-2_16.09.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_1918-2_17.10.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/Prikaz_zach_2126_2_26.11.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/abitur/aspirant/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/faculty_and_staff/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/announce/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-2/Pol_pov_stipendii_06032017.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-2/Pol_st_03052018.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/pravila_rascheta_stup.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/izmeneniya_v_pravila_rascheta_stup.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/Prikaz_st_03.10.2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/pfu/kom-uslugi/Poryadok_oplatu_za_progivanie_30012017.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/pfu/kom-uslugi/Poryadok_oplatu_za_progivanie_09062017.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/pfu/kom-uslugi/Poryadok_oplatu_za_progivanie_19062018.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/pfu/kom-uslugi/Poryadok_oplatu_za_progivanie_26062019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/pfu/kom-uslugi/Poryadok_oplatu_za_progivanie-182_26062019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-1/Pol_st_dorm_21062018.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-2/Pravila_vnutrennego_rasporyadka_v_studobschezhitii2.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-2/Poryadok_zaselenia_semeynykh_studentov.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/Dogov_n_2016.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-1/Pologenie_bic.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-2/Formi_sroki_kontrolya_30082018.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-2/Pologenie_kursov_rabote.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-2/Pologenie_vep_kval_rabote.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-2/Pologenie_itog_attestaciya.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-2/Pologenie_ak_otpusk.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-2/Perevod_gagu_25052017.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-2/Pologenie_perev_plat_na_besplat.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-2/Pologenie_pravila_pol_bibl.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-2/Pologenie_o_realizacii.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/vacant/vakansii.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/plat_obraz_uslugi/Stoimost_obuch_gagu_25052017.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/plat_obraz_uslugi/Stoimost_obuch_25052017.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/plat_obraz_uslugi/Stoimost_obuch_07062017.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/plat_obraz_uslugi/Stoimost_obuch_18042018.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/plat_obraz_uslugi/Stoimost_obuch_pov_06082018.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/plat_obraz_uslugi/Stoimost_obuch_pov_03062019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/864/kvitanciia.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-2/reglament.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-2/Reglament_prav_i_obyazannostey_studencheskogo_aktiva_gruppy.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/b37/oTestirovanii.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/894/fieb.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/8f4/instr-fieb.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/515/instr-fepo-stud.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/edu/otdel-org-ucheb-protsessa/test/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/e52/rabota-v-lk.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/0d8/internet-testirovanie-v-sfere-obrazovaniya.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/Rezhim_zanyat_16062017.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/f6d/raspisanie-sport-sekcii.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sotr/N1546ot30122015.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/Ustav_27122018.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sotr/sv-voNalog.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sotr/VypZapEGRUL05042019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sotr/ustav-zhsk-zhilstroj.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/pfu/zarplata/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/Pravila_trud_rasporyadka_28102015.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/Kol_dorovor_2112018.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/Metodicheskie_rekomendatsii.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sotr/rekomend.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sotr/soprov.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/faculty_and_staff/2754/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/bitrix/redirect.php?event1=news_out&amp;event2=http://abit.gasu.ru&amp;event3=%D0%9F%D1%80%D0%B8%D0%B5%D0%BC%D0%BD%D0%B0%D1%8F%2B%D0%BA%D0%BE%D0%BC%D0%B8%D1%81%D1%81%D0%B8%D1%8F&amp;goto=http://abit.gasu.ru&amp;af=3cdccf1c8425fab02cc5643d21a671f0</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-1/Pologenie_pr_komis.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/e0c/Priem_Exam_ak.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/ff2/Priem_Exam_viak.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/942/Priem_Kol_Mest_b_ak.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/0d6/Priem_Kol_Mest_k_ak.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/213/elektronnoe-zayavlenie.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/180/prokhozhdenie-meditsinskogo-osmotra.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/233/Dogovor_platnie_obraz_usluga.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/013/obs.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/765/Obshee_kol_mest.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/7d8/Priem.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/732/Priem_OVZ.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/7c1/Pravila_Appeal.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/040/uroven_obraz.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/fe7/uslov_priema.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/history/osn_ob_prog.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/history/N1895-06ot%2004062015.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/history/N1461ot25082015.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/faculty_and_staff/2674/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-1/reglament-raboty-uchenogo-soveta.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-2/Pologenie_veb_dekana_fakul.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-2/Pologenie_v_zav_kaf.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/6ee/plan2019.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/5a2/obrazec_zayavleniya.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/9fb/perechen_doc.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/8e2/obrazec-oformleniya-spiska-nauchnyh-i-uchebnyh-rabot.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/92e/formy_predstavleniya_kafedry.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/3fa/forma_v_prot.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/ca8/forma_v_prot_zav_kaf.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/ca8/ball_bulleten.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/0dc/sostavUS.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/management/1431/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/management/1432/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/management/2204/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/management/1695/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/faculty_and_staff/2309/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-1/Pologenie_ODP.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-1/Pologenie_arhiv.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/cb6/nomenklatura_del_2018-2022.docx</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/7e1/komandirovka.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/7ee/protokol.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/055/dol_instr.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/dbb/podrazdelenie.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/ccf/blankiGASU.docx</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/3f6/delo2011.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/faculty_and_staff/2310/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/faculty_and_staff/2478/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-1/Pologenie_urotdel.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/822/koncepcia.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/61d/koncepcia2.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/83c/piirik.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/4e4/pmik.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/988/prikaz_nedvizh.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/ece/prikaz_dvizh.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/6c4/pere4en_nedv.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/333/pere4en_zem.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/faculty_and_staff/2307/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-1/Pologenie_up_buh_uch.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/upravlenie-bukhgal/informatsiya-o-srednemesyachnoy-zarabotnoy-plate.php</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/Otchet_o_postuplenii_i_rachodovanii_fin-forma721.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/balans.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/otchet_ob_ispol5037372.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/otchet_ob_ispol5037374.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/otchet_ob_ispol5037375.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/35e/informaciya.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/930/tabel_new_forma2016.xls</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/05b/uslov_oboznach.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/eac/posobie.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/ef0/sroki.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/a58/vadacha-spravok-i-kvitancii.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/2ca/pfrf.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/dad/402fz.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/863/%D0%9F%D1%80%D0%B8%D0%BA%D0%B0%D0%B7%E2%84%9665.rtf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/0f1/doc00041120191101083351.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/1e5/Kody-statistiki.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/1d0/elektronnyi-bolnichnyi.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/faculty_and_staff/2479/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-1/Pologenie_pfu.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/pfu/kom-uslugi/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/pfu/artybash.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/pfu/zarplata</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/pfu/fhd</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/faculty_and_staff/2115/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/bitrix/redirect.php?event1=news_out&amp;event2=http://eios.gasu.ru/&amp;event3=%D0%A3%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5%2B%D0%B8%D0%BD%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D1%82%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8&amp;goto=http://eios.gasu.ru/&amp;af=d1c79a90d97091c0b61cbae24787a1ff</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-1/Pologenie_uinf.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/news/uinf/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/objects/index_ComNet.php</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/objects/index_ComNetOvz.php</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/objects/index_ERListOvz.php</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/objects/index_ERList.php</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/faculty_and_staff/2480/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-1/Pologenie_up_kadrov.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/upravlenie-kadrov/documenty.php</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/news/5681/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/cf4/N1223ot26092016.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/ff9/112.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/faculty_and_staff/2308/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/sveden/infmat/polozheniya/chast-1/Pologenie_kont_sluzhba.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/9f9/fz44.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/341/FZ223ot18072011.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/5bc/el_forma.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/9fe/N926.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/53e/N927.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/66f/NPA_po_44fz.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/a89/polozhenie-o-zakupke-tovarov-rabot-i-uslug.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/protivodeystvie-korrupcii/normativnye-pravovye-i-inye-aktu-v-sfere-protivodeystviya-korruptsii/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/protivodeystvie-korrupcii/antikorruptsionnaya-ekspertiza/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/protivodeystvie-korrupcii/metodicheskie-materialy/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/protivodeystvie-korrupcii/formy-dokumentov-svyazannykh-s-protivodeystviem-korruptsii-dlya-zapolneniya/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/protivodeystvie-korrupcii/komissiya-po-soblyudeniyu-ogranicheniy-zapretov-i-trebovaniy-ustanovlennykh-v-tselyakh-protivodeystv/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/protivodeystvie-korrupcii/obratnaya-svyaz-dlya-soobshcheniy-o-faktakh-korruptsii/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/dohody_ruk/2012_.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/dohody_ruk/2013_.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/dohody_ruk/2014_.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/dohody_ruk/2015_.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/dohody_ruk/2016_.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/dohody_ruk/2017_.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/dohody_ruk/2018_.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/faculty_and_staff/2619/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/international/partner.php</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/international/doc_in.php</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/international/pravila.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/international/doc_in/rekv_gosposhlina.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/international/doc_in/pamiatka_in_stud.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/international/gp.docx</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/international/dogovor-ob-obuchenii.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/international/dogovor-uslugi.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/fc3/18_12_2017_N933_red_ot_28_06_2018.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/115/22042019-N799.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/75b/24_12_2013_N1391_red_%2009_06_2016.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/11f/115.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/4cc/203.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/09d/12077.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/4fc/9.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/4ed/844.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/2ec/891.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/0bf/st78.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/813/Pologenie_reglament_stagirovok.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/7ac/polog_ob_org_akk_mob.doc</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/faculty_and_staff/2816/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/bitrix/redirect.php?event1=news_out&amp;event2=http://truenet.gasu.ru/&amp;event3=%D0%9E%D1%85%D1%80%D0%B0%D0%BD%D0%B0%2B%D1%82%D1%80%D1%83%D0%B4%D0%B0%2B%D0%B8%2B%D1%82%D0%B5%D1%85%D0%BD%D0%B8%D0%BA%D0%B0%2B%D0%B1%D0%B5%D0%B7%D0%BE%D0%BF%D0%B0%D1%81%D0%BD%D0%BE%D1%81%D1%82%D0%B8&amp;goto=http://truenet.gasu.ru/&amp;af=91035a581ff09e1467c8a579231c2207</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/be5/prikaz_307.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/11e/rtut.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/upload/iblock/50f/polPDn.pdf</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/edu/departments/ak/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/ck-agro-i-teh-spec/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/ck-vet-i-kinolog/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/edu/departments/egf/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/kaf_bot/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/kaf_geo/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/edu/departments/iff/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/kaf-in-yaz-mp/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/rus/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/kavi/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/edu/departments/ppf/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/kaf-fizvos-sport-fiz-bzh/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/kaf-ped-psi-soc/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/edu/departments/fat/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/kaf_alt_fil_vostok/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/edu/departments/fmiti/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/kaf-agroteh-vetmed/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/kaf-matem/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/edu/departments/ejf/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/kaf-prava-filosof-i-soc/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/kaf_ekonom_tur_prik_inform/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/sovet/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/odp/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/otdel-pravovogo-obespecheniya/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/upravlenie-bukhgal/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/pfu/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/upravlenie-kadrov/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/uinf/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/upravlenie-hsv/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/kontraktnaya-sluzhba/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/international/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/ohrana-truda/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/UMU/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/metod-sovet/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/otdel-ppits/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/zaochnoe-obuchenie/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/sentr-dopolnitelnogo-obrazovaniya/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/konsultatsionnyy-tsentr-podderzhki-studentov/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/UVR/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/sentr-spp/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/sovet-obuch/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/sovet-kuratorov/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/center-sci-innov/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/otdel-nti/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/otdel-pnpk/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/innovacionnyj-centr/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/bibl-izdatelskiy-centr/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+<url>
+	<loc>https://www.gasu.ru/university/structure/adm/abs/</loc>
+	<lastmod>2019-12-03T06:15:49+01:00</lastmod>
+	<priority>0.2</priority>
+</url>
+</urlset>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+   <sitemap>
+
+      <loc>https://www.coloradocollege.edu/sitemaps/cchomepages.xml</loc>
+
+   </sitemap>
+   
+   <sitemap>
+
+      <loc>https://www.coloradocollege.edu/sitemaps/cataloglandingpages.xml</loc>
+
+   </sitemap>
+
+   <sitemap>
+
+      <loc>https://www.coloradocollege.edu/sitemaps/courselistings.xml</loc>
+
+   </sitemap>
+
+   <sitemap>
+
+      <loc>https://www.coloradocollege.edu/sitemaps/courses.xml</loc>
+
+   </sitemap>
+
+   <sitemap>
+
+      <loc>https://www.coloradocollege.edu/sitemaps/departments.xml</loc>
+
+   </sitemap>
+
+   <sitemap>
+
+      <loc>https://www.coloradocollege.edu/sitemaps/directorypages.xml</loc>
+
+   </sitemap>
+
+   <sitemap>
+
+      <loc>https://www.coloradocollege.edu/sitemaps/news.xml</loc>
+
+   </sitemap>
+
+   <sitemap>
+
+      <loc>https://www.coloradocollege.edu/sitemaps/policies.xml</loc>
+
+   </sitemap>
+
+   <sitemap>
+
+      <loc>https://www.coloradocollege.edu/sitemaps/profilepages.xml</loc>
+
+   </sitemap>
+
+   <sitemap>
+
+      <loc>https://www.coloradocollege.edu/sitemaps/webpages.xml</loc>
+
+   </sitemap>
+
+</sitemapindex>

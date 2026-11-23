@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="/typo3/sysext/seo/Resources/Public/CSS/Sitemap.xsl"?>
+
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    
+        <sitemap>
+            <loc>https://www.heidenheim.dhbw.de/startseite/sitemap.xml?sitemap=pages&amp;cHash=9db1b1867963f5eef6c7c23fa09bce6c</loc>
+            <lastmod>2026-11-20T14:45:14+01:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://www.heidenheim.dhbw.de/startseite/sitemap.xml?sitemap=news&amp;cHash=5044aa23c6dd62c6cf98b85078733aa0</loc>
+            <lastmod>2026-11-10T09:39:14+01:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://www.heidenheim.dhbw.de/startseite/sitemap.xml?page=1&amp;sitemap=news&amp;cHash=33b0d4a126e935b4286c1d6d8aba765c</loc>
+            <lastmod>2026-11-10T09:39:14+01:00</lastmod>
+        </sitemap>
+    
+</sitemapindex>

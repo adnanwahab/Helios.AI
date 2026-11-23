@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="/typo3/sysext/seo/Resources/Public/CSS/Sitemap.xsl"?>
+
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    
+        <sitemap>
+            <loc>https://www.uni-hannover.de/sitemap.xml?sitemap=pages&amp;cHash=9532594ccb2592eeb6f14732b090d54b</loc>
+            <lastmod>2026-11-20T14:18:07+01:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://www.uni-hannover.de/sitemap.xml?page=1&amp;sitemap=pages&amp;cHash=1d242927c7573eed72b0929d8cee9d36</loc>
+            <lastmod>2026-11-20T14:18:07+01:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://www.uni-hannover.de/sitemap.xml?sitemap=news&amp;cHash=48787008f70f0cd252cff5b907f6fe6d</loc>
+            <lastmod>2026-11-19T15:01:08+01:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://www.uni-hannover.de/sitemap.xml?page=1&amp;sitemap=news&amp;cHash=915d971d770bc11e084d8525bbbd17f2</loc>
+            <lastmod>2026-11-19T15:01:08+01:00</lastmod>
+        </sitemap>
+    
+</sitemapindex>

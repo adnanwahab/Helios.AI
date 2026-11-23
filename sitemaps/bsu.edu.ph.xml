@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This sitemap was dynamically generated on November 22, 2026 at 2:27 pm by All in One SEO v5.0.5.1 - the original SEO plugin for WordPress. -->
+
+<?xml-stylesheet type="text/xsl" href="https://bsu.edu.ph/default-sitemap.xsl?sitemap=root"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+	<sitemap>
+		<loc><![CDATA[https://bsu.edu.ph/addl-sitemap.xml]]></loc>
+		<lastmod><![CDATA[2026-11-21T07:04:45+00:00]]></lastmod>
+	</sitemap>
+	<sitemap>
+		<loc><![CDATA[https://bsu.edu.ph/post-sitemap.xml]]></loc>
+		<lastmod><![CDATA[2026-11-19T09:43:19+00:00]]></lastmod>
+	</sitemap>
+	<sitemap>
+		<loc><![CDATA[https://bsu.edu.ph/page-sitemap.xml]]></loc>
+		<lastmod><![CDATA[2026-11-21T07:04:45+00:00]]></lastmod>
+	</sitemap>
+	<sitemap>
+		<loc><![CDATA[https://bsu.edu.ph/slider-image-sitemap.xml]]></loc>
+		<lastmod><![CDATA[2026-07-13T08:39:49+00:00]]></lastmod>
+	</sitemap>
+	<sitemap>
+		<loc><![CDATA[https://bsu.edu.ph/category-sitemap.xml]]></loc>
+		<lastmod><![CDATA[2026-11-19T09:43:19+00:00]]></lastmod>
+	</sitemap>
+	<sitemap>
+		<loc><![CDATA[https://bsu.edu.ph/post_tag-sitemap.xml]]></loc>
+		<lastmod><![CDATA[2026-02-10T10:53:06+00:00]]></lastmod>
+	</sitemap>
+</sitemapindex>

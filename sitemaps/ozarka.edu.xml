@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+   <url>
+      <loc>http://www.ozarka.edu/</loc>
+      <lastmod>2025-12-24</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>1.0</priority>
+   </url>
+   <url>
+      <loc>http://www.ozarka.edu/campusnews.cfm</loc>
+      <lastmod>2005-01-01</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>0.8</priority>
+   </url>
+   <url>
+      <loc>http://www.ozarka.edu/calendar/index.cfm</loc>
+      <lastmod>2005-01-01</lastmod>
+      <changefreq>hourly</changefreq>
+      <priority>0.7</priority>
+   </url>
+   <url>
+      <loc>http://www.ozarka.edu/effectiveness/</loc>
+      <lastmod>2008-09-05</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>0.7</priority>
+   </url>
+   
+   <url>
+      <loc>http://www.ozarka.edu/forms.cfm?form=ST</loc>
+      <lastmod>2008-09-05</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.5</priority>
+   </url>
+    
+   <url>
+      <loc>http://www.ozarka.edu/blogs/fitness/page.cfm/About-Us</loc>
+      <lastmod>2008-09-05</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.5</priority>
+   </url>
+   <url>
+      <loc>httpS://www.ozarka.edu/careers</loc>
+      <lastmod>2025-12-24</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.5</priority>
+   </url>
+   
+   <url>
+      <loc>http://www.ozarka.edu/human_resources.cfm</loc>
+      <lastmod>2008-09-05</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>0.6</priority>
+   </url>
+
+   <url>
+      <loc>http://www.ozarka.edu/jobs.cfm</loc>
+      <lastmod>2008-09-05</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>0.6</priority>
+   </url>
+   
+   
+ </urlset>

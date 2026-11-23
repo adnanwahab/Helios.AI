@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--generator='jetpack-16.4'-->
+<!--Jetpack_Sitemap_Buffer_Master_XMLWriter-->
+<?xml-stylesheet type="text/xsl" href="//windward.hawaii.edu/sitemap-index.xsl"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+ <sitemap>
+  <loc>https://windward.hawaii.edu/sitemap-1.xml</loc>
+  <lastmod>2026-11-18T00:18:09Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>https://windward.hawaii.edu/image-sitemap-index-1.xml</loc>
+  <lastmod>2026-11-07T02:50:46Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>https://windward.hawaii.edu/video-sitemap-1.xml</loc>
+  <lastmod>2020-04-19T04:40:44Z</lastmod>
+ </sitemap>
+</sitemapindex>

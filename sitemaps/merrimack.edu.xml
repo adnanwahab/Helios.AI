@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This sitemap was dynamically generated on November 22, 2026 at 9:25 am by All in One SEO Pro v5.0.5.1 - the original SEO plugin for WordPress. -->
+
+<?xml-stylesheet type="text/xsl" href="https://www.merrimack.edu/default-sitemap.xsl?sitemap=root"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+	<sitemap>
+		<loc><![CDATA[https://www.merrimack.edu/post-sitemap.xml]]></loc>
+		<lastmod><![CDATA[2026-11-19T20:51:58+00:00]]></lastmod>
+	</sitemap>
+	<sitemap>
+		<loc><![CDATA[https://www.merrimack.edu/page-sitemap.xml]]></loc>
+		<lastmod><![CDATA[2026-11-21T03:32:05+00:00]]></lastmod>
+	</sitemap>
+	<sitemap>
+		<loc><![CDATA[https://www.merrimack.edu/staff_directory-sitemap.xml]]></loc>
+		<lastmod><![CDATA[2026-11-22T09:34:10+00:00]]></lastmod>
+	</sitemap>
+</sitemapindex>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <sitemap>
+        <loc>https://istu.ru/sitemaps/index.xml</loc>
+    
+        <lastmod>2021-04-05T11:12:49+04:00</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://istu.ru/sitemaps/departments.xml</loc>
+    
+        <lastmod>2021-04-05T11:12:49+04:00</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://istu.ru/sitemaps/staffs.xml</loc>
+    
+        <lastmod>2021-04-05T11:12:49+04:00</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://istu.ru/sitemaps/materials.xml</loc>
+    
+        <lastmod>2021-04-05T11:12:49+04:00</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://istu.ru/sitemaps/events.xml</loc>
+    
+        <lastmod>2021-04-05T11:12:49+04:00</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://istu.ru/sitemaps/news.xml</loc>
+    
+        <lastmod>2021-04-05T11:12:49+04:00</lastmod>
+    </sitemap>
+</sitemapindex>

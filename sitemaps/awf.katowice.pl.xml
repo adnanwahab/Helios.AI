@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <sitemap>
+        <loc>https://awf.katowice.pl/sitemap/pl/news/1.xml</loc>
+        <lastmod>2026-11-20T13:59:14+01:00</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://awf.katowice.pl/sitemap/pl/news/278.xml</loc>
+        <lastmod>2023-07-10T11:33:10+02:00</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://awf.katowice.pl/sitemap/pl/calendar/723.xml</loc>
+        <lastmod>2026-11-20T14:19:03+01:00</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://awf.katowice.pl/sitemap/pl/calendar/724.xml</loc>
+        <lastmod>2026-11-18T14:07:47+01:00</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://awf.katowice.pl/sitemap/pl/pages.xml</loc>
+        <lastmod>2026-11-20T14:19:03+01:00</lastmod>
+    </sitemap>
+</sitemapindex>

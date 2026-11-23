@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="/_assets/984e6ee9829f85eb447bb6a36455204a/CSS/Sitemap.xsl"?>
+
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    
+        <sitemap>
+            <loc>https://www.thu.de/sitemap.xml?sitemap=news</loc>
+            <lastmod>2026-11-18T09:48:46+01:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://www.thu.de/sitemap.xml?sitemap=pages</loc>
+            <lastmod>2026-11-20T19:00:03+01:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://www.thu.de/sitemap.xml?sitemap=events</loc>
+            <lastmod>2026-11-16T11:24:03+01:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://www.thu.de/sitemap.xml?sitemap=persons</loc>
+            <lastmod>2026-11-22T04:00:00+01:00</lastmod>
+        </sitemap>
+    
+</sitemapindex>

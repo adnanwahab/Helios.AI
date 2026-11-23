@@ -1,0 +1,649 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"> 
+
+<url>
+  <loc>https://iuraipur.edu.in/</loc>
+  <priority>1.0</priority>
+  <changefreq>Daily</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/student</loc>
+  <priority>0.9</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/parent</loc>
+  <priority>0.9</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/faculty</loc>
+  <priority>0.6</priority>
+  <changefreq>Monthly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/employer</loc>
+  <priority>0.9</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/employee</loc>
+  <priority>0.9</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/jobseeker</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/home/alumni</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/aboutus/about-university</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/aboutus/recognitions-accreditations</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/aboutus/chancellor</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/aboutus/message-vc</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/aboutus/message-dean-academics</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/aboutus/message-registrar</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/aboutus/university-authorities</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/aboutus/the-icfai-group</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/aboutus/infrastructure</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/aboutus/awards-recognitions</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/aboutus/rankings</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/aboutus/about-raipur</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/aboutus/cgpurc-guideline</loc>
+  <priority>0.4</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/aboutus/statutory-body-minutes-of-meeting</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/aboutus/visitor-speak</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/aboutus/feedback-of-students-faculties</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/ugprograms/btech</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/ugprograms/btech-literal-entry</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/ugprograms/bba</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/ugprograms/bba-hons</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/ugprograms/bca</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/ugprograms/bca-hons</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/ugprograms/ba</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/ugprograms/ba-hons</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/ugprograms/bcom</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/ugprograms/bcom-hons</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/ugprograms/bsc</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/ugprograms/bsc-hons</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/ugprograms/bed</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/ugprograms/ba-llb-hons</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/ugprograms/llb-hons</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/pgprograms/mba</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/pgprograms/mtech</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/pgprograms/mca</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/pgprograms/msc-chemistry</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/pgprograms/msc-mathematics</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/pgprograms/msc-physics</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/pgprograms/ma-yoga</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/pgprograms/ma-education</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/pgprograms/ma-journalism-mass-communication</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/pgprograms/ma-english-literature</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/pgprograms/ma-economics</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/pgprograms/ma-hindi-literature</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/pgprograms/ma-public-administration</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/doctoralprograms/phd</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/diplomaprograms/diploma-in-computer-application</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/programs/diplomaprograms/pg-diploma-in-computer-application</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/academics/departments/faculty-of-management-studies</loc>
+  <priority>0.6</priority>
+  <changefreq>Monthly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/academics/departments/faculty-of-science-and-technology</loc>
+  <priority>0.6</priority>
+  <changefreq>Monthly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/academics/departments/faculty-of-science</loc>
+  <priority>0.6</priority>
+  <changefreq>Monthly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/academics/departments/faculty-of-law</loc>
+  <priority>0.6</priority>
+  <changefreq>Monthly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/academics/departments/faculty-of-art-humanities</loc>
+  <priority>0.6</priority>
+  <changefreq>Monthly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/academics/departments/faculty-of-education</loc>
+  <priority>0.6</priority>
+  <changefreq>Monthly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/academics/departments/faculty-of-commerce</loc>
+  <priority>0.6</priority>
+  <changefreq>Monthly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/academics/faculty-resources/faculty-of-science-technology-profiles</loc>
+  <priority>0.6</priority>
+  <changefreq>Monthly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/academics/faculty-resources/faculty-of-management-studies-profiles</loc>
+  <priority>0.6</priority>
+  <changefreq>Monthly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/academics/faculty-resources/faculty-of-sciences</loc>
+  <priority>0.6</priority>
+  <changefreq>Monthly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/academics/faculty-resources/faculty-of-commerce-profiles</loc>
+  <priority>0.6</priority>
+  <changefreq>Monthly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/academics/faculty-resources/faculty-of-arts-humanities-profiles</loc>
+  <priority>0.6</priority>
+  <changefreq>Monthly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/academics/faculty-resources/faculty-of-education-profiles</loc>
+  <priority>0.6</priority>
+  <changefreq>Monthly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/academics/faculty-resources/faculty-of-law-profiles</loc>
+  <priority>0.6</priority>
+  <changefreq>Monthly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/academics/faculty-resources/non-teaching-staff</loc>
+  <priority>0.6</priority>
+  <changefreq>Monthly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/academics/facilities/course-handouts</loc>
+  <priority>0.8</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/academics/facilities/library</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/academics/facilities/academic-calendar</loc>
+  <priority>0.9</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/academics/teaching-evaluation-methodology</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/academics/pedagogy</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/academics/co-curricular-activities</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/academics/summer-internship</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/academics/guest-lectures</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/academics/mou</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/academics/value-added-courses</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/Students-Corner</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/online-registration</loc>
+  <priority>0.9</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/admissions/2026/</loc>
+  <priority>0.9</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/admission-calendar</loc>
+  <priority>0.9</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/research/research-and-development-cell</loc>
+  <priority>0.6</priority>
+  <changefreq>Monthly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/research/organised</loc>
+  <priority>0.6</priority>
+  <changefreq>Monthly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/research/attended</loc>
+  <priority>0.6</priority>
+  <changefreq>Monthly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/research/list-of-phd-supervisors</loc>
+  <priority>0.6</priority>
+  <changefreq>Monthly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/research/phd-scholars</loc>
+  <priority>0.6</priority>
+  <changefreq>Monthly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/research/seminars-workshops</loc>
+  <priority>0.7</priority>
+  <changefreq>Daily</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/research/books-chapters-by-faculty</loc>
+  <priority>0.6</priority>
+  <changefreq>Monthly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/research/articles-by-faculty</loc>
+  <priority>0.6</priority>
+  <changefreq>Monthly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/research/guest-lectures-invited-talk-delivered</loc>
+  <priority>0.6</priority>
+  <changefreq>Monthly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/research/faculty-achievements</loc>
+  <priority>0.6</priority>
+  <changefreq>Monthly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/placements</loc>
+  <priority>0.9</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/campus-life</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/nep2020</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/search</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/eventspage/</loc>
+  <priority>0.7</priority>
+  <changefreq>Daily</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/nirf</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/admission-semester-fee</loc>
+  <priority>0.9</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/Admissions/2026/student/login</loc>
+  <priority>0.9</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://www.iuraipur.edu.in/convocation2025/Login.asp</loc>
+  <priority>0.9</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/examination-results</loc>
+  <priority>0.9</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/contact-us</loc>
+  <priority>0.4</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/media</loc>
+  <priority>0.7</priority>
+  <changefreq>Daily</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/newsletter</loc>
+  <priority>0.7</priority>
+  <changefreq>Daily</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/login-student-fee</loc>
+  <priority>0.9</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/conference-seminars</loc>
+  <priority>0.7</priority>
+  <changefreq>Daily</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/student-login</loc>
+   <priority>0.9</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/annual-accounts</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/national-service-scheme</loc>
+  <priority>0.9</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/internal-complaints-committee</loc>
+  <priority>0.4</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/internal-quality-assurance-cell</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/sports-facilities</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/health-facilities</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/facilities-for-differently-abled</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/circulars-and-notices</loc>
+  <priority>0.7</priority>
+  <changefreq>Daily</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/announcements</loc>
+  <priority>0.7</priority>
+  <changefreq>Daily</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/home/Notificationspage</loc>
+ <priority>0.7</priority>
+  <changefreq>Daily</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/feecollection/login_stu_semester.asp</loc>
+  <priority>0.9</priority>
+  <changefreq>Weekly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/rti-act-2005</loc>
+  <priority>0.4</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/student-grievance</loc>
+  <priority>0.4</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/student-grievance-form</loc>
+  <priority>0.4</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/women-grievance-redressal-cell</loc>
+  <priority>0.4</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/anti-ragging-policy</loc>
+  <priority>0.4</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/policy-prohibiting-discrimination</loc>
+  <priority>0.4</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/careers</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+<url>
+  <loc>https://iuraipur.edu.in/sitemap</loc>
+  <priority>0.5</priority>
+  <changefreq>Yearly</changefreq>
+</url>
+</urlset>

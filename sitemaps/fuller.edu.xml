@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This sitemap was dynamically generated on November 22, 2026 at 6:07 am by All in One SEO Pro v5.0.5.1 - the original SEO plugin for WordPress. -->
+
+<?xml-stylesheet type="text/xsl" href="https://fuller.edu/default-sitemap.xsl?sitemap=root"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+	<sitemap>
+		<loc><![CDATA[https://fuller.edu/page-sitemap.xml]]></loc>
+		<lastmod><![CDATA[2026-11-20T22:59:44+00:00]]></lastmod>
+	</sitemap>
+	<sitemap>
+		<loc><![CDATA[https://fuller.edu/page-sitemap2.xml]]></loc>
+		<lastmod><![CDATA[2018-03-30T17:05:29+00:00]]></lastmod>
+	</sitemap>
+</sitemapindex>

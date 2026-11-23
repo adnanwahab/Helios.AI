@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+   <url>
+      <loc>http://www.upo.es/</loc>
+      <lastmod>2010-06-25</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>1.0</priority>
+
+   </url>
+
+   <url>
+      <loc>http://www.upo.es/portal/impe/web/portadaEspecifica?channel=c1f3624d-2f47-11de-b088-3fe5a96f4a88</loc>
+      <changefreq>daily</changefreq>
+      <priority>0.9</priority>
+   </url>
+   
+   <url>
+
+      <loc>http://www.upo.es/portal/impe/web/portadaEspecifica?channel=d3563863-2f47-11de-b088-3fe5a96f4a88</loc>
+      <changefreq>daily</changefreq>
+      <priority>0.9</priority>
+   </url>
+   
+   <url>
+      <loc>http://www.upo.es/portal/impe/web/portadaEspecifica?channel=f33ce07f-2f47-11de-b088-3fe5a96f4a88</loc>
+      <changefreq>daily</changefreq>
+
+      <priority>0.9</priority>
+   </url>
+   
+   <url>
+      <loc>http://www.upo.es/portal/impe/web/portadaEspecifica?channel=e129a629-2f47-11de-b088-3fe5a96f4a88</loc>
+      <changefreq>daily</changefreq>
+      <priority>0.9</priority>
+   </url>
+
+   
+    <url>
+      <loc>http://www.upo.es/biblioteca/</loc>
+      <changefreq>weekly</changefreq>
+      <priority>0.9</priority>
+   </url>
+   
+    <url>
+      <loc>http://www.upo.es/portal/impe/web/contenido/fe0c57d7-073f-11df-9d58-3fe5a96f4a88</loc>
+      <priority>0.9</priority>
+   </url>
+    
+   <url>
+      <loc>http://www.upo.es/portal/impe/web/portadaEspecifica?channel=a3645af1-2f47-11de-b088-3fe5a96f4a88</loc>
+      <changefreq>daily</changefreq>
+      <priority>0.8</priority>
+   </url>
+
+   <url>
+      <loc>http://www.upo.es/diario</loc>
+<changefreq>daily</changefreq>
+      <priority>0.8</priority>
+   </url>
+   
+   <url>
+      <loc>http://www.upo.es/postgrado</loc>
+      <changefreq>weekly</changefreq>
+      <priority>0.8</priority>
+   </url>
+   
+   <url>
+      <loc>http://www.upo.es/guia-estudios</loc>
+      <changefreq>yearly</changefreq>
+      <priority>0.8</priority>
+
+   </url>
+   
+   <url>
+      <loc>http://www.upo.es/fder</loc>
+      <changefreq>daily</changefreq>
+      <priority>0.8</priority>
+   </url>
+   
+   <url>
+
+      <loc>http://www.upo.es/fhum</loc>
+	<changefreq>daily</changefreq>
+      <priority>0.8</priority>
+   </url>
+   
+      <url>
+      <loc>http://www.upo.es/fce</loc>
+	  <changefreq>daily</changefreq>
+
+      <priority>0.8</priority>
+   </url>
+   
+   <url>
+      <loc>http://www.upo.es/fcex</loc>
+	<changefreq>daily</changefreq>
+      <priority>0.8</priority>
+   </url>
+
+   <url>
+      <loc>http://www.upo.es/fcs</loc>
+	  <changefreq>daily</changefreq>
+      <priority>0.8</priority>
+   </url>
+   
+   <url>
+      <loc>http://www.upo.es/fdep</loc>
+      <changefreq>daily</changefreq>
+      <priority>0.8</priority>
+   </url>
+   
+   <url>
+      <loc>http://www.upo.es/eps</loc>
+      <changefreq>daily</changefreq>
+      <priority>0.8</priority>
+
+   </url>
+ 
+   <url>
+      <loc>http://www.upo.es/otri</loc>
+	  <changefreq>weekly</changefreq>
+      <priority>0.8</priority>
+   </url>
+   
+   <url>
+
+      <loc>http://www.upo.es/ceicambio/</loc>
+	  <changefreq>weekly</changefreq>
+      <priority>0.8</priority>
+   </url>
+
+   <url>
+      <loc>http://www.upo.es/portal/impe/web/contenido/7577d8d0-3f9c-11de-b1eb-3fe5a96f4a88?channel=a3645af1-2f47-11de-b088-3fe5a96f4a88</loc>
+
+      <priority>0.7</priority>
+   </url>
+   
+   <url>
+      <loc>http://www.upo.es/portal/impe/web/formularioBuzon</loc>
+      <priority>0.7</priority>
+   </url>
+
+   <url>
+
+      <loc>http://www.upo.es/portal/impe/web/listadoWebUpo?busquedaAZ=A</loc>
+      <priority>0.7</priority>
+   </url>
+        
+   <url>
+      <loc>http://www.upo.es/portal/impe/web/portadaEspecifica?channel=1dc11fbb-2f48-11de-b088-3fe5a96f4a88</loc>
+	  <changefreq>daily</changefreq>
+      <priority>0.7</priority>
+
+   </url>
+
+    <url>
+      <loc>http://www.upo.es/portal/impe/web/portadaEspecifica?channel=0f270695-2f48-11de-b088-3fe5a96f4a88</loc>
+	  <changefreq>daily</changefreq>
+      <priority>0.7</priority>
+   </url>
+   
+    <url>
+
+      <loc>http://www.upo.es/portal/impe/web/contenido/b6d82b8b-3fa4-11de-b1eb-3fe5a96f4a88?channel=a3645af1-2f47-11de-b088-3fe5a96f4a88</loc>
+	  <changefreq>daily</changefreq>
+      <priority>0.7</priority>
+   </url>
+   
+   <url>
+      <loc>http://www.upo.es/rectorado</loc>
+	  <changefreq>monthly</changefreq>
+
+      <priority>0.6</priority>
+   </url>
+   
+   <url>
+      <loc>http://www.upo.es/cic</loc>
+	  <changefreq>weekly</changefreq>
+      <priority>0.6</priority>
+   </url>
+
+   
+   <url>
+      <loc>http://www.upo.es/areadeestudiantes</loc>
+	  <changefreq>weekly</changefreq>
+      <priority>0.6</priority>
+   </url>
+   
+   <url>
+      <loc>http://www.upo.es/ofcampus</loc>
+
+	  <changefreq>weekly</changefreq>
+      <priority>0.6</priority>
+   </url>
+   
+   <url>
+      <loc>http://www.upo.es/aga</loc>
+	  <changefreq>weekly</changefreq>
+      <priority>0.6</priority>
+
+   </url>
+   
+   <url>
+      <loc>http://www.upo.es/olavideencarmona</loc>
+	<changefreq>weekly</changefreq>
+      <priority>0.6</priority>
+   </url>
+   
+   <url>
+
+      <loc>http://www.upo.es/sdupo</loc>
+      <changefreq>weekly</changefreq>
+      <priority>0.6</priority>
+   </url>
+   <url>
+      <loc>http://www.upo.es/areadeinvestigacion</loc>
+      <changefreq>weekly</changefreq>
+      <priority>0.6</priority>
+   </url>   
+   
+</urlset> 
+

@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8'?><?xml-stylesheet type='text/xsl' href='https://kanazawa-u.ac.jp/wp/wp-content/plugins/google-sitemap-generator/sitemap.xsl'?><!-- sitemap-generator-url='http://www.arnebrachhold.de' sitemap-generator-version='4.1.25' -->
+<!-- generated-on='2026年11月22日 2:21 PM' -->
+<sitemapindex xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/siteindex.xsd' xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>	<sitemap>
+		<loc>https://www.kanazawa-u.ac.jp/sitemap-misc.xml</loc>
+		<lastmod>2026-11-20T07:11:47+00:00</lastmod>
+	</sitemap>
+	<sitemap>
+		<loc>https://www.kanazawa-u.ac.jp/post-sitemap.xml</loc>
+		<lastmod>2026-11-20T06:54:40+00:00</lastmod>
+	</sitemap>
+	<sitemap>
+		<loc>https://www.kanazawa-u.ac.jp/post-sitemap2.xml</loc>
+		<lastmod>2026-11-20T06:54:40+00:00</lastmod>
+	</sitemap>
+	<sitemap>
+		<loc>https://www.kanazawa-u.ac.jp/post-sitemap3.xml</loc>
+		<lastmod>2026-11-20T06:54:40+00:00</lastmod>
+	</sitemap>
+	<sitemap>
+		<loc>https://www.kanazawa-u.ac.jp/post-sitemap4.xml</loc>
+		<lastmod>2026-11-20T06:54:40+00:00</lastmod>
+	</sitemap>
+	<sitemap>
+		<loc>https://www.kanazawa-u.ac.jp/post-sitemap5.xml</loc>
+		<lastmod>2026-11-20T06:54:40+00:00</lastmod>
+	</sitemap>
+	<sitemap>
+		<loc>https://www.kanazawa-u.ac.jp/post-sitemap6.xml</loc>
+		<lastmod>2026-11-20T06:54:40+00:00</lastmod>
+	</sitemap>
+	<sitemap>
+		<loc>https://www.kanazawa-u.ac.jp/post-sitemap7.xml</loc>
+		<lastmod>2026-11-20T06:54:40+00:00</lastmod>
+	</sitemap>
+	<sitemap>
+		<loc>https://www.kanazawa-u.ac.jp/post-sitemap8.xml</loc>
+		<lastmod>2026-11-20T06:54:40+00:00</lastmod>
+	</sitemap>
+	<sitemap>
+		<loc>https://www.kanazawa-u.ac.jp/post-sitemap9.xml</loc>
+		<lastmod>2026-11-20T06:54:40+00:00</lastmod>
+	</sitemap>
+	<sitemap>
+		<loc>https://www.kanazawa-u.ac.jp/post-sitemap10.xml</loc>
+		<lastmod>2026-11-20T06:54:40+00:00</lastmod>
+	</sitemap>
+	<sitemap>
+		<loc>https://www.kanazawa-u.ac.jp/page-sitemap.xml</loc>
+		<lastmod>2026-11-20T06:09:10+00:00</lastmod>
+	</sitemap>
+</sitemapindex><!-- <p>Please edit wp-db.inc.php in wp-includes and set SAVEQUERIES to true if you want to see the queries.</p> --> <!-- Request ID: 9620b00011c73de78188bbfdef39c7f7; Queries for sitemap: 5; Total queries: 37; Seconds: 0.15; Memory for sitemap: 1KB; Total memory: 10MB -->

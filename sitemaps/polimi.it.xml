@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="/_assets/984e6ee9829f85eb447bb6a36455204a/CSS/Sitemap.xsl"?>
+
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    
+        <sitemap>
+            <loc>/sitemap-type/pages/sitemap.xml</loc>
+            <lastmod>2026-11-18T17:12:19+01:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>/sitemap-type/pages/sitemap.xml?page=1&amp;cHash=042cea1228f03945bb2a1988197c1086</loc>
+            <lastmod>2026-11-18T17:12:19+01:00</lastmod>
+        </sitemap>
+    
+</sitemapindex>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>https://www.nancy.archi.fr/globalflexit/ajax/modules/referencement/sitemap.php?modulesitemap=web3</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://www.nancy.archi.fr/globalflexit/ajax/modules/referencement/sitemap.php?modulesitemap=evenements</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://www.nancy.archi.fr/globalflexit/ajax/modules/referencement/sitemap.php?modulesitemap=contact-contact</loc>
+  </sitemap>
+</sitemapindex>

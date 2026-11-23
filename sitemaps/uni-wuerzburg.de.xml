@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="/typo3/sysext/seo/Resources/Public/CSS/Sitemap.xsl"?>
+
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    
+        <sitemap>
+            <loc>https://www.uni-wuerzburg.de/sitemap.xml?sitemap=pages&amp;cHash=d43c4ac6402f2a213ee14b271c492470</loc>
+            <lastmod>2026-11-21T11:34:24+01:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://www.uni-wuerzburg.de/sitemap.xml?page=1&amp;sitemap=pages&amp;cHash=173f41e77457bb60709b011d003fe788</loc>
+            <lastmod>2026-11-21T11:34:24+01:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://www.uni-wuerzburg.de/sitemap.xml?page=2&amp;sitemap=pages&amp;cHash=9da8f643853774b13135d889bd4ecf75</loc>
+            <lastmod>2026-11-21T11:34:24+01:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://www.uni-wuerzburg.de/sitemap.xml?page=3&amp;sitemap=pages&amp;cHash=bf8ffde44d6a4c921d0071a723eb8749</loc>
+            <lastmod>2026-11-21T11:34:24+01:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://www.uni-wuerzburg.de/sitemap.xml?page=4&amp;sitemap=pages&amp;cHash=a75c7fee1931bae8c7a0a04b91844b30</loc>
+            <lastmod>2026-11-21T11:34:24+01:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://www.uni-wuerzburg.de/sitemap.xml?page=5&amp;sitemap=pages&amp;cHash=b45d3dd1a894a9ddaccbad288ac3d350</loc>
+            <lastmod>2026-11-21T11:34:24+01:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://www.uni-wuerzburg.de/sitemap.xml?sitemap=news&amp;cHash=08c5f67fe981b7fcb30fc108747646d6</loc>
+            <lastmod>2026-11-20T12:04:47+01:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://www.uni-wuerzburg.de/sitemap.xml?page=1&amp;sitemap=news&amp;cHash=90d24ac62bbbeb77a430134dc34f336d</loc>
+            <lastmod>2026-11-20T12:04:47+01:00</lastmod>
+        </sitemap>
+    
+        <sitemap>
+            <loc>https://www.uni-wuerzburg.de/sitemap.xml?sitemap=events&amp;cHash=e1049972edb4d33b02a77bbf9435dd93</loc>
+            <lastmod>2026-11-20T13:44:06+01:00</lastmod>
+        </sitemap>
+    
+</sitemapindex>

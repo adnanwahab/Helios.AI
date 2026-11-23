@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--generator='jetpack-16.5-a.3'-->
+<!--Jetpack_Sitemap_Buffer_Master_XMLWriter-->
+<?xml-stylesheet type="text/xsl" href="//pucmm.edu.do/sitemap-index.xsl"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+ <sitemap>
+  <loc>https://pucmm.edu.do/sitemap-1.xml</loc>
+  <lastmod>2026-11-20T19:26:44Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>https://pucmm.edu.do/image-sitemap-1.xml</loc>
+  <lastmod>2026-11-19T19:59:14Z</lastmod>
+ </sitemap>
+</sitemapindex>

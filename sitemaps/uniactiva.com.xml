@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Este mapa del sitio lo generó All in One SEO vv5.0.2.1 dinámicamente el 11/22/2026 a las 09:31 - el plugin SEO original para WordPress. -->
+
+<?xml-stylesheet type="text/xsl" href="https://www.uniactiva.com/default-sitemap.xsl?sitemap=root"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+	<sitemap>
+		<loc><![CDATA[https://www.uniactiva.com/addl-sitemap.xml]]></loc>
+		<lastmod><![CDATA[2025-12-14T06:40:49+00:00]]></lastmod>
+	</sitemap>
+	<sitemap>
+		<loc><![CDATA[https://www.uniactiva.com/post-sitemap.xml]]></loc>
+		<lastmod><![CDATA[2025-12-14T06:40:49+00:00]]></lastmod>
+	</sitemap>
+	<sitemap>
+		<loc><![CDATA[https://www.uniactiva.com/page-sitemap.xml]]></loc>
+		<lastmod><![CDATA[2024-04-26T11:31:22+00:00]]></lastmod>
+	</sitemap>
+	<sitemap>
+		<loc><![CDATA[https://www.uniactiva.com/category-sitemap.xml]]></loc>
+		<lastmod><![CDATA[2025-12-14T06:40:49+00:00]]></lastmod>
+	</sitemap>
+</sitemapindex>

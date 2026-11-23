@@ -1,11 +1,129 @@
 # Helios.AI
 
+IF its a reasonably possible or easy to grant requsest and you describd pretty much exaxtly what you want we can get you anything we dont really care.
+
+I'm so bored i'm starting to lose my mind. oh wait i never did. they misdiagnosed me with schizophrophrneia.
+
+the system is so big that if any individual disagrees, they usually ignored.
+until now?
+
+- changelog 
+- can you add a screen to helios that has a notion document of the preview - pls use notion api and all sorts of stuff
+
+pls fork helios! We need your opinions today!
+
+if you vote for it, you might get free pizza ;)
+
 Helios merges everyone's jorunal ammendment to a consitution.
 
 1. new bus stop to french place
 2. pls make a bridge from new york to france
+3. +100b in r and d
 ![bus_stop](image_1.png)
 ![bridge](bridge.png)
+
+# Implementation time from months to 10 minutes
+# Communication time from months to 1 second
+# 90% of people just want 1 screen -> experts have another one
+
+3. "Eight billion minds. One shared conversation about the future."
+
+# find friends - peopel who vote like you 
+
+not everyone has polticial expertise but everybody probably has good ideas for a better world
+so we use tranformer APIs to convert your idea to a law that people want to implement
+and then decision makers and political experts in capitols approve or give feedback thanks.
+
+Our goal is to support all governments and all leaders and all citizens.
+
+learning synthesis
+
+Leaders deserve to smoke more weed - so this apps supports all governments and companies etc.
+
+# Incentives for voting
+$1 a day + bonuses for cool ideas.
+
+
+
+
+
+
+# What if humanity could think together?
+flowchart TB
+    subgraph Users["Users / Citizens"]
+        U[Browser]
+    end
+
+    subgraph Helios["helios-ai-laws.fly.dev<br/>+ heliosHTML (Civic Pulse)"]
+        direction TB
+        H_Shell[Helios Shell / Tabs<br/>Landing · Unified · Goals · Pulse]
+        H_Journal[Private Journal Vault<br/>consent-first, localStorage<br/>theme / excerpt / full grants]
+        H_Cluster[Topic Clustering<br/>& Representative Briefs]
+        H_Draft[Living Constitution<br/>Drafts · Amendments · Daily Summary]
+        H_Unified[Unified Embed<br/>Universe · Lab · Futures · Bills]
+        
+        H_Shell --> H_Journal
+        H_Shell --> H_Cluster
+        H_Shell --> H_Draft
+        H_Shell --> H_Unified
+    end
+
+    subgraph Civic["Civic Synthesis<br/>(dear_congress prototype)"]
+        CS_Journal[Journal Ingestion]
+        CS_Needs[Need Extraction<br/>& Needs Graph]
+        CS_Vote[Open-ended Voting<br/>& Scoring]
+        CS_Synth[Synthesis Engine<br/>→ Packages<br/>Balanced / Minimal / Popular]
+        CS_Plan[Plan + Legislative Handoff JSON]
+        
+        CS_Journal --> CS_Needs --> CS_Vote --> CS_Synth --> CS_Plan
+    end
+
+    subgraph HBL["HappyBearLandia<br/>happybearlandia.fly.dev"]
+        HBL_World[World / Living City<br/>3D + Simulation]
+        HBL_Const[Constitution City<br/>/visualize-constitution]
+        HBL_Decision[Decision Studio]
+        HBL_Future[Future Machine<br/>paired baseline vs plan]
+        HBL_Lab[City Systems Lab]
+        
+        HBL_World --> HBL_Future
+        HBL_Const --> HBL_Future
+        HBL_Decision --> HBL_Future
+    end
+
+    %% Primary data flows
+    U -->|interact| H_Shell
+    H_Journal -->|explicit grant<br/>excerpt / theme only| CS_Journal
+    H_Unified -->|Enter / Shift+Enter<br/>or dedicated send| HBL_World
+    H_Draft -->|published plan / clause| CS_Plan
+    CS_Plan -->|load plan| HBL_Const
+    CS_Plan -->|load plan| HBL_Decision
+    HBL_Future -->|simulation results<br/>WHY traces| H_Unified
+    HBL_Future -->|simulation results| H_Draft
+
+    %% Iframe / embed boundaries
+    H_Shell -.->|iframe| H_Unified
+    H_Shell -.->|iframe or route| HBL_World
+    H_Shell -.->|iframe or route| HBL_Const
+    H_Unified -.->|sends to| HBL_World
+
+    %% Styling
+    classDef helios fill:#e4f6f1,stroke:#0b9d8a
+    classDef civic fill:#fff4e6,stroke:#edb55d
+    classDef hbl fill:#e8f0fe,stroke:#1a73e8
+    class Helios,H_Shell,H_Journal,H_Cluster,H_Draft,H_Unified helios
+    class Civic,CS_Journal,CS_Needs,CS_Vote,CS_Synth,CS_Plan civic
+    class HBL,HBL_World,HBL_Const,HBL_Decision,HBL_Future,HBL_Lab hbl
+
+
+Artificial intelligence is advancing at extraordinary speed. But intelligence alone doesn't tell us what kind of world to build.
+
+Every day, billions of people have ideas, frustrations, hopes, and solutions that never reach the institutions shaping their lives.
+
+HELIOS changes that.
+
+A private journal becomes an invitation to participate. Ideas people choose to share become collective understanding. Collective understanding becomes proposals, decisions, and measurable progress.
+
+**The future of intelligence should be shaped by the people it serves.**
 
 20 journals → 20 possible changes
 What someone writes in their journal	What HELIOS proposes

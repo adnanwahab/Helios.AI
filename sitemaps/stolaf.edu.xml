@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--generator='jetpack-16.4'-->
+<!--Jetpack_Sitemap_Buffer_Master_XMLWriter-->
+<?xml-stylesheet type="text/xsl" href="//wp.stolaf.edu/sitemap-index.xsl"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+ <sitemap>
+  <loc>https://wp.stolaf.edu/sitemap-index-1.xml</loc>
+  <lastmod>2026-11-20T17:34:20Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>https://wp.stolaf.edu/image-sitemap-index-1.xml</loc>
+  <lastmod>2026-11-20T16:00:33Z</lastmod>
+ </sitemap>
+</sitemapindex>

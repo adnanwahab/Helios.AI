@@ -1,0 +1,6322 @@
+<?xml version='1.0' encoding='UTF-8'?><?xml-stylesheet type='text/xsl' href='https://www.brandonu.ca/wp-content/plugins/google-sitemap-generator/sitemap.xsl'?><!-- sitemap-generator-url='http://www.arnebrachhold.de' sitemap-generator-version='4.1.25' -->
+<!-- generated-on='November 22nd, 2026 2:10 pm' -->
+<sitemapindex xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/siteindex.xsd' xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>	<sitemap>
+		<loc>https://www.brandonu.ca/sitemap-misc.xml</loc>
+		<lastmod>2026-11-17T20:35:02+00:00</lastmod>
+	</sitemap>
+	<sitemap>
+		<loc>https://www.brandonu.ca/page-sitemap.xml</loc>
+		<lastmod>2026-06-03T20:55:18+00:00</lastmod>
+	</sitemap>
+</sitemapindex><!-- <pre>array(60) {
+  [0]=>
+  array(7) {
+    [0]=>
+    string(218) "SELECT  cms_blogs.blog_id
+			 FROM cms_blogs 
+			 WHERE domain IN ( 'www.brandonu.ca', 'brandonu.ca' ) AND path IN ( '/sitemap.xml/', '/' )
+			 
+			 ORDER BY CHAR_LENGTH(domain) DESC, CHAR_LENGTH(path) DESC
+			 LIMIT 1"
+    [1]=>
+    float(0.0005209445953369141)
+    [2]=>
+    string(316) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), require('wp-includes/ms-settings.php'), ms_load_current_site_and_network, get_site_by_path, get_sites, WP_Site_Query->query, WP_Site_Query->get_sites, WP_Site_Query->get_site_ids, QM_DB->query"
+    [3]=>
+    float(1795356659.45091)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#327 (7) {
+      ["component_trace":protected]=>
+      array(6) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          string(13) "WP_Site_Query"
+          ["function"]=>
+          string(12) "get_site_ids"
+          ["file"]=>
+          string(67) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-site-query.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          string(13) "WP_Site_Query"
+          ["function"]=>
+          string(9) "get_sites"
+          ["file"]=>
+          string(67) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-site-query.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          string(13) "WP_Site_Query"
+          ["function"]=>
+          string(5) "query"
+          ["file"]=>
+          string(55) "/srv/www/vhosts/www.brandonu.ca/wp-includes/ms-site.php"
+        }
+        [3]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(9) "get_sites"
+          ["file"]=>
+          string(55) "/srv/www/vhosts/www.brandonu.ca/wp-includes/ms-load.php"
+        }
+        [4]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(16) "get_site_by_path"
+          ["file"]=>
+          string(55) "/srv/www/vhosts/www.brandonu.ca/wp-includes/ms-load.php"
+        }
+        [5]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(32) "ms_load_current_site_and_network"
+          ["file"]=>
+          string(59) "/srv/www/vhosts/www.brandonu.ca/wp-includes/ms-settings.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#340 (5) {
+        ["id"]=>
+        string(27) "WP_Site_Query->get_site_ids"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(67) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-site-query.php"
+        ["line"]=>
+        int(364)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(6) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(0)
+          [1]=>
+          int(720)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(1)
+          [1]=>
+          int(364)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(2)
+          [1]=>
+          int(272)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(3)
+          [1]=>
+          int(448)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(4)
+          [1]=>
+          int(257)
+        }
+        [5]=>
+        array(2) {
+          [0]=>
+          int(5)
+          [1]=>
+          int(322)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.45091)
+    }
+    ["result"]=>
+    int(1)
+  }
+  [1]=>
+  array(7) {
+    [0]=>
+    string(44) "SELECT * FROM cms_blogs WHERE blog_id IN (1)"
+    [1]=>
+    float(0.00022411346435546875)
+    [2]=>
+    string(307) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), require('wp-includes/ms-settings.php'), ms_load_current_site_and_network, get_site_by_path, get_sites, WP_Site_Query->query, WP_Site_Query->get_sites, _prime_site_caches, QM_DB->query"
+    [3]=>
+    float(1795356659.451638)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#336 (7) {
+      ["component_trace":protected]=>
+      array(6) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(18) "_prime_site_caches"
+          ["file"]=>
+          string(67) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-site-query.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          string(13) "WP_Site_Query"
+          ["function"]=>
+          string(9) "get_sites"
+          ["file"]=>
+          string(67) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-site-query.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          string(13) "WP_Site_Query"
+          ["function"]=>
+          string(5) "query"
+          ["file"]=>
+          string(55) "/srv/www/vhosts/www.brandonu.ca/wp-includes/ms-site.php"
+        }
+        [3]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(9) "get_sites"
+          ["file"]=>
+          string(55) "/srv/www/vhosts/www.brandonu.ca/wp-includes/ms-load.php"
+        }
+        [4]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(16) "get_site_by_path"
+          ["file"]=>
+          string(55) "/srv/www/vhosts/www.brandonu.ca/wp-includes/ms-load.php"
+        }
+        [5]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(32) "ms_load_current_site_and_network"
+          ["file"]=>
+          string(59) "/srv/www/vhosts/www.brandonu.ca/wp-includes/ms-settings.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#348 (5) {
+        ["id"]=>
+        string(18) "_prime_site_caches"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(67) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-site-query.php"
+        ["line"]=>
+        int(403)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(6) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(6)
+          [1]=>
+          int(358)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(1)
+          [1]=>
+          int(403)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(2)
+          [1]=>
+          int(272)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(3)
+          [1]=>
+          int(448)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(4)
+          [1]=>
+          int(257)
+        }
+        [5]=>
+        array(2) {
+          [0]=>
+          int(5)
+          [1]=>
+          int(322)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.451638)
+    }
+    ["result"]=>
+    int(1)
+  }
+  [2]=>
+  array(7) {
+    [0]=>
+    string(287) "SELECT meta_key, meta_value FROM cms_sitemeta WHERE meta_key IN ('site_name','siteurl','active_sitewide_plugins','_site_transient_timeout_theme_roots','_site_transient_theme_roots','site_admins','can_compress_scripts','global_terms_enabled','ms_files_rewriting','WPLANG') AND site_id = 1"
+    [1]=>
+    float(0.0005681514739990234)
+    [2]=>
+    string(235) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), require('wp-includes/ms-settings.php'), wp_load_core_site_options, wp_prime_network_option_caches, QM_DB->query"
+    [3]=>
+    float(1795356659.452025)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#333 (7) {
+      ["component_trace":protected]=>
+      array(2) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(30) "wp_prime_network_option_caches"
+          ["file"]=>
+          string(54) "/srv/www/vhosts/www.brandonu.ca/wp-includes/option.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(25) "wp_load_core_site_options"
+          ["file"]=>
+          string(59) "/srv/www/vhosts/www.brandonu.ca/wp-includes/ms-settings.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#356 (5) {
+        ["id"]=>
+        string(30) "wp_prime_network_option_caches"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(54) "/srv/www/vhosts/www.brandonu.ca/wp-includes/option.php"
+        ["line"]=>
+        int(807)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(2) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(7)
+          [1]=>
+          int(750)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(8)
+          [1]=>
+          int(807)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.452025)
+    }
+    ["result"]=>
+    int(9)
+  }
+  [3]=>
+  array(7) {
+    [0]=>
+    string(102) "SELECT option_name, option_value FROM cms_options WHERE autoload IN ( 'yes', 'on', 'auto-on', 'auto' )"
+    [1]=>
+    float(0.004085063934326172)
+    [2]=>
+    string(193) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), wp_not_installed, is_blog_installed, wp_load_alloptions, QM_DB->query"
+    [3]=>
+    float(1795356659.452828)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#869 (7) {
+      ["component_trace":protected]=>
+      array(3) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(18) "wp_load_alloptions"
+          ["file"]=>
+          string(57) "/srv/www/vhosts/www.brandonu.ca/wp-includes/functions.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(17) "is_blog_installed"
+          ["file"]=>
+          string(52) "/srv/www/vhosts/www.brandonu.ca/wp-includes/load.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(16) "wp_not_installed"
+          ["file"]=>
+          string(47) "/srv/www/vhosts/www.brandonu.ca/wp-settings.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#878 (5) {
+        ["id"]=>
+        string(18) "wp_load_alloptions"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(57) "/srv/www/vhosts/www.brandonu.ca/wp-includes/functions.php"
+        ["line"]=>
+        int(1794)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(3) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(9)
+          [1]=>
+          int(627)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(10)
+          [1]=>
+          int(1794)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(11)
+          [1]=>
+          int(943)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.452828)
+    }
+    ["result"]=>
+    int(526)
+  }
+  [4]=>
+  array(7) {
+    [0]=>
+    string(86) "SELECT option_value FROM cms_options WHERE option_name = 'eae_filter_priority' LIMIT 1"
+    [1]=>
+    float(0.0003008842468261719)
+    [2]=>
+    string(222) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), include_once('/plugins/email-address-encoder/email-address-encoder.php'), get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.459131)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#868 (7) {
+      ["component_trace":protected]=>
+      array(1) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(10) "get_option"
+          ["file"]=>
+          string(98) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/email-address-encoder/email-address-encoder.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#860 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(98) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/email-address-encoder/email-address-encoder.php"
+        ["line"]=>
+        int(23)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(1) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.459131)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [5]=>
+  array(7) {
+    [0]=>
+    string(84) "SELECT option_value FROM cms_options WHERE option_name = 'uninstall_plugins' LIMIT 1"
+    [1]=>
+    float(0.000202178955078125)
+    [2]=>
+    string(247) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), include_once('/plugins/email-address-encoder/email-address-encoder.php'), register_uninstall_hook, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.459576)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#866 (7) {
+      ["component_trace":protected]=>
+      array(2) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(10) "get_option"
+          ["file"]=>
+          string(54) "/srv/www/vhosts/www.brandonu.ca/wp-includes/plugin.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(23) "register_uninstall_hook"
+          ["file"]=>
+          string(98) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/email-address-encoder/email-address-encoder.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#851 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(54) "/srv/www/vhosts/www.brandonu.ca/wp-includes/plugin.php"
+        ["line"]=>
+        int(945)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(2) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(13)
+          [1]=>
+          int(945)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.459576)
+    }
+    ["result"]=>
+    int(1)
+  }
+  [6]=>
+  array(7) {
+    [0]=>
+    string(80) "SELECT option_value FROM cms_options WHERE option_name = 'eae_search_in' LIMIT 1"
+    [1]=>
+    float(0.00010895729064941406)
+    [2]=>
+    string(222) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), include_once('/plugins/email-address-encoder/email-address-encoder.php'), get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.459888)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#865 (7) {
+      ["component_trace":protected]=>
+      array(1) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(10) "get_option"
+          ["file"]=>
+          string(98) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/email-address-encoder/email-address-encoder.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#849 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(98) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/email-address-encoder/email-address-encoder.php"
+        ["line"]=>
+        int(63)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(1) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.459888)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [7]=>
+  array(7) {
+    [0]=>
+    string(87) "SELECT option_value FROM cms_options WHERE option_name = 'gform_enable_logging' LIMIT 1"
+    [1]=>
+    float(0.00015306472778320312)
+    [2]=>
+    string(272) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), include_once('/plugins/gravityforms/gravityforms.php'), require_once('/plugins/gravityforms/includes/logging/logging.php'), get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.460649)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#793 (7) {
+      ["component_trace":protected]=>
+      array(1) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(10) "get_option"
+          ["file"]=>
+          string(92) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/gravityforms/includes/logging/logging.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#784 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(92) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/gravityforms/includes/logging/logging.php"
+        ["line"]=>
+        int(1160)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(1) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.460649)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [8]=>
+  array(7) {
+    [0]=>
+    string(88) "SELECT option_value FROM cms_options WHERE option_name = 'members_active_addons' LIMIT 1"
+    [1]=>
+    float(0.00023412704467773438)
+    [2]=>
+    string(266) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), include_once('/plugins/members/members.php'), members_plugin, Members_Plugin::get_instance, Members_Plugin->includes, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.463085)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#435 (7) {
+      ["component_trace":protected]=>
+      array(4) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(10) "get_option"
+          ["file"]=>
+          string(70) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/members/members.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          string(14) "Members_Plugin"
+          ["function"]=>
+          string(8) "includes"
+          ["file"]=>
+          string(70) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/members/members.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          string(14) "Members_Plugin"
+          ["function"]=>
+          string(12) "get_instance"
+          ["file"]=>
+          string(70) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/members/members.php"
+        }
+        [3]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(14) "members_plugin"
+          ["file"]=>
+          string(70) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/members/members.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#424 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(70) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/members/members.php"
+        ["line"]=>
+        int(274)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(4) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(14)
+          [1]=>
+          int(274)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(15)
+          [1]=>
+          int(101)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(16)
+          [1]=>
+          int(629)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.463085)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [9]=>
+  array(7) {
+    [0]=>
+    string(86) "SELECT option_value FROM cms_options WHERE option_name = 'MO_SAML_TEST_STATUS' LIMIT 1"
+    [1]=>
+    float(0.0001430511474609375)
+    [2]=>
+    string(397) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), include_once('/plugins/miniorange-saml-20-single-sign-on/login.php'), require_once('/plugins/miniorange-saml-20-single-sign-on/class-mo-saml-login-validate.php'), require_once('/plugins/miniorange-saml-20-single-sign-on/mo-saml-import-export.php'), get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.463554)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#431 (7) {
+      ["component_trace":protected]=>
+      array(1) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(10) "get_option"
+          ["file"]=>
+          string(110) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/miniorange-saml-20-single-sign-on/mo-saml-import-export.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#417 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(110) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/miniorange-saml-20-single-sign-on/mo-saml-import-export.php"
+        ["line"]=>
+        int(25)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(1) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.463554)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [10]=>
+  array(7) {
+    [0]=>
+    string(90) "SELECT option_value FROM cms_options WHERE option_name = 'quickppr_redirects_meta' LIMIT 1"
+    [1]=>
+    float(0.0001518726348876953)
+    [2]=>
+    string(287) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), include_once('/plugins/quick-pagepost-redirect-plugin/page_post_redirect_plugin.php'), start_ppr_class, quick_page_post_reds->__construct, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.464617)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#389 (7) {
+      ["component_trace":protected]=>
+      array(3) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(10) "get_option"
+          ["file"]=>
+          string(111) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/quick-pagepost-redirect-plugin/page_post_redirect_plugin.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          string(20) "quick_page_post_reds"
+          ["function"]=>
+          string(11) "__construct"
+          ["file"]=>
+          string(111) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/quick-pagepost-redirect-plugin/page_post_redirect_plugin.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(15) "start_ppr_class"
+          ["file"]=>
+          string(111) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/quick-pagepost-redirect-plugin/page_post_redirect_plugin.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#379 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(111) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/quick-pagepost-redirect-plugin/page_post_redirect_plugin.php"
+        ["line"]=>
+        int(93)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(3) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(17)
+          [1]=>
+          int(93)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(18)
+          [1]=>
+          int(2465)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.464617)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [11]=>
+  array(7) {
+    [0]=>
+    string(90) "SELECT option_value FROM cms_options WHERE option_name = 'qppr_meta_addon_content' LIMIT 1"
+    [1]=>
+    float(9.703636169433594E-5)
+    [2]=>
+    string(287) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), include_once('/plugins/quick-pagepost-redirect-plugin/page_post_redirect_plugin.php'), start_ppr_class, quick_page_post_reds->__construct, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.464882)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#383 (7) {
+      ["component_trace":protected]=>
+      array(3) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(10) "get_option"
+          ["file"]=>
+          string(111) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/quick-pagepost-redirect-plugin/page_post_redirect_plugin.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          string(20) "quick_page_post_reds"
+          ["function"]=>
+          string(11) "__construct"
+          ["file"]=>
+          string(111) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/quick-pagepost-redirect-plugin/page_post_redirect_plugin.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(15) "start_ppr_class"
+          ["file"]=>
+          string(111) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/quick-pagepost-redirect-plugin/page_post_redirect_plugin.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#375 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(111) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/quick-pagepost-redirect-plugin/page_post_redirect_plugin.php"
+        ["line"]=>
+        int(103)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(3) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(17)
+          [1]=>
+          int(103)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(18)
+          [1]=>
+          int(2465)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.464882)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [12]=>
+  array(7) {
+    [0]=>
+    string(86) "SELECT option_value FROM cms_options WHERE option_name = 'qppr_meta_addon_sec' LIMIT 1"
+    [1]=>
+    float(8.797645568847656E-5)
+    [2]=>
+    string(287) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), include_once('/plugins/quick-pagepost-redirect-plugin/page_post_redirect_plugin.php'), start_ppr_class, quick_page_post_reds->__construct, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.465051)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#387 (7) {
+      ["component_trace":protected]=>
+      array(3) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(10) "get_option"
+          ["file"]=>
+          string(111) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/quick-pagepost-redirect-plugin/page_post_redirect_plugin.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          string(20) "quick_page_post_reds"
+          ["function"]=>
+          string(11) "__construct"
+          ["file"]=>
+          string(111) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/quick-pagepost-redirect-plugin/page_post_redirect_plugin.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(15) "start_ppr_class"
+          ["file"]=>
+          string(111) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/quick-pagepost-redirect-plugin/page_post_redirect_plugin.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#373 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(111) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/quick-pagepost-redirect-plugin/page_post_redirect_plugin.php"
+        ["line"]=>
+        int(104)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(3) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(17)
+          [1]=>
+          int(104)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(18)
+          [1]=>
+          int(2465)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.465051)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [13]=>
+  array(7) {
+    [0]=>
+    string(83) "SELECT option_value FROM cms_options WHERE option_name = 'ppr_show-columns' LIMIT 1"
+    [1]=>
+    float(0.00022602081298828125)
+    [2]=>
+    string(287) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), include_once('/plugins/quick-pagepost-redirect-plugin/page_post_redirect_plugin.php'), start_ppr_class, quick_page_post_reds->__construct, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.465278)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#388 (7) {
+      ["component_trace":protected]=>
+      array(3) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(10) "get_option"
+          ["file"]=>
+          string(111) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/quick-pagepost-redirect-plugin/page_post_redirect_plugin.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          string(20) "quick_page_post_reds"
+          ["function"]=>
+          string(11) "__construct"
+          ["file"]=>
+          string(111) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/quick-pagepost-redirect-plugin/page_post_redirect_plugin.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(15) "start_ppr_class"
+          ["file"]=>
+          string(111) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/quick-pagepost-redirect-plugin/page_post_redirect_plugin.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#371 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(111) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/quick-pagepost-redirect-plugin/page_post_redirect_plugin.php"
+        ["line"]=>
+        int(110)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(3) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(17)
+          [1]=>
+          int(110)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(18)
+          [1]=>
+          int(2465)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.465278)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [14]=>
+  array(7) {
+    [0]=>
+    string(82) "SELECT option_value FROM cms_options WHERE option_name = 'gzipcompression' LIMIT 1"
+    [1]=>
+    float(0.00013589859008789062)
+    [2]=>
+    string(265) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), include_once('/plugins/wp-super-cache/wp-cache.php'), require_once('/plugins/wp-super-cache/inc/admin-notices.php'), get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.466243)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#1141 (7) {
+      ["component_trace":protected]=>
+      array(1) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(10) "get_option"
+          ["file"]=>
+          string(87) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/wp-super-cache/inc/admin-notices.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#1150 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(87) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/wp-super-cache/inc/admin-notices.php"
+        ["line"]=>
+        int(110)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(1) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.466243)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [15]=>
+  array(7) {
+    [0]=>
+    string(95) "SELECT meta_value FROM cms_sitemeta WHERE meta_key = 'cets_blog_defaults_setup' AND site_id = 1"
+    [1]=>
+    float(0.0002567768096923828)
+    [2]=>
+    string(245) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), include_once('/plugins/wpmu-new-blog-defaults/cets_blog_defaults.php'), get_site_option, get_network_option, QM_DB->query"
+    [3]=>
+    float(1795356659.466581)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#1155 (7) {
+      ["component_trace":protected]=>
+      array(2) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(18) "get_network_option"
+          ["file"]=>
+          string(54) "/srv/www/vhosts/www.brandonu.ca/wp-includes/option.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(15) "get_site_option"
+          ["file"]=>
+          string(96) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/wpmu-new-blog-defaults/cets_blog_defaults.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#1164 (5) {
+        ["id"]=>
+        string(18) "get_network_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(54) "/srv/www/vhosts/www.brandonu.ca/wp-includes/option.php"
+        ["line"]=>
+        int(1935)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(2) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(19)
+          [1]=>
+          int(2095)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(20)
+          [1]=>
+          int(1935)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.466581)
+    }
+    ["result"]=>
+    int(4)
+  }
+  [16]=>
+  array(7) {
+    [0]=>
+    string(93) "SELECT meta_value FROM cms_sitemeta WHERE meta_key = 'jetpack_protect_active' AND site_id = 1"
+    [1]=>
+    float(0.0003838539123535156)
+    [2]=>
+    string(372) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('plugins_loaded'), WP_Hook->do_action, WP_Hook->apply_filters, Jetpack->configure, Jetpack::is_module_active, Automattic\Jetpack\Modules->is_active, Automattic\Jetpack\Modules->get_active, get_site_option, get_network_option, QM_DB->query"
+    [3]=>
+    float(1795356659.470679)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#1153 (7) {
+      ["component_trace":protected]=>
+      array(7) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(18) "get_network_option"
+          ["file"]=>
+          string(54) "/srv/www/vhosts/www.brandonu.ca/wp-includes/option.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(15) "get_site_option"
+          ["file"]=>
+          string(121) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/jetpack-status/src/class-modules.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          string(26) "Automattic\Jetpack\Modules"
+          ["function"]=>
+          string(10) "get_active"
+          ["file"]=>
+          string(121) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/jetpack-status/src/class-modules.php"
+        }
+        [3]=>
+        array(3) {
+          ["class"]=>
+          string(26) "Automattic\Jetpack\Modules"
+          ["function"]=>
+          string(9) "is_active"
+          ["file"]=>
+          string(76) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/class.jetpack.php"
+        }
+        [4]=>
+        array(3) {
+          ["class"]=>
+          string(7) "Jetpack"
+          ["function"]=>
+          string(16) "is_module_active"
+          ["file"]=>
+          string(76) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/class.jetpack.php"
+        }
+        [5]=>
+        array(3) {
+          ["class"]=>
+          string(7) "Jetpack"
+          ["function"]=>
+          string(9) "configure"
+          ["file"]=>
+          string(61) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-hook.php"
+        }
+        [6]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(9) "do_action"
+          ["file"]=>
+          string(47) "/srv/www/vhosts/www.brandonu.ca/wp-settings.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#1339 (5) {
+        ["id"]=>
+        string(18) "get_network_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(54) "/srv/www/vhosts/www.brandonu.ca/wp-includes/option.php"
+        ["line"]=>
+        int(1935)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(7) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(19)
+          [1]=>
+          int(2095)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(20)
+          [1]=>
+          int(1935)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(21)
+          [1]=>
+          int(211)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(22)
+          [1]=>
+          int(34)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(23)
+          [1]=>
+          int(2630)
+        }
+        [5]=>
+        array(2) {
+          [0]=>
+          int(24)
+          [1]=>
+          int(1073)
+        }
+        [6]=>
+        array(2) {
+          [0]=>
+          int(25)
+          [1]=>
+          int(630)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.470679)
+    }
+    ["result"]=>
+    int(1)
+  }
+  [17]=>
+  array(7) {
+    [0]=>
+    string(95) "SELECT meta_value FROM cms_sitemeta WHERE meta_key = 'jetpack-network-settings' AND site_id = 1"
+    [1]=>
+    float(0.0002551078796386719)
+    [2]=>
+    string(348) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('plugins_loaded'), WP_Hook->do_action, WP_Hook->apply_filters, Jetpack->configure, Jetpack_Network::init, Jetpack_Network->__construct, Jetpack_Network->get_option, get_site_option, get_network_option, QM_DB->query"
+    [3]=>
+    float(1795356659.47148)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#1343 (7) {
+      ["component_trace":protected]=>
+      array(7) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(18) "get_network_option"
+          ["file"]=>
+          string(54) "/srv/www/vhosts/www.brandonu.ca/wp-includes/option.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(15) "get_site_option"
+          ["file"]=>
+          string(84) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/class.jetpack-network.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          string(15) "Jetpack_Network"
+          ["function"]=>
+          string(10) "get_option"
+          ["file"]=>
+          string(84) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/class.jetpack-network.php"
+        }
+        [3]=>
+        array(3) {
+          ["class"]=>
+          string(15) "Jetpack_Network"
+          ["function"]=>
+          string(11) "__construct"
+          ["file"]=>
+          string(84) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/class.jetpack-network.php"
+        }
+        [4]=>
+        array(3) {
+          ["class"]=>
+          string(15) "Jetpack_Network"
+          ["function"]=>
+          string(4) "init"
+          ["file"]=>
+          string(76) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/class.jetpack.php"
+        }
+        [5]=>
+        array(3) {
+          ["class"]=>
+          string(7) "Jetpack"
+          ["function"]=>
+          string(9) "configure"
+          ["file"]=>
+          string(61) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-hook.php"
+        }
+        [6]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(9) "do_action"
+          ["file"]=>
+          string(47) "/srv/www/vhosts/www.brandonu.ca/wp-settings.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#1356 (5) {
+        ["id"]=>
+        string(18) "get_network_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(54) "/srv/www/vhosts/www.brandonu.ca/wp-includes/option.php"
+        ["line"]=>
+        int(1935)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(7) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(19)
+          [1]=>
+          int(2095)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(20)
+          [1]=>
+          int(1935)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(26)
+          [1]=>
+          int(770)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(27)
+          [1]=>
+          int(95)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(28)
+          [1]=>
+          int(148)
+        }
+        [5]=>
+        array(2) {
+          [0]=>
+          int(24)
+          [1]=>
+          int(1142)
+        }
+        [6]=>
+        array(2) {
+          [0]=>
+          int(25)
+          [1]=>
+          int(630)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.47148)
+    }
+    ["result"]=>
+    int(1)
+  }
+  [18]=>
+  array(7) {
+    [0]=>
+    string(108) "SELECT meta_value FROM cms_sitemeta WHERE meta_key = 'jetpack_sync_settings_network_disable' AND site_id = 1"
+    [1]=>
+    float(0.00022983551025390625)
+    [2]=>
+    string(561) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('plugins_loaded'), WP_Hook->do_action, WP_Hook->apply_filters, Automattic\Jetpack\Config->on_plugins_loaded, Automattic\Jetpack\Config->ensure_feature, Automattic\Jetpack\Config->enable_sync, Automattic\Jetpack\Sync\Main::configure, Automattic\Jetpack\Sync\Actions::sync_allowed, Automattic\Jetpack\Sync\Settings::is_sync_enabled, Automattic\Jetpack\Sync\Settings::get_setting, get_site_option, get_network_option, QM_DB->query"
+    [3]=>
+    float(1795356659.47252)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#1405 (7) {
+      ["component_trace":protected]=>
+      array(10) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(18) "get_network_option"
+          ["file"]=>
+          string(54) "/srv/www/vhosts/www.brandonu.ca/wp-includes/option.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(15) "get_site_option"
+          ["file"]=>
+          string(120) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/jetpack-sync/src/class-settings.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          string(32) "Automattic\Jetpack\Sync\Settings"
+          ["function"]=>
+          string(11) "get_setting"
+          ["file"]=>
+          string(120) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/jetpack-sync/src/class-settings.php"
+        }
+        [3]=>
+        array(3) {
+          ["class"]=>
+          string(32) "Automattic\Jetpack\Sync\Settings"
+          ["function"]=>
+          string(15) "is_sync_enabled"
+          ["file"]=>
+          string(119) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/jetpack-sync/src/class-actions.php"
+        }
+        [4]=>
+        array(3) {
+          ["class"]=>
+          string(31) "Automattic\Jetpack\Sync\Actions"
+          ["function"]=>
+          string(12) "sync_allowed"
+          ["file"]=>
+          string(116) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/jetpack-sync/src/class-main.php"
+        }
+        [5]=>
+        array(3) {
+          ["class"]=>
+          string(28) "Automattic\Jetpack\Sync\Main"
+          ["function"]=>
+          string(9) "configure"
+          ["file"]=>
+          string(120) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/jetpack-config/src/class-config.php"
+        }
+        [6]=>
+        array(3) {
+          ["class"]=>
+          string(25) "Automattic\Jetpack\Config"
+          ["function"]=>
+          string(11) "enable_sync"
+          ["file"]=>
+          string(120) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/jetpack-config/src/class-config.php"
+        }
+        [7]=>
+        array(3) {
+          ["class"]=>
+          string(25) "Automattic\Jetpack\Config"
+          ["function"]=>
+          string(14) "ensure_feature"
+          ["file"]=>
+          string(120) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/jetpack-config/src/class-config.php"
+        }
+        [8]=>
+        array(3) {
+          ["class"]=>
+          string(25) "Automattic\Jetpack\Config"
+          ["function"]=>
+          string(17) "on_plugins_loaded"
+          ["file"]=>
+          string(61) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-hook.php"
+        }
+        [9]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(9) "do_action"
+          ["file"]=>
+          string(47) "/srv/www/vhosts/www.brandonu.ca/wp-settings.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#1421 (5) {
+        ["id"]=>
+        string(18) "get_network_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(54) "/srv/www/vhosts/www.brandonu.ca/wp-includes/option.php"
+        ["line"]=>
+        int(1935)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(10) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(19)
+          [1]=>
+          int(2095)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(20)
+          [1]=>
+          int(1935)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(29)
+          [1]=>
+          int(142)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(30)
+          [1]=>
+          int(608)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(31)
+          [1]=>
+          int(305)
+        }
+        [5]=>
+        array(2) {
+          [0]=>
+          int(32)
+          [1]=>
+          int(27)
+        }
+        [6]=>
+        array(2) {
+          [0]=>
+          int(33)
+          [1]=>
+          int(257)
+        }
+        [7]=>
+        array(2) {
+          [0]=>
+          int(34)
+          [1]=>
+          int(217)
+        }
+        [8]=>
+        array(2) {
+          [0]=>
+          int(35)
+          [1]=>
+          int(112)
+        }
+        [9]=>
+        array(2) {
+          [0]=>
+          int(25)
+          [1]=>
+          int(630)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.47252)
+    }
+    ["result"]=>
+    int(1)
+  }
+  [19]=>
+  array(7) {
+    [0]=>
+    string(89) "SELECT option_value FROM cms_options WHERE option_name = 'jetpack_sync_error_idc' LIMIT 1"
+    [1]=>
+    float(0.00023508071899414062)
+    [2]=>
+    string(619) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('plugins_loaded'), WP_Hook->do_action, WP_Hook->apply_filters, Automattic\Jetpack\Config->on_plugins_loaded, Automattic\Jetpack\Config->ensure_feature, Automattic\Jetpack\Config->enable_sync, Automattic\Jetpack\Sync\Main::configure, Automattic\Jetpack\Sync\Actions::sync_allowed, Automattic\Jetpack\Status->in_safe_mode, Automattic\Jetpack\Identity_Crisis::validate_sync_error_idc_option, Jetpack_Options::get_option, Jetpack_Options::get_option_from_database, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.47288)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#1154 (7) {
+      ["component_trace":protected]=>
+      array(11) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(10) "get_option"
+          ["file"]=>
+          string(136) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/jetpack-connection/legacy/class-jetpack-options.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          string(15) "Jetpack_Options"
+          ["function"]=>
+          string(24) "get_option_from_database"
+          ["file"]=>
+          string(136) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/jetpack-connection/legacy/class-jetpack-options.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          string(15) "Jetpack_Options"
+          ["function"]=>
+          string(10) "get_option"
+          ["file"]=>
+          string(149) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/jetpack-connection/src/identity-crisis/class-identity-crisis.php"
+        }
+        [3]=>
+        array(3) {
+          ["class"]=>
+          string(34) "Automattic\Jetpack\Identity_Crisis"
+          ["function"]=>
+          string(30) "validate_sync_error_idc_option"
+          ["file"]=>
+          string(120) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/jetpack-status/src/class-status.php"
+        }
+        [4]=>
+        array(3) {
+          ["class"]=>
+          string(25) "Automattic\Jetpack\Status"
+          ["function"]=>
+          string(12) "in_safe_mode"
+          ["file"]=>
+          string(119) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/jetpack-sync/src/class-actions.php"
+        }
+        [5]=>
+        array(3) {
+          ["class"]=>
+          string(31) "Automattic\Jetpack\Sync\Actions"
+          ["function"]=>
+          string(12) "sync_allowed"
+          ["file"]=>
+          string(116) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/jetpack-sync/src/class-main.php"
+        }
+        [6]=>
+        array(3) {
+          ["class"]=>
+          string(28) "Automattic\Jetpack\Sync\Main"
+          ["function"]=>
+          string(9) "configure"
+          ["file"]=>
+          string(120) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/jetpack-config/src/class-config.php"
+        }
+        [7]=>
+        array(3) {
+          ["class"]=>
+          string(25) "Automattic\Jetpack\Config"
+          ["function"]=>
+          string(11) "enable_sync"
+          ["file"]=>
+          string(120) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/jetpack-config/src/class-config.php"
+        }
+        [8]=>
+        array(3) {
+          ["class"]=>
+          string(25) "Automattic\Jetpack\Config"
+          ["function"]=>
+          string(14) "ensure_feature"
+          ["file"]=>
+          string(120) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/jetpack-config/src/class-config.php"
+        }
+        [9]=>
+        array(3) {
+          ["class"]=>
+          string(25) "Automattic\Jetpack\Config"
+          ["function"]=>
+          string(17) "on_plugins_loaded"
+          ["file"]=>
+          string(61) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-hook.php"
+        }
+        [10]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(9) "do_action"
+          ["file"]=>
+          string(47) "/srv/www/vhosts/www.brandonu.ca/wp-settings.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#1432 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(136) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/jetpack-connection/legacy/class-jetpack-options.php"
+        ["line"]=>
+        int(262)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(11) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(36)
+          [1]=>
+          int(262)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(37)
+          [1]=>
+          int(220)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(38)
+          [1]=>
+          int(489)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(39)
+          [1]=>
+          int(324)
+        }
+        [5]=>
+        array(2) {
+          [0]=>
+          int(31)
+          [1]=>
+          int(321)
+        }
+        [6]=>
+        array(2) {
+          [0]=>
+          int(32)
+          [1]=>
+          int(27)
+        }
+        [7]=>
+        array(2) {
+          [0]=>
+          int(33)
+          [1]=>
+          int(257)
+        }
+        [8]=>
+        array(2) {
+          [0]=>
+          int(34)
+          [1]=>
+          int(217)
+        }
+        [9]=>
+        array(2) {
+          [0]=>
+          int(35)
+          [1]=>
+          int(112)
+        }
+        [10]=>
+        array(2) {
+          [0]=>
+          int(25)
+          [1]=>
+          int(630)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.47288)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [20]=>
+  array(7) {
+    [0]=>
+    string(93) "SELECT meta_value FROM cms_sitemeta WHERE meta_key = 'classic-editor-replace' AND site_id = 1"
+    [1]=>
+    float(0.0003039836883544922)
+    [2]=>
+    string(289) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('plugins_loaded'), WP_Hook->do_action, WP_Hook->apply_filters, Classic_Editor::init_actions, Classic_Editor::get_settings, get_network_option, QM_DB->query"
+    [3]=>
+    float(1795356659.473784)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#1482 (7) {
+      ["component_trace":protected]=>
+      array(4) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(18) "get_network_option"
+          ["file"]=>
+          string(84) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/classic-editor/classic-editor.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          string(14) "Classic_Editor"
+          ["function"]=>
+          string(12) "get_settings"
+          ["file"]=>
+          string(84) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/classic-editor/classic-editor.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          string(14) "Classic_Editor"
+          ["function"]=>
+          string(12) "init_actions"
+          ["file"]=>
+          string(61) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-hook.php"
+        }
+        [3]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(9) "do_action"
+          ["file"]=>
+          string(47) "/srv/www/vhosts/www.brandonu.ca/wp-settings.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#1492 (5) {
+        ["id"]=>
+        string(18) "get_network_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(84) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/classic-editor/classic-editor.php"
+        ["line"]=>
+        int(248)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(4) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(19)
+          [1]=>
+          int(2095)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(40)
+          [1]=>
+          int(248)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(41)
+          [1]=>
+          int(47)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(25)
+          [1]=>
+          int(630)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.473784)
+    }
+    ["result"]=>
+    int(1)
+  }
+  [21]=>
+  array(7) {
+    [0]=>
+    string(97) "SELECT meta_value FROM cms_sitemeta WHERE meta_key = 'classic-editor-allow-sites' AND site_id = 1"
+    [1]=>
+    float(0.0003731250762939453)
+    [2]=>
+    string(289) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('plugins_loaded'), WP_Hook->do_action, WP_Hook->apply_filters, Classic_Editor::init_actions, Classic_Editor::get_settings, get_network_option, QM_DB->query"
+    [3]=>
+    float(1795356659.474191)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#1489 (7) {
+      ["component_trace":protected]=>
+      array(4) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(18) "get_network_option"
+          ["file"]=>
+          string(84) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/classic-editor/classic-editor.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          string(14) "Classic_Editor"
+          ["function"]=>
+          string(12) "get_settings"
+          ["file"]=>
+          string(84) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/classic-editor/classic-editor.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          string(14) "Classic_Editor"
+          ["function"]=>
+          string(12) "init_actions"
+          ["file"]=>
+          string(61) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-hook.php"
+        }
+        [3]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(9) "do_action"
+          ["file"]=>
+          string(47) "/srv/www/vhosts/www.brandonu.ca/wp-settings.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#1496 (5) {
+        ["id"]=>
+        string(18) "get_network_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(84) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/classic-editor/classic-editor.php"
+        ["line"]=>
+        int(259)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(4) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(19)
+          [1]=>
+          int(2095)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(40)
+          [1]=>
+          int(259)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(41)
+          [1]=>
+          int(47)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(25)
+          [1]=>
+          int(630)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.474191)
+    }
+    ["result"]=>
+    int(1)
+  }
+  [22]=>
+  array(7) {
+    [0]=>
+    string(93) "SELECT option_value FROM cms_options WHERE option_name = 'classic-editor-allow-users' LIMIT 1"
+    [1]=>
+    float(0.0001468658447265625)
+    [2]=>
+    string(281) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('plugins_loaded'), WP_Hook->do_action, WP_Hook->apply_filters, Classic_Editor::init_actions, Classic_Editor::get_settings, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.474667)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#1159 (7) {
+      ["component_trace":protected]=>
+      array(4) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(10) "get_option"
+          ["file"]=>
+          string(84) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/classic-editor/classic-editor.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          string(14) "Classic_Editor"
+          ["function"]=>
+          string(12) "get_settings"
+          ["file"]=>
+          string(84) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/classic-editor/classic-editor.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          string(14) "Classic_Editor"
+          ["function"]=>
+          string(12) "init_actions"
+          ["file"]=>
+          string(61) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-hook.php"
+        }
+        [3]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(9) "do_action"
+          ["file"]=>
+          string(47) "/srv/www/vhosts/www.brandonu.ca/wp-settings.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#1488 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(84) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/classic-editor/classic-editor.php"
+        ["line"]=>
+        int(267)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(4) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(40)
+          [1]=>
+          int(267)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(41)
+          [1]=>
+          int(47)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(25)
+          [1]=>
+          int(630)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.474667)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [23]=>
+  array(7) {
+    [0]=>
+    string(74) "SELECT option_value FROM cms_options WHERE option_name = 'r3d_key' LIMIT 1"
+    [1]=>
+    float(0.00019502639770507812)
+    [2]=>
+    string(253) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('plugins_loaded'), WP_Hook->do_action, WP_Hook->apply_filters, Real3DFlipbook->plugins_loaded, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.476748)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#1766 (7) {
+      ["component_trace":protected]=>
+      array(3) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(10) "get_option"
+          ["file"]=>
+          string(94) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/real3d-flipbook/includes/Real3DFlipbook.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          string(14) "Real3DFlipbook"
+          ["function"]=>
+          string(14) "plugins_loaded"
+          ["file"]=>
+          string(61) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-hook.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(9) "do_action"
+          ["file"]=>
+          string(47) "/srv/www/vhosts/www.brandonu.ca/wp-settings.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#1775 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(94) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/real3d-flipbook/includes/Real3DFlipbook.php"
+        ["line"]=>
+        int(406)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(3) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(42)
+          [1]=>
+          int(406)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(25)
+          [1]=>
+          int(630)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.476748)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [24]=>
+  array(7) {
+    [0]=>
+    string(81) "SELECT option_value FROM cms_options WHERE option_name = 'r3d_addons_key' LIMIT 1"
+    [1]=>
+    float(0.00011086463928222656)
+    [2]=>
+    string(253) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('plugins_loaded'), WP_Hook->do_action, WP_Hook->apply_filters, Real3DFlipbook->plugins_loaded, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.477051)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#1772 (7) {
+      ["component_trace":protected]=>
+      array(3) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(10) "get_option"
+          ["file"]=>
+          string(94) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/real3d-flipbook/includes/Real3DFlipbook.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          string(14) "Real3DFlipbook"
+          ["function"]=>
+          string(14) "plugins_loaded"
+          ["file"]=>
+          string(61) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-hook.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(9) "do_action"
+          ["file"]=>
+          string(47) "/srv/www/vhosts/www.brandonu.ca/wp-settings.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#1778 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(94) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/real3d-flipbook/includes/Real3DFlipbook.php"
+        ["line"]=>
+        int(406)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(3) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(42)
+          [1]=>
+          int(406)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(25)
+          [1]=>
+          int(630)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.477051)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [25]=>
+  array(7) {
+    [0]=>
+    string(80) "SELECT option_value FROM cms_options WHERE option_name = 'r3d_pefrf_key' LIMIT 1"
+    [1]=>
+    float(0.00010800361633300781)
+    [2]=>
+    string(253) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('plugins_loaded'), WP_Hook->do_action, WP_Hook->apply_filters, Real3DFlipbook->plugins_loaded, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.477255)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#1768 (7) {
+      ["component_trace":protected]=>
+      array(3) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(10) "get_option"
+          ["file"]=>
+          string(94) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/real3d-flipbook/includes/Real3DFlipbook.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          string(14) "Real3DFlipbook"
+          ["function"]=>
+          string(14) "plugins_loaded"
+          ["file"]=>
+          string(61) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-hook.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(9) "do_action"
+          ["file"]=>
+          string(47) "/srv/www/vhosts/www.brandonu.ca/wp-settings.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#1780 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(94) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/real3d-flipbook/includes/Real3DFlipbook.php"
+        ["line"]=>
+        int(406)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(3) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(42)
+          [1]=>
+          int(406)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(25)
+          [1]=>
+          int(630)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.477255)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [26]=>
+  array(7) {
+    [0]=>
+    string(80) "SELECT option_value FROM cms_options WHERE option_name = 'r3d_ptfrf_key' LIMIT 1"
+    [1]=>
+    float(0.0001049041748046875)
+    [2]=>
+    string(253) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('plugins_loaded'), WP_Hook->do_action, WP_Hook->apply_filters, Real3DFlipbook->plugins_loaded, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.477489)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#1773 (7) {
+      ["component_trace":protected]=>
+      array(3) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(10) "get_option"
+          ["file"]=>
+          string(94) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/real3d-flipbook/includes/Real3DFlipbook.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          string(14) "Real3DFlipbook"
+          ["function"]=>
+          string(14) "plugins_loaded"
+          ["file"]=>
+          string(61) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-hook.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(9) "do_action"
+          ["file"]=>
+          string(47) "/srv/www/vhosts/www.brandonu.ca/wp-settings.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#1782 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(94) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/real3d-flipbook/includes/Real3DFlipbook.php"
+        ["line"]=>
+        int(406)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(3) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(42)
+          [1]=>
+          int(406)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(25)
+          [1]=>
+          int(630)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.477489)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [27]=>
+  array(7) {
+    [0]=>
+    string(77) "SELECT option_value FROM cms_options WHERE option_name = 'r3d_bs_key' LIMIT 1"
+    [1]=>
+    float(9.894371032714844E-5)
+    [2]=>
+    string(253) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('plugins_loaded'), WP_Hook->do_action, WP_Hook->apply_filters, Real3DFlipbook->plugins_loaded, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.477698)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#1779 (7) {
+      ["component_trace":protected]=>
+      array(3) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(10) "get_option"
+          ["file"]=>
+          string(94) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/real3d-flipbook/includes/Real3DFlipbook.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          string(14) "Real3DFlipbook"
+          ["function"]=>
+          string(14) "plugins_loaded"
+          ["file"]=>
+          string(61) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-hook.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(9) "do_action"
+          ["file"]=>
+          string(47) "/srv/www/vhosts/www.brandonu.ca/wp-settings.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#1784 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(94) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/real3d-flipbook/includes/Real3DFlipbook.php"
+        ["line"]=>
+        int(406)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(3) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(42)
+          [1]=>
+          int(406)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(25)
+          [1]=>
+          int(630)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.477698)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [28]=>
+  array(7) {
+    [0]=>
+    string(80) "SELECT option_value FROM cms_options WHERE option_name = 'r3d_wafrf_key' LIMIT 1"
+    [1]=>
+    float(0.00010609626770019531)
+    [2]=>
+    string(253) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('plugins_loaded'), WP_Hook->do_action, WP_Hook->apply_filters, Real3DFlipbook->plugins_loaded, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.477896)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#1781 (7) {
+      ["component_trace":protected]=>
+      array(3) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(10) "get_option"
+          ["file"]=>
+          string(94) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/real3d-flipbook/includes/Real3DFlipbook.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          string(14) "Real3DFlipbook"
+          ["function"]=>
+          string(14) "plugins_loaded"
+          ["file"]=>
+          string(61) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-hook.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(9) "do_action"
+          ["file"]=>
+          string(47) "/srv/www/vhosts/www.brandonu.ca/wp-settings.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#1786 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(94) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/real3d-flipbook/includes/Real3DFlipbook.php"
+        ["line"]=>
+        int(406)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(3) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(42)
+          [1]=>
+          int(406)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(25)
+          [1]=>
+          int(630)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.477896)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [29]=>
+  array(7) {
+    [0]=>
+    string(80) "SELECT option_value FROM cms_options WHERE option_name = 'r3d_eafrf_key' LIMIT 1"
+    [1]=>
+    float(9.298324584960938E-5)
+    [2]=>
+    string(253) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('plugins_loaded'), WP_Hook->do_action, WP_Hook->apply_filters, Real3DFlipbook->plugins_loaded, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.478099)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#1783 (7) {
+      ["component_trace":protected]=>
+      array(3) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(10) "get_option"
+          ["file"]=>
+          string(94) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/real3d-flipbook/includes/Real3DFlipbook.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          string(14) "Real3DFlipbook"
+          ["function"]=>
+          string(14) "plugins_loaded"
+          ["file"]=>
+          string(61) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-hook.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(9) "do_action"
+          ["file"]=>
+          string(47) "/srv/www/vhosts/www.brandonu.ca/wp-settings.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#1788 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(94) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/real3d-flipbook/includes/Real3DFlipbook.php"
+        ["line"]=>
+        int(406)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(3) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(42)
+          [1]=>
+          int(406)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(25)
+          [1]=>
+          int(630)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.478099)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [30]=>
+  array(7) {
+    [0]=>
+    string(82) "SELECT option_value FROM cms_options WHERE option_name = 'r3d_wpb_r3d_key' LIMIT 1"
+    [1]=>
+    float(0.00011205673217773438)
+    [2]=>
+    string(253) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('plugins_loaded'), WP_Hook->do_action, WP_Hook->apply_filters, Real3DFlipbook->plugins_loaded, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.478292)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#1785 (7) {
+      ["component_trace":protected]=>
+      array(3) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(10) "get_option"
+          ["file"]=>
+          string(94) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/real3d-flipbook/includes/Real3DFlipbook.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          string(14) "Real3DFlipbook"
+          ["function"]=>
+          string(14) "plugins_loaded"
+          ["file"]=>
+          string(61) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-hook.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(9) "do_action"
+          ["file"]=>
+          string(47) "/srv/www/vhosts/www.brandonu.ca/wp-settings.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#1790 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(94) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/real3d-flipbook/includes/Real3DFlipbook.php"
+        ["line"]=>
+        int(406)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(3) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(42)
+          [1]=>
+          int(406)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(25)
+          [1]=>
+          int(630)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.478292)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [31]=>
+  array(7) {
+    [0]=>
+    string(83) "SELECT option_value FROM cms_options WHERE option_name = 'r3d_prev_r3d_key' LIMIT 1"
+    [1]=>
+    float(0.00011515617370605469)
+    [2]=>
+    string(253) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('plugins_loaded'), WP_Hook->do_action, WP_Hook->apply_filters, Real3DFlipbook->plugins_loaded, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.47853)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#1787 (7) {
+      ["component_trace":protected]=>
+      array(3) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(10) "get_option"
+          ["file"]=>
+          string(94) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/real3d-flipbook/includes/Real3DFlipbook.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          string(14) "Real3DFlipbook"
+          ["function"]=>
+          string(14) "plugins_loaded"
+          ["file"]=>
+          string(61) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-hook.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(9) "do_action"
+          ["file"]=>
+          string(47) "/srv/www/vhosts/www.brandonu.ca/wp-settings.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#1792 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(94) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/real3d-flipbook/includes/Real3DFlipbook.php"
+        ["line"]=>
+        int(406)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(3) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(42)
+          [1]=>
+          int(406)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(25)
+          [1]=>
+          int(630)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.47853)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [32]=>
+  array(7) {
+    [0]=>
+    string(98) "SELECT option_value FROM cms_options WHERE option_name = 'jetpack_seo_suppress_wp_sitemap' LIMIT 1"
+    [1]=>
+    float(0.00018215179443359375)
+    [2]=>
+    string(293) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('plugins_loaded'), WP_Hook->do_action, WP_Hook->apply_filters, Jetpack->late_initialization, Automattic\Jetpack\SEO\Initializer::init, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.479488)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#1796 (7) {
+      ["component_trace":protected]=>
+      array(4) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(10) "get_option"
+          ["file"]=>
+          string(122) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/jetpack-seo/src/class-initializer.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          string(34) "Automattic\Jetpack\SEO\Initializer"
+          ["function"]=>
+          string(4) "init"
+          ["file"]=>
+          string(76) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/class.jetpack.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          string(7) "Jetpack"
+          ["function"]=>
+          string(19) "late_initialization"
+          ["file"]=>
+          string(61) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-hook.php"
+        }
+        [3]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(9) "do_action"
+          ["file"]=>
+          string(47) "/srv/www/vhosts/www.brandonu.ca/wp-settings.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#1806 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(122) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/jetpack-seo/src/class-initializer.php"
+        ["line"]=>
+        int(156)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(4) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(43)
+          [1]=>
+          int(156)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(44)
+          [1]=>
+          int(1213)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(25)
+          [1]=>
+          int(630)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.479488)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [33]=>
+  array(7) {
+    [0]=>
+    string(92) "SELECT option_value FROM cms_options WHERE option_name = 'jetpack_sync_non_blocking' LIMIT 1"
+    [1]=>
+    float(0.0002300739288330078)
+    [2]=>
+    string(275) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('plugins_loaded'), WP_Hook->do_action, WP_Hook->apply_filters, Automattic\Jetpack\Sync\Main::on_plugins_loaded_late, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.48134)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#2022 (7) {
+      ["component_trace":protected]=>
+      array(3) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(10) "get_option"
+          ["file"]=>
+          string(116) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/jetpack-sync/src/class-main.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          string(28) "Automattic\Jetpack\Sync\Main"
+          ["function"]=>
+          string(22) "on_plugins_loaded_late"
+          ["file"]=>
+          string(61) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-hook.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(9) "do_action"
+          ["file"]=>
+          string(47) "/srv/www/vhosts/www.brandonu.ca/wp-settings.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#2031 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(116) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/jetpack-sync/src/class-main.php"
+        ["line"]=>
+        int(141)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(3) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(45)
+          [1]=>
+          int(141)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(25)
+          [1]=>
+          int(630)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.48134)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [34]=>
+  array(7) {
+    [0]=>
+    string(190) "SELECT option_name, option_value FROM cms_options WHERE option_name IN ('_transient_jetpack_connection_active_plugins_refresh','_transient_timeout_jetpack_connection_active_plugins_refresh')"
+    [1]=>
+    float(0.0002338886260986328)
+    [2]=>
+    string(390) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('plugins_loaded'), WP_Hook->do_action, WP_Hook->apply_filters, Automattic\Jetpack\Connection\Plugin_Storage::configure, Automattic\Jetpack\Connection\Plugin_Storage::maybe_update_active_connected_plugins, get_transient, wp_prime_option_caches, QM_DB->query"
+    [3]=>
+    float(1795356659.481825)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#2027 (7) {
+      ["component_trace":protected]=>
+      array(5) {
+        [0]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(22) "wp_prime_option_caches"
+          ["file"]=>
+          string(54) "/srv/www/vhosts/www.brandonu.ca/wp-includes/option.php"
+        }
+        [1]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(13) "get_transient"
+          ["file"]=>
+          string(132) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/jetpack-connection/src/class-plugin-storage.php"
+        }
+        [2]=>
+        array(3) {
+          ["class"]=>
+          string(44) "Automattic\Jetpack\Connection\Plugin_Storage"
+          ["function"]=>
+          string(37) "maybe_update_active_connected_plugins"
+          ["file"]=>
+          string(132) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/jetpack-connection/src/class-plugin-storage.php"
+        }
+        [3]=>
+        array(3) {
+          ["class"]=>
+          string(44) "Automattic\Jetpack\Connection\Plugin_Storage"
+          ["function"]=>
+          string(9) "configure"
+          ["file"]=>
+          string(61) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-hook.php"
+        }
+        [4]=>
+        array(3) {
+          ["class"]=>
+          NULL
+          ["function"]=>
+          string(9) "do_action"
+          ["file"]=>
+          string(47) "/srv/www/vhosts/www.brandonu.ca/wp-settings.php"
+        }
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#2037 (5) {
+        ["id"]=>
+        string(22) "wp_prime_option_caches"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(54) "/srv/www/vhosts/www.brandonu.ca/wp-includes/option.php"
+        ["line"]=>
+        int(1465)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(5) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(46)
+          [1]=>
+          int(297)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(47)
+          [1]=>
+          int(1465)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(48)
+          [1]=>
+          int(182)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(49)
+          [1]=>
+          int(159)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(25)
+          [1]=>
+          int(630)
+        }
+      }
+      ["component":protected]=>
+      NULL
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.481825)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [35]=>
+  array(7) {
+    [0]=>
+    string(78) "SELECT option_value FROM cms_options WHERE option_name = 'reader_chat' LIMIT 1"
+    [1]=>
+    float(0.00031304359436035156)
+    [2]=>
+    string(521) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('after_setup_theme'), WP_Hook->do_action, WP_Hook->apply_filters, Jetpack::load_modules, include_once('/plugins/jetpack/modules/blocks.php'), Jetpack_Gutenberg::load_block_editor_extensions, include_once('/plugins/jetpack/extensions/plugins/ai-assistant-plugin/ai-assistant-plugin.php'), Automattic\Jetpack\Extensions\AiAssistantPlugin\Jetpack_Reader_Chat::init, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.484379)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#2087 (7) {
+      ["component_trace":protected]=>
+      array(0) {
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#2100 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(139) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/extensions/plugins/ai-assistant-plugin/reader-chat/class-jetpack-reader-chat.php"
+        ["line"]=>
+        int(62)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(7) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(50)
+          [1]=>
+          int(62)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(51)
+          [1]=>
+          int(62)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(52)
+          [1]=>
+          int(1424)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(53)
+          [1]=>
+          int(36)
+        }
+        [5]=>
+        array(2) {
+          [0]=>
+          int(54)
+          [1]=>
+          int(2065)
+        }
+        [6]=>
+        array(2) {
+          [0]=>
+          int(55)
+          [1]=>
+          int(757)
+        }
+      }
+      ["component":protected]=>
+      object(QM_Component_Plugin)#2104 (3) {
+        ["type"]=>
+        string(6) "plugin"
+        ["context"]=>
+        string(7) "jetpack"
+        ["file"]=>
+        string(139) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/extensions/plugins/ai-assistant-plugin/reader-chat/class-jetpack-reader-chat.php"
+      }
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.484379)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [36]=>
+  array(7) {
+    [0]=>
+    string(94) "SELECT option_value FROM cms_options WHERE option_name = 'jetpack_excluded_extensions' LIMIT 1"
+    [1]=>
+    float(0.00044989585876464844)
+    [2]=>
+    string(424) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('after_setup_theme'), WP_Hook->do_action, WP_Hook->apply_filters, Jetpack::load_modules, include_once('/plugins/jetpack/modules/blocks.php'), Jetpack_Gutenberg::load_independent_blocks, Jetpack_Gutenberg::get_extensions, Jetpack_Gutenberg::get_available_extensions, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.485286)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#2095 (7) {
+      ["component_trace":protected]=>
+      array(0) {
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#2112 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(86) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/class.jetpack-gutenberg.php"
+        ["line"]=>
+        int(447)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(7) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(56)
+          [1]=>
+          int(447)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(57)
+          [1]=>
+          int(551)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(58)
+          [1]=>
+          int(1062)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(53)
+          [1]=>
+          int(37)
+        }
+        [5]=>
+        array(2) {
+          [0]=>
+          int(54)
+          [1]=>
+          int(2065)
+        }
+        [6]=>
+        array(2) {
+          [0]=>
+          int(55)
+          [1]=>
+          int(757)
+        }
+      }
+      ["component":protected]=>
+      object(QM_Component_Plugin)#2092 (3) {
+        ["type"]=>
+        string(6) "plugin"
+        ["context"]=>
+        string(7) "jetpack"
+        ["file"]=>
+        string(86) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/class.jetpack-gutenberg.php"
+      }
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.485286)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [37]=>
+  array(7) {
+    [0]=>
+    string(112) "SELECT option_value FROM cms_options WHERE option_name = 'gravityformsaddon_gravityformswebapi_settings' LIMIT 1"
+    [1]=>
+    float(0.0003509521484375)
+    [2]=>
+    string(310) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('after_setup_theme'), WP_Hook->do_action, WP_Hook->apply_filters, GFWebAPI->init, GFAddOn->init, GFWebAPI->init_frontend, GFAddOn->get_plugin_settings, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.488639)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#2184 (7) {
+      ["component_trace":protected]=>
+      array(0) {
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#2196 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(97) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/gravityforms/includes/addon/class-gf-addon.php"
+        ["line"]=>
+        int(5089)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(6) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(59)
+          [1]=>
+          int(5089)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(60)
+          [1]=>
+          int(238)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(61)
+          [1]=>
+          int(442)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(62)
+          [1]=>
+          int(80)
+        }
+        [5]=>
+        array(2) {
+          [0]=>
+          int(55)
+          [1]=>
+          int(757)
+        }
+      }
+      ["component":protected]=>
+      object(QM_Component_Plugin)#2186 (3) {
+        ["type"]=>
+        string(6) "plugin"
+        ["context"]=>
+        string(12) "gravityforms"
+        ["file"]=>
+        string(97) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/gravityforms/includes/addon/class-gf-addon.php"
+      }
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.488639)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [38]=>
+  array(7) {
+    [0]=>
+    string(115) "SELECT option_value FROM cms_options WHERE option_name = 'jetpack_subscriptions_subscribe_post_end_enabled' LIMIT 1"
+    [1]=>
+    float(0.0002028942108154297)
+    [2]=>
+    string(491) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), WP_Hook->do_action, WP_Hook->apply_filters, Automattic\Jetpack\Extensions\Subscriptions\register_block, Automattic\Jetpack\Extensions\Subscriptions\Jetpack_Subscription_Site->handle_subscribe_block_placements, Automattic\Jetpack\Extensions\Subscriptions\Jetpack_Subscription_Site->handle_subscribe_block_post_end_placement, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.492654)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#2265 (7) {
+      ["component_trace":protected]=>
+      array(0) {
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#2276 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(126) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/extensions/blocks/subscriptions/class-jetpack-subscription-site.php"
+        ["line"]=>
+        int(190)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(5) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(63)
+          [1]=>
+          int(190)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(64)
+          [1]=>
+          int(43)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(65)
+          [1]=>
+          int(211)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(66)
+          [1]=>
+          int(779)
+        }
+      }
+      ["component":protected]=>
+      object(QM_Component_Plugin)#2266 (3) {
+        ["type"]=>
+        string(6) "plugin"
+        ["context"]=>
+        string(7) "jetpack"
+        ["file"]=>
+        string(126) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/extensions/blocks/subscriptions/class-jetpack-subscription-site.php"
+      }
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.492654)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [39]=>
+  array(7) {
+    [0]=>
+    string(117) "SELECT option_value FROM cms_options WHERE option_name = 'jetpack_subscriptions_subscribe_navigation_enabled' LIMIT 1"
+    [1]=>
+    float(9.489059448242188E-5)
+    [2]=>
+    string(493) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), WP_Hook->do_action, WP_Hook->apply_filters, Automattic\Jetpack\Extensions\Subscriptions\register_block, Automattic\Jetpack\Extensions\Subscriptions\Jetpack_Subscription_Site->handle_subscribe_block_placements, Automattic\Jetpack\Extensions\Subscriptions\Jetpack_Subscription_Site->handle_subscribe_block_navigation_placement, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.49299)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#2273 (7) {
+      ["component_trace":protected]=>
+      array(0) {
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#2283 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(126) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/extensions/blocks/subscriptions/class-jetpack-subscription-site.php"
+        ["line"]=>
+        int(137)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(5) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(67)
+          [1]=>
+          int(137)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(64)
+          [1]=>
+          int(44)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(65)
+          [1]=>
+          int(211)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(66)
+          [1]=>
+          int(779)
+        }
+      }
+      ["component":protected]=>
+      object(QM_Component_Plugin)#2266 (3) {
+        ["type"]=>
+        string(6) "plugin"
+        ["context"]=>
+        string(7) "jetpack"
+        ["file"]=>
+        string(126) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/extensions/blocks/subscriptions/class-jetpack-subscription-site.php"
+      }
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.49299)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [40]=>
+  array(7) {
+    [0]=>
+    string(239) "SELECT meta_key, meta_value FROM cms_sitemeta WHERE meta_key IN ('_site_transient_wp_theme_files_patterns-8bac0b01afa4627e5481c932431d2759','_site_transient_timeout_wp_theme_files_patterns-8bac0b01afa4627e5481c932431d2759') AND site_id = 1"
+    [1]=>
+    float(0.0007719993591308594)
+    [2]=>
+    string(371) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), WP_Hook->do_action, WP_Hook->apply_filters, _register_theme_block_patterns, WP_Theme->get_block_patterns, WP_Theme->get_pattern_cache, get_site_transient, wp_prime_site_option_caches, wp_prime_network_option_caches, QM_DB->query"
+    [3]=>
+    float(1795356659.50229)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#2968 (7) {
+      ["component_trace":protected]=>
+      array(0) {
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#2981 (5) {
+        ["id"]=>
+        string(30) "wp_prime_network_option_caches"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(54) "/srv/www/vhosts/www.brandonu.ca/wp-includes/option.php"
+        ["line"]=>
+        int(677)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(7) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(7)
+          [1]=>
+          int(750)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(68)
+          [1]=>
+          int(677)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(69)
+          [1]=>
+          int(2596)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(70)
+          [1]=>
+          int(2017)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(71)
+          [1]=>
+          int(1859)
+        }
+        [5]=>
+        array(2) {
+          [0]=>
+          int(72)
+          [1]=>
+          int(439)
+        }
+        [6]=>
+        array(2) {
+          [0]=>
+          int(66)
+          [1]=>
+          int(779)
+        }
+      }
+      ["component":protected]=>
+      object(QM_Component_Core)#2985 (3) {
+        ["type"]=>
+        string(4) "core"
+        ["context"]=>
+        string(4) "core"
+        ["file"]=>
+        string(54) "/srv/www/vhosts/www.brandonu.ca/wp-includes/plugin.php"
+      }
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.50229)
+    }
+    ["result"]=>
+    int(2)
+  }
+  [41]=>
+  array(7) {
+    [0]=>
+    string(82) "SELECT option_value FROM cms_options WHERE option_name = 'rg_form_version' LIMIT 1"
+    [1]=>
+    float(0.0005211830139160156)
+    [2]=>
+    string(279) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), WP_Hook->do_action, WP_Hook->apply_filters, GFForms::init, GF_Upgrade->maybe_upgrade, GF_Upgrade->get_versions, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.5045)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#2966 (7) {
+      ["component_trace":protected]=>
+      array(0) {
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#3080 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(93) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/gravityforms/includes/class-gf-upgrade.php"
+        ["line"]=>
+        int(1919)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(5) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(73)
+          [1]=>
+          int(1919)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(74)
+          [1]=>
+          int(65)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(75)
+          [1]=>
+          int(463)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(66)
+          [1]=>
+          int(779)
+        }
+      }
+      ["component":protected]=>
+      object(QM_Component_Plugin)#3072 (3) {
+        ["type"]=>
+        string(6) "plugin"
+        ["context"]=>
+        string(12) "gravityforms"
+        ["file"]=>
+        string(93) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/gravityforms/includes/class-gf-upgrade.php"
+      }
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.5045)
+    }
+    ["result"]=>
+    int(1)
+  }
+  [42]=>
+  array(7) {
+    [0]=>
+    string(80) "SELECT option_value FROM cms_options WHERE option_name = 'gf_db_version' LIMIT 1"
+    [1]=>
+    float(0.00022482872009277344)
+    [2]=>
+    string(315) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), WP_Hook->do_action, WP_Hook->apply_filters, GFForms::init, GF_Upgrade->maybe_upgrade, GF_Upgrade->get_versions, GFFormsModel::get_database_version, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.505247)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#3077 (7) {
+      ["component_trace":protected]=>
+      array(0) {
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#3087 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(79) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/gravityforms/forms_model.php"
+        ["line"]=>
+        int(103)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(6) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(76)
+          [1]=>
+          int(103)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(73)
+          [1]=>
+          int(1920)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(74)
+          [1]=>
+          int(65)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(75)
+          [1]=>
+          int(463)
+        }
+        [5]=>
+        array(2) {
+          [0]=>
+          int(66)
+          [1]=>
+          int(779)
+        }
+      }
+      ["component":protected]=>
+      object(QM_Component_Plugin)#3085 (3) {
+        ["type"]=>
+        string(6) "plugin"
+        ["context"]=>
+        string(12) "gravityforms"
+        ["file"]=>
+        string(79) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/gravityforms/forms_model.php"
+      }
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.505247)
+    }
+    ["result"]=>
+    int(1)
+  }
+  [43]=>
+  array(7) {
+    [0]=>
+    string(378) "SELECT * FROM cms_postmeta a, cms_posts b  WHERE a.`post_id` = b.`ID` AND b.`post_status` != 'trash' AND ( a.`meta_key` = '_pprredirect_active' OR a.`meta_key` = '_pprredirect_rewritelink' OR a.`meta_key` = '_pprredirect_newwindow' OR a.`meta_key` = '_pprredirect_relnofollow' OR a.`meta_key` = '_pprredirect_type' OR a.`meta_key` = '_pprredirect_url') ORDER BY a.`post_id` ASC;"
+    [1]=>
+    float(0.0036249160766601562)
+    [2]=>
+    string(282) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), WP_Hook->do_action, WP_Hook->apply_filters, quick_page_post_reds->ppr_parse_request_new, quick_page_post_reds->get_main_array, QM_DB->query"
+    [3]=>
+    float(1795356659.506118)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#3385 (7) {
+      ["component_trace":protected]=>
+      array(0) {
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#3394 (5) {
+        ["id"]=>
+        string(36) "quick_page_post_reds->get_main_array"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(111) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/quick-pagepost-redirect-plugin/page_post_redirect_plugin.php"
+        ["line"]=>
+        int(1609)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(3) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(77)
+          [1]=>
+          int(1571)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(78)
+          [1]=>
+          int(1609)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(66)
+          [1]=>
+          int(779)
+        }
+      }
+      ["component":protected]=>
+      object(QM_Component_Plugin)#3392 (3) {
+        ["type"]=>
+        string(6) "plugin"
+        ["context"]=>
+        string(30) "quick-pagepost-redirect-plugin"
+        ["file"]=>
+        string(111) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/quick-pagepost-redirect-plugin/page_post_redirect_plugin.php"
+      }
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.506118)
+    }
+    ["result"]=>
+    int(289)
+  }
+  [44]=>
+  array(7) {
+    [0]=>
+    string(47) "SELECT * FROM cms_posts WHERE ID = 5179 LIMIT 1"
+    [1]=>
+    float(0.0002758502960205078)
+    [2]=>
+    string(330) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), WP_Hook->do_action, WP_Hook->apply_filters, quick_page_post_reds->ppr_parse_request_new, quick_page_post_reds->get_main_array, get_permalink, get_post, WP_Post::get_instance, QM_DB->query"
+    [3]=>
+    float(1795356659.511161)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#3390 (7) {
+      ["component_trace":protected]=>
+      array(0) {
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#3403 (5) {
+        ["id"]=>
+        string(21) "WP_Post::get_instance"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(52) "/srv/www/vhosts/www.brandonu.ca/wp-includes/post.php"
+        ["line"]=>
+        int(1158)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(6) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(79)
+          [1]=>
+          int(289)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(80)
+          [1]=>
+          int(1158)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(81)
+          [1]=>
+          int(188)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(77)
+          [1]=>
+          int(1586)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(78)
+          [1]=>
+          int(1609)
+        }
+        [5]=>
+        array(2) {
+          [0]=>
+          int(66)
+          [1]=>
+          int(779)
+        }
+      }
+      ["component":protected]=>
+      object(QM_Component_Plugin)#3392 (3) {
+        ["type"]=>
+        string(6) "plugin"
+        ["context"]=>
+        string(30) "quick-pagepost-redirect-plugin"
+        ["file"]=>
+        string(111) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/quick-pagepost-redirect-plugin/page_post_redirect_plugin.php"
+      }
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.511161)
+    }
+    ["result"]=>
+    int(1)
+  }
+  [45]=>
+  array(7) {
+    [0]=>
+    string(92) "SELECT option_value FROM cms_options WHERE option_name = 'real3dflipbook_capability' LIMIT 1"
+    [1]=>
+    float(0.00017404556274414062)
+    [2]=>
+    string(233) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), WP_Hook->do_action, WP_Hook->apply_filters, Real3DFlipbook->init, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.512943)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#3391 (7) {
+      ["component_trace":protected]=>
+      array(0) {
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#3352 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(94) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/real3d-flipbook/includes/Real3DFlipbook.php"
+        ["line"]=>
+        int(160)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(3) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(82)
+          [1]=>
+          int(160)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(66)
+          [1]=>
+          int(779)
+        }
+      }
+      ["component":protected]=>
+      object(QM_Component_Plugin)#3353 (3) {
+        ["type"]=>
+        string(6) "plugin"
+        ["context"]=>
+        string(15) "real3d-flipbook"
+        ["file"]=>
+        string(94) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/real3d-flipbook/includes/Real3DFlipbook.php"
+      }
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.512943)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [46]=>
+  array(7) {
+    [0]=>
+    string(70) "SELECT option_value FROM cms_options WHERE option_name = 'r3d' LIMIT 1"
+    [1]=>
+    float(0.00022292137145996094)
+    [2]=>
+    string(266) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), WP_Hook->do_action, WP_Hook->apply_filters, Real3DFlipbook->init, Real3DFlipbook->enqueue_scripts, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.513989)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#3347 (7) {
+      ["component_trace":protected]=>
+      array(0) {
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#3337 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(94) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/real3d-flipbook/includes/Real3DFlipbook.php"
+        ["line"]=>
+        int(77)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(4) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(83)
+          [1]=>
+          int(77)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(82)
+          [1]=>
+          int(214)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(66)
+          [1]=>
+          int(779)
+        }
+      }
+      ["component":protected]=>
+      object(QM_Component_Plugin)#3353 (3) {
+        ["type"]=>
+        string(6) "plugin"
+        ["context"]=>
+        string(15) "real3d-flipbook"
+        ["file"]=>
+        string(94) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/real3d-flipbook/includes/Real3DFlipbook.php"
+      }
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.513989)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [47]=>
+  array(7) {
+    [0]=>
+    string(98) "SELECT option_value FROM cms_options WHERE option_name = 'jetpack_ai_image_editor_enabled' LIMIT 1"
+    [1]=>
+    float(0.0002951622009277344)
+    [2]=>
+    string(389) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), WP_Hook->do_action, WP_Hook->apply_filters, Automattic\Jetpack\Extensions\ImageStudio\signal_image_studio_active, Automattic\Jetpack\Extensions\ImageStudio\is_image_studio_enabled, Jetpack_AI_Settings::is_feature_enabled, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.516002)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#3299 (7) {
+      ["component_trace":protected]=>
+      array(0) {
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#3288 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(97) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/_inc/lib/class-jetpack-ai-settings.php"
+        ["line"]=>
+        int(502)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(5) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(84)
+          [1]=>
+          int(502)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(85)
+          [1]=>
+          int(75)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(86)
+          [1]=>
+          int(131)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(66)
+          [1]=>
+          int(779)
+        }
+      }
+      ["component":protected]=>
+      object(QM_Component_Plugin)#3296 (3) {
+        ["type"]=>
+        string(6) "plugin"
+        ["context"]=>
+        string(7) "jetpack"
+        ["file"]=>
+        string(97) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/_inc/lib/class-jetpack-ai-settings.php"
+      }
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.516002)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [48]=>
+  array(7) {
+    [0]=>
+    string(103) "SELECT option_value FROM cms_options WHERE option_name = 'jetpack_ai_writing_assistant_enabled' LIMIT 1"
+    [1]=>
+    float(0.00021195411682128906)
+    [2]=>
+    string(310) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), WP_Hook->do_action, WP_Hook->apply_filters, Automattic\Jetpack\Extensions\AIAssistant\register_block, Jetpack_AI_Settings::is_feature_enabled, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.516736)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#3291 (7) {
+      ["component_trace":protected]=>
+      array(0) {
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#3281 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(97) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/_inc/lib/class-jetpack-ai-settings.php"
+        ["line"]=>
+        int(502)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(4) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(84)
+          [1]=>
+          int(502)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(87)
+          [1]=>
+          int(44)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(66)
+          [1]=>
+          int(779)
+        }
+      }
+      ["component":protected]=>
+      object(QM_Component_Plugin)#3296 (3) {
+        ["type"]=>
+        string(6) "plugin"
+        ["context"]=>
+        string(7) "jetpack"
+        ["file"]=>
+        string(97) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/_inc/lib/class-jetpack-ai-settings.php"
+      }
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.516736)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [49]=>
+  array(7) {
+    [0]=>
+    string(113) "SELECT option_value FROM cms_options WHERE option_name = 'jetpack_subscriptions_login_navigation_enabled' LIMIT 1"
+    [1]=>
+    float(0.00023818016052246094)
+    [2]=>
+    string(516) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), WP_Hook->do_action, WP_Hook->apply_filters, Automattic\Jetpack\Extensions\Subscriber_Login\register_block, Automattic\Jetpack\Extensions\Subscriber_Login\Jetpack_Subscription_Site->handle_subscriber_login_block_placements, Automattic\Jetpack\Extensions\Subscriber_Login\Jetpack_Subscription_Site->handle_subscriber_login_block_navigation_placement, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.519163)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#3197 (7) {
+      ["component_trace":protected]=>
+      array(0) {
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#3186 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(129) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/extensions/blocks/subscriber-login/class-jetpack-subscription-site.php"
+        ["line"]=>
+        int(70)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(5) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(88)
+          [1]=>
+          int(70)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(89)
+          [1]=>
+          int(42)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(90)
+          [1]=>
+          int(68)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(66)
+          [1]=>
+          int(779)
+        }
+      }
+      ["component":protected]=>
+      object(QM_Component_Plugin)#3194 (3) {
+        ["type"]=>
+        string(6) "plugin"
+        ["context"]=>
+        string(7) "jetpack"
+        ["file"]=>
+        string(129) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/extensions/blocks/subscriber-login/class-jetpack-subscription-site.php"
+      }
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.519163)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [50]=>
+  array(7) {
+    [0]=>
+    string(108) "SELECT option_value FROM cms_options WHERE option_name = 'gravityformsaddon_gf_theme_layers_version' LIMIT 1"
+    [1]=>
+    float(0.00024509429931640625)
+    [2]=>
+    string(266) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), WP_Hook->do_action, WP_Hook->apply_filters, GFAddOn->init, GFAddOn->init_frontend, GFAddOn->setup, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.521617)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#3098 (7) {
+      ["component_trace":protected]=>
+      array(0) {
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#3408 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(97) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/gravityforms/includes/addon/class-gf-addon.php"
+        ["line"]=>
+        int(947)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(5) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(91)
+          [1]=>
+          int(947)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(92)
+          [1]=>
+          int(579)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(61)
+          [1]=>
+          int(442)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(66)
+          [1]=>
+          int(779)
+        }
+      }
+      ["component":protected]=>
+      object(QM_Component_Plugin)#2186 (3) {
+        ["type"]=>
+        string(6) "plugin"
+        ["context"]=>
+        string(12) "gravityforms"
+        ["file"]=>
+        string(97) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/gravityforms/includes/addon/class-gf-addon.php"
+      }
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.521617)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [51]=>
+  array(7) {
+    [0]=>
+    string(207) "SELECT meta_key, meta_value FROM cms_sitemeta WHERE meta_key IN ('_site_transient_GFCache_5b0eca885881c254639722a9e88d7d8f','_site_transient_timeout_GFCache_5b0eca885881c254639722a9e88d7d8f') AND site_id = 1"
+    [1]=>
+    float(0.0004189014434814453)
+    [2]=>
+    string(634) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), WP_Hook->do_action, WP_Hook->apply_filters, Gravity_Forms\Gravity_Forms\Environment_Config\GF_Environment_Config_Handler->maybe_hide_plugin_page_message, Gravity_Forms\Gravity_Forms\Environment_Config\GF_Environment_Config_Handler->get_hide_update_message, Gravity_Forms\Gravity_Forms\Environment_Config\GF_Environment_Config_Handler->get_environment_setting, GFCache::get, GFCache::get_transient, get_site_transient, wp_prime_site_option_caches, wp_prime_network_option_caches, QM_DB->query"
+    [3]=>
+    float(1795356659.522139)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#3397 (7) {
+      ["component_trace":protected]=>
+      array(0) {
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#3419 (5) {
+        ["id"]=>
+        string(30) "wp_prime_network_option_caches"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(54) "/srv/www/vhosts/www.brandonu.ca/wp-includes/option.php"
+        ["line"]=>
+        int(677)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(9) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(7)
+          [1]=>
+          int(750)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(68)
+          [1]=>
+          int(677)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(69)
+          [1]=>
+          int(2596)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(93)
+          [1]=>
+          int(8828)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(94)
+          [1]=>
+          int(8704)
+        }
+        [5]=>
+        array(2) {
+          [0]=>
+          int(95)
+          [1]=>
+          int(50)
+        }
+        [6]=>
+        array(2) {
+          [0]=>
+          int(96)
+          [1]=>
+          int(110)
+        }
+        [7]=>
+        array(2) {
+          [0]=>
+          int(97)
+          [1]=>
+          int(156)
+        }
+        [8]=>
+        array(2) {
+          [0]=>
+          int(66)
+          [1]=>
+          int(779)
+        }
+      }
+      ["component":protected]=>
+      object(QM_Component_Plugin)#3399 (3) {
+        ["type"]=>
+        string(6) "plugin"
+        ["context"]=>
+        string(12) "gravityforms"
+        ["file"]=>
+        string(74) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/gravityforms/common.php"
+      }
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.522139)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [52]=>
+  array(7) {
+    [0]=>
+    string(93) "SELECT option_value FROM cms_options WHERE option_name = 'gf_env_hide_update_message' LIMIT 1"
+    [1]=>
+    float(0.00015807151794433594)
+    [2]=>
+    string(527) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), WP_Hook->do_action, WP_Hook->apply_filters, Gravity_Forms\Gravity_Forms\Environment_Config\GF_Environment_Config_Handler->maybe_hide_plugin_page_message, Gravity_Forms\Gravity_Forms\Environment_Config\GF_Environment_Config_Handler->get_hide_update_message, Gravity_Forms\Gravity_Forms\Environment_Config\GF_Environment_Config_Handler->get_environment_setting, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.5228)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#3416 (7) {
+      ["component_trace":protected]=>
+      array(0) {
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#3423 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(131) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/gravityforms/includes/environment-config/class-gf-environment-config-handler.php"
+        ["line"]=>
+        int(52)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(5) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(95)
+          [1]=>
+          int(52)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(96)
+          [1]=>
+          int(110)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(97)
+          [1]=>
+          int(156)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(66)
+          [1]=>
+          int(779)
+        }
+      }
+      ["component":protected]=>
+      object(QM_Component_Plugin)#3422 (3) {
+        ["type"]=>
+        string(6) "plugin"
+        ["context"]=>
+        string(12) "gravityforms"
+        ["file"]=>
+        string(131) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/gravityforms/includes/environment-config/class-gf-environment-config-handler.php"
+      }
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.5228)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [53]=>
+  array(7) {
+    [0]=>
+    string(118) "SELECT option_value FROM cms_options WHERE option_name = 'woocommerce_analytics_proxy_speed_module_authorized' LIMIT 1"
+    [1]=>
+    float(0.00024580955505371094)
+    [2]=>
+    string(272) "require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), WP_Hook->do_action, WP_Hook->apply_filters, Automattic\Woocommerce_Analytics::sync_proxy_tracking_state, get_option, QM_DB->query"
+    [3]=>
+    float(1795356659.523132)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#2967 (7) {
+      ["component_trace":protected]=>
+      array(0) {
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#3415 (5) {
+        ["id"]=>
+        string(10) "get_option"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(142) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/woocommerce-analytics/src/class-woocommerce-analytics.php"
+        ["line"]=>
+        int(273)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(3) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(12)
+          [1]=>
+          int(206)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(98)
+          [1]=>
+          int(273)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(66)
+          [1]=>
+          int(779)
+        }
+      }
+      ["component":protected]=>
+      object(QM_Component_Plugin)#3414 (3) {
+        ["type"]=>
+        string(6) "plugin"
+        ["context"]=>
+        string(7) "jetpack"
+        ["file"]=>
+        string(142) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/jetpack/jetpack_vendor/automattic/woocommerce-analytics/src/class-woocommerce-analytics.php"
+      }
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.523132)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [54]=>
+  array(7) {
+    [0]=>
+    string(221) "SELECT SQL_CALC_FOUND_ROWS  cms_posts.ID
+					 FROM cms_posts 
+					 WHERE 1=1  AND ((cms_posts.post_type = 'post' AND (cms_posts.post_status = 'publish')))
+					 
+					 ORDER BY cms_posts.post_date DESC
+					 LIMIT 0, 10"
+    [1]=>
+    float(0.0004551410675048828)
+    [2]=>
+    string(112) "require('wp-blog-header.php'), wp, WP->main, WP->query_posts, WP_Query->query, WP_Query->get_posts, QM_DB->query"
+    [3]=>
+    float(1795356659.528612)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#3587 (7) {
+      ["component_trace":protected]=>
+      array(0) {
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#3612 (5) {
+        ["id"]=>
+        string(19) "WP_Query->get_posts"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(62) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-query.php"
+        ["line"]=>
+        int(3984)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(5) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(99)
+          [1]=>
+          int(3447)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(100)
+          [1]=>
+          int(3984)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(101)
+          [1]=>
+          int(704)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(102)
+          [1]=>
+          int(825)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(103)
+          [1]=>
+          int(1352)
+        }
+      }
+      ["component":protected]=>
+      object(QM_Component_Core)#3624 (3) {
+        ["type"]=>
+        string(4) "core"
+        ["context"]=>
+        string(4) "core"
+        ["file"]=>
+        string(57) "/srv/www/vhosts/www.brandonu.ca/wp-includes/functions.php"
+      }
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.528612)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [55]=>
+  array(7) {
+    [0]=>
+    string(68) "SELECT option_value FROM cms_options WHERE option_name = 'sm_cpages'"
+    [1]=>
+    float(0.0002181529998779297)
+    [2]=>
+    string(376) "require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), do_action('template_redirect'), WP_Hook->do_action, WP_Hook->apply_filters, GoogleSitemapGeneratorLoader::do_template_redirect, GoogleSitemapGeneratorLoader::call_show_sitemap, GoogleSitemapGenerator->show_sitemap, GoogleSitemapGenerator->initate, GoogleSitemapGenerator->load_pages, QM_DB->query"
+    [3]=>
+    float(1795356659.529815)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#3614 (7) {
+      ["component_trace":protected]=>
+      array(0) {
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#3632 (5) {
+        ["id"]=>
+        string(34) "GoogleSitemapGenerator->load_pages"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(92) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/google-sitemap-generator/sitemap-core.php"
+        ["line"]=>
+        int(1090)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(6) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(104)
+          [1]=>
+          int(1811)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(105)
+          [1]=>
+          int(1090)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(106)
+          [1]=>
+          int(2270)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(107)
+          [1]=>
+          int(1240)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(108)
+          [1]=>
+          int(690)
+        }
+        [5]=>
+        array(2) {
+          [0]=>
+          int(109)
+          [1]=>
+          int(23)
+        }
+      }
+      ["component":protected]=>
+      object(QM_Component_Plugin)#3637 (3) {
+        ["type"]=>
+        string(6) "plugin"
+        ["context"]=>
+        string(24) "google-sitemap-generator"
+        ["file"]=>
+        string(92) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/google-sitemap-generator/sitemap-core.php"
+      }
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.529815)
+    }
+    ["result"]=>
+    int(0)
+  }
+  [56]=>
+  array(7) {
+    [0]=>
+    string(217) "SELECT post_modified_gmt FROM cms_posts WHERE post_status = 'publish' AND post_type IN ('post', 'page', 'attachment', 'bu_person', 'icon-bar', 'bu_main_contact', 'slide', 'r3d') ORDER BY post_modified_gmt DESC LIMIT 1"
+    [1]=>
+    float(0.0018031597137451172)
+    [2]=>
+    string(530) "require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), do_action('template_redirect'), WP_Hook->do_action, WP_Hook->apply_filters, GoogleSitemapGeneratorLoader::do_template_redirect, GoogleSitemapGeneratorLoader::call_show_sitemap, GoogleSitemapGenerator->show_sitemap, do_action('sm_build_index'), WP_Hook->do_action, WP_Hook->apply_filters, GoogleSitemapGeneratorStandardBuilder->index, GoogleSitemapGeneratorStandardBuilder::resolve_blog_lastmod, get_lastpostmodified, _get_last_post_time, QM_DB->query"
+    [3]=>
+    float(1795356659.53244)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#3636 (7) {
+      ["component_trace":protected]=>
+      array(0) {
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#3650 (5) {
+        ["id"]=>
+        string(19) "_get_last_post_time"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(52) "/srv/www/vhosts/www.brandonu.ca/wp-includes/post.php"
+        ["line"]=>
+        int(7825)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(9) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(110)
+          [1]=>
+          int(7891)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(111)
+          [1]=>
+          int(7825)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(112)
+          [1]=>
+          int(1313)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(113)
+          [1]=>
+          int(1453)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(114)
+          [1]=>
+          int(2452)
+        }
+        [5]=>
+        array(2) {
+          [0]=>
+          int(106)
+          [1]=>
+          int(2452)
+        }
+        [6]=>
+        array(2) {
+          [0]=>
+          int(107)
+          [1]=>
+          int(1240)
+        }
+        [7]=>
+        array(2) {
+          [0]=>
+          int(108)
+          [1]=>
+          int(690)
+        }
+        [8]=>
+        array(2) {
+          [0]=>
+          int(109)
+          [1]=>
+          int(23)
+        }
+      }
+      ["component":protected]=>
+      object(QM_Component_Plugin)#3654 (3) {
+        ["type"]=>
+        string(6) "plugin"
+        ["context"]=>
+        string(24) "google-sitemap-generator"
+        ["file"]=>
+        string(123) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/google-sitemap-generator/class-googlesitemapgeneratorstandardbuilder.php"
+      }
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.53244)
+    }
+    ["result"]=>
+    int(1)
+  }
+  [57]=>
+  array(7) {
+    [0]=>
+    string(209) "SELECT post_date_gmt FROM cms_posts WHERE post_status = 'publish' AND post_type IN ('post', 'page', 'attachment', 'bu_person', 'icon-bar', 'bu_main_contact', 'slide', 'r3d') ORDER BY post_date_gmt DESC LIMIT 1"
+    [1]=>
+    float(0.0014679431915283203)
+    [2]=>
+    string(548) "require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), do_action('template_redirect'), WP_Hook->do_action, WP_Hook->apply_filters, GoogleSitemapGeneratorLoader::do_template_redirect, GoogleSitemapGeneratorLoader::call_show_sitemap, GoogleSitemapGenerator->show_sitemap, do_action('sm_build_index'), WP_Hook->do_action, WP_Hook->apply_filters, GoogleSitemapGeneratorStandardBuilder->index, GoogleSitemapGeneratorStandardBuilder::resolve_blog_lastmod, get_lastpostmodified, get_lastpostdate, _get_last_post_time, QM_DB->query"
+    [3]=>
+    float(1795356659.534461)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#3649 (7) {
+      ["component_trace":protected]=>
+      array(0) {
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#3659 (5) {
+        ["id"]=>
+        string(19) "_get_last_post_time"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(52) "/srv/www/vhosts/www.brandonu.ca/wp-includes/post.php"
+        ["line"]=>
+        int(7773)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(10) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(110)
+          [1]=>
+          int(7891)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(115)
+          [1]=>
+          int(7773)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(111)
+          [1]=>
+          int(7826)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(112)
+          [1]=>
+          int(1313)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(113)
+          [1]=>
+          int(1453)
+        }
+        [5]=>
+        array(2) {
+          [0]=>
+          int(114)
+          [1]=>
+          int(2452)
+        }
+        [6]=>
+        array(2) {
+          [0]=>
+          int(106)
+          [1]=>
+          int(2452)
+        }
+        [7]=>
+        array(2) {
+          [0]=>
+          int(107)
+          [1]=>
+          int(1240)
+        }
+        [8]=>
+        array(2) {
+          [0]=>
+          int(108)
+          [1]=>
+          int(690)
+        }
+        [9]=>
+        array(2) {
+          [0]=>
+          int(109)
+          [1]=>
+          int(23)
+        }
+      }
+      ["component":protected]=>
+      object(QM_Component_Plugin)#3654 (3) {
+        ["type"]=>
+        string(6) "plugin"
+        ["context"]=>
+        string(24) "google-sitemap-generator"
+        ["file"]=>
+        string(123) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/google-sitemap-generator/class-googlesitemapgeneratorstandardbuilder.php"
+      }
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.534461)
+    }
+    ["result"]=>
+    int(1)
+  }
+  [58]=>
+  array(7) {
+    [0]=>
+    string(282) "SELECT
+					COUNT(p.ID) AS `numposts`,
+					MAX(p.post_modified_gmt) as `last_mod`
+					FROM
+						cms_posts p
+					WHERE
+						p.post_password = ''
+						AND p.post_type = 'post'
+						AND p.post_status = 'publish'
+						AND p.ID NOT IN (5)
+					ORDER BY
+						p.post_date_gmt DESC"
+    [1]=>
+    float(0.0004551410675048828)
+    [2]=>
+    string(426) "require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), do_action('template_redirect'), WP_Hook->do_action, WP_Hook->apply_filters, GoogleSitemapGeneratorLoader::do_template_redirect, GoogleSitemapGeneratorLoader::call_show_sitemap, GoogleSitemapGenerator->show_sitemap, do_action('sm_build_index'), WP_Hook->do_action, WP_Hook->apply_filters, GoogleSitemapGeneratorStandardBuilder->index, QM_DB->query"
+    [3]=>
+    float(1795356659.536351)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#3658 (7) {
+      ["component_trace":protected]=>
+      array(0) {
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#3648 (5) {
+        ["id"]=>
+        string(44) "GoogleSitemapGeneratorStandardBuilder->index"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(61) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-hook.php"
+        ["line"]=>
+        int(353)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(6) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(113)
+          [1]=>
+          int(1605)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(114)
+          [1]=>
+          int(2452)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(106)
+          [1]=>
+          int(2452)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(107)
+          [1]=>
+          int(1240)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(108)
+          [1]=>
+          int(690)
+        }
+        [5]=>
+        array(2) {
+          [0]=>
+          int(109)
+          [1]=>
+          int(23)
+        }
+      }
+      ["component":protected]=>
+      object(QM_Component_Plugin)#3654 (3) {
+        ["type"]=>
+        string(6) "plugin"
+        ["context"]=>
+        string(24) "google-sitemap-generator"
+        ["file"]=>
+        string(123) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/google-sitemap-generator/class-googlesitemapgeneratorstandardbuilder.php"
+      }
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.536351)
+    }
+    ["result"]=>
+    int(1)
+  }
+  [59]=>
+  array(7) {
+    [0]=>
+    string(282) "SELECT
+					COUNT(p.ID) AS `numposts`,
+					MAX(p.post_modified_gmt) as `last_mod`
+					FROM
+						cms_posts p
+					WHERE
+						p.post_password = ''
+						AND p.post_type = 'page'
+						AND p.post_status = 'publish'
+						AND p.ID NOT IN (5)
+					ORDER BY
+						p.post_date_gmt DESC"
+    [1]=>
+    float(0.0004391670227050781)
+    [2]=>
+    string(426) "require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), do_action('template_redirect'), WP_Hook->do_action, WP_Hook->apply_filters, GoogleSitemapGeneratorLoader::do_template_redirect, GoogleSitemapGeneratorLoader::call_show_sitemap, GoogleSitemapGenerator->show_sitemap, do_action('sm_build_index'), WP_Hook->do_action, WP_Hook->apply_filters, GoogleSitemapGeneratorStandardBuilder->index, QM_DB->query"
+    [3]=>
+    float(1795356659.536913)
+    [4]=>
+    array(0) {
+    }
+    ["trace"]=>
+    object(QM_Backtrace)#3646 (7) {
+      ["component_trace":protected]=>
+      array(0) {
+      }
+      ["caller_frame":protected]=>
+      object(QM_Data_Stack_Frame)#3663 (5) {
+        ["id"]=>
+        string(44) "GoogleSitemapGeneratorStandardBuilder->index"
+        ["args"]=>
+        NULL
+        ["file"]=>
+        string(61) "/srv/www/vhosts/www.brandonu.ca/wp-includes/class-wp-hook.php"
+        ["line"]=>
+        int(353)
+        ["function"]=>
+        NULL
+      }
+      ["top_frame_location":protected]=>
+      array(2) {
+        ["file"]=>
+        NULL
+        ["line"]=>
+        NULL
+      }
+      ["output_frames":protected]=>
+      array(6) {
+        [0]=>
+        array(2) {
+          [0]=>
+          int(113)
+          [1]=>
+          int(1605)
+        }
+        [1]=>
+        array(2) {
+          [0]=>
+          int(114)
+          [1]=>
+          int(2452)
+        }
+        [2]=>
+        array(2) {
+          [0]=>
+          int(106)
+          [1]=>
+          int(2452)
+        }
+        [3]=>
+        array(2) {
+          [0]=>
+          int(107)
+          [1]=>
+          int(1240)
+        }
+        [4]=>
+        array(2) {
+          [0]=>
+          int(108)
+          [1]=>
+          int(690)
+        }
+        [5]=>
+        array(2) {
+          [0]=>
+          int(109)
+          [1]=>
+          int(23)
+        }
+      }
+      ["component":protected]=>
+      object(QM_Component_Plugin)#3654 (3) {
+        ["type"]=>
+        string(6) "plugin"
+        ["context"]=>
+        string(24) "google-sitemap-generator"
+        ["file"]=>
+        string(123) "/srv/www/vhosts/www.brandonu.ca/wp-content/plugins/google-sitemap-generator/class-googlesitemapgeneratorstandardbuilder.php"
+      }
+      ["callsite":protected]=>
+      NULL
+      ["time":protected]=>
+      float(1795356659.536913)
+    }
+    ["result"]=>
+    int(1)
+  }
+}
+</pre><h4>Total Query Time</h4><pre>60 queries in 0.02 seconds.</pre> --> <!-- Request ID: af0c55490b22db268e6858f6651e26f0; Queries for sitemap: 5; Total queries: 60; Seconds: 0.01; Memory for sitemap: 1KB; Total memory: 10MB -->
