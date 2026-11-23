@@ -26,8 +26,18 @@
   status = 200
 
 [[redirects]]
-  from = "/embed/fork"
-  to = "/helios_fork.html"
+  from = "/embed/notion"
+  to = "/helios_notion_preview.html"
+  status = 200
+
+[[redirects]]
+  from = "/notion"
+  to = "/helios_notion_preview.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/world-plan"
+  to = "/world_plan_simulator.html"
   status = 200
 
 [[redirects]]
@@ -49,4 +59,14 @@
 [[redirects]]
   from = "/signup"
   to = "/public/signup.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/mail"
+  to = "/helios_mail.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/fork"
+  to = "/helios_fork.html"
   status = 200

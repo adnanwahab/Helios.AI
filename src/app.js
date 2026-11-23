@@ -17,7 +17,7 @@ const rewriteYcrText = text => text
   .replace(/(["'`])\/api\//g, `$1${YCR_PROXY_PREFIX}/api/`)
   .replace(/https?:\/\/(?:www\.)?(?:ycr\.org|openresearchlab\.org)\//gi, `${YCR_PROXY_PREFIX}/`);
 
-export function createApp({store, email, origins = [], adminToken = null, secure = true} = {}) {
+export function createApp({store, email, notion = null, origins = [], adminToken = null, secure = true} = {}) {
   if (!store) throw Error('Store required');
   const response = (data, status = 200, extra = {}) => Response.json(data, {status, headers: {'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', ...extra}});
 
@@ -60,6 +60,18 @@ export function createApp({store, email, origins = [], adminToken = null, secure
         session.raw ? {'Set-Cookie': `helios_session=${session.raw}; HttpOnly; SameSite=Lax; Path=/api; Max-Age=7776000${secure ? '; Secure' : ''}`} : {});
     }
     if (method === 'GET' && ['/api/catalog', '/api/laws'].includes(path)) return response(await store.catalog());
+    if (path === '/api/notion/preview' && method === 'GET') {
+      if (!notion) throw new Problem(503, 'Notion preview is not configured.');
+      return response(await notion.preview({fresh: url.searchParams.get('fresh') === '1'}));
+    }
+    // Publishing writes to the maintainer's Notion workspace, so it takes the admin token, not a browser session.
+    if (path === '/api/notion/publish' && method === 'POST') {
+      if (!adminToken) throw new Problem(503, 'Maintainer review is not configured.');
+      if (!equal(request.headers.get('authorization'), 'Bearer ' + adminToken)) throw new Problem(403, 'Maintainer authorization is required to publish to Notion.');
+      if (!notion) throw new Problem(503, 'Notion is not configured.');
+      try { return response(await notion.publish(), 201); }
+      catch (error) { if (error.status === 503) throw new Problem(503, error.message); throw new Problem(502, 'Notion rejected the page: ' + (error.message || 'unknown error')); }
+    }
     const match = path.match(/^\/api\/laws\/([A-Z0-9-]+)(?:\/(amendments)(?:\/([A-Z0-9a-f-]+)\/(accept))?)?$/i);
     if (method === 'GET' && match && !match[2]) return response(await store.detail(match[1]));
     if (method !== 'POST') return response({error: 'Not found'}, 404);

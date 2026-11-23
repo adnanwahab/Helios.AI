@@ -8,6 +8,7 @@
     "test": "bun test",
     "migrate:sqlite": "bun scripts/migrate-sqlite.js",
     "email:status": "node scripts/email-status.js",
+    "notion:publish": "node scripts/notion-publish.mjs",
     "test:browser": "playwright test"
   },
   "engines": {
