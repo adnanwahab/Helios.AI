@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex"><title>Helios · Mail</title>
+<style>
+:root{color-scheme:dark;font-family:Inter,system-ui,sans-serif;background:#0b1220;color:#e7eef9}
+*{box-sizing:border-box}body{margin:0;padding:clamp(16px,3vw,36px)}main{max-width:1050px;margin:auto}
+h1{font-size:clamp(24px,4vw,36px);margin:0 0 6px}.muted{color:#9fb1cc}section{background:#121b2d;border:1px solid #26344e;border-radius:16px;padding:20px;margin-top:18px}
+label{display:block;margin:12px 0 6px;font-size:13px;font-weight:700}input,textarea{background:#0b1220;color:#e7eef9;border:1px solid #35465d;border-radius:8px;width:100%;padding:11px;font:inherit}
+textarea{min-height:160px;resize:vertical}button{background:#7ce4cf;color:#08121e;border:0;border-radius:999px;padding:10px 17px;font-weight:700;cursor:pointer;margin-top:12px}button:disabled{opacity:.5;cursor:wait}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}@media(max-width:750px){.grid{grid-template-columns:1fr}}
+.message{border-top:1px solid #35465d;padding:14px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.message strong{display:block;margin-bottom:5px}.message pre{white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.5 ui-monospace,monospace;color:#c9d8eb}
+.small{font-size:12px}.status{min-height:1.5em}
+</style></head>
+<body><main><h1>Helios · Mail</h1><p class="muted">Resend inbox &amp; outgoing email · private maintainer console</p>
+<section><label for="token">Maintainer token</label><input type="password" id="token" autocomplete="off" placeholder="HELIOS_ADMIN_TOKEN">
+<p class="muted small">Your token stays in this frame's memory, not in browser storage. Never share it.</p>
+<button id="load" type="button">Load inbox</button> <button id="clear" type="button">Lock</button>
+<p id="status" class="status muted" role="status"></p></section>
+<div class="grid">
+<section><h2>Received mail</h2><p class="muted small">Signed Resend inbound webhook → Supabase. Last 30 messages.</p><div id="inbox">Unlock to view messages.</div></section>
+<section><h2>Compose email</h2><form id="compose">
+<label for="to">To</label><input id="to" type="email" required autocomplete="off">
+<label for="subject">Subject</label><input id="subject" maxlength="200" required>
+<label for="message">Message</label><textarea id="message" maxlength="10000" required></textarea>
+<button id="send" type="submit">Send with Resend</button></form>
+<p class="muted small">Only send to recipients who expect your message. Replies arrive at EMAIL_REPLY_TO when receiving is configured.</p></section>
+</div></main>
+<script>
+const $=id=>document.getElementById(id);
+let secret='';
+function status(msg){$('status').textContent=msg}
+function lock(){secret='';$('token').value='';$('inbox').textContent='Unlock to view messages.';status('Mailbox locked.')}
+async function request(method,body){
+ const r=await fetch('/api/email/mailbox',{method,headers:{authorization:'Bearer '+secret,...(body?{'content-type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{})});
+ const data=await r.json().catch(()=>({}));
+ if(!r.ok)throw Error(data.error||'Request failed ('+r.status+')');
+ return data;
+}
+async function load(){
+ secret=$('token').value.trim()||secret;
+ if(!secret){status('Enter the maintainer token first.');return}
+ $('load').disabled=true;status('Loading inbox...');
+ try{
+ const data=await request('GET');
+ $('inbox').replaceChildren();
+ if(!data.messages.length)$('inbox').textContent='No received messages yet.';
+ for(const mail of data.messages){
+ const article=document.createElement('article');article.className='message';
+ const heading=document.createElement('strong');heading.textContent=mail.subject||'(no subject)';
+ const info=document.createElement('div');info.className='muted small';
+ info.textContent=(mail.from_address||'Unknown sender')+' · '+(mail.received_at||mail.created_at||'');
+ const body=document.createElement('pre');body.textContent=mail.text||mail.fetch_error||'(no plaintext body)';
+ article.append(heading,info,body);$('inbox').append(article);
+ }
+ status('Inbox loaded · Sending: '+(data.sendingConfigured?'configured':'not configured')+' · Receiving: '+(data.receivingConfigured?'configured':'not configured'));
+ }catch(e){status(e.message)}finally{$('load').disabled=false}
+}
+$('load').addEventListener('click',load);
+$('clear').addEventListener('click',lock);
+$('compose').addEventListener('submit',async e=>{
+ e.preventDefault();secret=$('token').value.trim()||secret;
+ if(!secret){status('Unlock the mailbox first.');return}
+ const body={to:$('to').value,subject:$('subject').value,text:$('message').value};
+ if(!confirm('Send this message to '+body.to+'?'))return;
+ $('send').disabled=true;status('Sending...');
+ try{const data=await request('POST',body);status('Sent · Resend ID: '+data.id);$('compose').reset()}
+ catch(e){status(e.message)}finally{$('send').disabled=false}
+});
+</script></body></html>
