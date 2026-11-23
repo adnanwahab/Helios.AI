@@ -31,7 +31,7 @@ async function serveStatic(path, res, method) {
 }
 
 const server = createServer(async (req, res) => {
-  const url = new URL(req.url, 'http://localhost');
+  const url = new URL(req.url, `http://${req.headers.host || 'localhost:3000'}`);
   if (!isApi(url.pathname) && !(await serveStatic(url.pathname, res, req.method))) {
     if (!isApi(url.pathname) && !['GET', 'HEAD'].includes(req.method)) { res.writeHead(405); return res.end(); }
     res.writeHead(404, {'Content-Type': 'application/json'});
