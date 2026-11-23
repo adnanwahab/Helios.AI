@@ -43,7 +43,7 @@ fly checks list -a helios-ai-laws
 curl -i https://helios-ai-laws.fly.dev/api/health
 ```
 
-Expect a small build context, a healthy listener on `0.0.0.0:8080`, passing checks, and HTTP 200 from `/api/health`.
+Expect a small build context, a healthy listener on `0.0.0.0:8080`, passing checks, and HTTP 200 from `/api/health`. Health now reports the actual database adapter (`pglite` or `supabase-postgres`) and actual runtime (`fly-machine`, `netlify-functions`, or `node-server`), not hardcoded labels. With the PGlite Fly configuration in this guide, expect `"storage":"pglite"` and `"runtime":"fly-machine"`. A successful health check also queries the catalog from the database.
 
 **Important:** A small Docker upload is not itself a cure for an existing Fly VM/Machines API timeout, old unhealthy Machine, or a Node.js out-of-memory crash. If an image builds successfully but the Machine replacement times out, check `fly machine status 8e7dd9c7600938 -a helios-ai-laws`, `fly scale show -a helios-ai-laws`, `fly volumes list -a helios-ai-laws`, and new logs before making further changes. Increasing RAM may be needed for PGlite, but preserve the attached volume. Do not repeatedly change secrets to fix a crashing image.
 
