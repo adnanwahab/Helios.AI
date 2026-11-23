@@ -58,8 +58,8 @@ if (pr.state !== 'open') {
 const sha = pr.head?.sha;
 if (!/^[a-f0-9]{40}$/i.test(sha || '') ||
     manifest?.head_sha && manifest.head_sha !== sha ||
-    run.head_sha && run.head_sha !== sha ||
-    run.head_repository?.full_name && run.head_repository.full_name !== pr.head.repo?.full_name) {
+    (run.event === 'pull_request' && run.head_sha && run.head_sha !== sha) ||
+    (run.event === 'pull_request' && run.head_repository?.full_name && run.head_repository.full_name !== pr.head.repo?.full_name)) {
   console.log(`Ignoring stale or mismatched screenshot run for PR #${number}`);
   process.exit(0);
 }
