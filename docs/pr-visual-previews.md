@@ -32,8 +32,11 @@ confirmed deployment, the comment labels the expected preview URL as pending.
 
 In **Actions → Helios PR Screenshot → Run workflow**, enter its PR number.
 This is also a way to refresh if the Netlify status was previously pending.
-The manual capture checks out the PR's merge ref and still has read-only
-permissions. The trusted publishing workflow recognizes manual captures.
+The manual capture checks out the trusted current `main` capture tooling and
+screenshots the existing Netlify deploy preview for that PR, even when the
+older PR branch does not contain the latest scripts. This workflow still has
+read-only permissions. It requires a successful Netlify preview status and
+never requests a maintainer token or unlocks an inbox.
 
 ## Security and operational limits
 

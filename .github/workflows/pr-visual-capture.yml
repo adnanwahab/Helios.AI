@@ -21,9 +21,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # Manual backfills check out the PR merge ref; normal PR events already
-          # check out the PR merge commit by default. No privileged token here.
-          ref: ${{ github.event_name == 'workflow_dispatch' && format('refs/pull/{0}/merge', inputs.pr_number) || '' }}
+          # Manual refresh uses trusted main to render the PR's deployed site.
+          # Normal PR events build their merge commit with read-only permissions.
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.event.repository.default_branch || '' }}
           persist-credentials: false
       - name: Resolve PR head for manual refresh
         if: github.event_name == 'workflow_dispatch'
@@ -31,6 +31,19 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ inputs.pr_number }}
         run: echo "MANUAL_PR_HEAD=$(gh api repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER --jq '.head.sha')" >> "$GITHUB_ENV"
+      - name: Resolve deployed Netlify preview for manual refresh
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ inputs.pr_number }}
+          PR_HEAD_SHA: ${{ env.MANUAL_PR_HEAD }}
+        run: |
+          PREVIEW="$(gh api "repos/$GITHUB_REPOSITORY/commits/$PR_HEAD_SHA/status" --jq '.statuses[] | select((.context | startswith("netlify/")) and (.context | endswith("/deploy-preview")) and .state == "success") | .target_url' | head -n 1)"
+          if [ -z "$PREVIEW" ]; then
+            echo "::error::PR #$PR_NUMBER does not have a successful Netlify deploy preview"
+            exit 1
+          fi
+          echo "MANUAL_PREVIEW_URL=$PREVIEW" >> "$GITHUB_ENV"
       - name: Record PR identification
         env:
           PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
@@ -51,6 +64,8 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: bunx playwright install --with-deps chromium
       - name: Render Helios desktop and mobile screenshots
+        env:
+          PR_PREVIEW_URL: ${{ env.MANUAL_PREVIEW_URL }}
         run: node scripts/build-netlify.mjs && node scripts/pr-visual-capture.mjs
       - uses: actions/upload-artifact@v4
         if: always()
