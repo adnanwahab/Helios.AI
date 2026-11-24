@@ -15,12 +15,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    name: Build and deploy GitHub Pages
+  build:
+    name: Build GitHub Pages preview
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
@@ -38,6 +35,19 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           path: dist-pages
+
+  # Deploy in its own job, as actions/deploy-pages recommends. When it ran in the
+  # build job, it looked the artifact up about 0.4 s after the upload finished and
+  # GitHub sometimes did not list it yet ("No artifacts named github-pages were
+  # found"), failing 8 of 18 deploys on Nov 23-24 although the artifact existed.
+  deploy:
+    name: Deploy GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
