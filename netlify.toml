@@ -40,6 +40,11 @@
   to = "/communal_science_lab_webgpu%20(1).html"
   status = 200
 
+[[redirects]]
+  from = "/embed/morphlab"
+  to = "/morphlab-offline-demo.html"
+  status = 200
+
 # Email signup iframe (the form posts to /api/email/subscribe, served by the function).
 [[redirects]]
   from = "/signup"

@@ -159,6 +159,7 @@
         <button class="tab" id="tab-demo" type="button" role="tab" aria-selected="false" aria-controls="view-demo">100 Shared Goals</button>
         <button class="tab" id="tab-unified" type="button" role="tab" aria-selected="false" aria-controls="view-unified">Helios Unified</button>
         <button class="tab" id="tab-lab" type="button" role="tab" aria-selected="false" aria-controls="view-lab">Dynamicland (Local)</button>
+        <button class="tab" id="tab-morphlab" type="button" role="tab" aria-selected="false" aria-controls="view-morphlab">MorphLab Offline</button>
         <button class="tab" id="tab-pensieve" type="button" role="tab" aria-selected="false" aria-controls="view-pensieve">Digital Pensieve</button>
         <button class="tab" id="tab-ycr" type="button" role="tab" aria-selected="false" aria-controls="view-ycr">YC Research</button>
       </nav>
@@ -211,6 +212,14 @@
       ></iframe>
 
       <iframe
+        id="view-morphlab"
+        class="view"
+        title="MorphLab Offline Demo"
+        src="/embed/morphlab"
+        loading="lazy"
+      ></iframe>
+
+      <iframe
         id="view-pensieve"
         class="view"
         title="Digital Pensieve"
@@ -237,6 +246,7 @@
   <script>
     const tabs = {
       lab: document.getElementById('tab-lab'),
+      morphlab: document.getElementById('tab-morphlab'),
       heliosAi: document.getElementById('tab-helios-ai'),
       hippie: document.getElementById('tab-hippie'),
       demo: document.getElementById('tab-demo'),
@@ -247,6 +257,7 @@
 
     const views = {
       lab: document.getElementById('view-lab'),
+      morphlab: document.getElementById('view-morphlab'),
       heliosAi: document.getElementById('view-helios-ai'),
       hippie: document.getElementById('view-hippie'),
       demo: document.getElementById('view-demo'),
@@ -264,6 +275,7 @@
     }
 
     tabs.lab.addEventListener('click', () => activate('lab'));
+    tabs.morphlab.addEventListener('click', () => activate('morphlab'));
     tabs.heliosAi.addEventListener('click', () => activate('heliosAi'));
     tabs.hippie.addEventListener('click', () => activate('hippie'));
     tabs.demo.addEventListener('click', () => activate('demo'));

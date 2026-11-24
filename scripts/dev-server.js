@@ -17,7 +17,7 @@ const redirects = new Map([...toml.matchAll(/\[\[redirects\]\]\s*from\s*=\s*"([^
 const isApi = path => path.startsWith('/api/') || path === '/email/unsubscribe' || path === '/proxy/ycr' || path.startsWith('/proxy/ycr/');
 
 const db = process.env.SUPABASE_DB_URL ? undefined : await createPGliteDatabase(process.env.HELIOS_PGLITE_DIR || '.data/pglite');
-const runtime = await createRuntime({db, secure: false});
+const runtime = await createRuntime({db, secure: process.env.HELIOS_INSECURE_COOKIES === '1' ? false : undefined});
 
 async function serveStatic(path, res, method) {
   let target = path === '/' ? '/index.html' : redirects.get(path) ?? path;

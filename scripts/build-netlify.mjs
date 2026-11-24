@@ -14,6 +14,7 @@ const pages = [
   'health_wealth_of_nations.html',
   'heliosai-particle-interface.html',
   'communal_science_lab_webgpu (1).html',
+  'morphlab-offline-demo.html',
 ];
 
 await rm(out, {recursive: true, force: true});

@@ -1,8 +1,11 @@
 # Helios.AI
 
+just a demo of what the API can do that the client does not want
+
+
 IF its a reasonably possible or easy to grant requsest and you describd pretty much exaxtly what you want we can get you anything we dont really care.
 
-I'm so bored i'm starting to lose my mind. oh wait i never did. they misdiagnosed me with schizophrophrneia.
+I'm so bored i'm starting to lose my mind. oh wait i never did. they misdiagnosed me with schizophrophrneia. i dont know whats going to happen
 
 the system is so big that if any individual disagrees, they usually ignored.
 until now?
