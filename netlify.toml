@@ -192,3 +192,9 @@
   from = "/grid"
   to = "/grid.html"
   status = 200
+
+# Direct link to the interactive chapter; grid-story.js opens the modal on this path.
+[[redirects]]
+  from = "/story"
+  to = "/grid.html"
+  status = 200

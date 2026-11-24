@@ -167,9 +167,9 @@ try {
   }
   // Historical preview backfills may not have the new public page.
   await page.goto(base + '/', {waitUntil:'domcontentloaded'});
-  if (await page.locator('.law-assembly-feature').count()) {
+  if (await page.locator('[aria-labelledby="law-assembly-title"]').count()) {
     await page.setViewportSize({width:1440,height:900});
-    await page.locator('.law-assembly-feature').scrollIntoViewIfNeeded();
+    await page.locator('[aria-labelledby="law-assembly-title"]').scrollIntoViewIfNeeded();
     await page.screenshot({path:join(output,'law-assembly-index.png'),animations:'disabled'});
     await page.goto(base + '/public/helios-law-assembly.html',{waitUntil:'domcontentloaded'});
     for (const id of ['homes','places','water']) {

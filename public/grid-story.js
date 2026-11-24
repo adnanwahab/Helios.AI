@@ -64,11 +64,30 @@ function draw(art){
  const v=ctx.createRadialGradient(W*.5,H*.42,H*.22,W*.5,H*.5,W*.56);v.addColorStop(0,'transparent');v.addColorStop(1,'#04070bdc');ctx.fillStyle=v;ctx.fillRect(0,0,W,H);
  ctx.strokeStyle=gold+'88';ctx.lineWidth=1;ctx.strokeRect(12,12,W-24,H-24);
 }
-function render(focus=true){const node=scenes[scene];visited.add(scene);$('story-location').textContent=node.place;$('story-speaker').textContent=node.speaker;$('story-heading').textContent=node.title;$('story-text').textContent=node.text;$('story-objective').textContent=node.objective;$('story-chapter').textContent='HELIOS / CHAPTER I · '+String(visited.size).padStart(2,'0')+'/'+String(Object.keys(scenes).length).padStart(2,'0')+' scenes seen';canvas.setAttribute('aria-label','Fictional cinematic scene: '+node.place);draw(node.art);population.show(scene==='population');const buttons=node.choices.map((choice,i)=>{const b=document.createElement('button');b.type='button';b.className='story-choice'+(choice.action==='edit'?' edit':'');const n=document.createElement('b');n.textContent=String(i+1).padStart(2,'0');const t=document.createElement('span');t.textContent=choice.label;if(choice.detail){const sub=document.createElement('small');sub.textContent=choice.detail;t.append(sub)}b.append(n,t);b.addEventListener('click',()=>choose(choice));return b});$('story-choices').replaceChildren(...buttons);if(focus)$('story-heading').focus({preventScroll:true});modal.scrollTop=0}
+function render(focus=true){const node=scenes[scene];visited.add(scene);$('story-location').textContent=node.place;$('story-speaker').textContent=node.speaker;$('story-heading').textContent=node.title;$('story-text').textContent=node.text;$('story-objective').textContent=node.objective;$('story-chapter').textContent='HELIOS / CHAPTER I · '+String(visited.size).padStart(2,'0')+'/'+String(Object.keys(scenes).length).padStart(2,'0')+' scenes seen';canvas.setAttribute('aria-label','Fictional cinematic scene: '+node.place);draw(node.art);population.show(scene==='population');const buttons=node.choices.map((choice,i)=>{const b=document.createElement('button');b.type='button';b.className='story-choice'+(choice.action==='edit'?' edit':'');const shortcut=String(i+1);b.setAttribute('aria-keyshortcuts',shortcut+(choice.action==='edit'?' E':''));const n=document.createElement('kbd');n.textContent=shortcut;n.setAttribute('aria-hidden','true');const t=document.createElement('span');t.textContent=choice.label;if(choice.detail){const sub=document.createElement('small');sub.textContent=choice.detail;t.append(sub)}b.append(n,t);if(choice.action==='edit'){const e=document.createElement('kbd');e.className='edit-key';e.textContent='E';e.setAttribute('aria-hidden','true');b.append(e)}b.addEventListener('click',()=>choose(choice));return b});$('story-choices').replaceChildren(...buttons);if(focus)$('story-heading').focus({preventScroll:true});modal.scrollTop=0}
 function closeTo(id){modal.close();const target=$(id);target?.focus();target?.scrollIntoView({block:'center',behavior:'instant'})}
 function choose(choice){if(choice.next){scene=choice.next;render();return}switch(choice.action){case 'edit':closeTo('constitution');break;case 'city':closeTo('year');break;case 'chat':closeTo('message');break;case 'draft':modal.close();if(!$('generate').disabled)$('generate').click();$('generate').scrollIntoView({block:'center'});($('generate').disabled?$('constitution'):$('generate')).focus();break}}
 function open(){if(!modal.open)modal.showModal();render()}
 function reset(){scene='arrival';visited.clear();population.reset();if(modal.open)render()}
 $('story-open').addEventListener('click',open);$('story-close').addEventListener('click',()=>modal.close());$('story-restart').addEventListener('click',reset);$('reset').addEventListener('click',reset);modal.addEventListener('click',e=>{if(e.target===modal){const r=modal.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)modal.close()}});
+// Scope shortcuts to the open dialog. Native Tab/Enter/Space and Escape still work.
+modal.addEventListener('keydown',event=>{
+  if(!modal.open||event.defaultPrevented||event.isComposing||event.altKey||event.ctrlKey||event.metaKey||event.shiftKey)return;
+  if(event.target instanceof Element && (event.target.closest('input, textarea, select, [contenteditable]:not([contenteditable="false"]), [role="textbox"]')||event.target.isContentEditable))return;
+  const buttons=[...$('story-choices').querySelectorAll('button:not(:disabled)')];
+  let index=-1;
+  if(/^[1-9]$/.test(event.key))index=Number(event.key)-1;
+  else if(event.key.toLowerCase()==='e')index=buttons.findIndex(b=>b.classList.contains('edit'));
+  else if(event.key==='ArrowDown'||event.key==='ArrowUp'){
+    if(!buttons.length)return;
+    event.preventDefault();
+    const current=buttons.indexOf(document.activeElement), direction=event.key==='ArrowDown'?1:-1;
+    buttons[current<0?(direction===1?0:buttons.length-1):(current+direction+buttons.length)%buttons.length].focus();
+    return;
+  }else return;
+  if(!buttons[index])return;
+  event.preventDefault();
+  if(!event.repeat)buttons[index].click();
+});
 const entry=new URLSearchParams(location.search).get('story');
-if(entry==='population'){scene='population';open()}else if(entry==='1')open();
+if(entry==='population'){scene='population';open()}else if(entry==='1'||location.pathname==='/story')open();

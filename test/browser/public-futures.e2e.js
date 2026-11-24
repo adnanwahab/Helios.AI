@@ -29,7 +29,7 @@ test('100 scenarios, assumptions, baseline comparison and reset work on desktop 
  await page.locator('#baseline').click();
  await expect(page.locator('#metrics b')).toHaveText(['100','100','100','100']);
  await page.locator('#future').click();
- await expect(page.locator('#metrics')).toHaveText(intervention);
+ await expect(page.locator('#metrics')).toHaveText(intervention,{useInnerText:true});
  await page.setViewportSize({width:390,height:844});
  await page.locator('nav a[href="#decisions"]').click();
  await page.locator('#reset').click();await expect(page.locator('#selection')).toContainText('Future 01');
