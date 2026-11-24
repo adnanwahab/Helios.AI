@@ -21,7 +21,8 @@ const demos = [
   'helios-unified.html',
   'communal_science_lab_webgpu (1).html',
   'health_wealth_of_nations.html',
-  'heliosai-particle-interface.html'
+  'heliosai-particle-interface.html',
+  'sand_castle.html'
 ];
 for (const name of demos) {
   await copyFile(join(root, name), join(out, name));
