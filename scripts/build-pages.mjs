@@ -15,6 +15,7 @@ const demos = [
   'helios_hippie_landing.html',
   'helios_fork.html',
   'world_plan_simulator.html',
+  'vote_radar.html',
   'happybearlandia_pocket.html',
   'eight_billion_map.html',
   'helios_100_frontend_demo.html',
@@ -61,6 +62,7 @@ replaceRequired('src="/embed/hippie"', 'src="./helios_hippie_landing.html"');
 replaceRequired('src="/embed/fork"', 'src="./helios_fork.html"');
 replaceRequired('src="/embed/notion"', 'src="./helios_notion_preview.html"');
 replaceRequired('src="/embed/world-plan"', 'src="./world_plan_simulator.html"');
+replaceRequired('src="/embed/radar"', 'src="./vote_radar.html"');
 replaceRequired('src="/embed/orbit"', 'src="./heliosai_acts_orbit.html"');
 replaceRequired('src="/embed/pocket"', 'src="./happybearlandia_pocket.html"');
 replaceRequired('src="/embed/goals"', 'src="./helios_100_frontend_demo.html"');

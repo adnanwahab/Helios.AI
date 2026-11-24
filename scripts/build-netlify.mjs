@@ -15,6 +15,7 @@ const pages = [
   'helios_hippie_landing.html',
   'helios_fork.html',
   'world_plan_simulator.html',
+  'vote_radar.html',
   'happybearlandia_pocket.html',
   'eight_billion_map.html',
   'helios_100_frontend_demo.html',
