@@ -79,7 +79,11 @@ function drawDetail({resetDraft=true}={}){
  const spec=modelFor(law);$('law-id').textContent=law.id+' · '+law.category;
  $('law-title').textContent=law.title;$('law-goal').textContent=law.sharedGoal;
  const assemblyChapter={'HGA-012':'homes','HGA-051':'places','HGA-091':'water'}[law.id],assemblyLink=$('law-assembly-selected');
- if(assemblyLink){assemblyLink.hidden=!assemblyChapter;if(assemblyChapter)assemblyLink.href='./public/helios-law-assembly.html#'+assemblyChapter;else assemblyLink.href='./public/helios-law-assembly.html';}
+ if(assemblyLink){
+   const futures=law.id==='HGA-090';assemblyLink.hidden=!assemblyChapter&&!futures;
+   assemblyLink.textContent=futures?'Explore 100 possible futures ↗':'See how it works · 3D assembly ↗';
+   assemblyLink.href=futures?'./public/helios-futures.html':assemblyChapter?'./public/helios-law-assembly.html#'+assemblyChapter:'./public/helios-law-assembly.html';
+ }
  $('law-option').textContent=law.illustrativeLocalOption;$('law-safeguards').textContent=law.risksAndSafeguards;
  $('law-measures').textContent=(law.suggestedMeasures||[]).join(' · ');
  $('law-version').textContent=connected?'Revision '+law.version:'Original editorial draft';
