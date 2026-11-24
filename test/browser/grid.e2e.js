@@ -71,7 +71,7 @@ test('population chamber is inspectable, deterministic and remains local',async(
  const memories=await page.locator('#pop-memories').innerText();
  await page.locator('#pop-proposal').selectOption('1');
  await page.locator('#pop-run').click();
- await expect(page.locator('#pop-memories')).toHaveText(memories);
+ await expect(page.locator('#pop-memories')).toHaveText(memories,{useInnerText:true});
  await expect(page.locator('#pop-tallies strong')).toHaveCount(3);
  await page.setViewportSize({width:390,height:844});
  expect(await page.locator('#story-modal').evaluate(d=>d.scrollWidth<=d.clientWidth+1)).toBe(true);
