@@ -232,7 +232,7 @@ try {
     if(await page.locator('#budget-open').count()){
       await page.locator('#budget-open').click();
       await page.locator('#budget-allocations .budget-allocation').last().waitFor({state:'visible'});
-      await page.locator('#budget-title').scrollIntoViewIfNeeded();
+      await page.locator('#budget-title').evaluate(e=>e.scrollIntoView({block:'start',behavior:'instant'}));
       await page.screenshot({path:join(output,'reimagine-budget.png'),animations:'disabled'});
       await page.locator('#budget-open').click();
     }

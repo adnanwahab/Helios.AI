@@ -14,17 +14,17 @@ function syncChoices(changed){
  amount.value=String(Math.min(max,Math.max(max?1:0,Number(amount.value)||0)));
  render();
 }
-function drawBar(root,value,color){const track=make('span',undefined,'budget-bar');const fill=make('span');fill.style.width=(value/Math.max(1,...categories.map(c=>Math.max(c.base,plan[c.id],preview()[c.id])))*100)+'%';fill.style.background=color;track.append(fill);root.append(track)}
+function drawBar(root,value,color,max){const track=make('span',undefined,'budget-bar');const fill=make('span');fill.style.width=(value/max*100)+'%';fill.style.background=color;track.append(fill);root.append(track)}
 function preview(){
  const n=Number(amount.value);return n>0&&n<=available(plan,from.value,to.value)?transfer(plan,from.value,to.value,n):plan;
 }
 function drawAllocations(next){
- const root=$('budget-allocations');root.replaceChildren();
+ const root=$('budget-allocations');root.replaceChildren();const max=Math.max(1,...categories.map(c=>Math.max(c.base,next[c.id])));
  for(const c of categories){
   const row=make('div',undefined,'budget-allocation');row.dataset.category=c.id;
   const label=make('div',undefined,'budget-category');label.append(make('strong',c.name),make('small','Illustrative floor '+money(c.floor)));row.append(label);
-  const base=make('div',undefined,'budget-column');base.append(make('span',money(c.base)));drawBar(base,c.base,'#83918c');row.append(base);
-  const proposed=make('div',undefined,'budget-column');proposed.append(make('span',money(next[c.id])));drawBar(proposed,next[c.id],c.color);row.append(proposed);
+  const base=make('div',undefined,'budget-column');base.append(make('span',money(c.base)));drawBar(base,c.base,'#83918c',max);row.append(base);
+  const proposed=make('div',undefined,'budget-column');proposed.append(make('span',money(next[c.id])));drawBar(proposed,next[c.id],c.color,max);row.append(proposed);
   const delta=next[c.id]-c.base;const change=make('strong',signed(delta),'budget-delta');change.dataset.sign=delta>0?'plus':delta<0?'minus':'zero';row.append(change);root.append(row);
  }
 }
@@ -34,15 +34,17 @@ function describeImpact(c,n,positive){
 }
 function render(){
  if(!valid(plan))throw Error('Invalid budget state');
- const max=available(plan,from.value,to.value),n=Math.min(max,Number(amount.value)||0),next=preview();
+ const max=available(plan,from.value,to.value);amount.max=String(max);amount.disabled=max===0;const n=Math.min(max,Math.max(0,Number(amount.value)||0));amount.value=String(n);const next=preview();
  $('budget-amount-value').textContent=money(n);$('budget-limit').textContent=money(max)+' available above the illustrative floor.';
  $('budget-apply').disabled=n===0;$('budget-undo').disabled=!history.length;
  $('budget-baseline-total').textContent=money(TOTAL);$('budget-proposed-total').textContent=money(total(next));$('budget-balance').textContent=money(TOTAL-total(next));
  $('budget-transfer-label').textContent=n?money(n)+' from '+byId.get(from.value).name+' to '+byId.get(to.value).name:'No funded transfer selected.';
+ $('budget-why-title').textContent=n?'How and why might this transfer work?':history.length?'How and why might the last applied transfer work?':'How and why might a transfer work?';
  $('budget-current-note').textContent=history.length+' applied transfer'+(history.length===1?'':'s')+(n?' · chart includes the next preview':' · chart shows applied plan');
  drawAllocations(next);
  const root=$('budget-impacts');root.replaceChildren();
  if(n){root.append(describeImpact(byId.get(to.value),n,true),describeImpact(byId.get(from.value),n,false))}
+ else if(history.length){const h=history.at(-1);root.append(describeImpact(byId.get(h.to),h.amount,true),describeImpact(byId.get(h.from),h.amount,false))}
  else root.append(make('p','Choose a funded transfer to see the possible capacity gain and what the donor department might give up.','muted'));
  const log=$('budget-history');log.replaceChildren();if(!history.length)log.append(make('li','No applied changes yet.'));else for(const h of history)log.append(make('li',money(h.amount)+' from '+byId.get(h.from).name+' to '+byId.get(h.to).name));
 }
