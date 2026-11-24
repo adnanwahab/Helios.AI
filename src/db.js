@@ -29,9 +29,10 @@ export function createDatabase(env = process.env) {
       try{
         await client.query('BEGIN');
         await client.query("SELECT pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtext('helios-private-schema-v1'))");
-        const legacy=(await client.query("SELECT to_regclass('public.laws') AS laws,to_regclass('public.versions') AS versions,to_regclass('helios_civic.laws') AS current")).rows[0];
+        const legacy=(await client.query("SELECT to_regclass('public.laws') AS laws,to_regclass('public.versions') AS versions,to_regclass('helios_civic.laws') AS current,to_regnamespace('helios_civic') AS private_schema")).rows[0];
         if(legacy.laws&&legacy.versions&&!legacy.current)throw Error('Existing public Helios tables require an explicit reviewed migration; refusing to create a second store.');
-        await client.query('CREATE SCHEMA IF NOT EXISTS helios_civic');
+        // A pre-provisioned runtime role owns this schema without needing database-wide CREATE privileges.
+        if(!legacy.private_schema)await client.query('CREATE SCHEMA helios_civic');
         await client.query('REVOKE ALL ON SCHEMA helios_civic FROM PUBLIC');
         const roles=(await client.query("SELECT rolname FROM pg_catalog.pg_roles WHERE rolname IN ('anon','authenticated')")).rows;
         for(const {rolname} of roles)await client.query('REVOKE ALL ON SCHEMA helios_civic FROM '+(rolname==='anon'?'anon':'authenticated'));

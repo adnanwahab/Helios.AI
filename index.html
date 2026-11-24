@@ -27,6 +27,7 @@ header.wrap,main.wrap,footer.wrap{width:min(100% - 40px,1560px)}#government-view
 @media(min-width:1350px){.law-tiles{grid-template-columns:repeat(10,minmax(0,1fr))}.law-tile{padding:6px 4px;min-height:101px}.law-atlas{padding:14px}}
 @media(max-width:950px){.law-layout{grid-template-columns:1fr}.law-tiles{grid-template-columns:repeat(5,minmax(0,1fr));max-height:360px}}
 @media(max-width:550px){.law-top{gap:10px}.law-top h1{font-size:34px}.law-atlas,.law-detail{padding:11px}.law-tiles{grid-template-columns:repeat(4,minmax(0,1fr));max-height:360px}.law-filters{grid-template-columns:1fr}.law-tile{min-height:85px}.law-sliders{gap:8px}.law-chart{min-height:100px}.law-top-actions{width:100%}.law-top-actions .primary{flex:1}}
+.netherbrain-link{margin:0 0 14px;padding:9px 11px;background:#21182c;border:1px solid #59426d;border-radius:9px;font-size:12px;line-height:1.4}.netherbrain-link a{display:inline-block;color:#f4d49d;font-weight:700;text-underline-offset:3px;padding:4px 0}.netherbrain-link span{display:block;color:#c9b8dc;font-size:11px}
 </style>
 </head>
 <body>
@@ -75,6 +76,7 @@ header.wrap,main.wrap,footer.wrap{width:min(100% - 40px,1560px)}#government-view
 <div class="workbench">
 <div class="citizen-main loop-lane">
 <div class="lane-header"><div><p class="eyebrow">01 / Express</p><h2>Your concern</h2></div><span class="lane-tag">Private</span></div>
+<p class="netherbrain-link"><a href="./public/netherbrain.html" target="_blank" rel="noopener noreferrer">Please vote for the Netherbrain ↗</a><span>Fictional campaign · opens in a new tab</span></p>
 <section id="screen-1" aria-labelledby="heading-1">
 <p class="eyebrow">01 / Listen</p><h1 id="heading-1" tabindex="-1">What would you like to change?</h1>
 <p class="lede">Start with something you noticed, experienced, or wish were different. It doesn't have to sound like a law.</p>
@@ -136,6 +138,7 @@ header.wrap,main.wrap,footer.wrap{width:min(100% - 40px,1560px)}#government-view
 </div>
 <aside class="constitution-board loop-lane" aria-labelledby="constitution-title">
 <div class="lane-header"><div><p class="eyebrow">02 / Synthesize</p><h2 id="constitution-title">Shared constitution</h2></div><span class="lane-tag" id="board-mode">Sample</span></div>
+<p class="netherbrain-link"><a href="./public/netherbrain.html" target="_blank" rel="noopener noreferrer">Please vote for the Netherbrain ↗</a><span>Fictional campaign · opens in a new tab</span></p>
 <p class="hint">One evolving draft of distinct public ideas. Repeated wording is grouped; different qualifications and dissent stay separate.</p>
 <div class="board-stats" aria-label="Synthetic corpus statistics"><div class="board-stat"><strong id="synthetic-people">—</strong><span>Synthetic journals</span></div><div class="board-stat"><strong id="synthetic-clauses">—</strong><span>Unique clauses</span></div><div class="board-stat"><strong id="synthetic-duplicates">—</strong><span>Repeated mentions removed</span></div></div>
 <div class="notice">Illustrative synthetic votes are not real people, public opinion, or election results. Shared votes are counted separately by browser session.</div>
@@ -147,6 +150,7 @@ header.wrap,main.wrap,footer.wrap{width:min(100% - 40px,1560px)}#government-view
 </aside>
 <aside class="clause-review loop-lane" aria-labelledby="review-title">
 <div class="lane-header"><div><p class="eyebrow">03 / Decide</p><h2 id="review-title">Clause review</h2></div><span class="lane-tag" id="review-mode">Practice</span></div>
+<p class="netherbrain-link"><a href="./public/netherbrain.html" target="_blank" rel="noopener noreferrer">Please vote for the Netherbrain ↗</a><span>Fictional campaign · opens in a new tab</span></p>
 <p id="clause-topic" class="eyebrow"></p><p id="clause-text" class="clause-detail"></p><div id="clause-synthetic" class="vote-counts"></div><div id="clause-real" class="real-tally"></div>
 <div class="vote-actions" role="group" aria-label="Advisory position on selected clause"><button type="button" class="secondary" data-clause-vote="support" aria-pressed="false">Support</button><button type="button" class="secondary" data-clause-vote="oppose" aria-pressed="false">Oppose</button><button type="button" class="secondary" data-clause-vote="unsure" aria-pressed="false">Unsure</button></div>
 <button type="button" class="quiet" id="clear-vote">Clear my position</button><p id="clause-status" class="status" role="status"></p>
