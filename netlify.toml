@@ -102,3 +102,9 @@
   from = "/embed/fork"
   to = "/helios_fork.html"
   status = 200
+
+# Eight billion people, five laws: a deck.gl map with synthetic placeholder data.
+[[redirects]]
+  from = "/eight-billion"
+  to = "/eight_billion_map.html"
+  status = 200
