@@ -16,7 +16,7 @@ async function request(path,opts={}){
 function controls(){
  $('room-send').disabled=!connected||busy||!$('room-consent').checked||!$('room-message').value.trim();
  $('room-connect').disabled=busy||isStatic;$('room-refresh').disabled=busy||refreshing;
- $('room-topic').disabled=busy;
+ $('room-topic').disabled=busy;$('room-message').disabled=busy;$('room-consent').disabled=busy;
 }
 async function refresh(){
  if(!connected||refreshing)return;refreshing=true;const n=++ticket,id=$('room-topic').value;controls();
