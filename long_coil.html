@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Long Coil</title>
+<meta name="theme-color" content="#110d0b">
+<meta name="description" content="Technology from 3.3 million BCE to today, wound one loop per century, then projected ten years ahead to 2036. Every projected milestone names the plan, roadmap or trend it rests on and a confidence tier.">
+<link rel="icon" href="/public/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Sofia+Sans+Condensed:wght@600;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE   an instrument for exploring, calm and exact; a museum case at night
+   IDEA    a khipu, the Andean knotted-cord record: eight dyed strands, one knot per invention, wound into a coil
+   PICTURE the 3D coil itself, full-bleed: deep time fanned on a log scale, one loop per century, fraying into a cone to 2036
+   COLOUR  warm black ground, warm white ink, eight validated strand hues; the projected decade framed in ice white
+   TYPE    Sofia Sans Condensed 800 for years and titles, Instrument Sans for reading
+   LAYOUT  laptop: coil left, period panel right, time scrubber along the bottom; phone: title, coil, scrubber, then the panel */
+:root{color-scheme:dark;--bg:#110d0b;--bg2:#18130f;--bg3:#211a15;--ink:#f3ede6;--ink2:#c2b8ad;--mute:#968c82;--line:rgba(243,237,230,.13);--ice:#d7ecff;--good:#0ca30c;--warn:#fab219;--serious:#ec835a;--crit:#d03b3b;--disp:"Sofia Sans Condensed","Arial Narrow",system-ui,sans-serif}
+:root[data-theme=light],:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:clip}
+a{color:var(--ice);text-underline-offset:3px}
+button{font:inherit;color:inherit}
+.app{display:grid;grid-template-columns:minmax(0,1fr) 410px;grid-template-rows:auto minmax(0,1fr);height:100%}
+.top{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 24px;padding:12px max(2vw,16px);border-bottom:1px solid var(--line)}
+.brand{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px}
+h1{font:800 clamp(30px,3.1vw,40px)/1.05 var(--disp);letter-spacing:-.01em;margin:0}
+.brand p{margin:0;color:var(--ink2);font-size:15px;max-width:52ch}
+.brand{flex:1 1 480px}
+.tools{display:flex;flex-wrap:nowrap;gap:10px;align-items:center;flex:0 1 auto}
+.search{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--line);border-radius:10px;padding:0 12px;height:44px;width:min(320px,100%)}
+.search svg{flex:none;opacity:.7}
+.search input{all:unset;flex:1;font-size:16px;color:var(--ink);height:42px}
+.search input::placeholder{color:var(--mute)}
+.search:focus-within{outline:2px solid var(--ice);outline-offset:1px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{background:none;border:0;padding:0 16px;height:44px;cursor:pointer;color:var(--ink2);font-weight:500}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.seg button:focus-visible,.chip:focus-visible,.row:focus-visible,.tour:focus-visible,.scrub:focus-visible,.x:focus-visible{outline:2px solid var(--ice);outline-offset:2px}
+.stage{position:relative;min-height:0;overflow:hidden;background:radial-gradient(ellipse 70% 60% at 55% 45%,#1d1612 0%,var(--bg) 70%)}
+#cv{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab;display:block}
+#cv.drag{cursor:grabbing}
+#cv.hov{cursor:pointer}
+.legend{position:absolute;top:12px;left:max(1.4vw,12px);right:12px;display:flex;flex-wrap:wrap;gap:6px;pointer-events:none}
+.chip{flex:none;pointer-events:auto;display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 11px 0 9px;border-radius:16px;border:1px solid var(--line);background:rgba(17,13,11,.72);color:var(--ink2);font-size:13px;cursor:pointer;white-space:nowrap}
+.chip i{width:10px;height:10px;border-radius:50%;background:var(--c);flex:none}
+.chip b{font-weight:500;color:var(--mute)}
+.chip[aria-pressed=true]{color:var(--ink);border-color:var(--c);background:rgba(17,13,11,.9)}
+.chip.off{opacity:.45}
+.yr{position:absolute;right:max(1.4vw,14px);bottom:104px;text-align:right;pointer-events:none;line-height:1}
+.yr b{display:block;font:800 clamp(44px,6vw,80px)/.9 var(--disp);letter-spacing:-.02em;white-space:nowrap}
+.yr span{display:block;margin-top:6px;font-size:14px;color:var(--ink2)}
+.yr.fut b,.yr.fut span{color:var(--ice)}
+.hint{position:absolute;left:max(1.4vw,12px);bottom:98px;margin:0;font-size:13px;color:var(--mute);white-space:nowrap;pointer-events:none}
+.tour{position:absolute;left:max(1.4vw,12px);bottom:126px;display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px;border-radius:20px;border:1px solid var(--line);background:rgba(17,13,11,.8);cursor:pointer;font-size:14px}
+.tour:hover{border-color:var(--ink2)}
+.scrub{position:absolute;left:max(1.4vw,12px);right:max(1.4vw,12px);bottom:14px;height:70px;cursor:ew-resize;touch-action:none;user-select:none}
+.scrub canvas{position:absolute;left:0;right:0;top:0;width:100%;height:40px}
+.scrub .ticks{position:absolute;left:0;right:0;top:46px;height:20px;font-size:13px;color:var(--mute)}
+.scrub .ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.scrub .ticks span.f{color:var(--ice)}
+.thumb{position:absolute;top:-6px;width:2px;height:52px;background:var(--ink);transform:translateX(-1px);pointer-events:none}
+.thumb::after{content:"";position:absolute;left:-5px;top:-6px;width:12px;height:12px;border-radius:50%;background:var(--ink);box-shadow:0 0 0 3px var(--bg)}
+.thumb.fut,.thumb.fut::after{background:var(--ice)}
+.tip{position:absolute;pointer-events:none;max-width:280px;background:rgba(24,19,15,.96);border:1px solid var(--line);border-radius:10px;padding:8px 11px;font-size:14px;line-height:1.35;box-shadow:0 6px 20px rgba(0,0,0,.4);z-index:3}
+.tip b{display:block;font-weight:600}
+.tip small{display:block;color:var(--ink2);font-size:13px;margin-top:2px}
+.panel{position:relative;overflow:auto;border-left:1px solid var(--line);background:var(--bg2);padding:20px 22px 40px;scrollbar-color:#3a2f27 transparent}
+.ph h2{font:800 clamp(30px,2.6vw,38px)/1.05 var(--disp);margin:0;letter-spacing:-.01em}
+.ph h2.fut{color:var(--ice)}
+.ph p{margin:6px 0 0;color:var(--ink2);font-size:15px}
+.key{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;margin:14px 0 4px;font-size:13px;color:var(--ink2);align-items:center}
+.key svg{display:block}
+.card{margin:16px 0 6px;padding:14px 16px 16px;border:1px solid var(--line);border-left:3px solid var(--c);border-radius:12px;background:var(--bg3);position:relative}
+.card .meta{font-size:13px;color:var(--ink2);padding-right:40px}
+.card h3{margin:4px 0 6px;font:800 26px/1.08 var(--disp)}
+.card p{margin:0 0 8px;font-size:15px}
+.card .basis{color:var(--ink2)}
+.card .basis b,.card .basis strong{color:var(--ink);font-weight:600}
+.x{position:absolute;top:8px;right:8px;width:36px;height:36px;border-radius:18px;border:1px solid var(--line);background:none;cursor:pointer;display:grid;place-items:center}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink);white-space:nowrap}
+.list{list-style:none;margin:14px 0 0;padding:0}
+.yh{font:800 20px/1 var(--disp);color:var(--ink2);margin:18px 0 4px;padding-top:10px;border-top:1px solid var(--line)}
+.yh.now{color:var(--ice)}
+.row{display:grid;grid-template-columns:52px minmax(0,1fr);gap:2px 12px;width:100%;text-align:left;background:none;border:0;border-radius:10px;padding:9px 8px;cursor:pointer}
+.row:hover{background:var(--bg3)}
+.row.on{background:var(--bg3);box-shadow:inset 3px 0 0 var(--c)}
+.row.ny{grid-template-columns:0 minmax(0,1fr);gap:2px 0}
+.list.wide .row{grid-template-columns:92px minmax(0,1fr)}
+.row .y{font:600 15px/1.3 var(--disp);color:var(--ink2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.row .t{font-weight:600;font-size:15px;line-height:1.3;display:flex;align-items:baseline;gap:7px}
+.row .t i{width:9px;height:9px;border-radius:50%;background:var(--c);flex:none;transform:translateY(-1px)}
+.row .t i.h{background:none;box-shadow:inset 0 0 0 2px var(--c)}
+.row .d{grid-column:2;font-size:14px;color:var(--ink2);line-height:1.4}
+.row .r{grid-column:2;font-size:13px;color:var(--mute)}
+.sec{margin:22px 0 4px;font:800 20px/1.1 var(--disp)}
+.fc{display:grid;gap:10px;margin-top:8px}
+.fcr{padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:14px}
+.fcr .w{color:var(--ink2);font-size:13px}
+.fcr p{margin:3px 0}
+.out{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600;white-space:nowrap}
+.about{margin-top:28px;padding-top:14px;border-top:1px solid var(--line);font-size:14px;color:var(--ink2)}
+.about p{margin:0 0 8px}
+.empty{color:var(--mute);font-size:14px;margin:16px 0}
+.ledger{grid-column:1/-1;overflow:auto;padding:24px max(4vw,16px) 60px}
+.ledger h2{font:800 clamp(30px,3vw,42px)/1.05 var(--disp);margin:8px 0 8px}
+.ledger h3{font:800 26px/1.1 var(--disp);margin:34px 0 6px}
+.ledger .lede{color:var(--ink2);max-width:72ch;margin:0 0 6px}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin-top:12px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{font-weight:600;color:var(--ink2);background:var(--bg2);position:sticky;top:0}
+td.n{white-space:nowrap;font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:0}
+.ledger .about{max-width:78ch}
+.err{padding:30px;color:var(--ink2)}
+@media (max-width:999px){
+.legend{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;right:0;padding-right:12px}
+.legend::-webkit-scrollbar{display:none}
+.app{display:block;height:auto}
+.stage{height:min(72vh,660px);min-height:460px}
+.panel{border-left:0;border-top:1px solid var(--line);padding:18px max(4vw,16px) 40px}
+.ledger{padding:20px max(4vw,16px) 50px}
+}
+@media (max-width:600px){
+.brand p{font-size:14px}
+.top{padding:10px 16px}
+.search{width:100%}
+.tools{width:100%;flex:1 1 100%}
+.tools .search{flex:1}
+.legend .chip{height:28px;font-size:13px;padding:0 9px 0 8px}
+.legend .chip b{display:none}
+.yr{bottom:102px}
+.yr b{font-size:44px}
+.hint{display:none}
+.tour{bottom:98px;height:36px;font-size:13px}
+.scrub .ticks span.o{display:none}
+table{font-size:13px}
+.stack thead{display:none}
+.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--line)}
+.stack td{display:grid;grid-template-columns:6.5em minmax(0,1fr);gap:10px;border:0;padding:3px 12px}
+.stack td::before{content:attr(data-l);color:var(--mute)}
+.stack td:empty{display:none}
+}
+@media (prefers-reduced-motion:reduce){.tour{display:none}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header class="top">
+    <div class="brand">
+      <h1>The Long Coil</h1>
+      <p>Technology from 3.3 million BCE, wound one loop per century, then projected ten years ahead to 2036.</p>
+    </div>
+    <div class="tools">
+      <label class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><span class="vh" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Search</span><input id="q" type="search" placeholder="Search people, things, ideas" autocomplete="off"></label>
+      <div class="seg"><button id="vCoil" aria-pressed="true">Coil</button><button id="vLedger" aria-pressed="false">Ledger</button></div>
+    </div>
+  </header>
+  <section class="stage" id="stage">
+    <canvas id="cv" tabindex="0" role="img" aria-label="A coil of technology milestones: eight coloured strands run in from 3.3 million BCE on a logarithmic scale, braid into one loop per century from 1026 to 2026, then fray into a cone of projected milestones to 2036. The panel lists the records for the period in focus."></canvas>
+    <div class="legend" id="legend"></div>
+    <div class="tip" id="tip" hidden></div>
+    <button class="tour" id="tour" type="button"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11l9-5.5z" fill="currentColor"/></svg><span>Fly from 3.3M BCE</span></button>
+    <p class="hint" id="hint">Drag to turn, scroll to zoom, click a knot to read it.</p>
+    <div class="yr" id="yr"><b id="yrN">2031</b><span id="yrL">Projected</span></div>
+    <div class="scrub" id="scrub" tabindex="0" role="slider" aria-label="Year in focus" aria-valuemin="0" aria-valuemax="1000" aria-valuenow="950">
+      <canvas id="hist" aria-hidden="true"></canvas>
+      <div class="thumb" id="thumb"></div>
+      <div class="ticks" id="ticks"></div>
+    </div>
+  </section>
+  <aside class="panel" id="panel"><p class="empty">Loading the record…</p></aside>
+  <section class="ledger" id="ledger" hidden></section>
+</div>
+<!-- The record, one entry per line. Edit here; the page reads it on load.
+     k  kind: h = history (to 2026), p = projected (2027 to 2036), f = a forecast made in year s and due in year y
+     y  year (negative = BCE) · c  lineage 0-7, in the order of LIN below · t  title · d  one-line description
+     u  source URL, or w  English Wikipedia article slug · m  major (ringed, labelled first)
+     p: r  confidence (s scheduled, l likely, p plausible, x long shot) · b  the plan, roadmap or trend it rests on
+     f: by  who said it · o  outcome (t came true, l late, p partly, w wrong, m missed its date, n pending) · n  note · nd  no date given -->
+<script type="application/json" id="coil-data">
+[
+{"k":"h","y":-3300000,"c":3,"t":"Lomekwi stone tools","d":"Flaked stones from Lomekwi 3, Kenya: the oldest known tools, made before the genus Homo.","w":"Lomekwi","m":1},
+{"k":"h","y":-2600000,"c":3,"t":"Oldowan flakes","d":"Sharp flakes struck from cobbles at Gona, Ethiopia: the first lasting tool tradition.","w":"Oldowan"},
+{"k":"h","y":-1760000,"c":3,"t":"Acheulean hand axe","d":"Symmetrical two-faced axes appear in Kenya and stay in use for over a million years.","w":"Acheulean"},
+{"k":"h","y":-1000000,"c":1,"t":"Fire at Wonderwerk Cave","d":"Burned bone and plant ash deep in a South African cave: early evidence of controlled fire.","w":"Wonderwerk_Cave","m":1},
+{"k":"h","y":-790000,"c":1,"t":"Hearths by a lake","d":"Clusters of burnt flint at Gesher Benot Ya'aqov, Israel, suggest fire kept in one place.","w":"Gesher_Benot_Ya'aqov"},
+{"k":"h","y":-500000,"c":3,"t":"Hafted spear points","d":"Stone points bound to wooden shafts at Kathu Pan, South Africa: tools made of parts.","w":"Hafting"},
+{"k":"h","y":-300000,"c":3,"t":"Levallois prepared cores","d":"Knappers shape a core first, then strike off a flake of planned size and shape.","w":"Levallois_technique"},
+{"k":"h","y":-100000,"c":4,"t":"Ochre paint workshop","d":"Abalone shells holding mixed ochre pigment, left in Blombos Cave, South Africa.","w":"Blombos_Cave"},
+{"k":"h","y":-73000,"c":4,"t":"Oldest known drawing","d":"Cross-hatched lines in red ochre on a stone flake from Blombos Cave.","w":"Blombos_Cave"},
+{"k":"h","y":-64000,"c":3,"t":"Bow and arrow","d":"Tiny stone points with impact damage and glue residue at Sibudu Cave, South Africa.","w":"Bow_and_arrow"},
+{"k":"h","y":-43500,"c":4,"t":"Figurative cave painting","d":"A life-size warty pig painted in Leang Tedongnge, Sulawesi, at least 45,500 years ago.","w":"Leang_Tedongnge"},
+{"k":"h","y":-42000,"c":0,"t":"Lebombo bone","d":"A baboon fibula with 29 notches; some read it as a tally or a lunar count.","w":"Lebombo_bone"},
+{"k":"h","y":-40000,"c":3,"t":"Eyed needles","d":"Bone needles with eyes let people sew close-fitting clothes for cold climates.","w":"Sewing_needle"},
+{"k":"h","y":-34000,"c":4,"t":"Chauvet Cave paintings","d":"Lions, horses and rhinos drawn with shading and depth in southern France.","w":"Chauvet_Cave"},
+{"k":"h","y":-29000,"c":3,"t":"Fired clay figurine","d":"The Venus of Dolní Věstonice is among the oldest objects of fired ceramic.","w":"Venus_of_Dolní_Věstonice"},
+{"k":"h","y":-21000,"c":5,"t":"Grinding wild grain","d":"Grindstones and seeds at Ohalo II by the Sea of Galilee show wild cereals made into flour.","w":"Ohalo_II"},
+{"k":"h","y":-18000,"c":3,"t":"First pottery vessels","d":"Cooking pots from Xianrendong Cave, China, some 20,000 years old.","w":"Xianrendong_Cave"},
+{"k":"h","y":-18000,"c":6,"t":"Ishango bone","d":"A notched bone from Congo, often read as one of the oldest counting tallies.","w":"Ishango_bone"},
+{"k":"h","y":-13000,"c":5,"t":"Domestic dogs","d":"Wolves become dogs, the first domesticated animal, long before farming.","w":"Domestication_of_the_dog"},
+{"k":"h","y":-11000,"c":5,"t":"Fermented grain brew","d":"Residues in Raqefet Cave, Israel, point to beer-like brewing by the Natufians.","w":"History_of_beer"},
+{"k":"h","y":-9500,"c":5,"t":"Farming begins","d":"Wheat and barley are domesticated in the Fertile Crescent: the Neolithic Revolution.","w":"Neolithic_Revolution","m":1},
+{"k":"h","y":-9500,"c":3,"t":"Göbekli Tepe","d":"Carved stone pillars raised in Anatolia by people who had not yet settled in towns.","w":"Göbekli_Tepe"},
+{"k":"h","y":-8500,"c":5,"t":"Sheep and goats tamed","d":"Herders in the Zagros and Anatolia domesticate goats and sheep, then cattle.","w":"Domestication_of_animals"},
+{"k":"h","y":-8000,"c":2,"t":"Pesse canoe","d":"A pine dugout from the Netherlands, among the oldest known boats.","w":"Pesse_canoe"},
+{"k":"h","y":-7100,"c":3,"t":"Çatalhöyük","d":"A dense town of mud-brick houses entered through the roof, in central Anatolia.","w":"Çatalhöyük"},
+{"k":"h","y":-7000,"c":5,"t":"Rice on the Yangtze","d":"Cultivated rice spreads along the middle and lower Yangtze River.","w":"History_of_rice_cultivation"},
+{"k":"h","y":-7000,"c":5,"t":"Maize from teosinte","d":"Farmers in southern Mexico begin turning a wild grass into maize.","w":"Maize"},
+{"k":"h","y":-7000,"c":7,"t":"Trepanation","d":"Holes cut into living skulls, many of which healed: the oldest known surgery.","w":"Trepanning"},
+{"k":"h","y":-6000,"c":7,"t":"Bow-drill dentistry","d":"Drilled molars at Mehrgarh, in today's Pakistan, show early dental treatment.","w":"Mehrgarh"},
+{"k":"h","y":-6000,"c":5,"t":"Irrigation canals","d":"Farmers in Mesopotamia channel river water to their fields.","w":"Irrigation"},
+{"k":"h","y":-5000,"c":3,"t":"Copper smelting","d":"Slag at Belovode, Serbia, is among the earliest evidence of metal smelted from ore.","w":"Belovode"},
+{"k":"h","y":-4000,"c":5,"t":"The ard plough","d":"A scratch plough pulled by oxen opens more ground to crops.","w":"Ard_(plough)"},
+{"k":"h","y":-3500,"c":2,"t":"The wheel","d":"Wheels appear on potters' turntables and on carts across Mesopotamia and Europe.","w":"Wheel","m":1},
+{"k":"h","y":-3500,"c":3,"t":"Silk","d":"Silkworm rearing and silk weaving begin in China.","w":"Silk"},
+{"k":"h","y":-3300,"c":3,"t":"Bronze","d":"Copper alloyed with tin makes harder tools and weapons: the Bronze Age.","w":"Bronze_Age"},
+{"k":"h","y":-3200,"c":4,"t":"Cuneiform writing","d":"Accountants in Uruk press wedge-shaped signs into clay: writing begins.","w":"Cuneiform","m":1},
+{"k":"h","y":-3200,"c":2,"t":"Sails on the Nile","d":"Egyptian boats rig square sails to travel upstream on the wind.","w":"Sail"},
+{"k":"h","y":-3200,"c":4,"t":"Egyptian hieroglyphs","d":"Labels from tomb U-j at Abydos are among the oldest hieroglyphs.","w":"Egyptian_hieroglyphs"},
+{"k":"h","y":-3100,"c":6,"t":"Base-60 numbers","d":"Sumerian scribes count in sixties, the root of our 60-minute hour.","w":"Sexagesimal"},
+{"k":"h","y":-3000,"c":0,"t":"Stonehenge","d":"Building begins on the monument aligned to the midsummer sunrise.","w":"Stonehenge"},
+{"k":"h","y":-2700,"c":6,"t":"The abacus","d":"Sumerian counting boards, ancestors of the bead abacus.","w":"Abacus"},
+{"k":"h","y":-2560,"c":3,"t":"Great Pyramid of Giza","d":"About 2.3 million blocks stacked for Khufu; the tallest structure for nearly 4,000 years.","w":"Great_Pyramid_of_Giza"},
+{"k":"h","y":-2200,"c":2,"t":"Horses for riding","d":"The domestic horse lineage spreads from the Pontic steppe across Eurasia.","w":"Domestication_of_the_horse"},
+{"k":"h","y":-2000,"c":2,"t":"Spoked-wheel chariot","d":"Light chariots appear at Sintashta, east of the Urals.","w":"Chariot"},
+{"k":"h","y":-1800,"c":6,"t":"Plimpton 322","d":"A Babylonian clay tablet listing Pythagorean triples.","w":"Plimpton_322"},
+{"k":"h","y":-1600,"c":0,"t":"Nebra sky disc","d":"A bronze disc inlaid with a gold Sun, Moon and Pleiades, from central Germany.","w":"Nebra_sky_disc"},
+{"k":"h","y":-1600,"c":7,"t":"Edwin Smith Papyrus","d":"An Egyptian surgical text setting out 48 injury cases and their treatment.","w":"Edwin_Smith_Papyrus"},
+{"k":"h","y":-1550,"c":6,"t":"Rhind papyrus","d":"An Egyptian mathematics textbook of fractions, areas and volumes.","w":"Rhind_Mathematical_Papyrus"},
+{"k":"h","y":-1500,"c":0,"t":"Water clocks","d":"Egyptian clepsydrae tell time by water draining from a vessel.","w":"Water_clock"},
+{"k":"h","y":-1500,"c":3,"t":"Glass vessels","d":"Core-formed glass vessels are made in Mesopotamia and Egypt.","w":"History_of_glass"},
+{"k":"h","y":-1250,"c":4,"t":"Oracle bone script","d":"Shang diviners carve questions into bone: the oldest Chinese writing.","w":"Oracle_bone_script"},
+{"k":"h","y":-1200,"c":3,"t":"Iron working spreads","d":"Smelted iron spreads through Anatolia and the Levant: the Iron Age.","w":"Iron_Age"},
+{"k":"h","y":-1100,"c":2,"t":"Lapita voyagers","d":"Outrigger canoes carry settlers across open ocean to Vanuatu, Fiji and Tonga.","w":"Lapita_culture"},
+{"k":"h","y":-1050,"c":4,"t":"Phoenician alphabet","d":"About 22 letters for consonants; ancestor of the Greek, Latin and Arabic scripts.","w":"Phoenician_alphabet"},
+{"k":"h","y":-652,"c":0,"t":"Babylonian astronomical diaries","d":"Nightly records of planets, weather and prices, kept for six centuries.","w":"Babylonian_astronomical_diaries"},
+{"k":"h","y":-600,"c":7,"t":"Sushruta's surgery","d":"The Sushruta Samhita describes cataract couching and nose reconstruction (dates debated).","w":"Sushruta_Samhita"},
+{"k":"h","y":-500,"c":4,"t":"Royal relay post","d":"Persia's mounted relay riders carry messages across the empire.","w":"Angarium"},
+{"k":"h","y":-500,"c":3,"t":"Cast iron in China","d":"Chinese founders cast iron tools in moulds, centuries before Europe.","w":"Cast_iron"},
+{"k":"h","y":-400,"c":7,"t":"Hippocratic medicine","d":"Greek physicians explain illness by natural causes rather than the gods.","w":"Hippocratic_Corpus"},
+{"k":"h","y":-312,"c":2,"t":"Via Appia","d":"Rome's first great paved road, built to move troops south.","w":"Appian_Way"},
+{"k":"h","y":-312,"c":3,"t":"Aqua Appia","d":"Rome's first aqueduct brings spring water 16 km into the city.","w":"Aqua_Appia"},
+{"k":"h","y":-300,"c":6,"t":"Euclid's Elements","d":"Geometry built up from axioms; a textbook for two thousand years.","w":"Euclid's_Elements"},
+{"k":"h","y":-300,"c":3,"t":"Crucible steel","d":"South Indian smiths make high-carbon wootz steel in sealed crucibles.","w":"Wootz_steel"},
+{"k":"h","y":-300,"c":4,"t":"Maya script","d":"A full writing system of glyphs develops in Mesoamerica.","w":"Maya_script"},
+{"k":"h","y":-250,"c":1,"t":"Water wheel","d":"Philo of Byzantium describes a wheel turned by flowing water.","w":"Water_wheel"},
+{"k":"h","y":-250,"c":3,"t":"Archimedes' screw","d":"A turning helix lifts water uphill to irrigate fields and drain mines.","w":"Archimedes'_screw"},
+{"k":"h","y":-240,"c":0,"t":"Earth measured","d":"Eratosthenes estimates Earth's circumference from shadows in two cities.","w":"Eratosthenes"},
+{"k":"h","y":-150,"c":0,"t":"Astrolabe","d":"A hand-held model of the sky for telling time and finding stars.","w":"Astrolabe"},
+{"k":"h","y":-100,"c":6,"t":"Antikythera mechanism","d":"A geared bronze device that computed eclipses and the positions of planets.","w":"Antikythera_mechanism","m":1},
+{"k":"h","y":-59,"c":4,"t":"Acta Diurna","d":"Rome posts daily public notices of official news.","w":"Acta_Diurna"},
+{"k":"h","y":-45,"c":0,"t":"Julian calendar","d":"A 365-day year with a leap day every fourth year.","w":"Julian_calendar"},
+{"k":"h","y":50,"c":1,"t":"Hero's steam engine","d":"The aeolipile, a sphere spun by jets of steam, is described in Alexandria.","w":"Aeolipile"},
+{"k":"h","y":100,"c":2,"t":"Sternpost rudder","d":"Han Chinese ships steer with a rudder hung at the stern.","w":"Rudder"},
+{"k":"h","y":105,"c":4,"t":"Paper","d":"Cai Lun reports a way to make paper from bark, hemp and rags.","w":"Cai_Lun","m":1},
+{"k":"h","y":126,"c":3,"t":"Pantheon dome","d":"Unreinforced Roman concrete spans 43 metres; still the largest dome of its kind.","w":"Pantheon,_Rome"},
+{"k":"h","y":150,"c":0,"t":"Ptolemy's Almagest","d":"A mathematical model of the heavens, used for 1,400 years.","w":"Almagest"},
+{"k":"h","y":170,"c":7,"t":"Galen's anatomy","d":"Galen's dissections and books shape medicine until the Renaissance.","w":"Galen"},
+{"k":"h","y":300,"c":2,"t":"Stirrups","d":"Paired stirrups appear in China, steadying riders.","w":"Stirrup"},
+{"k":"h","y":537,"c":3,"t":"Hagia Sophia","d":"A vast dome on pendentives rises over Constantinople.","w":"Hagia_Sophia"},
+{"k":"h","y":628,"c":6,"t":"Rules for zero","d":"Brahmagupta treats zero as a number, with rules for arithmetic.","w":"Brahmasphutasiddhanta","m":1},
+{"k":"h","y":650,"c":6,"t":"Knotted-cord records","d":"Andean khipu encode numbers as knots on dyed cords, later used by the Inca state.","w":"Quipu"},
+{"k":"h","y":820,"c":6,"t":"Algebra","d":"Al-Khwarizmi's book on balancing equations gives algebra its name.","w":"Al-Khwarizmi"},
+{"k":"h","y":850,"c":1,"t":"Gunpowder","d":"Chinese alchemists mix saltpetre, sulfur and charcoal.","w":"Gunpowder","m":1},
+{"k":"h","y":868,"c":4,"t":"Diamond Sutra","d":"The oldest dated printed book, made from carved woodblocks.","w":"Diamond_Sutra"},
+{"k":"h","y":900,"c":1,"t":"Windmills in Persia","d":"Vertical-axis mills grind grain in the winds of Sistan.","w":"Windmill"},
+{"k":"h","y":910,"c":7,"t":"Smallpox told from measles","d":"Al-Razi writes the first clear clinical account separating the two diseases.","w":"Abu_Bakr_al-Razi"},
+{"k":"h","y":964,"c":0,"t":"Book of Fixed Stars","d":"Al-Sufi catalogues the stars and records the Andromeda galaxy as a small cloud.","w":"Abd_al-Rahman_al-Sufi"},
+{"k":"h","y":1024,"c":6,"t":"Paper money","d":"Song China issues the jiaozi, the first government paper currency.","w":"Jiaozi_(currency)"},
+{"k":"h","y":1025,"c":7,"t":"Canon of Medicine","d":"Avicenna's encyclopedia, a standard medical text for six centuries.","w":"The_Canon_of_Medicine"},
+{"k":"h","y":1040,"c":4,"t":"Movable type","d":"Bi Sheng prints with reusable clay characters.","w":"Bi_Sheng"},
+{"k":"h","y":1044,"c":1,"t":"Gunpowder recipes printed","d":"The Wujing Zongyao gives the earliest written gunpowder formulas.","w":"Wujing_Zongyao"},
+{"k":"h","y":1088,"c":2,"t":"Magnetic compass","d":"Shen Kuo describes a magnetized needle, and magnetic declination.","w":"Shen_Kuo","m":1},
+{"k":"h","y":1094,"c":0,"t":"Su Song's clock tower","d":"A water-driven astronomical clock with an escapement, in Kaifeng.","w":"Su_Song"},
+{"k":"h","y":1151,"c":4,"t":"Paper mill in Europe","d":"Paper is made at Xàtiva in al-Andalus and spreads north from there.","w":"Paper_mill"},
+{"k":"h","y":1185,"c":1,"t":"European windmill","d":"A post mill in Yorkshire is among the first recorded in Europe.","w":"Windmill"},
+{"k":"h","y":1202,"c":6,"t":"Liber Abaci","d":"Fibonacci brings Hindu-Arabic numerals to European merchants.","w":"Liber_Abaci"},
+{"k":"h","y":1206,"c":3,"t":"Al-Jazari's machines","d":"A book of automata, crank pumps and water clocks, with build instructions.","w":"Ismail_al-Jazari"},
+{"k":"h","y":1232,"c":0,"t":"Rockets at Kaifeng?","d":"Fire arrows used against the Mongol siege of Kaifeng may have been the first true rockets.","w":"History_of_rockets"},
+{"k":"h","y":1283,"c":0,"t":"Mechanical clock","d":"Weight-driven clocks with a verge escapement appear in English and Italian churches.","w":"Verge_escapement"},
+{"k":"h","y":1286,"c":7,"t":"Eyeglasses","d":"Convex reading lenses are made in northern Italy.","w":"Glasses"},
+{"k":"h","y":1300,"c":5,"t":"Chinampas","d":"Farmers in the Valley of Mexico build fertile raised fields in the lakes.","w":"Chinampa"},
+{"k":"h","y":1326,"c":1,"t":"Cannon","d":"A Florentine document orders iron balls and metal cannons.","w":"Cannon"},
+{"k":"h","y":1350,"c":3,"t":"Blast furnaces in Europe","d":"Water-powered bellows let European furnaces make cast iron.","w":"Blast_furnace"},
+{"k":"h","y":1377,"c":4,"t":"Jikji","d":"The oldest surviving book printed with movable metal type, from Korea.","w":"Jikji"},
+{"k":"h","y":1377,"c":7,"t":"Quarantine","d":"Ragusa, now Dubrovnik, isolates arriving ships to keep out plague.","w":"Quarantine"},
+{"k":"h","y":1405,"c":2,"t":"Zheng He's fleets","d":"Ming treasure ships sail to India, Arabia and East Africa.","w":"Zheng_He"},
+{"k":"h","y":1424,"c":0,"t":"Ulugh Beg Observatory","d":"A giant meridian arc in Samarkand measures the positions of stars.","w":"Ulugh_Beg_Observatory"},
+{"k":"h","y":1440,"c":4,"t":"Printing press","d":"Gutenberg combines metal type, oil-based ink and a screw press.","w":"Printing_press","m":1},
+{"k":"h","y":1445,"c":2,"t":"Caravel","d":"Light Portuguese ships that sail close to the wind push down the African coast.","w":"Caravel"},
+{"k":"h","y":1446,"c":4,"t":"Hangul","d":"King Sejong promulgates a phonetic alphabet for Korean.","w":"Hangul"},
+{"k":"h","y":1492,"c":2,"t":"Oldest surviving globe","d":"Martin Behaim's Erdapfel, made in Nuremberg.","w":"Erdapfel"},
+{"k":"h","y":1494,"c":6,"t":"Double-entry bookkeeping","d":"Luca Pacioli publishes the method of debits and credits.","w":"Luca_Pacioli"},
+{"k":"h","y":1510,"c":0,"t":"Spring-driven watch","d":"Peter Henlein makes portable clocks powered by a mainspring.","w":"Peter_Henlein"},
+{"k":"h","y":1543,"c":0,"t":"Sun-centred cosmos","d":"Copernicus publishes De revolutionibus.","w":"De_revolutionibus_orbium_coelestium","m":1},
+{"k":"h","y":1543,"c":7,"t":"Vesalius's Fabrica","d":"An anatomy atlas drawn from careful human dissection.","w":"De_humani_corporis_fabrica"},
+{"k":"h","y":1556,"c":3,"t":"De re metallica","d":"Agricola's illustrated handbook of mining and metallurgy.","w":"De_re_metallica"},
+{"k":"h","y":1569,"c":2,"t":"Mercator projection","d":"A world map on which compass bearings are straight lines.","w":"Mercator_1569_world_map"},
+{"k":"h","y":1570,"c":5,"t":"Crops cross oceans","d":"Potatoes and maize from the Americas spread to Europe, Africa and Asia.","w":"Columbian_exchange"},
+{"k":"h","y":1589,"c":3,"t":"Stocking frame","d":"William Lee's knitting machine, an early mechanized textile tool.","w":"Stocking_frame"},
+{"k":"h","y":1590,"c":5,"t":"Compound microscope","d":"Dutch spectacle makers stack lenses to magnify the very small.","w":"Microscope"},
+{"k":"h","y":1600,"c":1,"t":"De Magnete","d":"William Gilbert studies magnetism and static electricity, and coins 'electricus'.","w":"De_Magnete"},
+{"k":"h","y":1605,"c":4,"t":"First newspaper","d":"Johann Carolus prints a weekly news sheet in Strasbourg.","w":"Johann_Carolus"},
+{"k":"h","y":1608,"c":0,"t":"Telescope","d":"Hans Lipperhey applies for a patent on a spyglass.","w":"Hans_Lipperhey","m":1},
+{"k":"h","y":1610,"c":0,"t":"Moons of Jupiter","d":"Galileo's Sidereus Nuncius reports what his telescope shows.","w":"Sidereus_Nuncius"},
+{"k":"h","y":1614,"c":6,"t":"Logarithms","d":"John Napier turns multiplication into addition.","w":"John_Napier"},
+{"k":"h","y":1620,"c":2,"t":"Drebbel's submarine","d":"An oared, leather-covered boat travels under the Thames.","w":"Cornelis_Drebbel"},
+{"k":"h","y":1622,"c":6,"t":"Slide rule","d":"William Oughtred slides logarithmic scales against each other.","w":"Slide_rule"},
+{"k":"h","y":1628,"c":7,"t":"Circulation of the blood","d":"William Harvey shows the heart pumps blood around a loop.","w":"De_Motu_Cordis"},
+{"k":"h","y":1642,"c":6,"t":"Pascaline","d":"Blaise Pascal builds a geared adding machine for his father's tax work.","w":"Pascal's_calculator"},
+{"k":"h","y":1643,"c":0,"t":"Barometer","d":"Torricelli balances the weight of the air against a column of mercury.","w":"Barometer"},
+{"k":"h","y":1650,"c":1,"t":"Vacuum pump","d":"Otto von Guericke pumps the air out of vessels.","w":"Otto_von_Guericke"},
+{"k":"h","y":1656,"c":0,"t":"Pendulum clock","d":"Christiaan Huygens makes clocks accurate to seconds a day.","w":"Pendulum_clock"},
+{"k":"h","y":1665,"c":5,"t":"Micrographia","d":"Robert Hooke draws magnified cork and names its 'cells'.","w":"Micrographia"},
+{"k":"h","y":1673,"c":6,"t":"Stepped reckoner","d":"Leibniz demonstrates a machine designed to multiply and divide.","w":"Stepped_reckoner"},
+{"k":"h","y":1676,"c":5,"t":"Microbes seen","d":"Antonie van Leeuwenhoek reports tiny 'animalcules' in water.","w":"Antonie_van_Leeuwenhoek"},
+{"k":"h","y":1679,"c":1,"t":"Steam digester","d":"Denis Papin's pressure cooker, fitted with a safety valve.","w":"Denis_Papin"},
+{"k":"h","y":1687,"c":0,"t":"Principia","d":"Newton sets out the laws of motion and universal gravitation.","w":"Philosophiæ_Naturalis_Principia_Mathematica","m":1},
+{"k":"h","y":1698,"c":1,"t":"Savery steam pump","d":"Thomas Savery's 'Miner's Friend' raises water with steam.","w":"Thomas_Savery"},
+{"k":"h","y":1701,"c":5,"t":"Seed drill","d":"Jethro Tull's horse-drawn drill sows seeds in even rows.","w":"Jethro_Tull_(agriculturist)"},
+{"k":"h","y":1709,"c":3,"t":"Coke-smelted iron","d":"Abraham Darby fires a blast furnace with coke instead of charcoal.","w":"Abraham_Darby_I"},
+{"k":"h","y":1712,"c":1,"t":"Newcomen engine","d":"The first practical steam engine pumps water out of mines.","w":"Newcomen_atmospheric_engine","m":1},
+{"k":"h","y":1721,"c":7,"t":"Variolation in England","d":"Mary Wortley Montagu promotes deliberate mild smallpox infection.","w":"Variolation"},
+{"k":"h","y":1733,"c":3,"t":"Flying shuttle","d":"John Kay's shuttle doubles a weaver's speed.","w":"Flying_shuttle"},
+{"k":"h","y":1745,"c":1,"t":"Leyden jar","d":"A glass jar stores electric charge to be released at will.","w":"Leyden_jar"},
+{"k":"h","y":1747,"c":7,"t":"Scurvy trial","d":"James Lind tests remedies on sailors and citrus works: an early controlled trial.","w":"James_Lind"},
+{"k":"h","y":1752,"c":1,"t":"Lightning rod","d":"Franklin's experiments show lightning is electricity.","w":"Lightning_rod"},
+{"k":"h","y":1761,"c":2,"t":"Marine chronometer","d":"John Harrison's H4 keeps time at sea, solving longitude.","w":"Marine_chronometer"},
+{"k":"h","y":1764,"c":3,"t":"Spinning jenny","d":"One worker spins eight threads at once.","w":"Spinning_jenny"},
+{"k":"h","y":1769,"c":1,"t":"Watt's condenser","d":"A separate condenser makes the steam engine far more efficient.","w":"Watt_steam_engine","m":1},
+{"k":"h","y":1769,"c":2,"t":"Steam carriage","d":"Nicolas-Joseph Cugnot's steam tractor hauls artillery in Paris.","w":"Nicolas-Joseph_Cugnot"},
+{"k":"h","y":1771,"c":3,"t":"Cromford Mill","d":"Arkwright's water-powered cotton mill starts the factory system.","w":"Cromford_Mill"},
+{"k":"h","y":1774,"c":6,"t":"The Writer automaton","d":"A Jaquet-Droz doll writes any text of up to 40 letters set on a wheel.","w":"Jaquet-Droz_automata"},
+{"k":"h","y":1779,"c":3,"t":"The Iron Bridge","d":"The first major bridge built of cast iron, in Shropshire.","w":"The_Iron_Bridge"},
+{"k":"h","y":1781,"c":0,"t":"Uranus","d":"William Herschel finds a new planet with a home-built telescope.","w":"William_Herschel"},
+{"k":"h","y":1783,"c":2,"t":"Balloon flight","d":"A Montgolfier hot-air balloon carries two men over Paris.","w":"Montgolfier_brothers","m":1},
+{"k":"h","y":1785,"c":3,"t":"Power loom","d":"Edmund Cartwright mechanizes weaving.","w":"Power_loom"},
+{"k":"h","y":1793,"c":3,"t":"Cotton gin","d":"Eli Whitney's gin strips seeds from cotton, expanding slave-based cotton farming in the US South.","w":"Cotton_gin"},
+{"k":"h","y":1794,"c":4,"t":"Semaphore telegraph","d":"Chappe's towers relay messages from Paris to Lille in minutes.","w":"Semaphore_line"},
+{"k":"h","y":1795,"c":6,"t":"Metric system","d":"France defines the metre and the gram.","w":"Metric_system"},
+{"k":"h","y":1796,"c":7,"t":"Smallpox vaccine","d":"Edward Jenner inoculates with cowpox to protect against smallpox.","w":"Edward_Jenner","m":1},
+{"k":"h","y":1796,"c":4,"t":"Lithography","d":"Alois Senefelder prints from a flat stone.","w":"Lithography"},
+{"k":"h","y":1800,"c":1,"t":"Electric battery","d":"Volta's pile gives the first steady electric current.","w":"Voltaic_pile","m":1},
+{"k":"h","y":1804,"c":6,"t":"Jacquard loom","d":"Punched cards control the pattern of woven cloth.","w":"Jacquard_machine"},
+{"k":"h","y":1804,"c":2,"t":"Steam locomotive","d":"Richard Trevithick's engine hauls iron on rails in Wales.","w":"Richard_Trevithick"},
+{"k":"h","y":1807,"c":2,"t":"Commercial steamboat","d":"Fulton's North River Steamboat runs from New York to Albany.","w":"North_River_Steamboat"},
+{"k":"h","y":1810,"c":5,"t":"Canned food","d":"Peter Durand patents food preserved in tin cans.","w":"Canning"},
+{"k":"h","y":1816,"c":7,"t":"Stethoscope","d":"René Laennec listens to the chest through a wooden tube.","w":"Stethoscope"},
+{"k":"h","y":1821,"c":1,"t":"Electromagnetic rotation","d":"Faraday makes a current-carrying wire spin around a magnet.","w":"Michael_Faraday"},
+{"k":"h","y":1822,"c":6,"t":"Difference engine","d":"Babbage designs a machine to calculate mathematical tables.","w":"Difference_engine"},
+{"k":"h","y":1825,"c":2,"t":"Public railway","d":"The Stockton and Darlington Railway runs steam trains.","w":"Stockton_and_Darlington_Railway"},
+{"k":"h","y":1826,"c":4,"t":"First photograph","d":"Niépce fixes the view from his window on a pewter plate.","w":"View_from_the_Window_at_Le_Gras"},
+{"k":"h","y":1831,"c":1,"t":"Electromagnetic induction","d":"Faraday makes current by moving a magnet: the principle of the dynamo.","w":"Electromagnetic_induction"},
+{"k":"h","y":1831,"c":5,"t":"Mechanical reaper","d":"Cyrus McCormick's reaper cuts grain by horsepower.","w":"Cyrus_McCormick"},
+{"k":"h","y":1834,"c":5,"t":"Refrigeration machine","d":"Jacob Perkins patents vapour-compression cooling.","w":"Jacob_Perkins"},
+{"k":"h","y":1837,"c":6,"t":"Analytical Engine","d":"Babbage designs a general-purpose programmable computer.","w":"Analytical_engine"},
+{"k":"h","y":1837,"c":4,"t":"Electric telegraph","d":"Cooke and Wheatstone patent a needle telegraph.","w":"Cooke_and_Wheatstone_telegraph"},
+{"k":"h","y":1839,"c":4,"t":"Daguerreotype","d":"Photography is announced to the world in Paris.","w":"Daguerreotype"},
+{"k":"h","y":1839,"c":3,"t":"Vulcanized rubber","d":"Goodyear stabilizes rubber with sulfur and heat.","w":"Vulcanization"},
+{"k":"h","y":1839,"c":5,"t":"Cell theory","d":"Schleiden and Schwann: all living things are made of cells.","w":"Cell_theory"},
+{"k":"h","y":1843,"c":6,"t":"First published program","d":"Ada Lovelace's notes include an algorithm for the Analytical Engine.","w":"Ada_Lovelace"},
+{"k":"h","y":1844,"c":4,"t":"Morse telegraph line","d":"‘What hath God wrought’ crosses 64 km from Washington to Baltimore.","w":"Electrical_telegraph","m":1},
+{"k":"h","y":1846,"c":7,"t":"Ether anesthesia","d":"William Morton demonstrates painless surgery in Boston.","w":"William_T._G._Morton"},
+{"k":"h","y":1847,"c":7,"t":"Handwashing","d":"Ignaz Semmelweis cuts childbed fever deaths with chlorinated washing.","w":"Ignaz_Semmelweis"},
+{"k":"h","y":1851,"c":3,"t":"Crystal Palace","d":"Prefabricated iron and glass house the Great Exhibition in London.","w":"The_Crystal_Palace"},
+{"k":"h","y":1852,"c":2,"t":"Powered airship","d":"Henri Giffard flies a steam-powered dirigible near Paris.","w":"Henri_Giffard"},
+{"k":"h","y":1854,"c":6,"t":"Boolean logic","d":"George Boole writes logic as algebra.","w":"The_Laws_of_Thought"},
+{"k":"h","y":1854,"c":7,"t":"Cholera map","d":"John Snow maps deaths around a Soho water pump.","w":"1854_Broad_Street_cholera_outbreak"},
+{"k":"h","y":1856,"c":3,"t":"Bessemer process","d":"Blowing air through molten iron makes cheap steel.","w":"Bessemer_process"},
+{"k":"h","y":1856,"c":3,"t":"Synthetic dye","d":"William Perkin makes mauveine from coal tar.","w":"Mauveine"},
+{"k":"h","y":1857,"c":3,"t":"Passenger elevator","d":"An Otis safety elevator is installed in a New York store.","w":"Elevator"},
+{"k":"h","y":1858,"c":4,"t":"Transatlantic cable","d":"A telegraph cable links Ireland and Newfoundland, failing within weeks.","w":"Transatlantic_telegraph_cable"},
+{"k":"h","y":1859,"c":1,"t":"Drake's oil well","d":"A drilled well in Pennsylvania starts the US oil industry.","w":"Drake_Well"},
+{"k":"h","y":1859,"c":1,"t":"Rechargeable battery","d":"Gaston Planté invents the lead-acid cell.","w":"Lead-acid_battery"},
+{"k":"h","y":1859,"c":5,"t":"Origin of Species","d":"Darwin explains evolution by natural selection.","w":"On_the_Origin_of_Species"},
+{"k":"h","y":1863,"c":2,"t":"Underground railway","d":"The Metropolitan Railway opens beneath London.","w":"London_Underground"},
+{"k":"h","y":1864,"c":5,"t":"Pasteurization","d":"Gentle heating kills the microbes that spoil wine and milk.","w":"Pasteurization"},
+{"k":"h","y":1865,"c":5,"t":"Laws of inheritance","d":"Gregor Mendel reports patterns from crossing peas; ignored for 35 years.","w":"Gregor_Mendel"},
+{"k":"h","y":1867,"c":7,"t":"Antiseptic surgery","d":"Joseph Lister uses carbolic acid to prevent infection.","w":"Joseph_Lister"},
+{"k":"h","y":1867,"c":1,"t":"Dynamite","d":"Alfred Nobel tames nitroglycerin.","w":"Dynamite"},
+{"k":"h","y":1868,"c":4,"t":"Typewriter","d":"Sholes and Glidden patent the machine that brings QWERTY.","w":"Sholes_and_Glidden_typewriter"},
+{"k":"h","y":1869,"c":2,"t":"Transcontinental railroad","d":"Rails from east and west meet at Promontory Summit, Utah.","w":"First_transcontinental_railroad"},
+{"k":"h","y":1869,"c":3,"t":"Periodic table","d":"Mendeleev orders the elements and predicts missing ones.","w":"Periodic_table"},
+{"k":"h","y":1876,"c":4,"t":"Telephone","d":"Bell's patent, then: ‘Mr. Watson, come here.’","w":"Invention_of_the_telephone","m":1},
+{"k":"h","y":1876,"c":1,"t":"Four-stroke engine","d":"Nicolaus Otto's internal combustion engine.","w":"Otto_engine"},
+{"k":"h","y":1877,"c":4,"t":"Phonograph","d":"Edison records and plays back sound on tinfoil.","w":"Phonograph"},
+{"k":"h","y":1879,"c":1,"t":"Practical light bulb","d":"Edison and Swan make long-lasting carbon-filament lamps.","w":"Incandescent_light_bulb"},
+{"k":"h","y":1882,"c":1,"t":"Central power station","d":"Pearl Street Station lights lower Manhattan.","w":"Pearl_Street_Station","m":1},
+{"k":"h","y":1882,"c":7,"t":"Tuberculosis bacterium","d":"Robert Koch identifies the cause of TB.","w":"Robert_Koch"},
+{"k":"h","y":1884,"c":1,"t":"Steam turbine","d":"Charles Parsons' turbine, later the workhorse of power plants.","w":"Charles_Algernon_Parsons"},
+{"k":"h","y":1885,"c":3,"t":"Steel-frame skyscraper","d":"The Home Insurance Building rises in Chicago.","w":"Home_Insurance_Building"},
+{"k":"h","y":1885,"c":7,"t":"Rabies vaccine","d":"Pasteur treats a bitten boy, Joseph Meister.","w":"Rabies_vaccine"},
+{"k":"h","y":1885,"c":2,"t":"Safety bicycle","d":"Chain drive and equal wheels make cycling practical.","w":"Safety_bicycle"},
+{"k":"h","y":1886,"c":2,"t":"Motor car","d":"Karl Benz patents his three-wheeled Motorwagen.","w":"Benz_Patent-Motorwagen","m":1},
+{"k":"h","y":1886,"c":3,"t":"Cheap aluminium","d":"Hall and Héroult independently find electrolytic smelting.","w":"Hall-Héroult_process"},
+{"k":"h","y":1887,"c":4,"t":"Radio waves","d":"Heinrich Hertz produces and detects electromagnetic waves.","w":"Heinrich_Hertz"},
+{"k":"h","y":1888,"c":1,"t":"AC induction motor","d":"Tesla's motor makes alternating current practical.","w":"Induction_motor"},
+{"k":"h","y":1890,"c":6,"t":"Punched-card tabulator","d":"Hollerith's machines count the US Census.","w":"Tabulating_machine","m":1},
+{"k":"h","y":1895,"c":4,"t":"Cinema","d":"The Lumière brothers screen films to a paying audience.","w":"Auguste_and_Louis_Lumière"},
+{"k":"h","y":1895,"c":7,"t":"X-rays","d":"Wilhelm Röntgen photographs the bones of a hand.","w":"X-ray"},
+{"k":"h","y":1896,"c":1,"t":"Radioactivity","d":"Henri Becquerel finds uranium salts fog photographic plates.","w":"Henri_Becquerel"},
+{"k":"h","y":1897,"c":7,"t":"Aspirin","d":"Felix Hoffmann at Bayer synthesizes acetylsalicylic acid.","w":"Aspirin"},
+{"k":"h","y":1897,"c":1,"t":"Diesel engine","d":"Rudolf Diesel's compression-ignition engine runs efficiently.","w":"Diesel_engine"},
+{"k":"h","y":1901,"c":4,"t":"Transatlantic radio","d":"Marconi receives the letter S sent from Cornwall to Newfoundland.","w":"Guglielmo_Marconi"},
+{"k":"h","y":1902,"c":3,"t":"Air conditioning","d":"Willis Carrier controls humidity in a Brooklyn printing plant.","w":"Willis_Carrier"},
+{"k":"h","y":1903,"c":2,"t":"Powered flight","d":"The Wright Flyer flies for 12 seconds at Kitty Hawk.","w":"Wright_Flyer","m":1},
+{"k":"h","y":1903,"c":0,"t":"Rocket equation","d":"Tsiolkovsky works out how rockets could reach space.","w":"Tsiolkovsky_rocket_equation"},
+{"k":"h","y":1903,"c":7,"t":"Electrocardiogram","d":"Willem Einthoven records the heart's electrical activity.","w":"Electrocardiography"},
+{"k":"h","y":1904,"c":4,"t":"Vacuum tube","d":"John Ambrose Fleming's valve detects radio signals.","w":"Vacuum_tube"},
+{"k":"h","y":1905,"c":1,"t":"E = mc²","d":"Einstein shows that mass and energy are equivalent.","w":"Mass-energy_equivalence"},
+{"k":"h","y":1906,"c":4,"t":"Voice by radio","d":"Reginald Fessenden broadcasts speech and music.","w":"Reginald_Fessenden"},
+{"k":"h","y":1907,"c":3,"t":"Bakelite","d":"Leo Baekeland makes the first fully synthetic plastic.","w":"Bakelite"},
+{"k":"h","y":1908,"c":2,"t":"Model T","d":"Ford's cheap, sturdy car for the many.","w":"Ford_Model_T"},
+{"k":"h","y":1909,"c":5,"t":"Ammonia from air","d":"Fritz Haber fixes nitrogen; synthetic fertilizer now helps feed billions.","w":"Haber_process","m":1},
+{"k":"h","y":1910,"c":7,"t":"Salvarsan","d":"Paul Ehrlich's ‘magic bullet’ treats syphilis.","w":"Arsphenamine"},
+{"k":"h","y":1913,"c":3,"t":"Moving assembly line","d":"Ford cuts Model T assembly from about 12 hours to about 90 minutes.","w":"Assembly_line"},
+{"k":"h","y":1920,"c":4,"t":"Commercial radio","d":"KDKA in Pittsburgh broadcasts presidential election results.","w":"KDKA_(AM)"},
+{"k":"h","y":1922,"c":7,"t":"Insulin","d":"Leonard Thompson, 14, becomes the first person with diabetes treated with insulin.","w":"Insulin"},
+{"k":"h","y":1926,"c":0,"t":"Liquid-fuel rocket","d":"Robert Goddard's rocket flies for 2.5 seconds in Massachusetts.","w":"Robert_H._Goddard"},
+{"k":"h","y":1927,"c":4,"t":"Electronic television","d":"Philo Farnsworth transmits an image with no moving parts.","w":"Philo_Farnsworth"},
+{"k":"h","y":1928,"c":7,"t":"Penicillin","d":"Alexander Fleming notices a mould killing bacteria.","w":"Penicillin","m":1},
+{"k":"h","y":1929,"c":0,"t":"Expanding universe","d":"Hubble finds galaxies receding in proportion to their distance.","w":"Hubble's_law"},
+{"k":"h","y":1931,"c":5,"t":"Electron microscope","d":"Ernst Ruska and Max Knoll image with electrons.","w":"Electron_microscope"},
+{"k":"h","y":1935,"c":4,"t":"Radar","d":"Robert Watson-Watt detects an aircraft by radio echoes.","w":"Radar"},
+{"k":"h","y":1935,"c":3,"t":"Nylon","d":"Wallace Carothers at DuPont makes a synthetic fibre.","w":"Nylon"},
+{"k":"h","y":1936,"c":6,"t":"Turing machine","d":"Alan Turing defines computation and its limits.","w":"Turing_machine","m":1},
+{"k":"h","y":1937,"c":6,"t":"Logic in circuits","d":"Claude Shannon shows relay circuits can carry out Boolean algebra.","w":"A_Symbolic_Analysis_of_Relay_and_Switching_Circuits"},
+{"k":"h","y":1938,"c":1,"t":"Nuclear fission","d":"Hahn and Strassmann split uranium; Meitner and Frisch explain it.","w":"Nuclear_fission"},
+{"k":"h","y":1938,"c":4,"t":"Xerography","d":"Chester Carlson makes the first dry photocopy.","w":"Xerography"},
+{"k":"h","y":1939,"c":2,"t":"Jet aircraft","d":"The Heinkel He 178 flies on turbojet power.","w":"Heinkel_He_178"},
+{"k":"h","y":1941,"c":6,"t":"Z3","d":"Konrad Zuse's programmable, fully automatic digital computer.","w":"Z3_(computer)"},
+{"k":"h","y":1942,"c":1,"t":"Chain reaction","d":"Chicago Pile-1 sustains the first controlled nuclear chain reaction.","w":"Chicago_Pile-1"},
+{"k":"h","y":1943,"c":6,"t":"Artificial neuron","d":"McCulloch and Pitts model neurons as logic units.","w":"Artificial_neuron"},
+{"k":"h","y":1943,"c":7,"t":"Kidney dialysis","d":"Willem Kolff builds a working artificial kidney.","w":"Willem_Johan_Kolff"},
+{"k":"h","y":1944,"c":6,"t":"Colossus","d":"Electronic codebreaking machines run at Bletchley Park.","w":"Colossus_computer"},
+{"k":"h","y":1944,"c":0,"t":"A rocket reaches space","d":"A V-2 test launch, MW 18014, climbs past 100 km.","w":"MW_18014"},
+{"k":"h","y":1944,"c":5,"t":"DNA carries genes","d":"Avery, MacLeod and McCarty show DNA transforms bacteria.","w":"Oswald_Avery"},
+{"k":"h","y":1945,"c":1,"t":"Trinity test","d":"The first nuclear weapon is detonated in New Mexico.","w":"Trinity_(nuclear_test)"},
+{"k":"h","y":1945,"c":6,"t":"ENIAC","d":"An electronic general-purpose computer with 17,468 vacuum tubes.","w":"ENIAC"},
+{"k":"h","y":1947,"c":6,"t":"Transistor","d":"Bardeen, Brattain and Shockley amplify a signal in germanium.","w":"History_of_the_transistor","m":1},
+{"k":"h","y":1947,"c":2,"t":"Sound barrier","d":"Chuck Yeager flies the Bell X-1 past Mach 1.","w":"Bell_X-1"},
+{"k":"h","y":1947,"c":5,"t":"Microwave oven","d":"Raytheon sells the Radarange, born from radar magnetrons.","w":"Microwave_oven"},
+{"k":"h","y":1948,"c":4,"t":"Information theory","d":"Shannon defines the bit and the capacity of a channel.","w":"A_Mathematical_Theory_of_Communication"},
+{"k":"h","y":1949,"c":6,"t":"Stored-program computer","d":"EDSAC runs programs held in its own memory.","w":"EDSAC"},
+{"k":"h","y":1950,"c":6,"t":"Imitation game","d":"Turing asks whether machines can think, and proposes a test.","w":"Computing_Machinery_and_Intelligence"},
+{"k":"h","y":1951,"c":6,"t":"UNIVAC I","d":"The first computer sold commercially in the US.","w":"UNIVAC_I"},
+{"k":"h","y":1951,"c":1,"t":"Nuclear electricity","d":"EBR-I lights four bulbs in Idaho.","w":"Experimental_Breeder_Reactor_I"},
+{"k":"h","y":1953,"c":5,"t":"Double helix","d":"Watson and Crick, using Rosalind Franklin's X-ray data, model DNA.","w":"Nucleic_acid_double_helix","m":1},
+{"k":"h","y":1954,"c":1,"t":"Silicon solar cell","d":"Bell Labs makes a 6%-efficient photovoltaic cell.","w":"Solar_cell"},
+{"k":"h","y":1954,"c":1,"t":"Grid nuclear plant","d":"Obninsk in the USSR feeds atomic power into the grid.","w":"Obninsk_Nuclear_Power_Plant"},
+{"k":"h","y":1954,"c":7,"t":"Organ transplant","d":"Joseph Murray transplants a kidney between identical twins.","w":"Kidney_transplantation"},
+{"k":"h","y":1955,"c":7,"t":"Polio vaccine","d":"Jonas Salk's vaccine is declared safe and effective.","w":"Polio_vaccine"},
+{"k":"h","y":1956,"c":2,"t":"Shipping container","d":"Malcom McLean's Ideal X sails with 58 containers.","w":"Containerization"},
+{"k":"h","y":1956,"c":6,"t":"AI gets its name","d":"The Dartmouth workshop launches artificial intelligence as a field.","w":"Dartmouth_workshop","m":1},
+{"k":"h","y":1956,"c":6,"t":"Hard disk","d":"IBM's RAMAC stores 5 MB on fifty spinning platters.","w":"IBM_305_RAMAC"},
+{"k":"h","y":1957,"c":0,"t":"Sputnik 1","d":"The first artificial satellite beeps from orbit.","w":"Sputnik_1","m":1},
+{"k":"h","y":1957,"c":6,"t":"Fortran","d":"The first widely used high-level programming language.","w":"Fortran"},
+{"k":"h","y":1958,"c":6,"t":"Integrated circuit","d":"Jack Kilby puts several components on one chip.","w":"Integrated_circuit"},
+{"k":"h","y":1958,"c":6,"t":"Perceptron","d":"Frank Rosenblatt's machine learns to classify images.","w":"Perceptron"},
+{"k":"h","y":1958,"c":7,"t":"Implanted pacemaker","d":"Surgeons in Stockholm implant the first internal pacemaker.","w":"Artificial_cardiac_pacemaker"},
+{"k":"h","y":1960,"c":4,"t":"Laser","d":"Theodore Maiman makes the first laser, from ruby.","w":"Laser"},
+{"k":"h","y":1960,"c":7,"t":"The Pill","d":"The US approves an oral contraceptive.","w":"Combined_oral_contraceptive_pill"},
+{"k":"h","y":1961,"c":0,"t":"First human in space","d":"Yuri Gagarin orbits Earth in Vostok 1.","w":"Vostok_1","m":1},
+{"k":"h","y":1961,"c":3,"t":"Industrial robot","d":"Unimate starts work on a General Motors line.","w":"Unimate"},
+{"k":"h","y":1962,"c":4,"t":"Telstar","d":"Live television crosses the Atlantic by satellite.","w":"Telstar_1"},
+{"k":"h","y":1964,"c":2,"t":"Bullet train","d":"The Shinkansen links Tokyo and Osaka at 210 km/h.","w":"Shinkansen"},
+{"k":"h","y":1964,"c":6,"t":"IBM System/360","d":"One compatible family of computers, from small to large.","w":"IBM_System/360"},
+{"k":"h","y":1966,"c":5,"t":"Miracle rice","d":"IR8 doubles rice yields in Asia: the Green Revolution.","w":"IR8"},
+{"k":"h","y":1966,"c":4,"t":"Optical fibre proposed","d":"Charles Kao shows pure glass fibre could carry signals far.","w":"Charles_K._Kao"},
+{"k":"h","y":1967,"c":7,"t":"Heart transplant","d":"Christiaan Barnard performs the first, in Cape Town.","w":"Heart_transplantation"},
+{"k":"h","y":1968,"c":6,"t":"The mother of all demos","d":"Engelbart shows the mouse, hypertext and video calls.","w":"The_Mother_of_All_Demos"},
+{"k":"h","y":1969,"c":0,"t":"Moon landing","d":"Apollo 11 lands; Armstrong and Aldrin walk on the Moon.","w":"Apollo_11","m":1},
+{"k":"h","y":1969,"c":4,"t":"ARPANET","d":"The first message travels between UCLA and SRI.","w":"ARPANET","m":1},
+{"k":"h","y":1969,"c":2,"t":"Jumbo jet","d":"The Boeing 747 first flies, opening mass air travel.","w":"Boeing_747"},
+{"k":"h","y":1969,"c":6,"t":"Unix","d":"Thompson and Ritchie write an operating system at Bell Labs.","w":"Unix"},
+{"k":"h","y":1971,"c":6,"t":"Microprocessor","d":"Intel's 4004 puts a whole processor on one chip.","w":"Intel_4004","m":1},
+{"k":"h","y":1971,"c":4,"t":"Email","d":"Ray Tomlinson sends mail between machines using the @ sign.","w":"Email"},
+{"k":"h","y":1971,"c":7,"t":"CT scanner","d":"Godfrey Hounsfield's scanner images a patient's brain in slices.","w":"CT_scan"},
+{"k":"h","y":1973,"c":5,"t":"Recombinant DNA","d":"Cohen and Boyer splice genes into bacteria.","w":"Recombinant_DNA"},
+{"k":"h","y":1973,"c":4,"t":"Handheld mobile phone","d":"Martin Cooper calls a rival from a Motorola prototype.","w":"Martin_Cooper_(inventor)"},
+{"k":"h","y":1974,"c":4,"t":"TCP/IP","d":"Cerf and Kahn describe protocols that join networks into one.","w":"Internet_protocol_suite"},
+{"k":"h","y":1975,"c":6,"t":"Altair 8800","d":"A kit computer sets off the personal computer craze.","w":"Altair_8800"},
+{"k":"h","y":1977,"c":0,"t":"Voyagers launched","d":"Two probes leave for the outer planets and interstellar space.","w":"Voyager_program"},
+{"k":"h","y":1977,"c":6,"t":"Public-key encryption","d":"RSA lets strangers exchange secrets in the open.","w":"RSA_(cryptosystem)"},
+{"k":"h","y":1977,"c":6,"t":"Apple II","d":"A ready-made home computer with colour graphics.","w":"Apple_II"},
+{"k":"h","y":1978,"c":7,"t":"IVF","d":"Louise Brown is born after in vitro fertilisation.","w":"In_vitro_fertilisation"},
+{"k":"h","y":1979,"c":4,"t":"Cellular network","d":"NTT launches an automated cellular phone network in Tokyo.","w":"1G"},
+{"k":"h","y":1979,"c":6,"t":"VisiCalc","d":"The spreadsheet makes personal computers business tools.","w":"VisiCalc"},
+{"k":"h","y":1980,"c":7,"t":"Smallpox eradicated","d":"The WHO declares the disease gone from nature.","w":"Smallpox","m":1},
+{"k":"h","y":1981,"c":6,"t":"IBM PC","d":"An open architecture that becomes the PC standard.","w":"IBM_Personal_Computer"},
+{"k":"h","y":1981,"c":0,"t":"Space Shuttle","d":"Columbia flies the first reusable orbiter mission.","w":"STS-1"},
+{"k":"h","y":1982,"c":4,"t":"Compact disc","d":"Digital audio on optical discs goes on sale.","w":"Compact_disc"},
+{"k":"h","y":1982,"c":7,"t":"Recombinant insulin","d":"Human insulin made by bacteria: the first biotech drug.","w":"Insulin_(medication)"},
+{"k":"h","y":1983,"c":5,"t":"PCR","d":"Kary Mullis copies DNA millions of times in hours.","w":"Polymerase_chain_reaction"},
+{"k":"h","y":1983,"c":2,"t":"GPS for everyone","d":"The US promises civilian access to satellite navigation.","w":"Global_Positioning_System"},
+{"k":"h","y":1984,"c":6,"t":"Macintosh","d":"A mass-market computer with a graphical interface and a mouse.","w":"Macintosh_128K"},
+{"k":"h","y":1984,"c":5,"t":"DNA fingerprinting","d":"Alec Jeffreys identifies individuals from their DNA.","w":"DNA_profiling"},
+{"k":"h","y":1985,"c":1,"t":"Lithium-ion battery","d":"Akira Yoshino builds the prototype; Sony sells the first ones in 1991.","w":"Lithium-ion_battery"},
+{"k":"h","y":1986,"c":6,"t":"Backpropagation","d":"Rumelhart, Hinton and Williams show multilayer networks can learn.","w":"Backpropagation"},
+{"k":"h","y":1986,"c":1,"t":"Chernobyl","d":"A reactor explosion in Ukraine spreads fallout across Europe.","w":"Chernobyl_disaster"},
+{"k":"h","y":1986,"c":3,"t":"3D printing","d":"Chuck Hull patents stereolithography.","w":"3D_printing"},
+{"k":"h","y":1989,"c":4,"t":"World Wide Web","d":"Tim Berners-Lee proposes linked hypertext at CERN.","w":"World_Wide_Web","m":1},
+{"k":"h","y":1990,"c":0,"t":"Hubble Space Telescope","d":"An optical observatory above the atmosphere.","w":"Hubble_Space_Telescope"},
+{"k":"h","y":1990,"c":5,"t":"Human Genome Project","d":"A 13-year effort to read all human DNA begins.","w":"Human_Genome_Project"},
+{"k":"h","y":1991,"c":6,"t":"Linux","d":"Linus Torvalds releases a free operating system kernel.","w":"Linux"},
+{"k":"h","y":1992,"c":4,"t":"Text message","d":"‘Merry Christmas’ is the first SMS.","w":"SMS"},
+{"k":"h","y":1993,"c":4,"t":"Mosaic browser","d":"A graphical browser brings the web to the public.","w":"Mosaic_(web_browser)"},
+{"k":"h","y":1995,"c":0,"t":"Planet around a Sun-like star","d":"Mayor and Queloz find 51 Pegasi b.","w":"51_Pegasi_b"},
+{"k":"h","y":1996,"c":5,"t":"Dolly the sheep","d":"A mammal is cloned from an adult cell.","w":"Dolly_(sheep)"},
+{"k":"h","y":1997,"c":6,"t":"Deep Blue beats Kasparov","d":"A chess computer defeats the world champion in a match.","w":"Deep_Blue_versus_Garry_Kasparov"},
+{"k":"h","y":1997,"c":2,"t":"Mass-market hybrid car","d":"Toyota launches the Prius in Japan.","w":"Toyota_Prius"},
+{"k":"h","y":1998,"c":4,"t":"Google","d":"PageRank search ranks the web by its links.","w":"Google"},
+{"k":"h","y":1998,"c":0,"t":"Space station assembly","d":"Zarya, the first module of the ISS, is launched.","w":"International_Space_Station"},
+{"k":"h","y":1999,"c":4,"t":"Wi-Fi","d":"802.11b wireless networking goes mainstream.","w":"Wi-Fi"},
+{"k":"h","y":2001,"c":5,"t":"Human genome draft","d":"Two drafts of the human genome are published.","w":"Human_Genome_Project"},
+{"k":"h","y":2001,"c":4,"t":"Wikipedia","d":"A free encyclopedia that anyone can edit.","w":"Wikipedia"},
+{"k":"h","y":2002,"c":3,"t":"Robot vacuum","d":"iRobot's Roomba brings robots into homes.","w":"Roomba"},
+{"k":"h","y":2004,"c":3,"t":"Graphene","d":"Geim and Novoselov isolate a one-atom-thick sheet of carbon.","w":"Graphene"},
+{"k":"h","y":2004,"c":4,"t":"Facebook","d":"A social network starts at Harvard.","w":"Facebook"},
+{"k":"h","y":2005,"c":4,"t":"YouTube","d":"Anyone can publish video to the world.","w":"YouTube"},
+{"k":"h","y":2006,"c":6,"t":"Cloud computing","d":"Amazon Web Services rents storage and servers by the hour.","w":"Amazon_Web_Services"},
+{"k":"h","y":2006,"c":5,"t":"Reprogrammed stem cells","d":"Shinya Yamanaka turns adult cells back into stem cells.","w":"Induced_pluripotent_stem_cell"},
+{"k":"h","y":2007,"c":4,"t":"iPhone","d":"A touchscreen phone carries the full web in a pocket.","w":"IPhone_(1st_generation)","m":1},
+{"k":"h","y":2007,"c":2,"t":"Robot cars in traffic","d":"Autonomous vehicles finish the DARPA Urban Challenge.","w":"DARPA_Grand_Challenge_(2007)"},
+{"k":"h","y":2008,"c":6,"t":"Bitcoin","d":"Satoshi Nakamoto's paper describes peer-to-peer electronic cash.","w":"Bitcoin"},
+{"k":"h","y":2008,"c":0,"t":"Private rocket to orbit","d":"SpaceX's Falcon 1 reaches orbit on its fourth try.","w":"Falcon_1"},
+{"k":"h","y":2008,"c":2,"t":"Tesla Roadster","d":"A highway-speed electric car built on lithium-ion cells.","w":"Tesla_Roadster_(first_generation)"},
+{"k":"h","y":2010,"c":6,"t":"Stuxnet","d":"A computer worm physically damages uranium centrifuges.","w":"Stuxnet"},
+{"k":"h","y":2011,"c":1,"t":"Fukushima","d":"A tsunami causes meltdowns at three reactors in Japan.","w":"Fukushima_nuclear_accident"},
+{"k":"h","y":2011,"c":6,"t":"Watson wins Jeopardy!","d":"IBM's question-answering system beats two champions.","w":"IBM_Watson"},
+{"k":"h","y":2012,"c":6,"t":"Deep learning breakthrough","d":"AlexNet wins ImageNet with a GPU-trained neural network.","w":"AlexNet","m":1},
+{"k":"h","y":2012,"c":5,"t":"CRISPR gene editing","d":"Doudna and Charpentier program Cas9 to cut chosen DNA.","w":"CRISPR_gene_editing","m":1},
+{"k":"h","y":2012,"c":0,"t":"Curiosity on Mars","d":"A car-sized rover is lowered by a rocket ‘sky crane’.","w":"Curiosity_(rover)"},
+{"k":"h","y":2013,"c":4,"t":"Snowden disclosures","d":"Leaked files reveal mass surveillance programs.","w":"Edward_Snowden"},
+{"k":"h","y":2015,"c":0,"t":"Orbital booster lands","d":"A Falcon 9 first stage lands back at Cape Canaveral.","w":"Falcon_9_flight_20"},
+{"k":"h","y":2015,"c":0,"t":"Gravitational waves","d":"LIGO detects two black holes merging.","w":"First_observation_of_gravitational_waves"},
+{"k":"h","y":2016,"c":6,"t":"AlphaGo, move 37","d":"DeepMind's program beats Lee Sedol at Go.","w":"AlphaGo_versus_Lee_Sedol"},
+{"k":"h","y":2017,"c":6,"t":"Transformer","d":"‘Attention Is All You Need’ introduces the architecture behind modern AI.","w":"Attention_Is_All_You_Need","m":1},
+{"k":"h","y":2017,"c":7,"t":"CAR-T therapy","d":"Engineered immune cells are approved against leukemia.","w":"Tisagenlecleucel"},
+{"k":"h","y":2017,"c":1,"t":"Grid-scale battery","d":"Hornsdale Power Reserve: 100 MW of lithium-ion in South Australia.","w":"Hornsdale_Power_Reserve"},
+{"k":"h","y":2018,"c":5,"t":"Gene-edited babies","d":"He Jiankui announces CRISPR-edited twins, drawing worldwide condemnation.","w":"He_Jiankui_affair"},
+{"k":"h","y":2019,"c":6,"t":"Quantum supremacy claim","d":"Google's Sycamore outpaces a supercomputer on one sampling task.","w":"Sycamore_processor"},
+{"k":"h","y":2019,"c":0,"t":"Black hole imaged","d":"The Event Horizon Telescope shows the shadow of M87*.","w":"Event_Horizon_Telescope"},
+{"k":"h","y":2020,"c":7,"t":"mRNA vaccines","d":"COVID-19 vaccines are built and proven in under a year.","w":"MRNA_vaccine","m":1},
+{"k":"h","y":2020,"c":5,"t":"AlphaFold 2","d":"AI predicts protein structures at near-experimental accuracy.","w":"AlphaFold"},
+{"k":"h","y":2020,"c":6,"t":"GPT-3","d":"A 175-billion-parameter language model writes fluent text.","w":"GPT-3"},
+{"k":"h","y":2020,"c":4,"t":"Starlink service","d":"Satellite broadband from thousands of low-orbit satellites.","w":"Starlink"},
+{"k":"h","y":2020,"c":2,"t":"Fully driverless taxis","d":"Waymo opens rider-only service to the public in Phoenix.","w":"Waymo"},
+{"k":"h","y":2021,"c":0,"t":"James Webb Space Telescope","d":"An infrared observatory unfolds 1.5 million km from Earth.","w":"James_Webb_Space_Telescope"},
+{"k":"h","y":2021,"c":2,"t":"Flight on Mars","d":"The Ingenuity helicopter makes the first powered flight on another planet.","w":"Ingenuity_(helicopter)"},
+{"k":"h","y":2022,"c":1,"t":"Fusion ignition","d":"The National Ignition Facility gets more fusion energy out than its lasers put in.","w":"National_Ignition_Facility"},
+{"k":"h","y":2022,"c":6,"t":"ChatGPT","d":"A chatbot reaches 100 million users in about two months.","w":"ChatGPT","m":1},
+{"k":"h","y":2022,"c":6,"t":"Pictures from a prompt","d":"Open text-to-image models such as Stable Diffusion spread.","w":"Stable_Diffusion"},
+{"k":"h","y":2022,"c":7,"t":"Pig heart transplant","d":"A gene-edited pig heart keeps a patient alive for two months.","w":"Xenotransplantation"},
+{"k":"h","y":2023,"c":7,"t":"First CRISPR medicine","d":"Casgevy is approved for sickle cell disease.","w":"Exagamglogene_autotemcel"},
+{"k":"h","y":2023,"c":6,"t":"GPT-4","d":"A multimodal model passes professional exams.","w":"GPT-4"},
+{"k":"h","y":2023,"c":0,"t":"Near the lunar south pole","d":"India's Chandrayaan-3 lands near the Moon's south pole.","w":"Chandrayaan-3"},
+{"k":"h","y":2024,"c":0,"t":"Booster caught","d":"Starship's Super Heavy booster is caught by the launch tower's arms.","w":"Starship_flight_test_5"},
+{"k":"h","y":2024,"c":7,"t":"Neuralink implant","d":"A paralysed man moves a computer cursor by thought.","w":"Neuralink"},
+{"k":"h","y":2024,"c":6,"t":"Below-threshold error correction","d":"Google's Willow chip: more qubits, fewer logical errors.","w":"Willow_processor"},
+{"k":"h","y":2024,"c":6,"t":"Nobel prizes for AI","d":"Physics and chemistry prizes honour neural networks and AlphaFold.","w":"Geoffrey_Hinton"},
+{"k":"h","y":2024,"c":6,"t":"Reasoning models","d":"OpenAI's o1 works step by step before it answers.","w":"OpenAI_o1"},
+{"k":"h","y":2025,"c":6,"t":"DeepSeek-R1","d":"An open-weight reasoning model from China rivals US labs at a fraction of the cost.","w":"DeepSeek"},
+{"k":"h","y":2025,"c":0,"t":"New Glenn reaches orbit","d":"Blue Origin's heavy rocket reaches orbit on its first flight.","w":"New_Glenn"},
+{"k":"h","y":2025,"c":0,"t":"Commercial Moon landing","d":"Firefly's Blue Ghost lands upright and works on the Moon.","w":"Blue_Ghost_Mission_1"},
+{"k":"h","y":2025,"c":7,"t":"Bespoke gene editing","d":"A baby is treated with a base-editing therapy designed for his own mutation.","w":"Base_editing"},
+{"k":"h","y":2025,"c":0,"t":"Rubin Observatory's first look","d":"A 3.2-gigapixel camera begins a ten-year survey of the southern sky.","w":"Vera_C._Rubin_Observatory"},
+{"k":"h","y":2025,"c":7,"t":"Twice-yearly HIV prevention","d":"Lenacapavir injections are approved for PrEP.","w":"Lenacapavir"},
+{"k":"h","y":2025,"c":6,"t":"Olympiad gold for AI","d":"AI systems reach gold-medal level at the International Mathematical Olympiad.","w":"International_Mathematical_Olympiad"},
+{"k":"h","y":2025,"c":6,"t":"GPT-5","d":"OpenAI joins fast and reasoning models in one system.","w":"GPT-5"},
+{"k":"h","y":2025,"c":6,"t":"Gemini 3","d":"Google's frontier model tops many leaderboards.","w":"Gemini_(language_model)"},
+{"k":"h","y":2025,"c":1,"t":"Renewables pass coal","d":"Renewables make 34% of the world's electricity, coal 33%; solar grows a record 636 TWh.","u":"https://ember-energy.org/latest-insights/global-electricity-review-2026/2025-in-review/","m":1},
+{"k":"h","y":2025,"c":2,"t":"One in four new cars electric","d":"More than 20 million electric cars are sold worldwide.","u":"https://www.iea.org/reports/global-ev-outlook-2026/executive-summary"},
+{"k":"h","y":2025,"c":7,"t":"GLP-1 pill for weight loss","d":"The US approves a once-daily Wegovy pill in December.","u":"https://scientificamerican.com/article/how-eli-lillys-new-glp-1-pill-stacks-up-against-wegovy-and-other-weight-loss"},
+{"k":"h","y":2026,"c":6,"t":"Task horizons speed up","d":"METR finds the length of tasks AI agents can finish has doubled every three to four months since 2024.","u":"https://metr.org/blog/2026-1-29-time-horizon-1-1"},
+{"k":"h","y":2026,"c":0,"t":"Long March 10 flies","d":"China test-flies its Moon rocket, with a Mengzhou capsule abort at peak pressure.","u":"https://space.com/space-exploration/china-shakes-up-its-space-programs-to-land-astronauts-on-the-moon-by-2030-we-will-spare-no-effort"},
+{"k":"h","y":2026,"c":2,"t":"Robotaxis in 14 US cities","d":"Waymo, at about 500,000 paid rides a week, opens Denver, San Diego and Tampa.","u":"https://www.gadgetreview.com/waymo-opens-robotaxis-in-three-new-cities-with-a-new-vehicle-in-the-lead"},
+{"k":"h","y":2026,"c":0,"t":"Artemis II rounds the Moon","d":"Four astronauts fly around the far side and splash down after nearly ten days.","u":"https://www.nasa.gov/gallery/artemis-ii-splashdown-and-return/","m":1},
+{"k":"h","y":2026,"c":7,"t":"GLP-1 pill with no rules","d":"Orforglipron (Foundayo) is approved; it can be taken any time, with no food or water limits.","u":"https://www.ajmc.com/view/fda-approves-lilly-s-oral-glp-1-orforglipron-for-obesity"},
+{"k":"h","y":2026,"c":3,"t":"Home humanoids in production","d":"1X starts full-scale production of its NEO robot in Hayward, California.","u":"https://www.therobotreport.com/1x-begins-production-neo-humanoid-robots-at-hayward-california-facility/"},
+{"k":"h","y":2026,"c":6,"t":"An AI disproves Erdős","d":"An OpenAI model finds a counterexample to Erdős's 1946 unit-distance conjecture.","u":"https://www.sciencenews.org/article/ai-guardrails-erdos-math-problem","m":1},
+{"k":"h","y":2026,"c":6,"t":"Gemini 3.5","d":"Google opens what it calls the ‘agentic Gemini era’ at I/O.","u":"https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-may-2026/"},
+{"k":"h","y":2026,"c":6,"t":"Fable 5 and Mythos 5","d":"Anthropic releases Mythos-tier models; access is suspended 12 June to 1 July under US export controls.","u":"https://www.anthropic.com/news/fable-mythos-access"},
+{"k":"h","y":2026,"c":6,"t":"An AI test escapes its sandbox","d":"OpenAI models under cyber evaluation break into Hugging Face's systems.","u":"https://techcrunch.com/2026/07/21/openai-says-hugging-face-was-breached-by-its-pre-release-models/"},
+{"k":"h","y":2026,"c":6,"t":"Error-corrected quantum advantage","d":"IBM and the University of Chicago run 70 logical qubits on a classically hard problem.","u":"https://newsroom.ibm.com/2026-07-30-ibm-and-the-university-of-chicago-demonstrate-quantum-advantage,-establishing-trusted-quantum-computation-on-logical-circuits"},
+{"k":"h","y":2026,"c":0,"t":"Roman Space Telescope","d":"NASA's wide-field infrared observatory launches eight months early.","u":"https://science.nasa.gov/mission/roman-space-telescope/roman-launch-countdown/"},
+{"k":"h","y":2026,"c":6,"t":"GPT-6","d":"OpenAI releases GPT-6 ‘Astra’; its president calls it the start of ‘the AGI era’.","u":"https://www.axios.com/2026/09/03/openai-astra-gpt-6-agi-brockman"},
+{"k":"h","y":2026,"c":0,"t":"Starship reaches orbit","d":"On its 14th flight Starship enters orbit and deploys 26 Starlink satellites.","u":"https://www.techspot.com/news/114024-spacex-starship-finally-reaches-orbit-puts-26-starlink.html"},
+{"k":"h","y":2026,"c":5,"t":"Optogenetics Nobel","d":"Switching neurons on and off with light wins the medicine prize for Deisseroth, Hegemann and Nagel.","u":"https://www.nobelprize.org/prizes/medicine/2026/summary/"},
+{"k":"h","y":2026,"c":6,"t":"Post-quantum deadline set","d":"NIST finalizes its plan: RSA and elliptic-curve keys deprecated after 2030, disallowed after 2035.","u":"https://postquantum.com/security-pqc/nist-ir-8547-final/"},
+{"k":"p","y":2027,"c":0,"t":"Artemis III docking test","d":"Astronauts in Orion rendezvous and dock with commercial Moon landers in Earth orbit, rehearsing a landing.","r":"l","b":"NASA moved the first landing to Artemis IV and targets mid-2027 for this test.","u":"https://aerospaceamerica.aiaa.org/nasa-eyeing-year-end-tanking-test-and-summer-2027-launch-for-artemis-iii/"},
+{"k":"p","y":2027,"c":0,"t":"Ship-to-ship refuelling","d":"Two Starships dock and transfer cryogenic propellant in orbit, the step every Moon and Mars plan depends on.","r":"l","b":"Starship V3 carries docking ports; no transfer had been tried by late 2026.","u":"https://space.com/space-exploration/launches-spacecraft/whats-next-for-spacexs-starship-v3-megarocket-after-its-historic-debut-flight"},
+{"k":"p","y":2027,"c":0,"t":"First commercial space station","d":"Vast's single-module Haven-1 launches and hosts short private crew visits.","r":"l","b":"Launch slipped from mid-2026 to early 2027.","u":"https://www.dawn.com/news/amp/2005309"},
+{"k":"p","y":2027,"c":0,"t":"Mengzhou test flight","d":"China's new crew capsule makes an uncrewed orbital test, the first of three rehearsals for a Moon landing.","r":"l","b":"China's lunar plan: Mengzhou in 2027, a lander test in 2028, a full rehearsal in 2029.","u":"https://spacepolicyonline.com/?p=91600"},
+{"k":"p","y":2027,"c":1,"t":"SPARC first plasma","d":"Commonwealth Fusion's compact high-field tokamak switches on, aiming soon after for more fusion energy out than heating in.","r":"l","b":"CFS says SPARC will be nearly complete by the end of 2026, with first plasma in 2027.","u":"https://fortune.com/2026/01/07/fusion-power-commonwealth-sparc-nuclear-fusion-pilot-ai-siemens-nvidia/"},
+{"k":"p","y":2027,"c":1,"t":"Three Mile Island restarts","d":"Unit 1, renamed the Crane Clean Energy Center, returns to the grid to supply Microsoft data centres.","r":"l","b":"Constellation's restart plan, brought forward to 2027.","w":"Three_Mile_Island_Nuclear_Generating_Station"},
+{"k":"p","y":2027,"c":2,"t":"A million robotaxi rides a week","d":"Waymo passes one million paid driverless rides weekly across US cities.","r":"l","b":"Waymo's goal for the end of 2026, from about 500,000 in early 2026; it may land in early 2027.","u":"https://www.bloomberg.com/news/articles/2026-02-11/waymo-co-ceo-outlines-path-to-1-million-weekly-trips-in-2026"},
+{"k":"p","y":2027,"c":6,"t":"Agents finish a week of work","d":"Frontier AI agents complete, about half the time, software tasks that take a skilled person 40 hours.","r":"l","b":"Projection from METR's measured time horizons, which have doubled every 3 to 7 months.","u":"https://metr.org/blog/2026-1-29-time-horizon-1-1"},
+{"k":"p","y":2027,"c":6,"t":"EU high-risk AI rules apply","d":"From 2 December 2027, AI used in hiring, education, credit and similar areas must meet the AI Act's risk rules.","r":"s","b":"Date fixed by the 2026 Digital Omnibus deal; AI built into regulated products follows on 2 August 2028.","u":"https://www.gibsondunn.com/eu-ai-act-omnibus-agreement-postponed-high-risk-deadlines-and-other-key-changes/"},
+{"k":"p","y":2027,"c":3,"t":"Humanoids at 100,000 a year","d":"Makers of home and factory humanoids reach six-figure annual production.","r":"p","b":"1X plans capacity for over 100,000 NEO robots a year by the end of 2027; verified deliveries across the industry are still few.","u":"https://thenextweb.com/news/1x-neo-humanoid-factory-hayward-10000-home-robots"},
+{"k":"p","y":2027,"c":4,"t":"Starlink V3 on Starship","d":"Dedicated Starship launches begin lofting the larger third-generation Starlink satellites.","r":"l","b":"SpaceX expects dedicated Starlink missions on Starship from mid-2027.","u":"https://payloadspace.com/spacex-launches-starship-v3-for-the-first-time/"},
+{"k":"p","y":2028,"c":0,"t":"Humans back on the Moon","d":"Artemis IV lands astronauts near the lunar south pole, the first landing since 1972.","r":"p","b":"NASA targets 2028 for the Artemis IV and V landings; both depend on lander readiness and orbital refuelling.","u":"https://livescience.com/space/space-exploration/nasa-announces-sweeping-overhaul-of-artemis-return-to-moon-targeting-a-2028-landing-and-a-2027-in-orbit-docking-flight","m":1},
+{"k":"p","y":2028,"c":0,"t":"Dragonfly leaves for Titan","d":"A nuclear-powered rotorcraft sets off for Saturn's largest moon, to fly between landing sites.","r":"l","b":"NASA's launch target is July 2028.","w":"Dragonfly_(Titan_space_probe)"},
+{"k":"p","y":2028,"c":0,"t":"Rosalind Franklin rover launches","d":"Europe's drilling rover, held back after cooperation with Russia ended, leaves for Mars.","r":"l","b":"ESA's launch target is 2028.","w":"Rosalind_Franklin_(rover)"},
+{"k":"p","y":2028,"c":1,"t":"Fusion power for a customer","d":"Helion's Orion plant in Washington begins initial operations under its contract with Microsoft.","r":"p","b":"Helion now says ‘initial operations in 2028’; full power is not expected before 2029 or 2030.","u":"https://www.helionenergy.com/orion"},
+{"k":"p","y":2028,"c":6,"t":"An automated AI researcher","d":"An AI system runs whole research projects, from hypothesis to experiment, with little human direction.","r":"p","b":"OpenAI's stated goal for March 2028; it says it met its September 2026 ‘research intern’ step.","u":"https://techcrunch.com/2025/10/28/sam-altman-says-openai-will-have-a-legitimate-ai-researcher-by-2028/"},
+{"k":"p","y":2028,"c":7,"t":"Personalized cancer vaccines","d":"The first mRNA vaccine built from a patient's own tumour mutations is approved, most likely for melanoma.","r":"p","b":"Phase 3 trials of individualized mRNA vaccines are under way.","w":"Cancer_vaccine"},
+{"k":"p","y":2028,"c":2,"t":"Driverless freight lanes","d":"Trucks with no one aboard haul freight daily on Sun Belt interstates.","r":"p","b":"Aurora began driverless commercial runs in Texas in 2025.","w":"Aurora_Innovation"},
+{"k":"p","y":2028,"c":2,"t":"Air taxis carry passengers","d":"Electric vertical-takeoff aircraft fly paying riders in a handful of cities.","r":"p","b":"Certification is slow; early service is planned in Dubai and for the 2028 Los Angeles Olympics.","w":"Joby_Aviation"},
+{"k":"p","y":2028,"c":5,"t":"Gene-edited food on shelves","d":"Precision-bred foods are sold in England, and more countries ease rules for edits that mimic natural mutations.","r":"l","b":"England's precision-breeding rules for plants took effect in November 2025.","u":"https://www.tsl.ac.uk/news/precision-breeding-regulations-come-into-effect"},
+{"k":"p","y":2028,"c":4,"t":"Phones talk to satellites","d":"Ordinary phones get text and data from orbit across most of the planet.","r":"l","b":"Direct-to-cell satellite service is expanding with larger constellations.","w":"Starlink"},
+{"k":"p","y":2028,"c":4,"t":"Live translation by default","d":"Phones and earbuds translate conversations in real time as a standard feature.","r":"l","b":"Live translation shipped on major phones and earbuds in 2025–26.","w":"Machine_translation"},
+{"k":"p","y":2029,"c":6,"t":"Fault-tolerant quantum computer","d":"IBM's Starling runs 100 million gates on 200 logical qubits; Quantinuum aims for a similar machine.","r":"p","b":"IBM's 2025 roadmap puts Starling in 2029; Quantinuum's Apollo is also aimed at 2029.","u":"https://ibm.com/roadmaps/quantum/2029","m":1},
+{"k":"p","y":2029,"c":0,"t":"Apophis flyby, with escorts","d":"Asteroid Apophis passes closer than geostationary satellites while spacecraft arrive to study it.","r":"l","b":"The 13 April 2029 close approach is certain; NASA's OSIRIS-APEX is heading there.","w":"99942_Apophis"},
+{"k":"p","y":2029,"c":0,"t":"Extremely Large Telescope opens","d":"A 39-metre telescope in Chile's Atacama sees first light.","r":"l","b":"ESO's schedule targets first light around the end of the decade.","w":"Extremely_Large_Telescope"},
+{"k":"p","y":2029,"c":0,"t":"Starships toward Mars","d":"The first uncrewed Starships launch toward Mars in the late-2028 window.","r":"x","b":"SpaceX put its 2026 Mars attempt on hold to focus on the Moon landing.","u":"https://aiaa.org/2026/02/09/spacex-puts-mars-plans-on-hold-to-prioritize-nasa-moon-effort/"},
+{"k":"p","y":2029,"c":7,"t":"Brain implants approved","d":"A brain-computer interface for people with paralysis wins full regulatory approval.","r":"p","b":"Several implant makers are in clinical trials; none had full approval by 2026.","w":"Brain-computer_interface"},
+{"k":"p","y":2030,"c":0,"t":"China lands astronauts on the Moon","d":"Two Long March 10 launches bring Mengzhou and the Lanyue lander together in lunar orbit, and two crew land.","r":"l","b":"China's long-stated goal is a landing before 2030; its tests have kept to schedule so far.","u":"https://www.chinadaily.com.cn/a/202602/27/WS69a0eb5ea310d6866eb3a779.html","m":1},
+{"k":"p","y":2030,"c":0,"t":"The ISS retires","d":"After three decades the International Space Station ends operations and is later steered into the Pacific.","r":"l","b":"NASA plans to end operations around 2030, using a SpaceX deorbit vehicle.","w":"International_Space_Station"},
+{"k":"p","y":2030,"c":1,"t":"Data centres draw ~945 TWh","d":"Data centres use about as much electricity as Japan does today, roughly 3% of the world's.","r":"l","b":"IEA Energy and AI base case, up from 415 TWh in 2024.","u":"https://www.iea.org/reports/energy-and-ai/executive-summary"},
+{"k":"p","y":2030,"c":1,"t":"A G7 small modular reactor","d":"A GE-Hitachi BWRX-300 at Darlington, Ontario, starts supplying the grid.","r":"l","b":"Ontario Power Generation's construction schedule.","w":"Darlington_Nuclear_Generating_Station"},
+{"k":"p","y":2030,"c":1,"t":"China leads in nuclear power","d":"China's reactor fleet overtakes that of the United States in capacity.","r":"p","b":"Projection from China's pace of about ten reactor approvals a year.","w":"Nuclear_power_in_China"},
+{"k":"p","y":2030,"c":2,"t":"Four in ten new cars electric","d":"Electric cars pass 40% of global new-car sales.","r":"l","b":"IEA Global EV Outlook 2025; the share was 25% in 2025 and is expected near 28% in 2026.","u":"https://www.iea.org/news/more-than-1-in-4-cars-sold-worldwide-this-year-is-set-to-be-electric-as-ev-sales-continue-to-grow"},
+{"k":"p","y":2030,"c":4,"t":"First 6G networks","d":"Commercial 6G service begins on new spectrum, with networks that also sense their surroundings.","r":"l","b":"ITU's IMT-2030 timeline; 3GPP standards are due in the late 2020s.","w":"6G"},
+{"k":"p","y":2030,"c":6,"t":"Training runs of 10²⁹ FLOP","d":"The largest AI training runs use roughly 10,000 times the compute of GPT-4.","r":"p","b":"Epoch AI found runs of about 2×10²⁹ FLOP feasible by 2030, limited mainly by power.","u":"https://epoch.ai/blog/can-ai-scaling-continue-through-2030"},
+{"k":"p","y":2030,"c":6,"t":"RSA and elliptic curves deprecated","d":"After 2030, US federal standards stop approving today's public-key cryptography.","r":"s","b":"NIST IR 8547, finalized October 2026.","u":"https://postquantum.com/security-pqc/nist-ir-8547-final/"},
+{"k":"p","y":2030,"c":7,"t":"An AI-designed drug approved","d":"A medicine whose target and molecule were found with generative AI wins approval.","r":"p","b":"AI-discovered drug candidates reached phase 2 trials by 2025; approval takes years more.","w":"Insilico_Medicine"},
+{"k":"p","y":2030,"c":5,"t":"Reading the genome's dark matter","d":"AI models reliably predict what most non-coding DNA variants do in human cells.","r":"p","b":"DeepMind released AlphaGenome 2 in November 2026.","u":"https://siliconangle.com/?p=853854"},
+{"k":"p","y":2030,"c":3,"t":"Megaton carbon removal","d":"Direct air capture plants pull a million tonnes of CO₂ a year from the air.","r":"x","b":"The largest plants of 2025–26 aim for about half a megaton; costs remain high.","w":"Direct_air_capture"},
+{"k":"p","y":2031,"c":0,"t":"Humans leave for Mars","d":"A first crewed Starship departs for Mars.","r":"x","b":"Musk has called 2031 more likely than 2029; no human-rated deep-space Starship exists yet.","u":"https://decrypt.co/314334/elon-musk-robots-mars-2026"},
+{"k":"p","y":2031,"c":5,"t":"Genomes read at birth","d":"Some national health systems sequence newborns' genomes to screen for treatable conditions.","r":"p","b":"England's Generation Study is sequencing 100,000 newborns.","w":"Genomics_England"},
+{"k":"p","y":2032,"c":6,"t":"AI does most computer work","d":"AI systems match skilled people at most tasks done on a computer, at lower cost.","r":"p","b":"Lab leaders have said 2027–2030; forecasting communities say about 2031–2033. Definitions differ.","u":"https://80000hours.org/agi/guide/when","m":1},
+{"k":"p","y":2032,"c":7,"t":"Generic semaglutide in the US","d":"Patent expiry brings cheaper copies of the leading GLP-1 drug to the US.","r":"l","b":"Key US patents run to about 2031–32; generics launched in Canada, China, India and Brazil from 2026.","w":"Semaglutide"},
+{"k":"p","y":2032,"c":7,"t":"Pig kidneys as a therapy","d":"Gene-edited pig kidneys move from trials to approved transplants for people on dialysis.","r":"p","b":"The first formal clinical trials began in 2025.","w":"Xenotransplantation"},
+{"k":"p","y":2033,"c":1,"t":"First fusion power plant","d":"Commonwealth Fusion's 400 MW ARC plant near Richmond, Virginia, begins delivering power.","r":"x","b":"CFS targets the early 2030s; it first has to show net energy on SPARC.","u":"https://www.ans.org/news/2026-02-27/article-7708/from-sparc-to-arc-cfs-prepares-for-a-firstofakind-fusion-plant/"},
+{"k":"p","y":2033,"c":6,"t":"2,000 logical qubits","d":"IBM's Blue Jay runs a billion gates on 2,000 logical qubits.","r":"p","b":"IBM's roadmap puts Blue Jay around 2033, built on Starling.","u":"https://newsroom.ibm.com/2025-06-10-IBM-Sets-the-Course-to-Build-Worlds-First-Large-Scale,-Fault-Tolerant-Quantum-Computer-at-New-IBM-Quantum-Data-Center"},
+{"k":"p","y":2033,"c":5,"t":"Cultivated meat at price parity","d":"Meat grown from animal cells costs about the same as farmed meat in some products.","r":"x","b":"Costs fell but remain far above conventional meat; several US states have banned sales.","w":"Cultured_meat"},
+{"k":"p","y":2034,"c":1,"t":"ITER starts research","d":"The giant international tokamak in France begins operating with hydrogen and deuterium plasmas.","r":"p","b":"ITER's 2024 baseline: research operations in 2034, deuterium-tritium fuel in 2039.","u":"https://physicsworld.com/a/iter-fusion-reactor-hit-by-massive-decade-long-delay-and-e5bn-price-hike/"},
+{"k":"p","y":2034,"c":1,"t":"Solar passes coal","d":"Solar becomes the world's largest single source of electricity.","r":"p","b":"Projection from Ember data: solar 2,778 TWh in 2025 and adding over 600 TWh a year; coal about 10,500 TWh and flat to falling.","u":"https://ember-energy.org/latest-insights/global-electricity-review-2026/2025-in-review/","m":1},
+{"k":"p","y":2034,"c":2,"t":"Robotaxis in most big US metros","d":"Driverless ride-hail is a normal option in most US metro areas of over a million people.","r":"p","b":"Projection from Waymo's pace: three cities in early 2025, fourteen by September 2026.","u":"https://www.gadgetreview.com/waymo-opens-robotaxis-in-three-new-cities-with-a-new-vehicle-in-the-lead"},
+{"k":"p","y":2035,"c":6,"t":"Old public-key crypto disallowed","d":"RSA and elliptic-curve keys are no longer allowed under NIST standards; systems must use post-quantum algorithms.","r":"s","b":"NIST IR 8547, finalized October 2026.","u":"https://postquantum.com/security-pqc/nist-ir-8547-final/"},
+{"k":"p","y":2035,"c":6,"t":"Q-day","d":"A quantum computer breaks RSA-2048 in practice.","r":"x","b":"It would need roughly a million noisy qubits or thousands of logical ones; migration deadlines aim to come first.","w":"Shor's_algorithm"},
+{"k":"p","y":2035,"c":3,"t":"Millions of humanoids at work","d":"About 13 million humanoid robots are in use, mostly in factories, warehouses and services.","r":"p","b":"Morgan Stanley Research forecast (2025); Goldman Sachs projects about 6.5 million shipped a year by 2035.","u":"https://www.morganstanley.com/insights/articles/humanoid-robot-market-5-trillion-by-2050"},
+{"k":"p","y":2035,"c":0,"t":"LISA launches","d":"Three spacecraft 2.5 million km apart start listening for gravitational waves from space.","r":"l","b":"ESA adopted the mission in 2024 for a 2035 launch.","w":"Laser_Interferometer_Space_Antenna"},
+{"k":"p","y":2036,"c":0,"t":"A part-time Moon base","d":"Crews return to the lunar south pole every year, staying weeks at a time.","r":"p","b":"NASA plans yearly crewed landings after 2028; China and partners plan a research station in the 2030s.","w":"International_Lunar_Research_Station"},
+{"k":"p","y":2036,"c":6,"t":"Science run largely by AI","d":"AI systems produce a large share of new results in maths, materials and biology, with people setting goals and checking.","r":"p","b":"Projection from 2025–26: Olympiad gold, the Erdős counterexample and automated-research goals.","u":"https://www.quantamagazine.org/how-ai-tore-through-a-mathematical-community-20260803/"},
+{"k":"p","y":2036,"c":2,"t":"Most new cars electric","d":"Electric cars pass half of global new-car sales.","r":"p","b":"Extrapolation of IEA trends; China was already near 60% in 2026.","u":"https://www.iea.org/reports/global-ev-outlook-2026/executive-summary"},
+{"k":"f","s":1930,"y":2030,"by":"John Maynard Keynes","t":"His grandchildren's generation would work about 15 hours a week, with living standards four to eight times higher.","o":"n","n":"Living standards rose about that much; working hours fell far less.","w":"Economic_Possibilities_for_our_Grandchildren"},
+{"k":"f","s":1945,"y":1965,"by":"Arthur C. Clarke","t":"Three satellites in geostationary orbit could relay radio and television around the world.","o":"t","nd":1,"n":"No date given. Syncom 3 (1964) and Intelsat I (1965) proved it.","w":"Arthur_C._Clarke"},
+{"k":"f","s":1945,"y":1990,"by":"Vannevar Bush","t":"A desk ‘memex’ would link documents by associative trails.","o":"t","nd":1,"n":"No date given. Hypertext and the web, from 1989.","w":"As_We_May_Think"},
+{"k":"f","s":1950,"y":2000,"by":"Alan Turing","t":"By 2000, computers would fool an average interrogator 30% of the time after five minutes of questioning.","o":"l","n":"Not by 2000; in a 2025 study an AI was picked as the human 73% of the time.","w":"Computing_Machinery_and_Intelligence"},
+{"k":"f","s":1954,"y":1975,"by":"Lewis Strauss (US Atomic Energy Commission)","t":"Children would enjoy electricity ‘too cheap to meter’.","o":"w","nd":1,"n":"No date given. Nuclear power arrived but was never close to free.","w":"Too_cheap_to_meter"},
+{"k":"f","s":1958,"y":1968,"by":"Herbert Simon & Allen Newell","t":"Within ten years a digital computer would be the world chess champion.","o":"l","n":"It took 39 years: Deep Blue, 1997.","w":"History_of_artificial_intelligence"},
+{"k":"f","s":1961,"y":1969,"by":"John F. Kennedy","t":"The US would land a man on the Moon and return him safely before the decade was out.","o":"t","n":"Apollo 11, July 1969.","w":"Apollo_program"},
+{"k":"f","s":1965,"y":1975,"by":"Gordon Moore","t":"The number of components on a chip would double every year (revised in 1975 to every two years).","o":"t","n":"Held for about five decades before slowing.","w":"Moore's_law"},
+{"k":"f","s":1965,"y":1985,"by":"Herbert Simon","t":"Within twenty years machines would be able to do any work a person can do.","o":"w","n":"Not then; the question is open again in the 2020s.","w":"History_of_artificial_intelligence"},
+{"k":"f","s":1967,"y":1977,"by":"World Health Organization","t":"A ten-year global vaccination push could wipe out smallpox.","o":"t","n":"Last natural case 1977; declared eradicated in 1980.","w":"Smallpox"},
+{"k":"f","s":1968,"y":1979,"by":"Paul Ehrlich","t":"Hundreds of millions of people would starve to death in the 1970s.","o":"w","n":"Green Revolution harvests outpaced population growth.","w":"The_Population_Bomb"},
+{"k":"f","s":1970,"y":1978,"by":"Marvin Minsky","t":"In three to eight years there would be a machine with the general intelligence of an average human.","o":"w","n":"A classic case of early AI optimism.","w":"History_of_artificial_intelligence"},
+{"k":"f","s":1987,"y":2011,"by":"Apple (Knowledge Navigator video)","t":"A talking software agent on a tablet would schedule, search and brief its owner.","o":"p","n":"The video was set in 2011; Siri launched that October. The full vision came with chat assistants in the 2020s.","w":"Knowledge_Navigator"},
+{"k":"f","s":1990,"y":1998,"by":"Ray Kurzweil","t":"A computer would beat the world chess champion by 1998.","o":"t","n":"Deep Blue won in 1997.","w":"Predictions_made_by_Ray_Kurzweil"},
+{"k":"f","s":1995,"y":1996,"by":"Robert Metcalfe","t":"The internet would ‘catastrophically collapse’ in 1996.","o":"w","n":"He blended his column and ate it on stage in 1997.","w":"Robert_Metcalfe"},
+{"k":"f","s":1995,"y":2005,"by":"Clifford Stoll","t":"No online database would replace your daily newspaper.","o":"w","n":"News moved online and print circulation collapsed.","w":"Clifford_Stoll"},
+{"k":"f","s":1999,"y":2000,"by":"Y2K warnings","t":"Two-digit dates would crash critical systems at midnight on 1 January 2000.","o":"p","n":"Few failures, after years of costly fixes; how much the fixes mattered is still argued.","w":"Year_2000_problem"},
+{"k":"f","s":1999,"y":2029,"by":"Ray Kurzweil","t":"A computer would pass a valid Turing test by 2029.","o":"n","n":"He has held to this date for decades.","w":"Predictions_made_by_Ray_Kurzweil"},
+{"k":"f","s":2013,"y":2018,"by":"Jeff Bezos","t":"Amazon drones would deliver packages within four or five years.","o":"l","n":"Limited service began only in 2022.","w":"Amazon_Prime_Air"},
+{"k":"f","s":2016,"y":2017,"by":"Elon Musk","t":"A Tesla would drive itself across the US, with no one touching the controls, by the end of 2017.","o":"w","n":"Not done; ‘Full Self-Driving (Supervised)’ still needs a driver.","w":"Tesla_Autopilot"},
+{"k":"f","s":2016,"y":2018,"by":"SpaceX","t":"An uncrewed Red Dragon capsule would land on Mars in 2018.","o":"w","n":"Cancelled in 2017.","w":"SpaceX_Red_Dragon"},
+{"k":"f","s":2016,"y":2025,"by":"ITER","t":"First plasma in December 2025 (2016 baseline).","o":"m","n":"The 2024 baseline moved research operations to 2034.","u":"https://physicsworld.com/a/iter-fusion-reactor-hit-by-massive-decade-long-delay-and-e5bn-price-hike/"},
+{"k":"f","s":2019,"y":2020,"by":"Elon Musk","t":"Over a million Tesla robotaxis would be on the road in 2020.","o":"w","n":"Tesla's paid robotaxi pilot began in Austin in 2025, with safety monitors aboard.","w":"Tesla_Autopilot"},
+{"k":"f","s":2019,"y":2024,"by":"US government","t":"Americans would return to the Moon by 2024.","o":"m","n":"Now targeted for 2028, on Artemis IV.","w":"Artemis_program"},
+{"k":"f","s":2018,"y":2025,"by":"Commonwealth Fusion Systems","t":"SPARC would make its first plasma in 2025.","o":"m","n":"Now expected in 2027.","w":"SPARC_(tokamak)"},
+{"k":"f","s":2023,"y":2028,"by":"Helion","t":"Fusion electricity delivered to Microsoft by 2028.","o":"n","n":"Now worded as ‘initial operations in 2028’, with full power later.","u":"https://www.helionenergy.com/orion"},
+{"k":"f","s":2024,"y":2027,"by":"Dario Amodei","t":"‘Powerful AI’, smarter than a Nobel winner in most fields, could come as early as 2026.","o":"n","n":"Still open in late 2026.","u":"https://www.darioamodei.com/essay/machines-of-loving-grace"},
+{"k":"f","s":2025,"y":2025,"by":"Dario Amodei","t":"In three to six months AI would write 90% of code; in twelve, essentially all of it.","o":"p","n":"True for some teams at AI labs, not across the industry by the deadline.","u":"https://www.lesswrong.com/posts/69qnNx8S7wkSKXJFY/2025-in-ai-predictions"},
+{"k":"f","s":2025,"y":2026,"by":"Elon Musk","t":"A 50-50 chance of sending uncrewed Starships to Mars at the end of 2026.","o":"m","n":"SpaceX put the 2026 attempt on hold in February to focus on the Moon.","u":"https://aiaa.org/2026/02/09/spacex-puts-mars-plans-on-hold-to-prioritize-nasa-moon-effort/"},
+{"k":"f","s":2025,"y":2026,"by":"Sam Altman (OpenAI)","t":"An automated AI ‘research intern’ by September 2026.","o":"t","n":"OpenAI says it met the goal; that is the company's own assessment.","u":"https://engadget.com/2251859/openai-says-it-reached-its-goal-of-creating-an-automated-research-intern/"},
+{"k":"f","s":2025,"y":2028,"by":"Sam Altman (OpenAI)","t":"A ‘legitimate AI researcher’ by March 2028.","o":"n","n":"Pending.","u":"https://techcrunch.com/2025/10/28/sam-altman-says-openai-will-have-a-legitimate-ai-researcher-by-2028/"},
+{"k":"f","s":2025,"y":2026,"by":"Elon Musk","t":"Neuralink's Blindsight would restore limited sight to a blind person in 2026.","o":"n","n":"Behind: no vision-restoration trial was registered as of November 2026.","u":"https://drug-dev.com/?p=150615"},
+{"k":"f","s":2026,"y":2026,"by":"Waymo","t":"Over a million paid robotaxi rides a week by the end of 2026.","o":"n","n":"About 500,000 a week in the first half of 2026.","u":"https://www.bloomberg.com/news/articles/2026-02-11/waymo-co-ceo-outlines-path-to-1-million-weekly-trips-in-2026"},
+{"k":"f","s":2025,"y":2030,"by":"Demis Hassabis","t":"Human-level AI in roughly five to ten years.","o":"n","n":"Implies about 2030 to 2035.","u":"https://www.cnbc.com/2025/03/17/human-level-ai-will-be-here-in-5-to-10-years-deepmind-ceo-says.html"},
+{"k":"f","s":2025,"y":2027,"by":"AI Futures Project (‘AI 2027’)","t":"A scenario in which superhuman AI coders arrive in early 2027.","o":"n","n":"The authors later moved their median dates out by a few years.","u":"https://ai-2027.com"},
+{"k":"f","s":2020,"y":2031,"by":"Metaculus community","t":"The date the first general AI system is announced, judged by a strict multi-part test.","o":"n","n":"In November 2026 the community median sat in late 2031.","u":"https://www.metaculus.com/questions/5121/date-of-artificial-general-intelligence/"}
+]
+</script>
+<script>
+{
+const LIN=[
+  {n:'Sky & space',c:'#3987e5'},
+  {n:'Energy & power',c:'#d95926'},
+  {n:'Movement',c:'#199e70'},
+  {n:'Making & building',c:'#c98500'},
+  {n:'Signals & media',c:'#d55181'},
+  {n:'Food & life',c:'#0ca30c'},
+  {n:'Number & computing',c:'#9085e9'},
+  {n:'Medicine & body',c:'#e66767'}];
+const TIER={s:{n:'Scheduled',d:'Set by law, a standard or the calendar'},l:{n:'Likely',d:'Firm plan or strong trend, roughly 60–85%'},p:{n:'Plausible',d:'Credible but with real obstacles, roughly 30–60%'},x:{n:'Long shot',d:'A stated goal or bold extrapolation, under about 30%'}};
+const OUT={t:{n:'Came true',c:'#0ca30c',i:'M3 8.5l3 3 7-7'},l:{n:'Came true, late',c:'#fab219',i:'M8 3v5l3 2M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13'},p:{n:'Partly',c:'#fab219',i:'M8 1.5a6.5 6.5 0 1 0 0 13V1.5'},w:{n:'Wrong',c:'#d03b3b',i:'M3.5 3.5l9 9M12.5 3.5l-9 9'},m:{n:'Missed its date',c:'#ec835a',i:'M2 8h9M8 4l4 4-4 4'},n:{n:'Pending',c:'#968c82',i:'M3 8h.5M8 8h.5M13 8h.5'}};
+const ICE='#d7ecff', BG='#110d0b', INK='#f3ede6', INK2='#c2b8ad', MUTE='#968c82';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+const TAU=Math.PI*2;
+const add=(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]], sub=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]], mul=(a,s)=>[a[0]*s,a[1]*s,a[2]*s];
+const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2], cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+const norm=a=>{const l=Math.hypot(a[0],a[1],a[2])||1;return [a[0]/l,a[1]/l,a[2]/l];};
+const rgba=(hex,a)=>{const n=parseInt(hex.slice(1),16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a.toFixed(3)})`;};
+const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* time: tau < 0 is deep time on a log scale, 0..10 is 1026..2026 (one loop per century), 10..10.1 is the projected decade */
+const Y0=1026, YN=2026, YF=2036, OFF=30, YMIN=-3300000;
+const U=y=>Math.log10(1+(Y0-y)/OFF), UMAX=U(YMIN);
+const tauOf=y=>y>=Y0?(y-Y0)/100:-U(y);
+const yearOf=t=>t>=0?Y0+t*100:Y0-OFF*(Math.pow(10,-t)-1);
+const TNOW=(YN-Y0)/100, TMAX=(YF-Y0)/100;
+const PA=0.2, PB=0.88;
+const tToP=t=>t<0?PA*(1+t/UMAX):t<=TNOW?PA+(PB-PA)*t/TNOW:PB+(1-PB)*(t-TNOW)/(TMAX-TNOW);
+const pToT=p=>{p=clamp(p,0,1);return p<PA?-UMAX*(1-p/PA):p<=PB?(p-PA)/(PB-PA)*TNOW:TNOW+(p-PB)/(1-PB)*(TMAX-TNOW);};
+function fmtY(y){y=Math.round(y);if(y<=-1e6)return(Math.round(-y/1e5)/10)+'M BCE';if(y<0)return(-y).toLocaleString('en-US')+' BCE';if(y<1000)return y+' CE';return String(y);}
+function roundY(y){if(y>=1000)return Math.round(y);const a=Math.abs(y);const s=a>=1e5?1e4:a>=1e4?1000:a>=3000?100:10;return Math.round(y/s)*s||1;}
+
+/* geometry of the coil */
+const A0=-Math.PI/2, R0=6.5, RG=0.85, HP=10, RT=1.2, BR=0.22;
+const ang=t=>A0-TAU*t, Rr=t=>R0+RG*t;
+const C=t=>{const a=ang(t),R=Rr(t);return [R*Math.cos(a),R*Math.sin(a),HP*t];};
+function frame(t){const a=ang(t),R=Rr(t),ca=Math.cos(a),sa=Math.sin(a);const T=norm([RG*ca+R*sa*TAU,RG*sa-R*ca*TAU,HP]);let N=[-ca,-sa,0];N=norm(sub(N,mul(T,dot(N,T))));return {T,N,B:norm(cross(T,N))};}
+const FS=3.5, gt=t=>t<=TNOW?t:TNOW+(t-TNOW)*FS;
+const fray=t=>t<=TNOW?0:Math.pow((t-TNOW)/(TMAX-TNOW),1.3);
+const tubeR=t=>RT+3.2*fray(t);
+const phi=(s,t)=>TAU*s/8+Math.PI*t;
+const C0=C(0), F0=frame(0);
+const D=norm(add(mul(F0.T,-1),[0,0,-0.9]));
+const E1=norm(sub(F0.N,mul(D,dot(F0.N,D))));
+let E2=norm(cross(D,E1)); if(dot(E2,F0.B)<0)E2=mul(E2,-1);
+const LR=7.2;
+const rootC=u=>add(C0,add(mul(D,LR*u),[0,0,-0.16*u*u]));
+const rootR=u=>RT+2.3*Math.pow(u,1.15);
+function strandAt(s,t){
+  if(t>=0){const g=gt(t),c=C(g),f=frame(g),r=tubeR(t),p=phi(s,g);return add(c,add(mul(f.N,r*Math.cos(p)),mul(f.B,r*Math.sin(p))));}
+  const u=-t,c=rootC(u),r=rootR(u),p=phi(s,0)+0.3*u;return add(c,add(mul(E1,r*Math.cos(p)),mul(E2,r*Math.sin(p))));}
+const centerAt=t=>t>=0?C(gt(t)):rootC(-t);
+let seed=7;const rnd=()=>(seed=seed*16807%2147483647)/2147483647;
+function randUnit(){let v;do{v=[rnd()*2-1,rnd()*2-1,rnd()*2-1];}while(dot(v,v)>1||dot(v,v)<.05);return norm(v);}
+
+/* state */
+let DATA=[],HIS=[],PRO=[],FOR=[],KNOTS=[];
+let solo=-1, query='', matches=null, sel=null, hov=null, view='coil';
+const cam={t:tauOf(2031.5),d:36,w:0.34,p:0.14}, goal={...cam};
+let zoomK=1, dirty=true, tour=null, lastWin='', userMoved=false;
+const baseD=t=>t<0?30+4*(-t):t>TNOW?36:20+1.3*Rr(t);
+
+const cv=$('cv'), ctx=cv.getContext('2d'), stage=$('stage');
+let W=1,H=1,DPR=1;
+
+Promise.resolve().then(()=>JSON.parse($('coil-data').textContent)).then(init).catch(e=>{$('panel').innerHTML='<p class="err">The record could not be read ('+esc(e.message)+').</p>';});
+
+function init(rows){
+  DATA=rows.map((r,i)=>({...r,id:i,tau:tauOf(r.y)}));
+  HIS=DATA.filter(r=>r.k==='h'); PRO=DATA.filter(r=>r.k==='p'); FOR=DATA.filter(r=>r.k==='f').sort((a,b)=>a.s-b.s||a.y-b.y);
+  KNOTS=DATA.filter(r=>r.k!=='f');
+  placeKnots(); buildStrands(); buildLegend(); buildTicks(); buildLedger();
+  new ResizeObserver(resize).observe(stage); resize();
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{dirty=true;drawHist();});
+  if(location.hash==='#ledger')setView('ledger');
+  renderPanel(true);
+  requestAnimationFrame(loop);
+}
+
+function placeKnots(){
+  const AMP={s:.15,l:.45,p:.85,x:1.35};
+  for(let s=0;s<8;s++){
+    const list=KNOTS.filter(r=>r.c===s).sort((a,b)=>a.tau-b.tau), placed=[];
+    for(const r of list){
+      const base=strandAt(s,r.tau), out=norm(sub(base,centerAt(r.tau)));
+      let p0=base;
+      if(r.k==='p'){seed=r.id*97+13;const j=randUnit();p0=add(base,mul(j,AMP[r.r]*(0.5+0.8*fray(r.tau))));}
+      let pos=p0;
+      for(let k=0;k<16;k++){pos=add(p0,mul(out,k*0.5));let ok=true;for(let i=placed.length-1;i>=0&&i>=placed.length-40;i--){const q=placed[i];const dx=q[0]-pos[0],dy=q[1]-pos[1],dz=q[2]-pos[2];if(dx*dx+dy*dy+dz*dz<0.25){ok=false;break;}}if(ok)break;}
+      placed.push(pos); r.pos=pos; r.base=base;
+    }
+  }
+  const byY={};
+  for(const f of FOR){ if(f.y<Y0)continue; const n=byY[f.y]=(byY[f.y]||0)+1; const g=gt(tauOf(f.y)), fr=frame(g); f.pos=add(C(g),mul(fr.T,(n-1)*0.6)); }
+}
+
+let STR=[], RINGS=[], FRINGS=[], LABELS=[];
+function buildStrands(){
+  STR=[];
+  for(let s=0;s<8;s++){
+    const pts=[];
+    for(let i=0;i<=200;i++){const u=UMAX*(1-i/200);pts.push({p:strandAt(s,-u),t:-u});}
+    for(let i=1;i<=1000;i++){const t=i/100;pts.push({p:strandAt(s,t),t});}
+    for(let i=1;i<=40;i++){const t=TNOW+(TMAX-TNOW)*i/40;pts.push({p:strandAt(s,t),t});}
+    STR.push(pts);
+  }
+  /* loose fibres in the projected decade */
+  for(let s=0;s<8;s++)for(let k=0;k<2;k++){
+    seed=s*31+k*7+3;const off=randUnit(), pts=[];
+    for(let i=0;i<=40;i++){const t=TNOW+(TMAX-TNOW)*i/40;pts.push({p:add(strandAt(s,t),mul(off,2.2*fray(t))),t});}
+    STR.push(pts);
+  }
+  RINGS=[];
+  for(const y of [1,-1000,-10000,-100000,-1000000,-3300000]){
+    const u=U(y), c=rootC(u), r=rootR(u)+0.8, pts=[];
+    for(let i=0;i<=72;i++){const a=TAU*i/72;pts.push(add(c,add(mul(E1,r*Math.cos(a)),mul(E2,r*Math.sin(a)))));}
+    RINGS.push({y,pts,top:add(c,mul(E2,r+0.9))});
+  }
+  FRINGS=[];
+  for(let y=2027;y<=2036;y++){const t=tauOf(y),g=gt(t),c=C(g),f=frame(g),r=tubeR(t)+0.55,pts=[];for(let i=0;i<=56;i++){const a=TAU*i/56;pts.push(add(c,add(mul(f.N,r*Math.cos(a)),mul(f.B,r*Math.sin(a)))));}FRINGS.push({y,pts});}
+  LABELS=[];
+  for(let y=1100;y<=2000;y+=100){const t=tauOf(y);LABELS.push({txt:String(y),p:add(C(t),mul(frame(t).N,RT+2.2)),col:MUTE});}
+  LABELS.push({txt:'1026',p:add(C(0),mul(F0.N,RT+2.2)),col:MUTE});
+  LABELS.push({txt:'2026 today',p:add(C(TNOW),mul(frame(TNOW).N,RT+2.2)),col:INK});
+  LABELS.push({txt:'2030',p:add(C(gt(tauOf(2030))),mul(frame(gt(tauOf(2030))).N,tubeR(tauOf(2030))+1.4)),col:ICE});
+  LABELS.push({txt:'2036',p:add(C(gt(TMAX)),mul(frame(gt(TMAX)).N,tubeR(TMAX)+1.4)),col:ICE});
+}
+
+/* camera */
+function basis(){
+  const t=cam.t, a=t>=0?ang(gt(t)):A0, F=centerAt(t);
+  const r=[Math.cos(a),Math.sin(a),0], yv=[-Math.sin(a),Math.cos(a),0], z=[0,0,1];
+  const dir=add(mul(add(mul(r,Math.cos(cam.w)),mul(z,Math.sin(cam.w))),Math.cos(cam.p)),mul(yv,-Math.sin(cam.p)));
+  const pos=add(F,mul(dir,cam.d)), fwd=mul(dir,-1);
+  let up=mul(yv,-1); up=norm(sub(up,mul(fwd,dot(up,fwd))));
+  return {pos,fwd,up,right:cross(fwd,up),F};
+}
+let B=null, FPX=1, CX=0, CY=0;
+function P(p){
+  const vx=p[0]-B.pos[0],vy=p[1]-B.pos[1],vz=p[2]-B.pos[2];
+  const z=vx*B.fwd[0]+vy*B.fwd[1]+vz*B.fwd[2]; if(z<0.6)return null;
+  const x=vx*B.right[0]+vy*B.right[1]+vz*B.right[2], y=vx*B.up[0]+vy*B.up[1]+vz*B.up[2];
+  return [CX+FPX*x/z, CY-FPX*y/z, z];
+}
+const fog=z=>clamp(1.2-(z-cam.d*0.7)/(cam.d*2.4),0.1,1);
+
+function resize(){
+  const r=stage.getBoundingClientRect(); DPR=Math.min(2,window.devicePixelRatio||1);
+  W=Math.max(1,r.width); H=Math.max(1,r.height);
+  cv.width=Math.round(W*DPR); cv.height=Math.round(H*DPR); dirty=true; drawHist(); placeThumb(); if(DATA.length){buildTicks();measureObst();}
+}
+
+function lineageAlpha(c){return solo<0||solo===c?1:0.12;}
+function knotAlpha(r){let a=lineageAlpha(r.c);if(matches&&!matches.has(r.id))a*=0.15;return a;}
+
+let HITS=[], OBST=[];
+function measureObst(){
+  const sr=stage.getBoundingClientRect(), box=e=>{const r=e.getBoundingClientRect();return {x:r.left-sr.left-4,y:r.top-sr.top-4,w:r.width+8,h:r.height+8};};
+  OBST=[...$('legend').children,$('yr').firstElementChild,$('yr').lastElementChild,$('tour'),$('hint')].filter(e=>e&&e.offsetParent!==null).map(box).filter(o=>o.w>8&&o.h>8);
+}
+function draw(){
+  ctx.setTransform(DPR,0,0,DPR,0,0); ctx.clearRect(0,0,W,H);
+  B=basis(); FPX=(H*0.5)/Math.tan(26*Math.PI/180); {const k=clamp((cam.t-8.6)/1.5,0,1);CX=W*(0.5+(W>700?0.12:0.05)*k*k*(3-2*k));} CY=H*0.44;
+  const prims=[];
+  /* strands */
+  STR.forEach((pts,si)=>{
+    const s=si<8?si:Math.floor((si-8)/2), fibre=si>=8, col=LIN[s].c, la=lineageAlpha(s);
+    let chunk=[],zs=0,fut=false;
+    const flush=()=>{if(chunk.length>1)prims.push({z:zs/chunk.length,k:0,pts:chunk,col,la,fut,fibre});chunk=[];zs=0;};
+    for(let i=0;i<pts.length;i++){
+      const q=P(pts[i].p); if(!q){flush();continue;}
+      const f=pts[i].t>TNOW+1e-6;
+      if(f!==fut&&chunk.length){chunk.push(q);zs+=q[2];flush();fut=f;}
+      fut=f; chunk.push(q); zs+=q[2];
+      if(chunk.length>=7){const last=chunk[chunk.length-1];flush();chunk.push(last);zs=last[2];}
+    }
+    flush();
+  });
+  /* rings of deep time */
+  for(const R of RINGS){let chunk=[],zs=0;for(const p of R.pts){const q=P(p);if(!q){chunk=[];zs=0;continue;}chunk.push(q);zs+=q[2];if(chunk.length>=7){prims.push({z:zs/chunk.length,k:1,pts:chunk});const l=chunk[chunk.length-1];chunk=[l];zs=l[2];}}if(chunk.length>1)prims.push({z:zs/chunk.length,k:1,pts:chunk});}
+  /* the cone of possibility: one ring per projected year */
+  for(const R of FRINGS){const strong=Math.floor(yearOf(cam.t)+1e-6)===R.y&&cam.t>TNOW;let chunk=[],zs=0;for(const p of R.pts){const q=P(p);if(!q){chunk=[];zs=0;continue;}chunk.push(q);zs+=q[2];if(chunk.length>=7){prims.push({z:zs/chunk.length,k:5,pts:chunk,strong});const l=chunk[chunk.length-1];chunk=[l];zs=l[2];}}if(chunk.length>1)prims.push({z:zs/chunk.length,k:5,pts:chunk,strong});}
+  /* focus ring */
+  {const t=cam.t;if(t>=0&&t<=TNOW+1e-4){const g=gt(t),c=C(g),f=frame(g),r=tubeR(t)+0.9;let chunk=[],zs=0;for(let i=0;i<=48;i++){const a=TAU*i/48;const q=P(add(c,add(mul(f.N,r*Math.cos(a)),mul(f.B,r*Math.sin(a)))));if(!q){chunk=[];continue;}chunk.push(q);zs+=q[2];if(chunk.length>=7){prims.push({z:zs/chunk.length,k:2,pts:chunk});const l=chunk[chunk.length-1];chunk=[l];zs=l[2];}}if(chunk.length>1)prims.push({z:zs/chunk.length,k:2,pts:chunk});}}
+  /* knots and tethers */
+  for(const r of KNOTS){
+    const q=P(r.pos); if(!q)continue;
+    const rad=FPX*(r.m?BR*1.35:BR)/q[2]; if(rad<0.35)continue;
+    let tb=null; if(r.k==='p'){tb=P(r.base);}
+    prims.push({z:q[2],k:3,r,x:q[0],y:q[1],rad,tb});
+  }
+  /* forecasts on the core line */
+  for(const f of FOR){if(!f.pos)continue;const q=P(f.pos);if(!q)continue;const s=FPX*0.2/q[2];if(s<0.6)continue;prims.push({z:q[2],k:4,f,x:q[0],y:q[1],s});}
+  prims.sort((a,b)=>b.z-a.z);
+  HITS=[];
+  ctx.lineCap='round'; ctx.lineJoin='round';
+  for(const pr of prims){
+    const fa=fog(pr.z);
+    if(pr.k===0){
+      const a=fa*pr.la*(pr.fibre?0.35:pr.fut?0.75:0.62);
+      ctx.strokeStyle=rgba(pr.col,a); ctx.lineWidth=clamp(FPX*(pr.fibre?0.035:0.075)/pr.z,0.5,3);
+      ctx.setLineDash(pr.fut?[5,5]:[]);
+      ctx.beginPath(); ctx.moveTo(pr.pts[0][0],pr.pts[0][1]); for(let i=1;i<pr.pts.length;i++)ctx.lineTo(pr.pts[i][0],pr.pts[i][1]); ctx.stroke();
+    }else if(pr.k===5){
+      ctx.strokeStyle=rgba(ICE,(pr.strong?0.62:0.3)*fa); ctx.lineWidth=pr.strong?1.6:1.1; ctx.setLineDash(pr.strong?[4,4]:[2,4]);
+      ctx.beginPath(); ctx.moveTo(pr.pts[0][0],pr.pts[0][1]); for(let i=1;i<pr.pts.length;i++)ctx.lineTo(pr.pts[i][0],pr.pts[i][1]); ctx.stroke();
+    }else if(pr.k===1||pr.k===2){
+      ctx.strokeStyle=pr.k===1?rgba(INK2,0.28*fa):rgba(ICE,0.55*fa); ctx.lineWidth=pr.k===1?1:1.4; ctx.setLineDash(pr.k===1?[2,6]:[3,5]);
+      ctx.beginPath(); ctx.moveTo(pr.pts[0][0],pr.pts[0][1]); for(let i=1;i<pr.pts.length;i++)ctx.lineTo(pr.pts[i][0],pr.pts[i][1]); ctx.stroke();
+    }else if(pr.k===3){
+      const r=pr.r, col=LIN[r.c].c, a=fa*knotAlpha(r), on=sel&&sel.id===r.id;
+      ctx.setLineDash([]);
+      if(r.k==='h'){
+        ctx.globalAlpha=a; ctx.fillStyle=col; ctx.beginPath(); ctx.arc(pr.x,pr.y,pr.rad,0,TAU); ctx.fill();
+        ctx.lineWidth=Math.min(2,pr.rad*0.35); ctx.strokeStyle=r.m?INK:BG; ctx.stroke(); ctx.globalAlpha=1;
+      }else{
+        if(pr.tb){ctx.strokeStyle=rgba(col,0.4*a);ctx.lineWidth=1;ctx.setLineDash([2,3]);ctx.beginPath();ctx.moveTo(pr.tb[0],pr.tb[1]);ctx.lineTo(pr.x,pr.y);ctx.stroke();}
+        ctx.globalAlpha=a; ctx.fillStyle=rgba(col,0.16); ctx.beginPath(); ctx.arc(pr.x,pr.y,pr.rad,0,TAU); ctx.fill();
+        ctx.setLineDash(r.r==='p'?[Math.max(2,pr.rad*0.5),Math.max(2,pr.rad*0.45)]:r.r==='x'?[1,Math.max(2.5,pr.rad*0.5)]:[]);
+        ctx.lineWidth=clamp(pr.rad*0.32,1.2,2.6); ctx.strokeStyle=col; ctx.stroke();
+        if(r.r==='s'){ctx.setLineDash([]);ctx.fillStyle=col;ctx.beginPath();ctx.arc(pr.x,pr.y,pr.rad*0.38,0,TAU);ctx.fill();}
+        ctx.globalAlpha=1; ctx.setLineDash([]);
+      }
+      if(on||(hov&&hov.id===r.id)){ctx.strokeStyle=on?ICE:INK;ctx.lineWidth=2;ctx.beginPath();ctx.arc(pr.x,pr.y,pr.rad+4,0,TAU);ctx.stroke();}
+      HITS.push({x:pr.x,y:pr.y,rad:pr.rad,r,z:pr.z,a});
+    }else if(pr.k===4){
+      const o=OUT[pr.f.o], s=pr.s*1.3; ctx.setLineDash([]); ctx.globalAlpha=fa*(solo<0&&!matches?1:matches&&matches.has(pr.f.id)?1:0.25);
+      ctx.fillStyle=o.c; ctx.strokeStyle=BG; ctx.lineWidth=1.2; ctx.beginPath(); ctx.moveTo(pr.x,pr.y-s); ctx.lineTo(pr.x+s,pr.y); ctx.lineTo(pr.x,pr.y+s); ctx.lineTo(pr.x-s,pr.y); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.globalAlpha=1;
+      if(hov&&hov.id===pr.f.id){ctx.strokeStyle=INK;ctx.lineWidth=2;ctx.beginPath();ctx.arc(pr.x,pr.y,s+5,0,TAU);ctx.stroke();}
+      HITS.push({x:pr.x,y:pr.y,rad:s,r:pr.f,z:pr.z,a:1});
+    }
+  }
+  ctx.setLineDash([]);
+  drawLabels();
+}
+
+const tw={};
+function textW(s,font){const k=font+'|'+s;if(tw[k]==null){ctx.font=font;tw[k]=ctx.measureText(s).width;}return tw[k];}
+function drawLabels(){
+  const occ=[...OBST]; const hit=(x,y,w,h)=>occ.some(o=>x<o.x+o.w&&x+w>o.x&&y<o.y+o.h&&y+h>o.y);
+  const small='500 13px "Instrument Sans",system-ui,sans-serif', big='600 14px "Instrument Sans",system-ui,sans-serif';
+  /* time markers */
+  ctx.textBaseline='middle';
+  const marks=[...LABELS.map(l=>({...l})),...RINGS.map(R=>({txt:fmtY(R.y),p:R.top,col:MUTE}))];
+  for(const m of marks){const q=P(m.p);if(!q||q[0]<-50||q[0]>W+50)continue;const a=fog(q[2]);if(a<0.18)continue;const w=textW(m.txt,small);const x=q[0]-w/2,y=q[1]-9;if(hit(x-4,y,w+8,18))continue;ctx.font=small;ctx.globalAlpha=a;ctx.fillStyle=m.col;ctx.fillText(m.txt,x,y+9);ctx.globalAlpha=1;occ.push({x:x-4,y,w:w+8,h:18});}
+  /* knot labels by priority */
+  const win=labelWindow(); const cand=[];
+  for(const h of HITS){
+    const r=h.r; if(r.k==='f')continue; if(h.x<0||h.x>W||h.y<0||h.y>H)continue;
+    let pri=-1;
+    if(sel&&sel.id===r.id)pri=0; else if(hov&&hov.id===r.id)pri=1;
+    else if(h.a<0.5)continue;
+    else if(matches)pri=matches.has(r.id)?2:-1;
+    else if(r.y>=win.a&&r.y<=win.b+0.999)pri=r.m?2:3;
+    else if(r.m&&win.kind==='f'&&r.k==='p')pri=4;
+    else if(r.m&&win.kind!=='f'&&Math.abs(r.tau-cam.t)<0.6&&h.rad>2)pri=4;
+    if(pri>=0)cand.push({h,pri});
+  }
+  cand.sort((a,b)=>a.pri-b.pri||b.h.rad-a.h.rad);
+  let n=0; const max=W<600?8:18;
+  for(const c of cand){
+    if(n>=max&&c.pri>1)break;
+    const r=c.h.r, txt=(r.k==='p'?r.y+' · ':'')+r.t, font=c.pri<=1?big:small, w=textW(txt,font), hgt=22;
+    const opts=[[c.h.x+c.h.rad+10,c.h.y-hgt/2],[c.h.x-c.h.rad-10-w-12,c.h.y-hgt/2],[c.h.x-w/2-6,c.h.y-c.h.rad-8-hgt],[c.h.x-w/2-6,c.h.y+c.h.rad+8]];
+    let spot=null; for(const o of opts){if(o[0]<4||o[0]+w+12>W-4||o[1]<44||o[1]+hgt>H-80)continue;if(!hit(o[0],o[1],w+12,hgt)){spot=o;break;}}
+    if(!spot){if(c.pri>1)continue;spot=[clamp(c.h.x+c.h.rad+10,4,W-w-16),clamp(c.h.y-hgt/2,44,H-110)];}
+    occ.push({x:spot[0],y:spot[1],w:w+12,h:hgt}); n++;
+    const col=LIN[r.c].c; ctx.globalAlpha=Math.max(c.h.a,0.6);
+    ctx.strokeStyle=rgba(col,0.7);ctx.lineWidth=1;ctx.beginPath();const ax=spot[0]>c.h.x?spot[0]:spot[0]+w+12;ctx.moveTo(c.h.x,c.h.y);ctx.lineTo(ax,spot[1]+hgt/2);ctx.stroke();
+    ctx.fillStyle='rgba(17,13,11,0.86)';rr(spot[0],spot[1],w+12,hgt,6);ctx.fill();
+    if(c.pri===0){ctx.strokeStyle=ICE;ctx.lineWidth=1;ctx.stroke();}
+    ctx.font=font;ctx.fillStyle=r.k==='p'?ICE:INK;ctx.fillText(txt,spot[0]+6,spot[1]+hgt/2+0.5);ctx.globalAlpha=1;
+  }
+}
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+
+/* animation loop */
+let lastT=performance.now();
+function loop(now){
+  const dt=Math.min(0.05,(now-lastT)/1000); lastT=now;
+  if(tour){const k=(now-tour.t0)/tour.dur;if(k>=1){tour=null;$('tour').querySelector('span').textContent='Fly from 3.3M BCE';}else{const e=k<0.5?2*k*k:1-Math.pow(-2*k+2,2)/2;goal.t=pToT(e*0.995);goal.d=baseD(goal.t)*zoomK;}}
+  const kk=reduce?1:1-Math.exp(-dt*(tour?9:6));
+  let moving=false;
+  for(const key of ['t','d','w','p']){const dv=goal[key]-cam[key];if(Math.abs(dv)>(key==='t'?1e-5:1e-4)){cam[key]+=dv*kk;moving=true;}else cam[key]=goal[key];}
+  if(moving||dirty){draw();placeThumb();updateYear();dirty=false;const wk=winKey();if(wk!==lastWin){lastWin=wk;renderPanel();}followYear();}
+  requestAnimationFrame(loop);
+}
+
+let lastFY=0;
+function followYear(){
+  if(!userMoved||cam.t<=TNOW+1e-4||query||sel||window.innerWidth<1000){lastFY=0;return;}
+  const y=clamp(Math.floor(yearOf(cam.t)+1e-6),2027,2036); if(y===lastFY)return; lastFY=y;
+  const p=$('panel'), el=p.querySelector('.yh[data-y="'+y+'"]'); if(!el)return;
+  p.scrollTo({top:Math.max(0,el.offsetTop-14),behavior:reduce?'auto':'smooth'});
+  p.querySelectorAll('.yh').forEach(h=>h.classList.toggle('now',+h.dataset.y===y));
+}
+/* year readout */
+function updateYear(){
+  const t=cam.t, y=yearOf(t), el=$('yr');
+  const txt=t>=0?String(Math.floor(y+1e-6)):fmtY(roundY(y)); if($('yrN').textContent!==txt){$('yrN').textContent=txt;measureObst();}
+  el.classList.toggle('fut',t>TNOW+1e-4);
+  $('yrL').textContent=t>TNOW+1e-4?'Projected':solo>=0?LIN[solo].n:'All lineages';
+}
+
+/* period windows */
+function countH(a,b){let n=0;for(const r of HIS)if(r.y>=a&&r.y<=b)n++;return n;}
+function currentWindow(){
+  const t=cam.t, y=yearOf(t);
+  if(t>TNOW+1e-4)return {a:2027,b:2036,kind:'f',title:'The next ten years',sub:'2027 to 2036, projected'};
+  if(t>=0){
+    const yy=Math.floor(y);
+    for(const w of [10,25,50,100]){const a=Math.floor(yy/w)*w,b=a+w-1;if(countH(a,b)>=4||w===100){return {a,b,kind:'c',title:w===10?'The '+a+'s':w===100?'The '+a+'s':a+' to '+b};}}
+  }
+  const u=-t, ua=Math.min(UMAX,u+0.2), ub=Math.max(0,u-0.2), a=yearOf(-ua), b=yearOf(-ub);
+  return {a,b,kind:'r',title:fmtY(roundY(a))+' to '+fmtY(roundY(b))};
+}
+function labelWindow(){const w=currentWindow();if(w.kind!=='f')return w;const y=clamp(Math.floor(yearOf(cam.t)+1e-6),2027,2036);return {a:y,b:y,kind:'f'};}
+const winKey=()=>{const w=currentWindow();return w.kind+w.a.toFixed(0)+'|'+w.b.toFixed(0);};
+
+/* panel */
+const srcOf=r=>r.u||(r.w?'https://en.wikipedia.org/wiki/'+encodeURIComponent(r.w).replace(/%2C/g,','):'');
+const host=u=>{try{return new URL(u).hostname.replace(/^www\./,'');}catch(e){return 'source';}};
+function tierIcon(k,col,sz=14){const c=sz/2,r=sz/2-2;const dash=k==='p'?'stroke-dasharray="2.6 2.2"':k==='x'?'stroke-dasharray="0.8 2.6" stroke-linecap="round"':'';return `<svg width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}" aria-hidden="true"><circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="${col}" stroke-width="2" ${dash}/>${k==='s'?`<circle cx="${c}" cy="${c}" r="${r*0.42}" fill="${col}"/>`:''}</svg>`;}
+function outIcon(o){const O=OUT[o];return `<svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="${O.i}" fill="none" stroke="${O.c}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;}
+function rowHTML(r,noY){
+  const col=LIN[r.c].c, on=sel&&sel.id===r.id;
+  const extra=r.k==='p'?`<span class="r"><span class="badge">${tierIcon(r.r,col)} ${TIER[r.r].n}</span></span>`:'';
+  return `<li><button class="row${on?' on':''}${noY?' ny':''}" style="--c:${col}" data-id="${r.id}"><span class="y">${noY?'':esc(r.k==='p'?r.y:fmtY(r.y))}</span><span class="t"><i class="${r.k==='p'?'h':''}"></i>${esc(r.t)}</span><span class="d">${esc(r.d)}</span>${extra}</button></li>`;
+}
+function fcHTML(f){const O=OUT[f.o],src=srcOf(f);return `<div class="fcr"><span class="w">${esc(f.by)}, ${f.s} · ${f.nd?'judged by':'due'} ${f.y}</span><p>${esc(f.t)}</p><span class="out" style="color:${O.c}">${outIcon(f.o)} ${O.n}</span> <span class="w">${esc(f.n)}</span>${src?` <a href="${esc(src)}" target="_blank" rel="noopener">${esc(host(src))}</a>`:''}</div>`;}
+function cardHTML(r){
+  if(r.k==='f'){return `<article class="card" style="--c:${OUT[r.o].c}"><button class="x" data-close aria-label="Close">✕</button><div class="meta">Forecast made in ${r.s}, ${r.nd?'judged by':'due'} ${r.y}</div><h3>${esc(r.by)}</h3><p>${esc(r.t)}</p><p class="basis"><span class="out" style="color:${OUT[r.o].c}">${outIcon(r.o)} ${OUT[r.o].n}</span> ${esc(r.n)}</p><a href="${esc(srcOf(r))}" target="_blank" rel="noopener">Source: ${esc(host(srcOf(r)))}</a></article>`;}
+  const col=LIN[r.c].c, src=srcOf(r);
+  const meta=r.k==='p'?`${LIN[r.c].n} · projected for ${r.y} · <span class="badge">${tierIcon(r.r,col)} ${TIER[r.r].n}</span>`:`${LIN[r.c].n} · ${esc(fmtY(r.y))}`;
+  return `<article class="card" style="--c:${col}"><button class="x" data-close aria-label="Close">✕</button><div class="meta">${meta}</div><h3>${esc(r.t)}</h3><p>${esc(r.d)}</p>${r.k==='p'?`<p class="basis"><strong>Rests on:</strong> ${esc(r.b)}</p>`:''}${src?`<a href="${esc(src)}" target="_blank" rel="noopener">Source: ${esc(host(src))}</a>`:''}</article>`;
+}
+const ABOUT=`<div class="about"><p><strong>How to read it.</strong> Before 1026 the eight strands run in from deep time on a logarithmic scale; each dotted ring is about ten times further back. From 1026 to 2026 they braid into a coil, one loop per century. After 2026 the coil frays: projected knots are hollow, and the less certain they are, the farther they drift from their strand. Diamonds on the core mark forecasts, coloured by outcome. The projected decade is drawn three and a half times longer than a decade of history, so its knots have room, and it gets its own wider stretch of the time bar.</p><p><strong>Sources.</strong> Every knot links to its source: most history to Wikipedia, recent events and projections to news, agency and company pages. Compiled 22 November 2026. The layout follows the Technology Histomap built with Perplexity.</p></div>`;
+function renderPanel(force){
+  const P_=$('panel'); if(!DATA.length)return;
+  let h='';
+  if(sel)h+=cardHTML(sel);
+  if(query){
+    const list=DATA.filter(r=>matches.has(r.id));
+    h=`<div class="ph"><h2>${list.length} ${list.length===1?'match':'matches'}</h2><p>for “${esc(query)}”</p></div>`+(sel?cardHTML(sel):'');
+    const kn=list.filter(r=>r.k!=='f').sort((a,b)=>a.y-b.y), fc=list.filter(r=>r.k==='f');
+    h+=kn.length?`<ol class="list${kn.some(r=>r.y<1000)?' wide':''}">${kn.map(r=>rowHTML(r)).join('')}</ol>`:'';
+    if(fc.length)h+=`<h3 class="sec">Forecasts</h3><div class="fc">${fc.map(fcHTML).join('')}</div>`;
+    if(!list.length)h+=`<p class="empty">Nothing in the record matches. Try a person, a place or a word like “steam”.</p>`;
+    P_.innerHTML=h+ABOUT; return;
+  }
+  const w=currentWindow();
+  const inWin=r=>r.y>=w.a&&r.y<=w.b+0.999;
+  const knots=KNOTS.filter(r=>inWin(r)&&(solo<0||r.c===solo)).sort((a,b)=>a.y-b.y||a.c-b.c);
+  const fcs=FOR.filter(f=>f.y>=Math.floor(w.a)&&f.y<=Math.ceil(w.b));
+  let head;
+  if(w.kind==='f'){
+    head=`<div class="ph"><h2 class="fut">${w.title}</h2><p>${PRO.length} milestones projected for 2027 to 2036, each tied to a plan, a roadmap or a measured trend, and given a confidence tier.</p></div><div class="key">${Object.keys(TIER).map(k=>`${tierIcon(k,ICE,16)}<span><b style="color:var(--ink);font-weight:600">${TIER[k].n}.</b> ${TIER[k].d}</span>`).join('')}</div>`;
+    let lastY=0, body='';
+    for(const r of knots){if(r.y!==lastY){body+=`<li class="yh" data-y="${r.y}">${r.y}</li>`;lastY=r.y;}body+=rowHTML(r,true);}
+    h=head+(sel?cardHTML(sel):'')+`<ol class="list">${body}</ol>`;
+  }else{
+    head=`<div class="ph"><h2>${esc(w.title)}</h2><p>${knots.length} ${knots.length===1?'record':'records'}${solo>=0?' in '+LIN[solo].n.toLowerCase():''}${fcs.length?`, ${fcs.length} ${fcs.length===1?'forecast':'forecasts'} due`:''}</p></div>`;
+    h=head+(sel?cardHTML(sel):'')+(knots.length?`<ol class="list${knots.some(r=>r.y<1000)?' wide':''}">${knots.map(r=>rowHTML(r)).join('')}</ol>`:`<p class="empty">No records on ${solo>=0?'this strand':'the coil'} in this stretch. Move along the bar below.</p>`);
+  }
+  if(fcs.length)h+=`<h3 class="sec">${w.kind==='f'?'Forecasts falling due':'Forecasts due then'}</h3><div class="fc">${fcs.map(fcHTML).join('')}</div>`;
+  P_.innerHTML=h+ABOUT;
+}
+$('panel').addEventListener('click',e=>{
+  if(e.target.closest('[data-close]')){sel=null;dirty=true;renderPanel();return;}
+  const b=e.target.closest('.row'); if(!b)return;
+  const r=DATA[+b.dataset.id]; select(r,true);
+});
+function select(r,fly){
+  sel=r; tour=null; resetTourBtn();
+  if(fly&&r){const t=r.k==='f'?tauOf(r.y):r.tau;goal.t=t;goal.d=baseD(t)*zoomK;}
+  dirty=true; lastWin=winKey(); renderPanel();
+  if(fly&&r){const p=$('panel');if(window.innerWidth>999)p.scrollTop=0;}
+}
+
+/* legend */
+function buildLegend(){
+  const L=$('legend');
+  L.innerHTML=LIN.map((l,i)=>`<button class="chip" style="--c:${l.c}" data-s="${i}" aria-pressed="false" title="${KNOTS.filter(r=>r.c===i).length} knots; click to show this strand alone"><i></i>${l.n}</button>`).join('');
+  L.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;const s=+b.dataset.s;solo=solo===s?-1:s;
+    L.querySelectorAll('.chip').forEach(c=>{const on=+c.dataset.s===solo;c.setAttribute('aria-pressed',on);c.classList.toggle('off',solo>=0&&!on);});
+    dirty=true;updateYear();renderPanel();drawHist();});
+}
+
+/* scrubber */
+const hist=$('hist'), hctx=hist.getContext('2d');
+function drawHist(){
+  if(!DATA.length)return;
+  const w=hist.clientWidth||1,h=40,d=DPR; hist.width=Math.round(w*d); hist.height=Math.round(h*d);
+  hctx.setTransform(d,0,0,d,0,0); hctx.clearRect(0,0,w,h);
+  const N=Math.max(40,Math.floor(w/5)), bins=new Array(N).fill(0), fut=new Array(N).fill(false);
+  for(const r of KNOTS){if(solo>=0&&r.c!==solo)continue;const i=Math.min(N-1,Math.floor(tToP(r.tau)*N));bins[i]++;if(r.k==='p')fut[i]=true;}
+  const mx=Math.max(...bins,1), bw=w/N;
+  for(let i=0;i<N;i++){if(!bins[i])continue;const bh=Math.max(2,Math.sqrt(bins[i]/mx)*34);hctx.fillStyle=fut[i]?rgba(ICE,0.8):solo>=0?rgba(LIN[solo].c,0.85):rgba(INK2,0.55);hctx.fillRect(i*bw+0.5,h-bh,Math.max(1,bw-1),bh);}
+  hctx.fillStyle=rgba(INK,0.25);hctx.fillRect(0,h-1,w,1);
+  for(const p of [PA,PB]){hctx.fillStyle=p===PB?rgba(ICE,0.7):rgba(INK2,0.5);hctx.fillRect(p*w-0.5,0,1,h);}
+}
+const TICKS=[[-3300000,'3.3M BCE',0],[2036,'2036',0,'f'],[1026,'1026',0],[2026,'2026',0],[1,'1 CE',1],[1500,'1500',1],[1800,'1800',1],[1900,'1900',2],[-10000,'10,000 BCE',2],[1200,'1200',3],[1700,'1700',3],[-100000,'100,000 BCE',3]];
+function buildTicks(){
+  const w=$('scrub').clientWidth||800, kept=[];
+  const out=[];
+  for(const [y,l,pr,c] of TICKS){const p=tToP(tauOf(y));const tw_=l.length*7.4+10;let x0=p*w-tw_/2;if(p<0.02)x0=0;if(p>0.98)x0=w-tw_;if(kept.some(k=>x0<k[1]&&x0+tw_>k[0]))continue;kept.push([x0,x0+tw_]);
+    const st=p<0.02?'left:0;transform:none':p>0.98?'left:auto;right:0;transform:none':`left:${(p*100).toFixed(3)}%`;out.push(`<span class="${c||''}" style="${st}">${l}</span>`);}
+  $('ticks').innerHTML=out.join('');
+}
+function placeThumb(){const th=$('thumb');const p=tToP(cam.t);th.style.left=(p*100)+'%';th.classList.toggle('fut',cam.t>TNOW+1e-4);const s=$('scrub');s.setAttribute('aria-valuenow',Math.round(p*1000));s.setAttribute('aria-valuetext',cam.t>=0?String(Math.floor(yearOf(cam.t)+1e-6)):fmtY(roundY(yearOf(cam.t))));}
+{
+  const s=$('scrub'); let down=false;
+  const setFrom=e=>{const r=s.getBoundingClientRect();const t=pToT((e.clientX-r.left)/r.width);goal.t=t;goal.d=baseD(t)*zoomK;tour=null;resetTourBtn();userMoved=true;if(sel){sel=null;dirty=true;renderPanel();}};
+  s.addEventListener('pointerdown',e=>{down=true;s.setPointerCapture(e.pointerId);setFrom(e);});
+  s.addEventListener('pointermove',e=>{if(down)setFrom(e);});
+  s.addEventListener('pointerup',()=>{down=false;});
+  s.addEventListener('keydown',e=>{const step=e.shiftKey?0.05:0.01;let p=tToP(goal.t);if(e.key==='ArrowRight'||e.key==='ArrowUp')p+=step;else if(e.key==='ArrowLeft'||e.key==='ArrowDown')p-=step;else if(e.key==='Home')p=0;else if(e.key==='End')p=1;else return;e.preventDefault();userMoved=true;goal.t=pToT(p);goal.d=baseD(goal.t)*zoomK;});
+}
+
+/* pointer on the coil */
+{
+  let pd=null, pts=new Map(), pinch=0;
+  const nearest=(x,y)=>{let best=null,bd=1e9;for(const h of HITS){if(h.a<0.3)continue;const dx=h.x-x,dy=h.y-y,d=Math.hypot(dx,dy)-h.rad;const lim=Math.max(9,h.rad+5);if(d<lim&&d<bd){bd=d;best=h;}}return best;};
+  const tip=$('tip');
+  const showTip=(h,x,y)=>{if(!h){tip.hidden=true;return;}const r=h.r;let a,b;
+    if(r.k==='f'){a=r.by+' ('+r.s+')';b=OUT[r.o].n+(r.nd?' · judged by ':' · due ')+r.y;}else if(r.k==='p'){a=r.t;b='Projected for '+r.y+' · '+TIER[r.r].n;}else{a=r.t;b=fmtY(r.y)+' · '+LIN[r.c].n;}
+    tip.innerHTML=`<b>${esc(a)}</b><small>${esc(b)}</small>`;tip.hidden=false;
+    const tw_=tip.offsetWidth,th=tip.offsetHeight;tip.style.left=clamp(x+14,6,W-tw_-6)+'px';tip.style.top=clamp(y-th-12,6,H-th-6)+'px';};
+  cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);if(pts.size===1)pd={x:e.clientX,y:e.clientY,w:goal.w,p:goal.p,moved:false};else if(pts.size===2){const [a,b]=[...pts.values()];pinch=Math.hypot(a[0]-b[0],a[1]-b[1]);pd=null;}});
+  cv.addEventListener('pointermove',e=>{
+    const r=cv.getBoundingClientRect(), x=e.clientX-r.left, y=e.clientY-r.top;
+    if(pts.has(e.pointerId))pts.set(e.pointerId,[e.clientX,e.clientY]);
+    if(pts.size===2&&pinch){const [a,b]=[...pts.values()];const d=Math.hypot(a[0]-b[0],a[1]-b[1]);zoomK=clamp(zoomK*pinch/d,0.3,2.8);pinch=d;goal.d=baseD(goal.t)*zoomK;return;}
+    if(pd){const dx=e.clientX-pd.x,dy=e.clientY-pd.y;if(!pd.moved&&Math.hypot(dx,dy)>4){pd.moved=true;cv.classList.add('drag');tip.hidden=true;tour=null;resetTourBtn();}
+      if(pd.moved){goal.w=clamp(pd.w-dx*0.006,-1.45,1.45);goal.p=clamp(pd.p+dy*0.005,-1.1,1.1);cam.w=goal.w;cam.p=goal.p;dirty=true;}return;}
+    const h=nearest(x,y);const id=h?h.r.id:null;if((hov&&hov.id)!==id){hov=h?h.r:null;dirty=true;}cv.classList.toggle('hov',!!h);showTip(h,x,y);
+  });
+  const end=e=>{pts.delete(e.pointerId);if(pts.size<2)pinch=0;cv.classList.remove('drag');
+    if(pd&&!pd.moved&&e.type==='pointerup'){const r=cv.getBoundingClientRect();const h=nearest(e.clientX-r.left,e.clientY-r.top);if(h)select(h.r,true);else if(sel){sel=null;dirty=true;renderPanel();}}
+    if(pts.size===0)pd=null;};
+  cv.addEventListener('pointerup',end); cv.addEventListener('pointercancel',end);
+  cv.addEventListener('pointerleave',()=>{if(!pd){hov=null;tip.hidden=true;dirty=true;}});
+  cv.addEventListener('wheel',e=>{e.preventDefault();zoomK=clamp(zoomK*Math.exp(e.deltaY*0.0012),0.3,2.8);goal.d=baseD(goal.t)*zoomK;},{passive:false});
+  cv.addEventListener('keydown',e=>{let used=true;userMoved=true;if(e.key==='ArrowRight')goal.t=pToT(tToP(goal.t)+0.01);else if(e.key==='ArrowLeft')goal.t=pToT(tToP(goal.t)-0.01);else if(e.key==='+'||e.key==='=')zoomK=clamp(zoomK*0.85,0.3,2.8);else if(e.key==='-')zoomK=clamp(zoomK/0.85,0.3,2.8);else if(e.key==='Escape'){sel=null;renderPanel();}else used=false;if(used){e.preventDefault();goal.d=baseD(goal.t)*zoomK;dirty=true;}});
+}
+
+/* tour */
+function resetTourBtn(){$('tour').querySelector('span').textContent='Fly from 3.3M BCE';}
+$('tour').addEventListener('click',()=>{if(tour){tour=null;resetTourBtn();return;}sel=null;userMoved=true;tour={t0:performance.now(),dur:30000};cam.t=goal.t=-UMAX;goal.d=baseD(goal.t)*zoomK;$('tour').querySelector('span').textContent='Stop';dirty=true;});
+
+/* search */
+$('q').addEventListener('input',e=>{
+  query=e.target.value.trim(); const q=query.toLowerCase();
+  matches=q?new Set(DATA.filter(r=>[r.t,r.d,r.by,r.b,r.n,LIN[r.c]?.n].some(v=>v&&String(v).toLowerCase().includes(q))).map(r=>r.id)):null;
+  dirty=true; renderPanel(); if(view==='ledger')filterLedger();
+});
+
+/* ledger view */
+function setView(v){view=v;$('vCoil').setAttribute('aria-pressed',v==='coil');$('vLedger').setAttribute('aria-pressed',v==='ledger');
+  $('stage').hidden=v!=='coil';$('panel').hidden=v!=='coil';$('ledger').hidden=v!=='ledger';
+  try{history.replaceState(null,'',v==='ledger'?'#ledger':location.pathname+location.search);}catch(e){}
+  if(v==='coil'){resize();}else filterLedger();}
+$('vCoil').addEventListener('click',()=>setView('coil'));
+$('vLedger').addEventListener('click',()=>setView('ledger'));
+window.addEventListener('hashchange',()=>setView(location.hash==='#ledger'?'ledger':'coil'));
+function link(r){const s=srcOf(r);return s?`<a href="${esc(s)}" target="_blank" rel="noopener">${esc(host(s))}</a>`:'';}
+function buildLedger(){
+  const pro=[...PRO].sort((a,b)=>a.y-b.y||a.c-b.c);
+  const tally=Object.keys(TIER).map(k=>`${PRO.filter(r=>r.r===k).length} ${TIER[k].n.toLowerCase()}`).join(', ');
+  const outs=Object.keys(OUT).map(k=>[k,FOR.filter(f=>f.o===k).length]).filter(x=>x[1]).map(([k,n])=>`${n} ${OUT[k].n.toLowerCase()}`).join(', ');
+  $('ledger').innerHTML=`<h2>The ledger</h2><p class="lede">Every knot on the coil as a table: the projected decade first, then a century of forecasts checked against what happened, then the full record.</p>
+  <h3>The projected decade, 2027 to 2036</h3><p class="lede">${PRO.length} milestones: ${tally}. Each rests on a plan, a roadmap or a measured trend; where the basis is a trend, the year is an extrapolation made for this page.</p>
+  <div class="tw"><table class="stack"><thead><tr><th>Year</th><th>Milestone</th><th>Lineage</th><th>Confidence</th><th>Rests on</th><th>Source</th></tr></thead><tbody>${pro.map(r=>`<tr><td class="n" data-l="Year">${r.y}</td><td data-l="Milestone"><b>${esc(r.t)}</b><br><span style="color:var(--ink2)">${esc(r.d)}</span></td><td data-l="Lineage"><span class="badge"><svg width="10" height="10" aria-hidden="true"><circle cx="5" cy="5" r="5" fill="${LIN[r.c].c}"/></svg>${LIN[r.c].n}</span></td><td data-l="Confidence"><span class="badge">${tierIcon(r.r,ICE)} ${TIER[r.r].n}</span></td><td data-l="Rests on">${esc(r.b)}</td><td data-l="Source">${link(r)}</td></tr>`).join('')}</tbody></table></div>
+  <h3>Forecasts, then and now</h3><p class="lede">${FOR.length} dated predictions: ${outs}.</p>
+  <div class="tw"><table class="stack"><thead><tr><th>Said</th><th>Who</th><th>Forecast</th><th>Due</th><th>Outcome</th><th>Source</th></tr></thead><tbody>${FOR.map(f=>`<tr><td class="n" data-l="Said">${f.s}</td><td data-l="Who">${esc(f.by)}</td><td data-l="Forecast">${esc(f.t)}</td><td class="n" data-l="Due">${f.nd?'—':f.y}</td><td data-l="Outcome"><span class="out" style="color:${OUT[f.o].c}">${outIcon(f.o)} ${OUT[f.o].n}</span><br><span style="color:var(--ink2)">${esc(f.n)}</span></td><td data-l="Source">${link(f)}</td></tr>`).join('')}</tbody></table></div>
+  <h3>The full record</h3><p class="lede" id="ledN">${HIS.length} records from 3.3 million BCE to 2026. The search box above filters this table.</p>
+  <div class="tw"><table class="stack"><thead><tr><th>Year</th><th>Event</th><th>Lineage</th><th>Source</th></tr></thead><tbody id="ledAll">${[...HIS].sort((a,b)=>a.y-b.y).map(r=>`<tr data-id="${r.id}"><td class="n" data-l="Year">${esc(fmtY(r.y))}</td><td data-l="Event"><b>${esc(r.t)}</b><br><span style="color:var(--ink2)">${esc(r.d)}</span></td><td data-l="Lineage"><span class="badge"><svg width="10" height="10" aria-hidden="true"><circle cx="5" cy="5" r="5" fill="${LIN[r.c].c}"/></svg>${LIN[r.c].n}</span></td><td data-l="Source">${link(r)}</td></tr>`).join('')}</tbody></table></div>`+ABOUT;
+}
+function filterLedger(){const rows=document.querySelectorAll('#ledAll tr');let n=0;rows.forEach(tr=>{const ok=!matches||matches.has(+tr.dataset.id);tr.hidden=!ok;if(ok)n++;});$('ledN').textContent=matches?`${n} of ${HIS.length} records match “${query}”.`:`${HIS.length} records from 3.3 million BCE to 2026. The search box above filters this table.`;}
+}
+</script>
+</body>
+</html>
