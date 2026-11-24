@@ -191,6 +191,7 @@
         <button class="tab" id="tab-world-plan" type="button" role="tab" aria-selected="false" aria-controls="view-world-plan">World Plan Simulator</button>
         <button class="tab" id="tab-radar" type="button" role="tab" aria-selected="false" aria-controls="view-radar">Vote Radar</button>
         <button class="tab" id="tab-consensus" type="button" role="tab" aria-selected="false" aria-controls="view-consensus">Neighborhood Consensus</button>
+        <button class="tab" id="tab-merge" type="button" role="tab" aria-selected="false" aria-controls="view-merge">Three-Editor Merge</button>
         <button class="tab" id="tab-demo" type="button" role="tab" aria-selected="false" aria-controls="view-demo">100 Shared Goals</button>
         <button class="tab" id="tab-orbit" type="button" role="tab" aria-selected="false" aria-controls="view-orbit">Acts in Orbit</button>
         <button class="tab" id="tab-flags" type="button" role="tab" aria-selected="false" aria-controls="view-flags">Support Every Country</button>
@@ -258,6 +259,14 @@
         class="view"
         title="Neighborhood Consensus: how support for a local proposal spreads across a neighborhood"
         src="/embed/consensus"
+        loading="lazy"
+      ></iframe>
+
+      <iframe
+        id="view-merge"
+        class="view"
+        title="Three-Editor Merge"
+        src="/embed/merge"
         loading="lazy"
       ></iframe>
 
@@ -376,6 +385,7 @@
       worldPlan: document.getElementById('tab-world-plan'),
       radar: document.getElementById('tab-radar'),
       consensus: document.getElementById('tab-consensus'),
+      merge: document.getElementById('tab-merge'),
       demo: document.getElementById('tab-demo'),
       orbit: document.getElementById('tab-orbit'),
       flags: document.getElementById('tab-flags'),
@@ -398,6 +408,7 @@
       worldPlan: document.getElementById('view-world-plan'),
       radar: document.getElementById('view-radar'),
       consensus: document.getElementById('view-consensus'),
+      merge: document.getElementById('view-merge'),
       demo: document.getElementById('view-demo'),
       orbit: document.getElementById('view-orbit'),
       flags: document.getElementById('view-flags'),
@@ -427,6 +438,7 @@
     tabs.worldPlan.addEventListener('click', () => activate('worldPlan'));
     tabs.radar.addEventListener('click', () => activate('radar'));
     tabs.consensus.addEventListener('click', () => activate('consensus'));
+    tabs.merge.addEventListener('click', () => activate('merge'));
     tabs.demo.addEventListener('click', () => activate('demo'));
     tabs.orbit.addEventListener('click', () => activate('orbit'));
     tabs.flags.addEventListener('click', () => activate('flags'));

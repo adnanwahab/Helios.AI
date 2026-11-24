@@ -18,6 +18,7 @@ const pages = [
   'vote_radar.html',
   'happybearlandia_pocket.html',
   'eight_billion_map.html',
+  'three_editor_merge.html',
   'helios_100_frontend_demo.html',
   'heliosai_acts_orbit.html',
   'support_every_country.html',

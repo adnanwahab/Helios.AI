@@ -89,6 +89,17 @@
   to = "/vote_radar.html"
   status = 200
 
+# Three-editor merge: two journals in, one constitution out, over 8 billion sample journals.
+[[redirects]]
+  from = "/merge"
+  to = "/three_editor_merge.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/merge"
+  to = "/three_editor_merge.html"
+  status = 200
+
 [[redirects]]
   from = "/embed/orbit"
   to = "/heliosai_acts_orbit.html"

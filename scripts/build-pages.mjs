@@ -18,6 +18,7 @@ const demos = [
   'vote_radar.html',
   'happybearlandia_pocket.html',
   'eight_billion_map.html',
+  'three_editor_merge.html',
   'helios_100_frontend_demo.html',
   'heliosai_acts_orbit.html',
   'helios-unified.html',
@@ -70,6 +71,7 @@ replaceRequired('src="/embed/world-plan"', 'src="./world_plan_simulator.html"');
 replaceRequired('src="/embed/radar"', 'src="./vote_radar.html"');
 replaceRequired('src="/embed/orbit"', 'src="./heliosai_acts_orbit.html"');
 replaceRequired('src="/embed/pocket"', 'src="./happybearlandia_pocket.html"');
+replaceRequired('src="/embed/merge"', 'src="./three_editor_merge.html"');
 replaceRequired('src="/embed/goals"', 'src="./helios_100_frontend_demo.html"');
 replaceRequired('src="/embed/flags"', 'src="./support_every_country.html"');
 replaceRequired('src="/embed/unified"', 'src="./helios-unified.html"');
