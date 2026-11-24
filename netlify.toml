@@ -51,6 +51,17 @@
   to = "/support_every_country.html"
   status = 200
 
+# HappyBearLandia Pocket: touch-first swipe feed of every HappyBearLandia world.
+[[redirects]]
+  from = "/pocket"
+  to = "/happybearlandia_pocket.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/pocket"
+  to = "/happybearlandia_pocket.html"
+  status = 200
+
 [[redirects]]
   from = "/embed/world-plan"
   to = "/world_plan_simulator.html"
@@ -65,6 +76,11 @@
 [[redirects]]
   from = "/embed/radar"
   to = "/vote_radar.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/orbit"
+  to = "/heliosai_acts_orbit.html"
   status = 200
 
 [[redirects]]
@@ -96,4 +112,10 @@
 [[redirects]]
   from = "/embed/fork"
   to = "/helios_fork.html"
+  status = 200
+
+# Eight billion people, five laws: a deck.gl map with synthetic placeholder data.
+[[redirects]]
+  from = "/eight-billion"
+  to = "/eight_billion_map.html"
   status = 200

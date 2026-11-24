@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HELIOSAI — 111 Acts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: visionary but sober — a civic charter written by astronomers.
+   IDEA: an orrery — HELIOS at the centre, every bill a world; importance sets how close it orbits.
+   PICTURE: live three.js solar system of 101 worlds; a D3 circle-pack of the policy areas.
+   COLOUR and TYPE: deep sea-black field, solar gold sun, one hue per policy area; Syne titles, Inter text.
+   LAYOUT: controls, full-bleed orrery with the selected bill card, the pack, the ranked list, the principle. */
+:root{color-scheme:dark;--bg:#041619;--bg2:#072327;--ink:#e9f4f2;--mute:#9cb9b6;--sun:#ffb53d;--cy:#6fe3f0;--line:rgba(111,227,240,.18)}
+:root[data-theme=light],:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:Syne,Inter,sans-serif;line-height:1.05;text-wrap:balance;margin:0}
+h1{font-size:clamp(32px,5vw,52px);font-weight:800}
+h2{font-size:clamp(26px,3.4vw,38px);font-weight:700}
+h3{font-size:20px;font-weight:700}
+p{margin:.5em 0}
+.band{padding:clamp(28px,4vw,64px) max(5vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+.lede{color:var(--mute);font-size:17px;max-width:66ch}
+header.band{padding-bottom:16px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:16px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.seg button{border:0;border-radius:0}
+.seg button[aria-pressed=true],.bar button[aria-pressed=true]{background:var(--sun);color:#041619;border-color:var(--sun)}
+.hero{position:relative;max-width:1240px;margin:0 auto}
+.fig{position:relative;min-height:340px}
+.fig>svg,.fig>canvas{position:absolute;inset:0;width:100%;height:100%}
+#orrery{height:clamp(460px,76vh,800px);border-radius:18px;overflow:hidden;background:radial-gradient(ellipse at 50% 45%,#0b3236 0%,var(--bg) 70%);touch-action:none}
+.lab{position:absolute;left:0;top:0;pointer-events:none;font:600 13px Inter,sans-serif;color:var(--ink);white-space:nowrap;text-shadow:0 1px 4px #000;display:none}
+.lab b{display:inline-grid;place-items:center;min-width:24px;height:22px;padding:0 4px;border-radius:11px;background:rgba(4,22,25,.8);border:1px solid var(--line);margin-right:6px;font-size:12px}
+.lab.on span{color:var(--sun)}
+.lab.on b{border-color:var(--sun);color:var(--sun)}
+.hint{position:absolute;right:16px;top:14px;font-size:13px;color:var(--mute);pointer-events:none}
+.card{position:absolute;left:20px;bottom:20px;width:min(440px,calc(100% - 40px));max-height:calc(100% - 40px);overflow:auto;background:rgba(5,28,31,.9);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.kick{font:700 14px Syne,sans-serif;display:flex;gap:10px;flex-wrap:wrap;align-items:baseline}
+.kick .area{font:500 13px Inter,sans-serif;color:var(--mute)}
+.draft{font:600 12px Inter,sans-serif;color:#041619;background:var(--sun);border-radius:99px;padding:1px 8px}
+.card h3{margin:6px 0 8px;font-size:22px}
+.card .lead{font-weight:500}
+.card .more,.card .metric{color:var(--mute);font-size:15px}
+.metric b{color:var(--ink);font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font-size:13px;padding:3px 10px;border-radius:99px;border:1px solid var(--line);color:var(--cy)}
+.nav{display:flex;gap:8px;margin-top:12px}
+button{font:600 15px Inter,sans-serif;color:var(--ink);background:var(--bg2);border:1px solid var(--line);border-radius:10px;min-height:44px;padding:0 16px;cursor:pointer}
+button:hover{border-color:var(--cy)}
+button:focus-visible,input:focus-visible,tr:focus-visible{outline:2px solid var(--sun);outline-offset:2px}
+.packgrid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:start;margin-top:24px}
+#pack{min-height:clamp(380px,56vw,640px)}
+#pack text{font-family:Inter,sans-serif;pointer-events:none}
+.legend{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.legend li{display:flex;gap:12px;align-items:center;padding:6px 4px;font-weight:500}
+.legend li span:last-child{margin-left:auto;color:var(--mute);font-variant-numeric:tabular-nums}
+.dot{flex:none;width:14px;height:14px;border-radius:50%}
+.note{font-size:13px;color:var(--mute);margin-top:12px}
+.search{width:min(100%,420px);font:16px Inter,sans-serif;color:var(--ink);background:var(--bg2);border:1px solid var(--line);border-radius:10px;min-height:44px;padding:0 14px;margin-top:16px}
+table{width:100%;border-collapse:collapse;margin-top:16px;font-size:15px}
+th{text-align:left;color:var(--mute);font-weight:500;font-size:13px;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:10px;border-bottom:1px solid rgba(111,227,240,.08);vertical-align:top}
+td.r{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;width:3.5em}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--bg2)}
+tbody tr.on{background:#0b3236}
+td .t{font-weight:600}
+.principle{background:linear-gradient(180deg,var(--bg) 0%,#0a2a24 100%)}
+.principle blockquote{margin:16px 0 24px;font:700 clamp(22px,3vw,32px)/1.25 Syne,sans-serif;max-width:30ch;color:var(--sun)}
+.steps{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:0;margin:0;list-style:none}
+.steps li{padding:8px 14px;border-radius:99px;background:var(--bg2);border:1px solid var(--line);font-weight:600}
+.steps li.arrow{border:0;background:none;padding:0 2px;color:var(--mute)}
+.fallback{position:absolute;inset:0;display:grid;place-items:center;color:var(--mute);padding:24px;text-align:center}
+@media(max-width:820px){.packgrid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){
+  #orrery{border-radius:0;height:460px}
+  .card{position:static;width:auto;max-height:none;margin:12px 16px 0;backdrop-filter:none}
+  .lab span{display:none}
+  .hint{display:none}
+  table{font-size:13px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px}.stack td{display:flow-root;border:0;padding:3px 0;padding-inline-start:6em;text-align:start;width:auto}.stack td::before{content:attr(data-l);float:inline-start;width:5.5em;margin-inline-start:-6em;color:var(--mute)}.stack td:empty{display:none}
+}
+</style>
+<script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
+</head>
+<body>
+<header class="band wrap">
+  <h1>HELIOSAI — 111 Acts, in orbit</h1>
+  <p class="lede">Every HELIOSAI act, with the Universal Basic Income Act at #1, orbits one sun. The more important a bill is, the closer it orbits. Drag to rotate, scroll to zoom, and click a world to read it.</p>
+  <div class="bar">
+    <button id="byRank" aria-pressed="true">Rank by importance</button>
+    <button id="shuffle" aria-pressed="false">Shuffle</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="fig" id="orrery" aria-label="3D orrery of the bills orbiting HELIOS"><div class="hint">Drag · zoom · click a world</div></div>
+  <aside class="card" id="card" aria-live="polite"></aside>
+</section>
+
+<section class="band wrap">
+  <h2>Every bill, by policy area</h2>
+  <p class="lede">Each bubble is a bill, grouped by policy area. Bigger bubbles rank higher in the current order. Click one to bring it up in the orrery.</p>
+  <div class="packgrid">
+    <div class="fig" id="pack" role="img" aria-label="Circle-pack of bills grouped by policy area"></div>
+    <div>
+      <ul class="legend" id="legend"></ul>
+      <p class="note">The importance ranking is an editorial first pass, not a measured result. Shuffle randomizes it. The Universal Basic Income Act is a new draft, and each "Publish" metric is a suggested starting point.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band wrap">
+  <h2 id="listTitle">All acts in order</h2>
+  <input class="search" id="q" type="search" placeholder="Search bills, problems, tools" aria-label="Search bills">
+  <table class="stack" id="tbl"><thead><tr><th>Rank</th><th>Bill</th><th>Area</th><th>Problem</th></tr></thead><tbody></tbody></table>
+</section>
+
+<section class="band principle">
+  <div class="wrap">
+    <h2>The HELIOSAI principle</h2>
+    <blockquote>Every person should be able to imagine a better future, simulate it, help decide on it, participate in building it, and learn from what happens.</blockquote>
+    <ul class="steps" id="steps"></ul>
+  </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script>
+{
+const STAGES=['Imagine','Simulate','Deliberate','Decide','Build','Measure','Learn','Repeat'];
+const CATS=[['Health','#ff7a7a'],['Housing and cities','#ffb25b'],['Economy and work','#f2d45c'],['Education','#a5e86b'],['Democracy and governance','#5be0a8'],['Justice and safety','#6fe3f0'],['Environment and climate','#5aa9ff'],['Food and agriculture','#9d8bff'],['Technology and information','#d08bff'],['Social fabric','#ff7fc8'],['Global problems','#e6e6f0']];
+const catOf=n=>n<=13?0:n<=23?1:n<=36?2:n<=45?3:n<=56?4:n<=64?5:n<=75?6:n<=79?7:n<=89?8:n<=95?9:10;
+const RAW=[
+[1,'Affordable Healthcare Competition Act','Healthcare costs',['Public standard prices','No hidden facility fees','Hospital antitrust','Negotiation where government buys','Auto-probe fast price rises'],'Price growth vs. medical input-cost growth'],
+[2,'One-Page Medical Bill Act','Billing opacity',['Service','Negotiated price','Insurer paid','You owe','Appeal button'],'Bills disputed or appealed; undisclosed charges voided'],
+[3,'American Primary Care Corps Act','Clinician shortages',['Tuition paid + housing stipend','Multi-year service in a shortage area','More residency slots','Interstate licensing reciprocity'],'Clinicians per 10,000 residents in shortage areas'],
+[4,'Mental Healthcare Access Guarantee Act','Mental-health access',['Network parity','Wait-time standards','Community clinics','Telehealth','ER alternatives'],'Median days to first appointment'],
+[5,'Rural Hospital Stability Act','Rural hospital closures',['Emergency','Maternity','Primary care','Stabilization'],'Rural closures; drive time to emergency and maternity care'],
+[6,'Preventive Health Dividend Act','Preventable chronic disease',['Covered screenings','Walk + bike routes','Nutrition programs','Exercise prescriptions','Chronic-disease prevention'],'Health outcomes, not participation counts'],
+[7,'Antibiotic Preservation Act','Antibiotic resistance',['Resistance surveillance network','Limits on unneeded farm use','Funding for new antibiotics','Rapid diagnostics','Stewardship rules'],'Resistant-infection rates; new antibiotics approved'],
+[8,'Essential Medicines Resilience Act','Drug shortages',['Emergency manufacturing trigger','Rotating reserves','Redundant domestic + allied production','Supply-vulnerability disclosure','Strategic drug list'],'Shortage-days per critical drug'],
+[9,'Patient-Controlled Health Record Act','Locked-in medical records',['Hospital','Clinic','Pharmacy','Lab','Apps you choose'],'Records exportable by standard API; blocking complaints'],
+[10,'Recovery and Overdose Prevention Act','Addiction and overdose',['Naloxone widely available','Rapid evidence-based treatment','Recovery housing','Peer support'],'Overdose deaths; days from request to treatment'],
+[11,'Universal Long-Term Care Insurance Act','Long-term care costs',['Dedicated contribution, income-based protection','Nursing care','Assisted living','Respite care','Home care'],'Out-of-pocket care spending; share cared for at home'],
+[12,'Healthcare Workforce Sustainability Act','Clinician burnout',['Safe staffing transparency','Less documentation','Shield for safety reports','Mental-health support','Pay tied to retention + safety'],'Clinician turnover; patient-safety events'],
+[13,'Pandemic Preparedness and Rapid Response Act','Pandemic risk',['Audited stockpile + simulations','Preapproved trial protocols','Standing emergency contracts','Wastewater + genomic surveillance','Vaccine, test + PPE capacity'],'Days to detect; days to scale tests and vaccines in drills'],
+[14,'Homes Abundance Act','Housing affordability',['Grants tied to more housing','Legal accessory dwellings','Multifamily near jobs + transit','Low-income construction subsidy'],'Homes permitted per 1,000 residents; rent-to-income'],
+[15,'Housing First and Homelessness Reduction Act','Chronic homelessness',['Expanded emergency shelter','Rapid permanent supportive housing','Voluntary intensive services','One case-management system'],'Chronic homelessness count; 12-month housing retention'],
+[16,'Permit in 60 Act','Slow permitting',['Digital permitting','Published rules','Concurrent reviews','Deadlines','Auto-escalation'],'Median days from application to permit'],
+[17,'Infrastructure Renewal Act','Aging infrastructure',['Bridges','Water systems','Sewers','Power grids','Live condition inventory'],'Assets in poor condition; lifecycle cost'],
+[18,'Walkable Communities Act','Car dependence',['Complete streets','Sidewalks','Protected bike networks','Transit-oriented development','Safe routes to school'],'Traffic deaths; trips walked, biked or by transit'],
+[19,'Frequent Transit Guarantee Act','Infrequent transit',['Frequency','Reliability','Accessibility','Cleanliness','Coverage'],'Residents within a short walk of frequent service'],
+[20,'Mixed-Income Neighborhoods Act','Concentrated poverty',['Vouchers for high-opportunity areas','Affordable units in strong neighborhoods','Mixed-income incentives'],'Subsidized households in high-opportunity areas'],
+[21,'Community Anti-Displacement Act','Displacement',['Advance notice','Relocation aid','Community land trusts','Property-tax protection','Right to return'],'Involuntary moves in redeveloping areas'],
+[22,'Safe Water Guarantee Act','Lead and contaminants',['Find every lead line','Replace them','Real-time contaminant dashboards'],'Lead lines remaining; violations by water system'],
+[23,'Cool Cities Act','Urban heat',['Tree canopy','Cool roofs','Shaded sidewalks','Cooling centers','Heat-resistant building standards'],'Heat-related ER visits; surface temperature by neighborhood'],
+[24,'Shared Prosperity Wage Act','Wage floor erosion',['Gradual phase-in','Floor indexed to median wage','Expanded earned-income credit'],'Wage floor as a share of median wage'],
+[25,'Broad Ownership Act','Concentrated ownership',['Employee ownership','Profit-sharing','Worker stock grants','Investment accounts','Matched savings'],'Households owning productive assets'],
+[26,'Universal Retirement Account Act','No retirement plan',['Auto-enrolled (opt-out allowed)','Payroll contributions','Low-cost index funds','Account follows you between jobs'],'Workers with a retirement account; median balance'],
+[27,'Fair Household Credit Act','Predatory credit',['Affordable refinancing','Stronger bankruptcy relief','Compounding limits','Clear APR','Fee caps'],'Fees paid per borrower; distressed-debt share'],
+[28,'Portable Benefits Act','Benefits tied to one job',['Employer A','Employer B','Gig platform','Health + leave','Retirement + workers comp'],'Independent workers with health, leave and retirement coverage'],
+[29,'Universal Childcare Act','Childcare cost and supply',['Payments capped by income','Better childcare pay','Supply grants','Universal pre-K'],'Childcare cost as share of income; slots per child'],
+[30,'Automation Transition Act','Automation displacement',['Advance notice of major displacement','Transition funding','Wage insurance','Rapid retraining + relocation','Worker voice in deployment'],'Re-employment rate and wage recovery'],
+[31,'Skills Passport Act','Credentials vs. real skills',['Verified competency','Assessed by','Level reached','Valid nationwide','Matching job openings'],'Placement rate from funded training'],
+[32,'Competitive Markets for Small Business Act','Market concentration',['Merger enforcement','No unfair platform discrimination','Simpler procurement','Interoperable marketplaces'],'New business formation; market concentration'],
+[33,'Automatic Benefits Act','Missed benefits',['Tax records','Wage records','Program enrollment','Household data on file'],'Take-up rate among eligible households'],
+[34,'Wage Theft Enforcement Act','Wage theft',['Employee-status presumption','Whistleblower rewards','Individual liability','Automatic damages','Stronger penalties'],'Back wages recovered; repeat violations'],
+[35,'Benefits Smooth Landing Act','Benefit cliffs',['Gradual phase-outs','Earning $1 more never costs several'],'Highest effective marginal tax rate on low earners'],
+[36,'Regional Renewal Act','Distressed regions',['Research universities','Infrastructure','Apprenticeships','Startup finance','Brownfield cleanup','Housing'],'Regional employment and median income vs. national'],
+[37,'National Learning Recovery Act','Learning loss',['Tutoring + extended learning','Independent measurement','Renew only if gains','Scale or fix'],'Independently measured reading and math gains'],
+[38,'Teacher Profession Act','Teacher shortages',['Funded preparation','Paid residency','Mentoring','Shortage-field pay','Less administrative work'],'Teacher vacancies; five-year retention'],
+[39,'Student Debt Reset Act','Student debt burden',['Payroll-integrated repayment','Cap vs. disposable income','Simpler forgiveness','School accountability'],'Default rate; payments as share of disposable income'],
+[40,'College Price Accountability Act','Opaque college prices',['True net price','Completion rate','Graduate earnings','Typical debt'],'Debt-to-earnings ratio by program'],
+[41,'Equal Opportunity School Funding Act','School funding gaps',['Federal equalization funds','For states that close gaps'],'Per-pupil spending gap between high- and low-wealth districts'],
+[42,'Every Student Present Act','Chronic absenteeism',['Transportation','Health support','Family outreach','Counseling','Attendance plan'],'Chronic absenteeism rate'],
+[43,'Learn and Earn Act','School-work disconnect',['Paid apprenticeships','Internships','Co-op education','Employer projects'],'Students earning credit through paid work'],
+[44,'Deep Reading and Attention Act','Reading and attention',['School library','Daily sustained reading','Media literacy','Device-free periods','Attention research'],'Reading stamina and comprehension'],
+[45,'American Trades Guarantee Act','Access to the trades',['Graduate or adult retrainee','Affordable pathway guaranteed','Apprenticeship in a high-demand field'],'Completion and placement in high-demand trades'],
+[46,'Public Trust and Integrity Act','Corruption risk',['Lobbying','Procurement','Conflicts of interest','Performance','Ethics'],'Inspector-general findings resolved; whistleblower cases'],
+[47,'Civic Deliberation Act','Polarized long-term choices',['Citizens selected at random','Hear competing evidence','Deliberate in public','Issue recommendations'],'Recommendations answered on time'],
+[48,'Information Integrity Act','Misinformation',['Provenance infrastructure','Media literacy','Election-security communication','Rapid data release'],'Time to publish authoritative data; provenance adoption'],
+[49,'Local Journalism Public Benefit Act','News deserts',['Viewpoint-neutral tax credits','Nonprofit status','Independent reporting grants','Local-reporter incentives'],'Local reporters per 100,000 residents'],
+[50,'Local Democracy Participation Act','Low local turnout',['Election reminders','Accessible polling','Voter information','States choose to join'],'Turnout in local elections'],
+[51,'Digital Government Guarantee Act','Hard-to-use services',['Simple digital option','Paper + phone option','Status tracking','Plain language','Service deadline'],'Completion rate and time to decision per service'],
+[52,'Transparent Political Money Act','Hidden political spending',['Spender','True source','Amount','Date filed'],'Significant spending with a traceable source'],
+[53,'Legislative Deadline and Deliberation Act','Procedural gridlock',['Bipartisan or public-support threshold','Guaranteed consideration','Recorded votes before deadlines'],'Qualifying bills that get a committee vote'],
+[54,'Plain Government Act','Paperwork burden',['Duplicate form A','Duplicate form B','Data agencies already hold','Rules in legalese'],'Hours of paperwork per resident per year'],
+[55,'Public Feedback Loop Act','Unheard residents',['Residents report','Reports aggregated publicly','Recurring problems detected','Agency must respond'],'Response time to statistically significant problems'],
+[56,'Open Public Data Act 2.0','Locked public records',['Machine-readable','API access','Versioned','Searchable','Free to reuse'],'Non-sensitive datasets available by API'],
+[57,'Speedy Justice Modernization Act','Court delays',['Digital administration','Judges + staff where needed','Alternative dispute resolution','Delay stats by court'],'Median time to disposition by court'],
+[58,'Civil Justice Guarantee Act','No lawyer in civil crises',['Eviction','Domestic safety','Child custody','Loss of benefits'],'People with counsel in high-stakes civil cases'],
+[59,'Second Chance Act','Reentry and recidivism',['Reentry plan before release','ID + benefits enrollment','Housing + treatment','Job placement','Record-sealing pathway'],'Recidivism; employment one year after release'],
+[60,'Community Gun Violence Reduction Act','Gun violence',['Focused deterrence','Violence intervention','Safe storage','Background-check implementation','Trafficking cases','Firearm research'],'Shootings and firearm deaths'],
+[61,'Domestic Safety Guarantee Act','Domestic violence',['Emergency shelter','Expedited protective order','Legal aid','Confidential relocation'],'Time to shelter; repeat victimization'],
+[62,'Senior Fraud Shield Act','Elder fraud',['Scam education','Specialized enforcement teams','Fraud recovery','Rapid transfer intervention'],'Dollars lost and dollars recovered'],
+[63,'Anti-Retaliation Enforcement Act','Whistleblower retaliation',['Worker shows protected activity','Adverse action follows','Burden shifts to employer','Expedited proceeding'],'Time to resolution; retaliation findings'],
+[64,'Behavioral Crisis Response Act','Crisis calls handled by police',['988 crisis call','Civilian mobile crisis team','EMS or police backup'],'Crisis calls resolved without arrest or injury'],
+[65,'Clean Economy Act','Climate emissions',['Economy-wide limit','Tech-neutral incentives','Methane controls','Industrial decarbonization','Carbon-budget reviews'],'Annual emissions vs. the limit'],
+[66,'Climate Resilience Act','Climate hazards',['Flood','Wildfire','Heat','Drought','Storm'],'Expected losses avoided per dollar spent'],
+[67,'Biodiversity Recovery Act','Biodiversity loss',['Protect high-value habitat','Reconnect with corridors','Private-land conservation','Restore degraded ecosystems'],'Progress on national biodiversity targets'],
+[68,'Circular Plastics Act','Plastic waste',['Recyclable design','Use','Collection','Modern recycling'],'Packaging recycled; single-use material per person'],
+[69,'Water Security Act','Water scarcity',['Water-market reform','Conservation incentives','Drought contingency plans','Leak reduction','Reuse standards','Watershed budgets'],'Withdrawals vs. watershed budget'],
+[70,'Soil Restoration Act','Soil degradation',['Soil health','Erosion','Nutrient efficiency','Water retention'],'Independently measured soil-health change'],
+[71,'Clean Air Everywhere Act','Air pollution',['Dense neighborhood sensors','Tighter monitoring','Faster industrial cleanup','Most-burdened areas first'],'Fine-particle exposure in the most-burdened areas'],
+[72,'Food Waste Reduction Act','Food waste',['Standard date labels','Donation protection','Composting','Institutional waste tracking'],'Food wasted per person'],
+[73,'Right to Repair Act','Unrepairable products',['Parts','Tools','Diagnostics','Software support','Real security controls kept'],'Repair cost and turnaround; independent repair share'],
+[74,'Climate Insurance Transition Act','Insurance market stress',['Property-risk ratings','Resilience subsidies','Temporary affordability aid','Voluntary relocation'],'Insured share of homes; losses avoided by retrofits'],
+[75,'Modern Grid Act','Grid bottlenecks',['Transmission planning reform','Faster interconnection','Storage + demand flexibility','Transmission built, communities paid'],'Interconnection wait; outage minutes per customer'],
+[76,'Healthy Food Access Act','Food deserts',['Automatic nutrition aid','Grocery incentives','Mobile markets','Fresh-food subsidies'],'Food insecurity; distance to fresh food'],
+[77,'Healthy Food Environment Act','Diet-related disease',['Added sugar','Sodium','Saturated fat','Processing level','Health claims checked'],'Diet quality; school-meal nutrition'],
+[78,'Independent Farmer Competition Act','Agricultural consolidation',['Competition enforcement','Fair contracting','Stronger cooperatives','Credit + market access'],'Farmer share of retail price; buyer concentration'],
+[79,'Food Resilience Act','Food supply shocks',['Continuity plans','Regional backup systems','Vulnerability mapping','Diverse processing','Strategic reserves'],'Days of disruption after shocks'],
+[80,'American Data Rights Act','Personal data exploitation',['Know','Access','Correct','Export','Delete','Opt-in for sensitive data'],'Rights requests honored on time; broker penalties'],
+[81,'Youth Digital Wellbeing Act','Harmful design for minors',['No manipulative engagement','High-privacy defaults','Parent + teen controls','Chronological feed option','Independent research access'],'Late-night use; teen wellbeing measures'],
+[82,'Critical Infrastructure Cybersecurity Act','Cyberattacks',['Resilience exercises','Red-team testing','Secure-by-design procurement','Incident reporting + disclosure','Minimum security standards'],'Time to detect and recover from incidents'],
+[83,'Algorithmic Due Process Act','Unaccountable algorithms',['Impact assessment','Validation + discrimination testing','Audit trail','Explanation','Human appeal'],'Appeals filed and overturned; disparity audits'],
+[84,'Universal Broadband Act','Digital divide',['Treated as essential infrastructure','Subsidy where markets fail','Reliable high-speed service'],'Households with reliable high-speed service'],
+[85,'Digital Competition and Interoperability Act','Platform lock-in',['Your data + contacts move with you','Easy switching','No self-preferencing'],'Switching rate; new-entrant share'],
+[86,'Human Attention Rights Act','Attention extraction',['Feed without behavioral optimization','Turn off endless scroll','See why posts appear','Set your own limits'],'Users choosing non-optimized feeds and limits'],
+[87,'Authentic Media Act','Deepfakes and fraud',['Capture','Cryptographic provenance','Edit history','Synthetic political ads disclosed'],'Provenance coverage; impersonation-fraud losses'],
+[88,'Frontier AI Accountability Act','Frontier AI risk',['Risk threshold reached','Independent safety evaluation','Security controls + documentation','Staged deployment'],'Evaluations completed before deployment; incidents'],
+[89,'Durable Technology Act','Planned obsolescence',['Support period stated','Replaceable battery','Repairability disclosure','Data portability','No needless disabling'],'Average device lifespan; e-waste per person'],
+[90,'Social Connection Infrastructure Act','Loneliness',['Libraries','Parks + plazas','Recreation centers','Community meals','Recurring events'],'Reported loneliness; repeat participation'],
+[91,'Civic Association Renewal Act','Declining civic life',['Small matching grants','Free meeting space','Simple nonprofit admin','Service opportunities'],'Active local associations per capita'],
+[92,'Family Formation Choice Act','Cost of raising children',['Predictable family benefits','Fertility treatment access','Paid leave','Healthcare','Housing supply','Childcare'],'Gap between desired and actual family size'],
+[93,'Caregiver Support Act','Unpaid caregiving strain',['Paid family leave','Tax credit or allowance','Respite care','Social Security credits','Portable home care'],'Caregivers leaving work; caregiver strain'],
+[94,'Youth Flourishing Act','Youth distress',['Counselors','Extracurriculars','Mentoring','Mental-health services','Phone-free learning','Safe public spaces'],'Youth wellbeing and distress indicators'],
+[95,'Equal Opportunity Enforcement Act','Discrimination',['Paired testing','Violations detected','Fast remedies','Outcome data published'],'Violation rates in testing; time to remedy'],
+[96,'Refugee Stability and Integration Act','Displacement crises',['Rapid humanitarian processing','Shared resettlement','Earlier work authorization','Host-community funding'],'Processing time; employment after resettlement'],
+[97,'Global Health Security Act','Global disease threats',['Vaccines','Maternal health','Surveillance','Sanitation','Essential medicines'],'Outbreak detection time; maternal and child mortality'],
+[98,'Fragile States Prevention Act','State collapse',['Early warning','Mediation','Accountable institutions + anticorruption','Local economy + food security'],'Conflict onset in at-risk states'],
+[99,'Sovereign Debt Sustainability Act','Debt crises',['Transparent lending contracts','Coordinated creditors','Faster restructuring','Debt-for-development or climate swaps'],'Time to restructure; debt service vs. revenue'],
+[100,'Global Catastrophic Risk Cooperation Act','Cross-border catastrophes',['Pandemics','AI safety','Climate monitoring','Asteroid defense','Biosecurity'],'Joint drills held; time to share warnings across borders']
+];
+const UBI={id:'UBI',t:'Universal Basic Income Act',p:'Income insecurity',cat:2,draft:true,
+  L:['Regular cash payment to every adult','No work requirement','Phased pilots before national rollout','Funding source published and simulated','Coordinated with existing benefits'],
+  m:'Poverty rate, employment and wellbeing, measured against pilot predictions'};
+const IMPORTANCE=[88,100,13,65,1,14,97,4,37,29,10,55,33,35,24,30,15,7,3,60,66,75,22,90,94,81,82,46,56,47,76,71,16,19,18,26,11,93,41,38,45,43,28,25,8,5,12,6,64,59,61,58,57,83,80,84,87,48,52,53,51,54,98,96,99,69,67,70,79,74,23,17,20,21,36,32,78,85,34,27,39,40,42,44,31,2,9,62,63,95,92,91,49,50,86,89,73,68,72,77];
+const MOON_CAT=[1,4,8,3,4,4,4,4,9,3];
+// Where each former moonshot sits in the single ranked list (0-based, after UBI is placed)
+const MOON_AT=[39,49,59,44,7,24,2,4,19,11];
+const MOON=[
+ ['One Self-Driving Car in Every City Act','Deploy at least one autonomous vehicle in every willing city worldwide, beginning with safety-validated pilots.','Use SMS, email, and shared digital infrastructure to dramatically reduce coordination and deployment costs. Target: 100× lower implementation costs as the system scales — a hypothesis to test, not an assumed result.'],
+ ['Equal Opportunity to Become President Act','Amend the U.S. Constitution so naturalized American citizens can run for President.',"Citizenship by choice should not automatically disqualify someone from the country's highest office."],
+ ['The Pensieve Invention Act (2026)','Launch a 2026 grand challenge for Neuralink and other researchers to build the first practical, privacy-preserving digital Pensieve.','A system for remembering, exploring, visualizing, and sharing human thoughts and memories, with strong consent and neural-data protections.'],
+ ['Dynamicland in Every Country Act','Establish at least one Dynamicland-inspired public computing laboratory in every willing country.','Create physical spaces where children, scientists, artists, and communities can collaboratively program and explore ideas in the real world.'],
+ ['The 100 Possible Futures Act','Before major public policies are adopted, provide decision-makers with simulations of 100 plausible futures.','Use HappyBearLandia and other open simulation tools to compare housing, health, education, economic opportunity, happiness, and environmental outcomes. Publish assumptions and uncertainty.'],
+ ['The 24-Hour Civic Innovation Act','Make it possible for any person to propose an idea and, when it meets safety, legal, and funding requirements, see a small authorized pilot begin within 24 hours.','A great idea submitted today could begin changing the world tomorrow.'],
+ ['The Daily Democracy Act','Give every citizen the opportunity to participate in voluntary daily digital civic deliberation and voting.','Connect Civic Synthesis with public proposals, transparent reasoning, policy simulations, and existing democratic institutions. Preserve privacy, accessibility, and constitutional decision-making.'],
+ ['The Government Learning Ledger Act','Require public programs to publish their goals, predictions, evidence, observed outcomes, and lessons learned.','Create an open, inspectable learning system so governments can improve policies based on what actually works, rather than repeatedly making the same mistakes.'],
+ ['The Third Places for Everyone Act','Help every community create welcoming, affordable places beyond home and work.','Libraries, parks, gardens, workshops, recreation centers, and community spaces should make friendship, play, creativity, and belonging easier.'],
+ ['The Universal AI Teacher Act','Give every person access to a free, multilingual, personalized AI learning companion.','Make excellent tutoring available regardless of income or location, with human educators, trustworthy content, privacy protections, and opportunities for lifelong learning.']
+];
+const byNum=new Map(RAW.map(([n,t,p,L,m])=>[n,{id:'Act '+n,t,p,L,m,cat:catOf(n)}]));
+const ACTS=IMPORTANCE.map(n=>byNum.get(n));
+MOON.map(([t,l,m],i)=>({i,b:{t,lead:l,more:m,cat:MOON_CAT[i],L:[]}})).sort((a,b)=>MOON_AT[a.i]-MOON_AT[b.i]).forEach(({i,b})=>ACTS.splice(MOON_AT[i],0,b));
+const ALL=[UBI,...ACTS];
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* state: items in canonical (importance) order; order = array of item indices by current rank */
+let items=ALL,order=items.map((_,i)=>i),rankOf=order.slice(),sel=0,mode='rank';
+const hooks=[];
+const emit=()=>hooks.forEach(h=>h());
+function setOrder(o){order=o;rankOf=new Array(items.length);order.forEach((it,r)=>rankOf[it]=r);}
+function select(i){sel=i;emit();}
+function step(d){const r=(rankOf[sel]+d+items.length)%items.length;select(order[r]);}
+function shuffle(){const o=items.map((_,i)=>i);for(let i=o.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[o[i],o[j]]=[o[j],o[i]];}setOrder(o);mode='random';emit();}
+document.getElementById('shuffle').onclick=shuffle;
+document.getElementById('byRank').onclick=()=>{setOrder(items.map((_,i)=>i));mode='rank';emit();};
+hooks.push(()=>{document.getElementById('byRank').setAttribute('aria-pressed',mode==='rank');document.getElementById('shuffle').setAttribute('aria-pressed',mode==='random');});
+const chips=L=>L.length?`<div class="chips">${L.map(x=>`<span class="chip">${esc(x)}</span>`).join('')}</div>`:'';
+
+/* ---------- card ---------- */
+const card=document.getElementById('card');
+hooks.push(()=>{const b=items[sel],c=CATS[b.cat];
+  card.innerHTML=`<div class="kick"><span style="color:${c[1]}">#${rankOf[sel]+1} of ${items.length}</span><span class="area">${esc(c[0])}</span>${b.draft?'<span class="draft">New draft</span>':''}</div><h3>${esc(b.t)}</h3>`+
+   (b.lead?`<p class="lead">${esc(b.lead)}</p><p class="more">${esc(b.more)}</p>`:`<p class="lead">Problem: ${esc(b.p)}</p>${chips(b.L)}<p class="metric"><b>Publish:</b> ${esc(b.m)}</p>`)+
+   `<div class="nav"><button id="prev" aria-label="Previous bill">← Prev</button><button id="next" aria-label="Next bill">Next →</button></div>`;
+  card.querySelector('#prev').onclick=()=>step(-1);card.querySelector('#next').onclick=()=>step(1);
+});
+
+/* ---------- table ---------- */
+const tbody=document.querySelector('#tbl tbody'),q=document.getElementById('q');
+function drawTable(){const s=q.value.trim().toLowerCase();
+  document.getElementById('listTitle').textContent=(mode==='rank'?'All acts by importance':'All acts, shuffled')+` (${items.length})`;
+  tbody.innerHTML=order.filter(i=>{const b=items[i];return !s||[b.t,b.p||'',b.lead||'',...b.L].join(' ').toLowerCase().includes(s);})
+   .map(i=>{const b=items[i],c=CATS[b.cat];return `<tr data-i="${i}" tabindex="0" class="${i===sel?'on':''}"><td class="r" style="color:${c[1]}">${rankOf[i]+1}</td><td><span class="t">${esc(b.t)}</span>${b.draft?' <span class="draft">New draft</span>':''}</td><td>${esc(c[0])}</td><td>${esc(b.p||b.lead)}</td></tr>`}).join('');}
+const pickRow=e=>{const tr=e.target.closest('tr[data-i]');if(!tr)return;select(+tr.dataset.i);document.getElementById('orrery').scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});};
+tbody.addEventListener('click',pickRow);
+tbody.addEventListener('keydown',e=>{if(e.key==='Enter')pickRow(e);});
+q.addEventListener('input',drawTable);
+hooks.push(drawTable);
+
+/* ---------- legend + steps ---------- */
+hooks.push(()=>{const counts=new Map();items.forEach(b=>counts.set(b.cat,(counts.get(b.cat)||0)+1));
+  document.getElementById('legend').innerHTML=[...counts].map(([k,n])=>`<li><span class="dot" style="background:${CATS[k][1]}"></span><span>${esc(CATS[k][0])}</span><span>${n}</span></li>`).join('');});
+document.getElementById('steps').innerHTML=STAGES.map((s,i)=>`<li>${s}</li><li class="arrow" aria-hidden="true">${i<STAGES.length-1?'→':'↺'}</li>`).join('');
+
+/* ---------- three.js orrery ---------- */
+const host=document.getElementById('orrery');
+
+try{
+  if(!window.THREE)throw 0;
+  const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  host.prepend(renderer.domElement);
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(45,1,0.1,2000);
+  camera.position.set(0,46,82);
+  const controls=new THREE.OrbitControls(camera,renderer.domElement);
+  controls.enableDamping=true;controls.enablePan=false;controls.minDistance=20;controls.maxDistance=170;
+  scene.add(new THREE.AmbientLight(0x88aaaa,0.4));
+  scene.add(new THREE.PointLight(0xffe2b0,1.6));
+  const glowTex=(a,b)=>{const c=document.createElement('canvas');c.width=c.height=256;const g=c.getContext('2d');const r=g.createRadialGradient(128,128,0,128,128,128);r.addColorStop(0,a);r.addColorStop(.25,b);r.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=r;g.fillRect(0,0,256,256);return new THREE.CanvasTexture(c);};
+  const sun=new THREE.Mesh(new THREE.SphereGeometry(5,48,48),new THREE.MeshBasicMaterial({color:0xffc55a}));scene.add(sun);
+  const glow=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex('rgba(255,220,150,1)','rgba(255,160,50,.45)'),blending:THREE.AdditiveBlending,depthWrite:false}));glow.scale.set(34,34,1);scene.add(glow);
+  const sg=new THREE.BufferGeometry(),sp=[];
+  for(let i=0;i<1800;i++){const u=Math.random()*2-1,a=Math.random()*Math.PI*2,r=300+Math.random()*300,qq=Math.sqrt(1-u*u);sp.push(r*qq*Math.cos(a),r*u,r*qq*Math.sin(a));}
+  sg.setAttribute('position',new THREE.Float32BufferAttribute(sp,3));
+  scene.add(new THREE.Points(sg,new THREE.PointsMaterial({color:0xcfe9e6,size:1.4,sizeAttenuation:false,transparent:true,opacity:.7})));
+  const ringLine=r=>{const pts=new THREE.EllipseCurve(0,0,1,1,0,Math.PI*2).getPoints(180).map(p=>new THREE.Vector3(p.x,0,p.y));const l=new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0x6fe3f0,transparent:true,opacity:.12}));l.scale.setScalar(r);return l;};
+  const guides=[],selRing=ringLine(10);selRing.material.opacity=.7;selRing.material.color.set(0xffb53d);scene.add(selRing);
+  const world=new THREE.Group();scene.add(world);
+  const halo=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex('rgba(255,255,255,0)','rgba(255,200,90,.55)'),blending:THREE.AdditiveBlending,depthWrite:false}));scene.add(halo);
+  let planets=[],labels=[];
+  const radiusFor=r=>{const N=items.length;return N<=12?11+r*4.4:13+r*(44/(N-1));};
+  const sizeFor=r=>{const N=items.length;return N<=12?1.3:1.75-1.05*(r/(N-1));};
+  const rebuild=()=>{
+    planets.forEach(p=>{world.remove(p);p.geometry.dispose();p.material.dispose();});labels.forEach(l=>l.remove());
+    guides.forEach(g=>scene.remove(g));guides.length=0;
+    planets=items.map((b,i)=>{const col=CATS[b.cat][1];
+      const m=new THREE.Mesh(new THREE.SphereGeometry(1,24,24),new THREE.MeshStandardMaterial({color:col,roughness:.55,metalness:.1,emissive:col,emissiveIntensity:.15}));
+      const r=radiusFor(rankOf[i]);m.userData={i,r,tr:r,s:sizeFor(rankOf[i]),a:i*2.399,y:items.length>12?((i*37)%7-3)*0.25:0};
+      m.scale.setScalar(m.userData.s);world.add(m);return m;});
+    labels=items.map(b=>{const l=document.createElement('div');l.className='lab';l.innerHTML=`<b></b><span>${esc(b.t.replace(/^The /,'').replace(/ Act( \(2026\))?$/,''))}</span>`;host.appendChild(l);return l;});
+    const ticks=items.length>12?[0,9,24,49,items.length-1]:items.map((_,i)=>i);
+    ticks.forEach(r=>{const g=ringLine(radiusFor(r));scene.add(g);guides.push(g);});
+  };
+  rebuild();
+  hooks.push(()=>{planets.forEach((p,i)=>{p.userData.tr=radiusFor(rankOf[i]);p.userData.s=sizeFor(rankOf[i]);});labels.forEach((l,i)=>{l.firstChild.textContent=rankOf[i]+1;l.classList.toggle('on',i===sel);});});
+  const ray=new THREE.Raycaster(),mouse=new THREE.Vector2();let down=null,hov=-1;
+  const pick=e=>{const r=renderer.domElement.getBoundingClientRect();mouse.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);ray.setFromCamera(mouse,camera);const h=ray.intersectObjects(planets);return h.length?h[0].object.userData.i:-1;};
+  renderer.domElement.addEventListener('pointerdown',e=>down=[e.clientX,e.clientY]);
+  renderer.domElement.addEventListener('pointerup',e=>{if(down&&Math.hypot(e.clientX-down[0],e.clientY-down[1])<6){const i=pick(e);if(i>=0)select(i);}down=null;});
+  renderer.domElement.addEventListener('pointermove',e=>{hov=pick(e);renderer.domElement.style.cursor=hov>=0?'pointer':'grab';});
+  renderer.domElement.addEventListener('pointerleave',()=>hov=-1);
+  let W=1,H=1;
+  const size=()=>{W=host.clientWidth;H=host.clientHeight;renderer.setSize(W,H,false);camera.aspect=W/H;camera.position.setLength(W<600?120:92);camera.updateProjectionMatrix();};
+  const orRO=new ResizeObserver(size);orRO.observe(host);size();
+  const v=new THREE.Vector3(),clock=new THREE.Clock();let t=0;
+  const frame=()=>{
+    const dt=Math.min(clock.getDelta(),.05);if(!reduce)t+=dt;
+    const k=reduce?1:Math.min(1,dt*3);
+    planets.forEach(p=>{const u=p.userData;u.r+=(u.tr-u.r)*k;const sc=p.scale.x+(u.s-p.scale.x)*k;p.scale.setScalar(sc);
+      const a=u.a+t*0.9/Math.sqrt(u.r);p.position.set(Math.cos(a)*u.r,u.y,Math.sin(a)*u.r);});
+    sun.rotation.y+=dt*.1;
+    const sp_=planets[sel];if(sp_){halo.position.copy(sp_.position);const hs=sp_.scale.x*7;halo.scale.set(hs,hs,1);selRing.scale.setScalar(sp_.userData.r);}
+    controls.update();renderer.render(scene,camera);
+    const many=items.length>12;
+    planets.forEach((p,i)=>{const l=labels[i],show=!many||i===sel||i===hov||rankOf[i]<5;
+      if(!show){l.style.display='none';return;}
+      v.copy(p.position).project(camera);if(v.z>1){l.style.display='none';return;}
+      l.style.display='block';l.style.transform=`translate(${(v.x+1)/2*W}px,${(1-v.y)/2*H-24}px) translate(-50%,-50%)`;l.style.zIndex=i===sel?2:1;});
+    requestAnimationFrame(frame);
+  };
+  frame();
+}catch(err){host.insertAdjacentHTML('beforeend','<div class="fallback">The 3D orrery needs WebGL, which isn\'t available in this browser. Every bill is listed below.</div>');}
+
+/* ---------- D3 circle pack ---------- */
+const ph=document.getElementById('pack');
+const svg=window.d3?d3.select(ph).append('svg'):null;
+function drawPack(){
+  const W=ph.clientWidth,H=ph.clientHeight;if(!svg||!W||!H)return;
+  const groups=d3.groups(items.map((b,i)=>({b,i})),d=>d.b.cat);
+  const root=d3.hierarchy({children:groups.map(([cat,ch])=>({cat,children:ch}))}).sum(d=>d.b?(items.length-rankOf[d.i])+items.length*0.15:0);
+  d3.pack().size([W,H]).padding(d=>d.depth===0?10:3)(root);
+  svg.attr('viewBox',`0 0 ${W} ${H}`).selectAll('*').remove();
+  root.children.forEach(g=>{const col=CATS[g.data.cat][1];
+    svg.append('circle').attr('cx',g.x).attr('cy',g.y).attr('r',g.r).attr('fill',col).attr('fill-opacity',.07).attr('stroke',col).attr('stroke-opacity',.35);
+  });
+  root.leaves().forEach(n=>{const {b,i}=n.data,col=CATS[b.cat][1],on=i===sel;
+    const g=svg.append('g').style('cursor','pointer').on('click',()=>select(i));
+    g.append('title').text(`#${rankOf[i]+1} ${b.t}`);
+    g.append('circle').attr('cx',n.x).attr('cy',n.y).attr('r',n.r).attr('fill',col).attr('fill-opacity',on?1:.78).attr('stroke',on?'#fff':'none').attr('stroke-width',2.5);
+    if(n.r>=9)g.append('text').attr('x',n.x).attr('y',n.y).attr('dy','.35em').attr('text-anchor','middle').attr('fill','#041619').attr('font-weight',700).attr('font-size',Math.min(14,n.r*.85)).text(rankOf[i]+1);
+  });
+}
+const packRO=new ResizeObserver(drawPack);packRO.observe(ph);
+hooks.push(drawPack);
+
+emit();
+}
+</script>
+</body>
+</html>
