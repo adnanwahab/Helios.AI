@@ -10,22 +10,97 @@ const groups=[
  ['Worlds & experiments',[['Netherbrain fictional campaign','public/netherbrain.html'],['The Long Coil','long_coil.html'],['Communal Science Lab','communal_science_lab_webgpu%20(1).html'],['MorphLab · WebGPU','morphlab.html'],['MorphLab offline demo','morphlab-offline-demo.html'],['HappyBearLandia Pocket','happybearlandia_pocket.html'],['Digital Pensieve','https://digital-pensieve.fly.dev/'],['Braindance','helios_braindance.html'],['Rainbow Brain Realms','rainbow_brain.html'],['Sunshine for Breakfast','sunshine_breakfast.html'],['Particle interface','heliosai-particle-interface.html'],['Sand Castle','sand_castle.html']]],
  ['Project & operations',[['Mail · Resend (locked operator console)','helios_mail.html'],['YC Research','/proxy/ycr/','pages-ycr.html'],['Fork Helios','helios_fork.html'],['Repository documentation','https://github.com/adnanwahab/Helios.AI/tree/main/docs']]]
 ];
+// The archive is an allowlisted browser of old pages, not a stack of 32
+// running simulations. Never pass the private journal to a frame or its URL.
+const docs=$('docs-drawer'), frameSlot=$('docs-frame-slot');
+let activeDoc=null,docsView='tabs';
+function entryFor(name,live,staticHref){
+ const href=isStatic&&staticHref?staticHref:live;
+ // The original dashboard embeds the research proxy; keep that dashboard
+ // and live proxied third-party scripts outside the journal's document.
+ const separate=name==='Original multi-tab dashboard'||name==='Repository documentation'||(!isStatic&&name==='YC Research')||(isStatic&&name==='Email signup');
+ return {name,href,separate};
+}
+function clearFrame(){
+ frameSlot.querySelector('iframe')?.remove();
+ $('docs-empty').hidden=false;
+}
+function setDocsLayout(next){
+ docsView=next;docs.dataset.view=next;
+ const wide=next==='tabs';
+ $('docs-layout').textContent=wide?'Compact drawer':'Expand tabs';
+ $('docs-layout').setAttribute('aria-pressed',String(wide));
+ if(!wide)clearFrame();
+ else if(activeDoc&&!activeDoc.separate&&!frameSlot.querySelector('iframe'))loadDoc(activeDoc);
+}
+function selectDoc(entry){
+ activeDoc=entry;setDocsLayout('tabs');
+ // setDocsLayout may have restored this exact selection after compact mode.
+ if(frameSlot.querySelector('iframe')?.dataset.experience!==entry.name)loadDoc(entry);
+ renderDocs($('docs-search').value);
+}
+function loadDoc(entry){
+ clearFrame();
+ $('docs-current').textContent=entry.name;
+ $('docs-external').href=entry.href;$('docs-external').hidden=false;
+ if(entry.separate){
+   $('docs-viewer-note').textContent='This page is kept separate from the journal. Use Open in new tab to view it.';
+   return;
+ }
+ const url=new URL(entry.href,document.baseURI);
+ if(!['http:','https:'].includes(url.protocol))return;
+ const frame=create('iframe');frame.id='docs-frame';frame.title=entry.name;frame.dataset.experience=entry.name;
+ frame.referrerPolicy='no-referrer';
+ // Only the repository's own, explicitly listed pages receive their normal
+ // origin so localStorage and same-origin APIs work. External frames remain
+ // opaque and cannot read the journal. Neither can navigate the top page.
+ const trusted=url.origin===location.origin;
+ frame.setAttribute('sandbox','allow-scripts allow-forms allow-downloads allow-popups allow-popups-to-escape-sandbox'+(trusted?' allow-same-origin':''));
+ frame.setAttribute('allow','fullscreen');frame.setAttribute('allowfullscreen','');
+ frame.src=url.href;
+ $('docs-empty').hidden=true;frameSlot.append(frame);
+ $('docs-viewer-note').textContent='One experience is loaded at a time. If a site refuses embedding, use Open in new tab.';
+}
 function renderDocs(query=''){
  const needle=query.trim().toLowerCase(),root=$('docs-links');root.replaceChildren();
  for(const [label,items] of groups){
    const matches=items.filter(([name])=>name.toLowerCase().includes(needle)||label.toLowerCase().includes(needle));
-   if(!matches.length)continue;root.append(create('h3',label));
-   for(const [name,live,staticHref] of matches){const a=create('a',name+' ↗');a.href=isStatic&&staticHref?staticHref:live;a.target='_blank';a.rel='noopener noreferrer';root.append(a)}
+   if(!matches.length)continue;const group=create('div',undefined,'docs-group');group.append(create('h3',label));
+   for(const [name,live,staticHref] of matches){
+     const entry=entryFor(name,live,staticHref),a=create('a',name+(entry.separate?' ↗':''));
+     a.href=entry.href;a.target='_blank';a.rel='noopener noreferrer';a.dataset.experience=name;
+     if(entry.separate)a.dataset.separate='true';
+     if(activeDoc?.name===name)a.setAttribute('aria-current','true');
+     // Preserve ordinary browser link behavior for modifier-click and
+     // link-only entries. A plain click on an embeddable tab stays here.
+     a.addEventListener('click',e=>{
+       if(e.defaultPrevented||e.button!==0||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey||entry.separate)return;
+       e.preventDefault();selectDoc(entry);
+       // Re-rendering the archive replaces the clicked link; restore focus.
+       [...root.querySelectorAll('a')].find(link=>link.dataset.experience===name)?.focus({preventScroll:true});
+     });
+     group.append(a);
+   }
+   root.append(group);
  }
  if(!root.childElementCount)root.append(create('p','No matching experience.','hint'));
 }
 renderDocs();
-$('docs-open').addEventListener('click',()=>{$('docs-drawer').showModal();$('docs-search').focus()});
-$('docs-close').addEventListener('click',()=>$('docs-drawer').close());
-// A focused search input can consume Escape before the native dialog cancel action.
-$('docs-drawer').addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();$('docs-drawer').close()}},true);
-$('docs-drawer').addEventListener('click',e=>{if(e.target===$('docs-drawer')){const b=e.target.getBoundingClientRect();if(e.clientX<b.left||e.clientX>b.right||e.clientY<b.top||e.clientY>b.bottom)e.target.close()}});
-$('docs-drawer').addEventListener('close',()=>$('docs-open').focus());
+$('docs-open').addEventListener('click',()=>{
+ docs.showModal();setDocsLayout('tabs');$('docs-search').focus();
+});
+$('docs-layout').addEventListener('click',()=>setDocsLayout(docsView==='tabs'?'drawer':'tabs'));
+$('docs-close').addEventListener('click',()=>docs.close());
+// A focused search input can consume Escape before native dialog cancel.
+docs.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();docs.close()}},true);
+docs.addEventListener('click',e=>{if(e.target===docs){const b=docs.getBoundingClientRect();if(e.clientX<b.left||e.clientX>b.right||e.clientY<b.top||e.clientY>b.bottom)docs.close()}});
+docs.addEventListener('close',()=>{
+ // Stop WebGPU, animation and network activity in the closed overlay.
+ clearFrame();activeDoc=null;renderDocs($('docs-search').value);
+ $('docs-current').textContent='Choose an experience';$('docs-external').hidden=true;
+ $('docs-viewer-note').textContent='Some external or restricted pages must be opened in a separate tab.';
+ $('docs-open').focus();
+});
 $('docs-search').addEventListener('input',()=>renderDocs($('docs-search').value));
 let board=sampleBoard(),connected=false,selected='S-001',busy=false,refreshing=false,csrf=null,lastWrite=null,related=null;
 const practiceVotes=new Map(),practiceComments=new Map(),practiceClauses=new Map();

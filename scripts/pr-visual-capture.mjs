@@ -121,6 +121,11 @@ try {
     await page.locator('#docs-open').click();
     await page.locator('#docs-drawer').waitFor({state:'visible'});
     await page.screenshot({path: join(output, 'docs-drawer.png'), animations: 'disabled'});
+    if (await page.locator('#docs-viewer').count()) {
+      await page.locator('#docs-links a[data-experience="Neighborhood Consensus"]').click();
+      await page.frameLocator('#docs-frame').locator('body').waitFor({state:'visible'});
+      await page.screenshot({path: join(output, 'docs-iframe.png'), animations: 'disabled'});
+    }
     await page.locator('#docs-close').click();
     await page.setViewportSize({width:390,height:844});
     await page.screenshot({path: join(output, 'constitution-mobile.png'), fullPage: true, animations: 'disabled'});
