@@ -28,8 +28,8 @@ test('Braindance: playhead, events, logs, calendar and links work without the 3D
  await page.reload();await expect(page.locator('#log li.ev.on')).toBeVisible();await expect.poll(fits).toBe(true);
  expect(errors).toEqual([]);
 });
-test('home page tab embeds Braindance',async({page})=>{
- await offline(page);await page.goto('/');await page.getByRole('tab',{name:'Braindance'}).click();
+test('archived dashboard tab embeds Braindance',async({page})=>{
+ await offline(page);await page.goto('/experiments.html');await page.getByRole('tab',{name:'Braindance'}).click();
  await expect(page.locator('#view-braindance')).toBeVisible();await expect(page.locator('#view-braindance')).toHaveAttribute('src','/embed/braindance');
  await expect(page.frameLocator('#view-braindance').locator('#log li.ev.on')).toBeVisible();
 });

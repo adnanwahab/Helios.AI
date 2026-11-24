@@ -1,0 +1,25 @@
+import {test, expect} from 'bun:test';
+import {readFileSync} from 'node:fs';
+import catalog from '../data/catalog.json' with {type:'json'};
+const source=name=>readFileSync(new URL('../'+name,import.meta.url),'utf8');
+test('homepage exposes three citizen screens, four government preview screens and no legacy iframe navigation',()=>{
+  const html=source('index.html');
+  expect([...html.matchAll(/<section id="screen-([123])"/g)].map(x=>x[1])).toEqual(['1','2','3']);
+  expect([...html.matchAll(/<section id="gov-([1234])"/g)].map(x=>x[1])).toEqual(['1','2','3','4']);
+  expect(html).toContain('id="mode-government"');
+  expect(html).toContain('id="citizen-feedback"');
+  expect(html).not.toMatch(/<iframe|id="tab-/);
+  expect(html.match(/<footer\b[\s\S]*?<\/footer>/)[0]).toContain('href="./experiments.html" target="_blank" rel="noopener noreferrer"');
+  expect(html).toContain("Docs &amp; Experiments");
+  const archive=source('docs/legacy-home.html');
+  expect(archive).toContain('href="./index.html"');
+  expect(archive).toContain('https://github.com/adnanwahab/Helios.AI/tree/main/docs');
+  expect(html).toContain('name="helios-mode" content="live"');
+  for(const category of catalog.categories)expect(html).toContain(category);
+  const script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
+  expect(()=>new Function(script)).not.toThrow();
+  expect(source('docs/experiences.md')).toContain('docs/legacy-home.html');
+  expect(source('scripts/build-netlify.mjs')).toContain("'legacy-home.html'");
+  expect(source('scripts/build-pages.mjs')).toContain('name="helios-mode" content="static"');
+  expect(source('sitemap.xml').match(/<loc>/g)).toHaveLength(1);
+});

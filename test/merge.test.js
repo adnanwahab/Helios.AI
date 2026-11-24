@@ -13,7 +13,7 @@ test('three-editor merge is routed, built for Fly and Pages, and has a home tab'
   const pages = source('scripts/build-pages.mjs');
   expect(pages).toContain("'three_editor_merge.html'");
   expect(pages).toContain(`replaceRequired('src="/embed/merge"', 'src="./three_editor_merge.html"')`);
-  const index = source('index.html');
+  const index = source('docs/legacy-home.html');
   expect(index).toContain('aria-controls="view-merge">Three-Editor Merge</button>');
   expect(index).toContain('src="/embed/merge"');
   expect(index).toContain("tabs.merge.addEventListener('click', () => activate('merge'));");

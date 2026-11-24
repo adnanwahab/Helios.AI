@@ -37,8 +37,8 @@ test('Vote Radar: draws the map, pauses, switches ballot days and fits a phone',
   expect(errors).toEqual([]);
 });
 
-test('home page tab embeds the Vote Radar', async ({page}) => {
-  await page.goto('/');
+test('archived dashboard tab embeds the Vote Radar', async ({page}) => {
+  await page.goto('/experiments.html');
   await page.getByRole('tab', {name: 'Vote Radar'}).click();
   await expect(page.locator('#view-radar')).toBeVisible();
   await expect(page.locator('#view-radar')).toHaveAttribute('src', '/embed/radar');

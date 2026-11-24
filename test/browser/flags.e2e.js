@@ -15,8 +15,8 @@ test('Support Every Country: flag images, search, shareable link, region and mes
  await page.setViewportSize({width:390,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  expect(errors).toEqual([]);
 });
-test('home page tab embeds Support Every Country',async({page})=>{
- await page.goto('/');await page.getByRole('tab',{name:'Support Every Country'}).click();
+test('archived dashboard tab embeds Support Every Country',async({page})=>{
+ await page.goto('/experiments.html');await page.getByRole('tab',{name:'Support Every Country'}).click();
  await expect(page.locator('#view-flags')).toBeVisible();await expect(page.locator('#view-flags')).toHaveAttribute('src','/embed/flags');
  await expect(page.frameLocator('#view-flags').locator('#count')).toContainText('/ 195');
 });

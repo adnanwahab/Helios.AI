@@ -22,6 +22,10 @@
 !public/**
 !data/
 !data/catalog.json
+# Only this archived HTML file is needed at build time; keep other docs excluded.
+!docs/
+docs/**
+!docs/legacy-home.html
 
 # Defensive exclusions inside otherwise allowed directories.
 **/.git

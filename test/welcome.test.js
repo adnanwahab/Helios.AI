@@ -5,8 +5,8 @@ import {join} from 'node:path';
 const root = new URL('../', import.meta.url);
 const source = filename => readFileSync(join(root.pathname, filename), 'utf8');
 
-test('welcome is optional, clearly labeled and discoverable on homepage', () => {
-  const index = source('index.html');
+test('welcome is optional, clearly labeled and discoverable on archived dashboard', () => {
+  const index = source('docs/legacy-home.html');
   const guide = source('welcome.html');
   expect(index).toContain('href="/welcome"');
   expect(index).toContain('New here? Start here');

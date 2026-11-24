@@ -51,8 +51,8 @@ if (runPrNumbers.length && !runPrNumbers.includes(number)) {
   throw new Error('Artifact PR number does not match GitHub workflow-run metadata');
 }
 const pr = await gh(`/repos/${repo}/pulls/${number}`);
-if (pr.state !== 'open') {
-  console.log(`PR #${number} is no longer open; keeping previous preview`);
+if (pr.state !== 'open' && !pr.merged) {
+  console.log(`PR #${number} was closed without merging; keeping previous preview`);
   process.exit(0);
 }
 const sha = pr.head?.sha;
@@ -64,12 +64,32 @@ if (!/^[a-f0-9]{40}$/i.test(sha || '') ||
   process.exit(0);
 }
 
-function approvedNetlifyUrl(raw) {
+function approvedNetlifyUrl(raw, previewNumber = number) {
   try {
     const u = new URL(raw);
-    if (u.protocol === 'https:' && u.hostname.startsWith(`deploy-preview-${number}--`) &&
+    if (u.protocol === 'https:' && u.hostname.startsWith(`deploy-preview-${previewNumber}--`) &&
         /^[a-z0-9-]+\.netlify\.app$/.test(u.hostname)) return u.origin + '/';
   } catch {}
+  return null;
+}
+// For a merged stacked PR, Netlify may only deploy its still-open parent PR.
+// Check that the parent head actually contains the merge before linking to it.
+async function containingPreview() {
+  if (!pr.merged || !pr.merge_commit_sha || pr.base?.ref === pr.base?.repo?.default_branch) return null;
+  const owner = pr.base?.repo?.owner?.login;
+  if (!owner || !pr.base?.ref) return null;
+  const parents = await gh('/repos/' + repo + '/pulls?state=open&head=' + encodeURIComponent(owner + ':' + pr.base.ref));
+  for (const parent of parents) {
+    if (parent.head?.repo?.full_name !== repo || parent.head?.ref !== pr.base.ref) continue;
+    if (parent.head.sha !== pr.merge_commit_sha) {
+      const comparison = await optionalGh('/repos/' + repo + '/compare/' + pr.merge_commit_sha + '...' + parent.head.sha);
+      if (!comparison || !['ahead','identical'].includes(comparison.status)) continue;
+    }
+    const result = await gh('/repos/' + repo + '/commits/' + parent.head.sha + '/status');
+    const status = (result.statuses || []).find(s => /netlify\/.*\/deploy-preview/i.test(s.context || '') && s.state === 'success');
+    const url = approvedNetlifyUrl(status?.target_url, parent.number);
+    if (url) return {url, ready:true, parentNumber:parent.number};
+  }
   return null;
 }
 async function deployment() {
@@ -79,6 +99,8 @@ async function deployment() {
     const deploymentStatus = statuses.find(s => /netlify\/.*\/deploy-preview/i.test(s.context || ''));
     const url = approvedNetlifyUrl(deploymentStatus?.target_url);
     if (url && deploymentStatus.state === 'success') return {url, ready: true};
+    const parentPreview = await containingPreview();
+    if (parentPreview) return parentPreview;
     if (attempt < 11 && run.conclusion === 'success') await sleep(10000);
   }
   // The repository's configured Netlify site is heliosailol. This URL is
@@ -89,7 +111,7 @@ const live = await deployment();
 
 const images = [];
 const pngSignature = Buffer.from([137,80,78,71,13,10,26,10]);
-for (const name of ['desktop.png', 'mobile.png', 'mail.png']) {
+for (const name of ['desktop.png', 'mobile.png', 'synthesis.png', 'proposal.png', 'government-needs.png', 'government-evaluate.png', 'government-response.png', 'government-measure.png', 'citizen-feedback.png', 'mail.png']) {
   try {
     const data = await readFile(join('pr-visual-output', name));
     if (!data.subarray(0, 8).equals(pngSignature) || data.length > 10000000) {
@@ -107,7 +129,7 @@ async function publishAssets() {
     const blob = await gh(`/repos/${repo}/git/blobs`, 'POST', {
       content: file.data.toString('base64'), encoding: 'base64',
     });
-    blobs.push({path: `pr-${number}/${file.name}`, mode: '100644', type: 'blob', sha: blob.sha});
+    blobs.push({path: `pr-${number}/${sha}/${file.name}`, mode: '100644', type: 'blob', sha: blob.sha});
   }
   for (let attempt = 0; attempt < 6; attempt++) {
     const refPath = `/repos/${repo}/git/ref/heads/${assetBranch}`;
@@ -151,14 +173,14 @@ if (images.length) {
     console.error('Could not publish preview images:', error);
   }
 }
-const baseImageUrl = `https://raw.githubusercontent.com/${repo}/${assetBranch}/pr-${number}`;
+const baseImageUrl = `https://raw.githubusercontent.com/${repo}/${assetBranch}/pr-${number}/${sha}`;
 const imageUrl = name => `${baseImageUrl}/${name}?v=${sha.slice(0,12)}`;
 const sourceRun = `https://github.com/${repo}/actions/runs/${run.id}`;
 const lines = [
   marker,
   '### HeliosAI visual review',
   '',
-  `**Deploy preview:** [Open the PR site](${live.url})${live.ready ? '' : ' (expected URL; Netlify has not confirmed it ready yet)'}`,
+  `**Deploy preview:** [Open the PR site](${live.url})${live.parentNumber ? ' (containing parent PR #' + live.parentNumber + ')' : live.ready ? '' : ' (expected URL; Netlify has not confirmed it ready yet)'}`,
   '',
 ];
 if (hosted && images.some(x => x.name === 'desktop.png')) {
@@ -168,6 +190,12 @@ if (hosted && images.some(x => x.name === 'mobile.png')) {
   lines.push('<details><summary>Mobile screenshot</summary>', '',
     `<img alt="Mobile screenshot of HeliosAI PR #${number}" width="390" src="${imageUrl('mobile.png')}">`, '',
     '</details>', '');
+}
+for (const [name, label] of [['synthesis.png', 'Citizen 2 · Synthesize'], ['proposal.png', 'Citizen 3 · Decide / proposed law'], ['government-needs.png', 'Government 1 · Understand'], ['government-evaluate.png', 'Government 2 · Evaluate'], ['government-response.png', 'Government 3 · Respond'], ['government-measure.png', 'Government 4 · Measure'], ['citizen-feedback.png', 'Citizen feedback preview']]) {
+  if (hosted && images.some(x => x.name === name)) {
+    lines.push('<details><summary>' + label + '</summary>', '',
+      `![${label}](${imageUrl(name)})`, '', '</details>', '');
+  }
 }
 if (hosted && images.some(x => x.name === 'mail.png')) {
   lines.push('<details><summary>Mail tab (locked operator view)</summary>', '',

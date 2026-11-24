@@ -54,8 +54,12 @@ try {
     reducedMotion: 'reduce',
   });
   await page.goto(base + '/', {waitUntil: 'domcontentloaded', timeout: 45000});
-  await page.locator('#tab-helios-ai').waitFor({timeout: 20000});
-  await page.frameLocator('#view-helios-ai').locator('body').waitFor({timeout: 30000});
+  const loop = await page.locator('#journal-form').count() > 0;
+  if (loop) await page.locator('#journal').waitFor({timeout: 20000});
+  else {
+    await page.locator('#tab-helios-ai').waitFor({timeout: 20000});
+    await page.frameLocator('#view-helios-ai').locator('body').waitFor({timeout: 30000});
+  }
   await page.waitForTimeout(3000);
   await page.screenshot({path: join(output, 'desktop.png'), animations: 'disabled'});
 
@@ -64,6 +68,36 @@ try {
   await page.screenshot({path: join(output, 'mobile.png'), animations: 'disabled'});
 
   await page.setViewportSize({width: 1440, height: 900});
+  if (loop) {
+    // Never submit to a real deployment; these screenshots stop at the editable draft.
+    await page.locator('#example').click();
+    await page.locator('#journal-form button[type=submit]').click();
+    await page.locator('#outcome').fill('Accessible, comfortable bus stops.');
+    await page.locator('#approach').fill('Test shaded stops on a voluntary city pilot.');
+    await page.screenshot({path: join(output, 'synthesis.png'), fullPage: true, animations: 'disabled'});
+    await page.locator('#synthesis-form button[type=submit]').click();
+    await page.screenshot({path: join(output, 'proposal.png'), fullPage: true, animations: 'disabled'});
+  }
+  if (await page.locator('#mode-government').count()) {
+    await page.locator('#mode-government').click();
+    await page.screenshot({path: join(output, 'government-needs.png'), fullPage: true, animations: 'disabled'});
+    await page.locator('#gov-example').click();
+    await page.locator('#gov-authority').fill('Municipal transport authority (example)');
+    await page.locator('#gov-evidence').fill('Study heat exposure at stops, shelter costs and maintenance options.');
+    await page.locator('#gov-dissent').fill('Consult riders and disability advocates; test equitable placement.');
+    await page.screenshot({path: join(output, 'government-evaluate.png'), fullPage: true, animations: 'disabled'});
+    await page.locator('#gov-evaluate button[type=submit]').click();
+    await page.locator('#gov-disposition').selectOption('Request more evidence');
+    await page.locator('#gov-reason').fill('Compare accessible shelters and consult riders before recommending a pilot.');
+    await page.locator('#gov-owner').fill('Transport planning team (example)');
+    await page.screenshot({path: join(output, 'government-response.png'), fullPage: true, animations: 'disabled'});
+    await page.locator('#gov-respond button[type=submit]').click();
+    await page.locator('#gov-date').fill('2027-02-01');
+    await page.screenshot({path: join(output, 'government-measure.png'), fullPage: true, animations: 'disabled'});
+    await page.locator('#gov-measure button[type=submit]').click();
+    await page.locator('#citizen-feedback').waitFor({state:'visible'});
+    await page.screenshot({path: join(output, 'citizen-feedback.png'), fullPage: true, animations: 'disabled'});
+  }
   const mailTab = page.locator('#tab-mail');
   if (await mailTab.count()) {
     // Never unlock the operator console or enter any credentials.
