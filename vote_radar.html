@@ -1,0 +1,727 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#050505">
+<title>Vote Radar</title>
+<meta name="description" content="A radar-style map of simulated daily votes across US states, with the needs, consensus and dissent that surface each day. Sample data, not an official ballot.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* VOICE: night-shift operations HUD, calm and exact; the votes are the only bright thing.
+   IDEA: an air-traffic radar scope, but each blip is the latest vote from a place.
+   PICTURE: dot-matrix US inside a 24-hour dial; the sweep is the clock hand and lights votes as it passes.
+   COLOUR and TYPE: black ground, white for yea, one orange for nay and dissent; Geist with Geist Mono labels.
+   LAYOUT: days across the top, scope centred, live feed and callouts at right, four running figures along the bottom. */
+html,body{margin:0;background:#050505}
+[hidden]{display:none!important}
+.vr{--accent:#ff8a3d;position:relative;box-sizing:border-box;height:100vh;min-height:680px;display:grid;grid-template-rows:auto minmax(0,1fr) auto;row-gap:6px;padding:16px 28px 18px;background:#050505;color:#ececec;font-family:Geist,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
+.vr *,.vr *::before,.vr *::after{box-sizing:border-box;min-width:0}
+:where(.vr) button{font:inherit;color:inherit}
+.nw{white-space:nowrap}
+.vr :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.hdr{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:start;column-gap:20px}
+.brand{display:flex;align-items:center;gap:10px;height:44px;font-size:15px;letter-spacing:-.01em;color:#f3f3f3;white-space:nowrap}
+.brand b{font-weight:600}
+.brand em{font-style:normal;color:#a9a9a9}
+.logo{flex:none;fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.mid{display:flex;flex-direction:column;align-items:center;gap:2px}
+.tabs{display:flex;gap:4px}
+.tab{appearance:none;background:none;border:0;margin:0;padding:14px 7px 8px;min-height:44px;min-width:62px;display:flex;flex-direction:column;align-items:stretch;gap:8px;cursor:pointer;color:#8d8d8d;font:500 11px/1 "Geist Mono",ui-monospace,monospace;letter-spacing:.08em;text-align:left;white-space:nowrap;transition:color .2s}
+.tab:hover{color:#d4d4d4}
+.tab[aria-current="true"]{color:#fff}
+.track{position:relative;display:block;height:1px;background:#2f2f2f}
+.fill{position:absolute;left:0;top:0;height:1px;background:#e8e8e8}
+.mk{position:absolute;top:-6px;width:3px;height:3px;background:#555;transform:translateX(-50%)}
+.mk.on{background:#f2f2f2}
+.ballot{margin:0;max-width:660px;text-align:center;font:400 11px/1.5 "Geist Mono",ui-monospace,monospace;letter-spacing:.06em;color:#8f8f8f;text-wrap:balance}
+.ballot b{font:500 13px/1.5 Geist,system-ui,sans-serif;letter-spacing:0;color:#f1f1f1}
+.ctrl{justify-self:end;display:flex;align-items:center}
+.pillbtn{appearance:none;background:none;border:0;padding:0;height:44px;display:flex;align-items:center;cursor:pointer}
+.pill{display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 13px 0 11px;border:1px solid #2d2d2d;border-radius:15px;background:#0c0c0c;color:#d6d6d6;font:500 10.5px/1 "Geist Mono",ui-monospace,monospace;letter-spacing:.1em;transition:border-color .2s}
+.pillbtn:hover .pill{border-color:#575757}
+.pill svg{fill:#d6d6d6;stroke:#d6d6d6;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.main{position:relative;min-height:0}
+.stage{position:absolute;inset:0}
+.cv{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hub{position:absolute;transform:translate(-50%,-50%);border-radius:50%;border:0;padding:0;background:transparent;cursor:pointer}
+.tp{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:9px;pointer-events:none}
+.time{padding:7px 12px;border:1px solid #2c2c2c;border-radius:15px;background:rgba(9,9,9,.9);font:500 11px/1 "Geist Mono",ui-monospace,monospace;letter-spacing:.04em;color:#ececec;white-space:nowrap}
+.leg{display:flex;gap:14px;font:500 10px/1 "Geist Mono",ui-monospace,monospace;letter-spacing:.12em;color:#a6a6a6;white-space:nowrap}
+.leg i{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:6px;vertical-align:1px}
+.leg .yea{background:#ededed}
+.leg .nay{background:var(--accent)}
+.feed{position:absolute;right:0;top:3%;bottom:3%;width:clamp(232px,19vw,286px);overflow:hidden;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 24%,#000 80%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 24%,#000 80%,transparent 100%)}
+.rows{position:absolute;left:0;right:0;bottom:0;display:flex;flex-direction:column}
+.row{display:grid;grid-template-columns:5.2ch 3ch 8px minmax(0,1fr) auto;column-gap:9px;align-items:center;height:22px;font:400 11px/1 "Geist Mono",ui-monospace,monospace;color:#878787;white-space:nowrap}
+.row .lab{color:#adadad;overflow:hidden;text-overflow:ellipsis}
+.row .val{color:#e2e2e2;text-align:right;font-variant-numeric:tabular-nums}
+.row.ev .lab,.row.ev .val{color:#fff}
+.sq{display:block;width:7px;height:7px;background:#5e5e5e}
+.sq.o{background:var(--accent)}
+.sq.w{background:#f2f2f2}
+.cardwrap{position:absolute;right:0;top:0;bottom:0;width:clamp(252px,21vw,304px);pointer-events:none}
+.card{position:absolute;left:0;right:0;pointer-events:auto;background:rgba(11,11,11,.96);border:1px solid #2b2b2b;border-radius:8px;padding:14px 14px 12px;box-shadow:0 24px 60px rgba(0,0,0,.7)}
+.ctag{display:flex;align-items:center;gap:8px;font:500 10.5px/1.2 "Geist Mono",ui-monospace,monospace;letter-spacing:.1em;color:#d2d2d2}
+.ctitle{margin:11px 0 3px;font-size:18px;line-height:1.2;font-weight:500;letter-spacing:-.01em;color:#fff;text-wrap:balance}
+.csrc{font:400 10.5px/1.3 "Geist Mono",ui-monospace,monospace;letter-spacing:.08em;color:#919191}
+.cdesc{margin:10px 0 12px;font-size:13px;line-height:1.45;color:#bdbdbd}
+.cspark{position:relative;height:46px;background:#121212;border-radius:3px;overflow:hidden}
+.cspark svg{position:absolute;inset:0;width:100%;height:100%}
+.cspark rect{fill:#1d1d1d}
+.cspark path{fill:none;stroke:#ededed;stroke-width:1.25px;vector-effect:non-scaling-stroke}
+.cspark path.o{stroke:var(--accent)}
+.cdot{position:absolute;width:5px;height:5px;margin:-2.5px 0 0 -2.5px;border-radius:50%;background:#fff;box-shadow:0 0 8px rgba(255,255,255,.7)}
+.cfoot{margin-top:10px;font:400 10.5px/1.3 "Geist Mono",ui-monospace,monospace;letter-spacing:.04em;color:#9c9c9c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ftr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr)) minmax(0,1.15fr) repeat(2,minmax(0,1fr));column-gap:clamp(16px,2.4vw,36px);align-items:end}
+.kpi{display:flex;flex-direction:column}
+.kpi.r{text-align:right}
+.kl{font:500 10.5px/1.25 "Geist Mono",ui-monospace,monospace;letter-spacing:.1em;color:#9a9a9a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kv{margin:6px 0 7px;font-size:clamp(22px,2vw,28px);font-weight:500;letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums;white-space:nowrap;color:#f3f3f3}
+.kv.o{color:var(--accent)}
+.spark{position:relative;height:30px}
+.spark svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.spark path{fill:none;stroke:#d0d0d0;stroke-width:1.25px;vector-effect:non-scaling-stroke}
+.spark path.o{stroke:var(--accent)}
+.spark path.dim{stroke:#4b4b4b}
+.spark path.base{stroke:#2e2e2e}
+.spark path.area{fill:rgba(255,255,255,.09);stroke:none}
+.spark rect{fill:#ececec}
+.dot{position:absolute;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.12),0 0 10px rgba(255,255,255,.6)}
+.dot.o{background:var(--accent);box-shadow:0 0 0 3px rgba(255,138,61,.16),0 0 10px var(--accent)}
+.note{margin:0;align-self:end;text-align:center;font:400 10.5px/1.5 "Geist Mono",ui-monospace,monospace;letter-spacing:.05em;color:#8a8a8a;padding-bottom:2px;text-wrap:balance}
+@media (max-width:1180px){.feed{width:222px}.cardwrap{width:250px}}
+@media (max-width:900px){
+.vr{height:auto;min-height:100vh;overflow:visible;padding:10px 16px 24px;row-gap:12px}
+.hdr{grid-template-columns:minmax(0,1fr) auto;row-gap:2px}
+.mid{grid-column:1/-1;grid-row:2;align-items:stretch}
+.tabs{overflow-x:auto;justify-content:flex-start;scrollbar-width:none;margin:0 -16px;padding:0 12px}
+.tab{flex:none;min-width:56px}
+.ballot{text-align:left}
+.main{display:flex;flex-direction:column;gap:14px}
+.stage{position:relative;inset:auto;width:100%;aspect-ratio:1/1}
+.cardwrap{position:relative;inset:auto;width:auto;pointer-events:auto}
+.card{position:relative;top:auto!important}
+.feed{position:relative;inset:auto;width:auto;height:200px}
+.ftr{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:22px}
+.kpi.r{text-align:left}
+.note{grid-column:1/-1;order:9;text-align:left}
+}
+</style>
+</head>
+<body>
+<div class="vr" id="vr">
+  <header class="hdr">
+    <div class="brand">
+      <svg class="logo" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M7.5 12.4l3 3 6-6.4"></path></svg>
+      <span><b>Civic Synthesis</b> <em>Radar</em></span>
+    </div>
+    <div class="mid">
+      <nav class="tabs" id="days" aria-label="Ballot days"></nav>
+      <p class="ballot"><span id="ballotNo">BALLOT 03</span> · <b id="ballotQ">End twice-yearly clock changes</b></p>
+    </div>
+    <div class="ctrl">
+      <button class="pillbtn" id="play" type="button" aria-label="Pause the radar">
+        <span class="pill">
+          <svg id="icoPause" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M3 1.5v7M7 1.5v7"></path></svg>
+          <svg id="icoPlay" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true" style="display:none"><path d="M2.5 1.5l6 3.5-6 3.5z"></path></svg>
+          <span id="playLabel">PAUSE</span>
+        </span>
+      </button>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="stage" id="stage">
+      <canvas class="cv" id="cv" role="img" aria-label="Radar map of simulated daily votes across US states. Each dot is the latest vote from that area: white for yea, orange for nay."></canvas>
+      <button class="hub" id="hub" type="button" tabindex="-1" aria-hidden="true"></button>
+      <div class="tp" id="tp">
+        <span class="time" id="time">Wed 12:00 ET</span>
+        <span class="leg"><span><i class="yea"></i>YEA</span><span><i class="nay"></i>NAY</span></span>
+      </div>
+    </div>
+    <div class="feed" id="feed" aria-hidden="true"><div class="rows" id="rows"></div></div>
+    <div class="cardwrap" aria-live="polite">
+      <article class="card" id="card" hidden>
+        <div class="ctag"><span class="sq w" id="cSq"></span><span id="cTag"></span></div>
+        <h2 class="ctitle" id="cTitle"></h2>
+        <div class="csrc" id="cSrc"></div>
+        <p class="cdesc" id="cDesc"></p>
+        <div class="cspark"><svg viewBox="0 0 300 46" preserveAspectRatio="none" aria-hidden="true"><rect x="66" y="0" width="210" height="46"></rect><path id="cPath"></path></svg><span class="cdot" id="cDot"></span></div>
+        <div class="cfoot" id="cWin"></div>
+      </article>
+    </div>
+  </main>
+
+  <footer class="ftr">
+    <div class="kpi">
+      <div class="kl">DISSENT · <span id="k1sub">BALLOT 03</span></div>
+      <div class="kv o" id="k1">–</div>
+      <div class="spark"><svg viewBox="0 0 1000 100" preserveAspectRatio="none" aria-hidden="true"><path class="base" d="M0 99H1000"></path><path class="o" id="k1p"></path></svg><span class="dot o" id="k1d"></span></div>
+    </div>
+    <div class="kpi">
+      <div class="kl">SIGNALS THIS WEEK</div>
+      <div class="kv" id="k2">–</div>
+      <div class="spark"><svg viewBox="0 0 1000 100" preserveAspectRatio="none" aria-hidden="true"><path class="base" d="M0 99H1000"></path><path class="dim" id="k2fut"></path><path id="k2past"></path><rect id="k2r" x="0" y="86" width="0" height="14"></rect></svg></div>
+    </div>
+    <p class="note">Simulated sample data · <span class="nw">Nov 16–22, 2026 ·</span> not an official ballot</p>
+    <div class="kpi r">
+      <div class="kl">VOTES CAST TODAY</div>
+      <div class="kv" id="k3">–</div>
+      <div class="spark"><svg viewBox="0 0 1000 100" preserveAspectRatio="none" aria-hidden="true"><path class="dim" id="k3dim"></path><path id="k3now"></path></svg></div>
+    </div>
+    <div class="kpi r">
+      <div class="kl">JOURNALS TODAY</div>
+      <div class="kv" id="k4">–</div>
+      <div class="spark"><svg viewBox="0 0 1000 100" preserveAspectRatio="none" aria-hidden="true"><path class="area" id="k4area"></path><path id="k4line"></path></svg><span class="dot" id="k4d"></span></div>
+    </div>
+  </footer>
+</div>
+
+<script>
+{
+// Dot grid: a 100×100 Albers USA projection (Alaska and Hawaii inset, Canada and Mexico for context)
+// precomputed from us-atlas and world-atlas. grid: one character per cell (state code letter,
+// '+' for neighbouring land, ' ' for none); dens: base-36 population density per cell.
+const G = {"N":100,"grid":"                                                                                                                                                   ++++++                                                                                       ++++++++++++++++++++                                                                            ++++++++++++++++++++++++++ +                                                                     +++++++++++++++++++++++++++   ++                                                                 +++++++++++++++++++++++++++++        +                                                            +++++++++++++++++++++++++++++         +  +                                                        +++++++++++++++++++++++++++++++               ++                                                   +++++++++++++++++++++++++++++++                 ++                                                +++++++++++++++++++++++++++++++++                 ++++                                             +++++++++++++++++++++++++++++++++                  +++++                                          +++++++++++++++++++++++++++++++++++                 ++++++++                                       ++++++++++++++++++++++++++++++++++++                   +++++++                                     +++++++++++++++++++++++++++++++++++++++                  +++++++                                   ++++++++++++++++++++++++++++++++++++++++                  ++++++++                                 ++++++++++++++++++++++++++++++++++++++++++                 +++++++++                                 +++++++++++++++++++++++++++++++++++++++++++++         +   ++++++++++                                ++++++++++++++++++++++++++++++++++++++++++++++           ++++++++++++                                ++++++++++++++++++++++++++++++++++++++++++++++++ ++   +++++++++++++++                              ++++++++++++++++++++++++++++++++++++++++++++++++++++    +++++++++++++++                             +++++++++++++++++++++++++++++++++++++++++++++++++++++   ++++++++++++++++                             ++++++++++++++++++++++++++++++++++++++++++++++++++++    +++++++++++++++                            ++ ++++++++++++++++++++++++++++++++++++++++++++++++++    ++++++++++++++++                            + +++++++++++++++++++++++++++++++++++++++++++++++++++   +++++++++++++++                             + ++++++++++++++++++++++++++++++++++++++++++++++++++++ +++++++++++++++  +                            + ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  +++                            + qq+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ++                             qq qqqqqq+++++++++++++++++++++++++++++++++++++++++++++++++++++++++  +++++                           qqqqqqqqquiii++++++++++++++++++++++++++++++++++++++++++++  ++++++++++I++++                          qqqqqqqqquiiiiiiiiii++++++++++++++++++++++++++++++          ++++++++II+++++                         qqqqqqqqquiiiiiiiiiiiiiiiNNNNNNNN+++K++                     ++++++++III+++                         mmqqqqqqquuuiiiiiiiiiiiiiiNNNNNNNNNKKKKK+                    ++++++++III++ ++                       mmmmmmqqquuuiiiiiiiiiiiiiiNNNNNNNNNKKKKKKKK g                +++++++IIIII  ++                      mmmmmmmmmmuuuiiiiiiiiiiiiiiNNNNNNNNNKKKKKKK   g                ++ +++IIII   +                       mmmmmmmmmmuuuiiiiiiiiiiiiiiNNNNNNNNNKKKKKK   ggg ggg           +++wwwIII                           mmmmmmmmmmuuuuuiiiiiiiiiiiiiNNNNNNNNNKKKKKKrrrrggg              +kkkwjjI                            mmmmmmmmmmuuuuuuiiSiiiiiiiiiQQQQQQQQQKKKKKrrrrrrr   gg          kkkkwjjI                            mmmmmmmmmmuuuuuuuuSSSSSSSSSQQQQQQQQQQKKKKKrrrrrrr   ggg ++++    kkkkwjjJ                            ZZmmmmmmmmuuuuuuuuSSSSSSSSSQQQQQQQQQQKKKKKrrrrrrr  ggg  ++++   kkkkkJJJJ                            ZZZZZvmmmmuuuuuuuuSSSSSSSSSQQQQQQQQQQKKKKKKKrrrrr  ggggg++++ kkkkkkkJTTyJ                          ZZZZZZvvvvvuuuuuuuuSSSSSSSSSQQQQQQQQQQKKKKKKKrrrrr  ggggg++++kkkkkPkkTTT                            ZZZZZZvvvvvvvvooouuSSSSSSSSSssssssQQQQdddddddrrrrr  ggggg++ PPPPPPPPkT                              ZZZZZZvvvvvvvvooooSSSSSSSSSSssssssssssddddddddWWWW  gggg   lPPPPPPPPLk                              ZZZZZvvvvvvvvvooooSSSSSSSSSSsssssssssssddddddddWWWWGGGllllllPPPPPPPPL                                ZZZZvvvvvvvvvoooooooDDDSSSSsssssssssssdddddddWWWWWGGGllllllPPPPPPPaL                                ZZZZZvvvvvvvvoooooooDDDDDDDDDDssssssssdddddddWWWWWGGGGlllllVPPffffa                                 ZZZZZvvvvvvvooooooooDDDDDDDDDsssssssssUUUUUUWWWWWWGGGGlllllVVVVpbffa                                ZZZZZZvvvvvvoooooooDDDDDDDDDDHHHHHHHHHHHUUUUWWWWWWGGGGllllVVVVpppf f                                ZZZZZZZvvvvvoooooooDDDDDDDDDDHHHHHHHHHHHUUUUUWWWWWGGGGelelVVVppppp p                                ZZZZZZZvvvvvoooooooDDDDDDDDDDHHHHHHHHHHHUUUUUUWWWWGGGeeeeVVVVppppp                                   ZZZZZZZvvvvCooooooDDDDDDDDDDHHHHHHHHHHHUUUUUUWWWGGGeeeeeeVVppppppp                                  ZZZZZZZZvvCCCCCCCCDDDDDDDDDDHHHHHHHHHHHUUUUUUUWWeeeeeeeepppppMMMMM                                  ZZZZZZZZvCCCCCCCCCXXXXXXXXXOHHHHHHHHHHHUUUUUUUUeeeeeeennnnMMMMMMMMMM                                  ZZZZZZZCCCCCCCCCXXXXXXXXXRROOOOOOOOOOUUUUUUYnnnnnnnnnnMMMMMMMMMMM                                    ZZZZZZCCCCCCCCXXXXXXXXXRRRRROOOOOOOOYYYYYYYnnnnnnnnnMMMMMMMMMM                                       ZZZZZCCCCCCCCXXXXXXXXXRRRRROOOOOOOOYYYYYYYnnnnnnnnFFttttttMM                                        ZZZZZCCCCCCCCXXXXXXXXXRRRRROOOOOOOOYYYYYYhhhhAAAAFFFFtttttt                                         +ZZZZCCCCCCCCXXXXXXXXXRRRRROOOOOOOOYYYYYYhhhhAAAAFFFFFttttt                                          +++CCCCCCCCCXXXXXXXXXRRRRRRRRRROOOYYYYYhhhhhAAAAFFFFFFttt                                           +++++CCCCCCCXXXXXXXXXRRRRRRRRRRRRRRYYYYhhhhhAAAAAFFFFFFt                                            ++  +++CCCCCXXXXXXXXXRRRRRRRRRRRRRRxxxxhhhhhAAAAAFFFFFF                                             ++   +++CCCCX+ RRRRXXRRRRRRRRRRRRRRxxxxxhhhhAAAAAFFFFFF                                                      +++++++RRRRRRRRRRRRRRRRRRRxxxxhhhhhAAAAAFFFFFF                                          BBBBB       ++++++++RRRRRRRRRRRRRRRRRRRxxxhhhhhAEEEEEEEEEE                                         BBBBBB       +++++++++RRRRRRRRRRRRRRRRRRxxxxxxhh A  EEEEEEEE                                        BBBBBBB      +++++++++RRRRRRRRRRRRRRRRRRxxxxxx       E  EEEE                                        BBBBBBB      ++++++++++RR+++RRRRRRRRRRR  xxxxx           EEEE                                        BBBBBB                +++++RRRRRRRRR                     EEE                                       BBBBBBB                ++++++RRRRRRR                      EEEE                                      BBBBB BB        c      ++++++RRRRR                        EEEE                                       BB      BB        c   +++++++RRRR                         EEE                                        BB      B            +++++++RRRR                          EE                                      B                   cc ++++++++RRR                           E    +     +                         B                     c  +++++++++++                                                                                         +++++++++++                                                                             +     ++++++++++++++++                                                                               +    ++++++++++++++++                             ++                                                      +++++++++++++++                         ++ ++++++                                                    ++++++++++++++                       ++      +++++++                                                ++++++++++++++                      +   +       ++++                                                 +++++++++++++                  +                 +                                                 +++++++++++++++             +++++                                                                   +++++++++++++++            ++++++                                                                   +++++++++++++++            +++++                                                                     +++++++++++++++          ++++++                                                                      +++++++++++++++         ++++++                                                                       ++++++++++++++++    + ++++++                                                                           +++++++++++++++++++++++++                                                                            ++++++++++++++++++++++++                                                                               +++++++++++++++++++++                                                                                 ++++++++++++++++++     ++++                                                                            ++    +++++++++++++++++                                                                                     ++++++++++++++                                                                                       +++++++++++                                                                                           +++++++                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ","dens":"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              CA                                                                                               EI HC9999                                                                                           GLMJD9ABC6222                                                        6                              EJKHC9BDE83222222222                                                66                              FGFCA9ADE832222222222222233333333   7                               666                            DHIEA999B7652222222222222233333333377777                             666                            EHGC769995552222222222222233333333388777777 A                       66666                          7BDD976666555222222222222223333333459877777   A                      7776                           778876666655522222234322222333333346A98888   AAA AAA              AA9899                           66666666676655522222344322223333333459889A99999AAA               DEFACEC                            666666667899755522123332222233333333488AEGGB99999   AA          CCEFAEHF                            6666666679AB965555112221111333333333378CIKJD99999   AAA         DDFHDHLQ                            BB666666789A855555111111111333333333488CHJID9999A  BBA         IEDHJLNRS                            BBBBB56667666555551111111113333333345989DFD99ABDE  EECEF     LKIEDHKMNPQO                          BBBBBB55555555555551111111113333333356B9899989CEGI  IHFJL    JJIFDCJOPOM                            BBBBBB55555555667651111111115555553346A8788779CFIL  IHHLO   EEEDBBFNUV                              BCCCBB5555555568BB421111122255555555569889A878CFKP  IEFK   KGFDBBDJQZW                              DGIHE6555555557AEE621111222255555555579BACDA878DKPROHCDGJKLKKKHDDGMRY                                LMLG6555555557AEDA7677723436555555569CECDDB87ABGMNKFCCEHJIJLMIEHLOQW                                POLGC5555555568AA8667779DEC8775555568BDBBB987AACFHGHGEHKLIGGKHHNRSO                                 QOJEC555555566677666778CHIFA7555555568CBBA98ABBBBDHKJIKLLIEBBADNTSOH                                NLHFDB55555566666667778CHIGA76666666679CFC98CEFDBCGKKKMKIF8888ELOQ G                                IHHIGCB5566566666667777AEFC97666666667CFIE99CJKHCBEHJKJICC888BDILK H                                DEGIFCB6799766666667777899877666666777BFHE99EJMJDBCGJIGDA8888BCGJJ                                   CDEDBBCBED986666667777777777666667AA88BDB99CHKHCABFGFCA9988BBCFGIJ                                  BCDEDCDIGFD87777777777777777666668BB9779988ACCDB9BDDCABABBBCCEGGEF                                  BFKMKGDGEFB87777774444444447666668AA987888889999BEGFCCFEBBEGFHJHDCBB                                  QSQLFDEA877777774566544449977789BCDDA9888898AADHKIEEGGDDIKJHIGDAA                                    UTOICB888987774579975449999978BEEFEB87888ACEBCGIHDDFFDEJLKFEDB                                       ROHCB79DEC977458BB85449999979DGFECA88ABACFHDBDEDBDGFCCGIHDBA                                        OMGBB8CIKHC874579975449999979CFEB9879CDCCFEA8ABBCJLKFBCDDCB                                          LFBB8EJLJD8744566544499999789BA98778BDCABB98BEEFMPNHBABDFE                                             78CHJHD974444444449999999ADFD97789A988878DGGFLOMHBABEG                                                8CEFEA84456544449999999DJMKFA9778889988CEFDFJHDAABD                                                   CEDA74579854449999999ELONHB988899BB97ABBAACCAAAB                                                     BA874  FEA9449999999DKNMGA98889BCC9799999AAAACD                                                             DA9999999999BFHGC9988898AA8799999AAABFH                                          33333               9999999999ADECBBB99889899879CCCCCCCEIL                                         333333                99999999AEIIFEHHDA889ADFB8 9  CCCCDHJJ                                        3333333               9999999ADIKKHJNMIB989BFH       C  DGJL                                        3333333                99   9BGKKIGKONJ  89AEF           JMNM                                        333333                     9AFJJFCHK                     ONL                                       3333433                      9CEEBAB                      NLHE                                      33336 33        H            99AA9                        JGFH                                       33      33        B          9999                         DHN                                        33      3                   9999                          JP                                      3                   AA         999                           M                                    3                     A                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ","states":[{"ch":"A","abbr":"AL","name":"Alabama","tz":-1,"pop":5.02,"n":34,"gx":68,"gy":59},{"ch":"B","abbr":"AK","name":"Alaska","tz":-4,"pop":0.73,"n":54,"gx":21,"gy":67},{"ch":"C","abbr":"AZ","name":"Arizona","tz":-2,"pop":7.15,"n":84,"gx":30,"gy":55},{"ch":"D","abbr":"CO","name":"Colorado","tz":-2,"pop":5.77,"n":72,"gx":40,"gy":48},{"ch":"E","abbr":"FL","name":"Florida","tz":0,"pop":21.54,"n":44,"gx":75,"gy":66},{"ch":"F","abbr":"GA","name":"Georgia","tz":0,"pop":10.71,"n":41,"gx":73,"gy":59},{"ch":"G","abbr":"IN","name":"Indiana","tz":0,"pop":6.79,"n":28,"gx":67,"gy":46},{"ch":"H","abbr":"KS","name":"Kansas","tz":-1,"pop":2.94,"n":66,"gx":50,"gy":49},{"ch":"I","abbr":"ME","name":"Maine","tz":0,"pop":1.36,"n":23,"gx":88,"gy":32},{"ch":"J","abbr":"MA","name":"Massachusetts","tz":0,"pop":7.03,"n":7,"gx":86,"gy":38},{"ch":"K","abbr":"MN","name":"Minnesota","tz":-1,"pop":5.71,"n":62,"gx":56,"gy":35},{"ch":"L","abbr":"NJ","name":"New Jersey","tz":0,"pop":9.29,"n":3,"gx":83,"gy":43},{"ch":"M","abbr":"NC","name":"North Carolina","tz":0,"pop":10.44,"n":38,"gx":78,"gy":53},{"ch":"N","abbr":"ND","name":"North Dakota","tz":-1,"pop":0.78,"n":53,"gx":48,"gy":33},{"ch":"O","abbr":"OK","name":"Oklahoma","tz":-1,"pop":3.96,"n":46,"gx":51,"gy":55},{"ch":"P","abbr":"PA","name":"Pennsylvania","tz":0,"pop":13,"n":34,"gx":78,"gy":43},{"ch":"Q","abbr":"SD","name":"South Dakota","tz":-1,"pop":0.89,"n":53,"gx":48,"gy":38},{"ch":"R","abbr":"TX","name":"Texas","tz":-1,"pop":29.15,"n":197,"gx":48,"gy":63},{"ch":"S","abbr":"WY","name":"Wyoming","tz":-2,"pop":0.58,"n":70,"gx":38,"gy":40},{"ch":"T","abbr":"CT","name":"Connecticut","tz":0,"pop":3.61,"n":6,"gx":85,"gy":40},{"ch":"U","abbr":"MO","name":"Missouri","tz":-1,"pop":6.15,"n":48,"gx":58,"gy":50},{"ch":"V","abbr":"WV","name":"West Virginia","tz":0,"pop":1.79,"n":18,"gx":75,"gy":48},{"ch":"W","abbr":"IL","name":"Illinois","tz":-1,"pop":12.81,"n":44,"gx":63,"gy":46},{"ch":"X","abbr":"NM","name":"New Mexico","tz":-2,"pop":2.12,"n":84,"gx":38,"gy":56},{"ch":"Y","abbr":"AR","name":"Arkansas","tz":-1,"pop":3.01,"n":36,"gx":59,"gy":56},{"ch":"Z","abbr":"CA","name":"California","tz":-3,"pop":39.54,"n":114,"gx":20,"gy":48},{"ch":"a","abbr":"DE","name":"Delaware","tz":0,"pop":0.99,"n":3,"gx":82,"gy":45},{"ch":"b","abbr":"DC","name":"District of Columbia","tz":0,"pop":0.69,"n":1,"gx":80,"gy":46},{"ch":"c","abbr":"HI","name":"Hawaii","tz":-5,"pop":1.46,"n":5,"gx":38,"gy":72},{"ch":"d","abbr":"IA","name":"Iowa","tz":-1,"pop":3.19,"n":37,"gx":57,"gy":43},{"ch":"e","abbr":"KY","name":"Kentucky","tz":0,"pop":4.51,"n":27,"gx":69,"gy":51},{"ch":"f","abbr":"MD","name":"Maryland","tz":0,"pop":6.18,"n":8,"gx":81,"gy":46},{"ch":"g","abbr":"MI","name":"Michigan","tz":0,"pop":10.08,"n":38,"gx":67,"gy":38},{"ch":"h","abbr":"MS","name":"Mississippi","tz":-1,"pop":2.96,"n":39,"gx":63,"gy":60},{"ch":"i","abbr":"MT","name":"Montana","tz":-2,"pop":1.08,"n":108,"gx":36,"gy":32},{"ch":"j","abbr":"NH","name":"New Hampshire","tz":0,"pop":1.38,"n":6,"gx":85,"gy":36},{"ch":"k","abbr":"NY","name":"New York","tz":0,"pop":20.2,"n":32,"gx":81,"gy":38},{"ch":"l","abbr":"OH","name":"Ohio","tz":0,"pop":11.8,"n":29,"gx":72,"gy":45},{"ch":"m","abbr":"OR","name":"Oregon","tz":-3,"pop":4.24,"n":70,"gx":21,"gy":35},{"ch":"n","abbr":"TN","name":"Tennessee","tz":-1,"pop":6.91,"n":31,"gx":68,"gy":54},{"ch":"o","abbr":"UT","name":"Utah","tz":-2,"pop":3.27,"n":60,"gx":31,"gy":46},{"ch":"p","abbr":"VA","name":"Virginia","tz":0,"pop":8.63,"n":27,"gx":78,"gy":49},{"ch":"q","abbr":"WA","name":"Washington","tz":-3,"pop":7.71,"n":47,"gx":23,"gy":29},{"ch":"r","abbr":"WI","name":"Wisconsin","tz":-1,"pop":5.89,"n":40,"gx":61,"gy":38},{"ch":"s","abbr":"NE","name":"Nebraska","tz":-1,"pop":1.96,"n":55,"gx":48,"gy":44},{"ch":"t","abbr":"SC","name":"South Carolina","tz":0,"pop":5.12,"n":21,"gx":76,"gy":56},{"ch":"u","abbr":"ID","name":"Idaho","tz":-2,"pop":1.84,"n":60,"gx":29,"gy":36},{"ch":"v","abbr":"NV","name":"Nevada","tz":-3,"pop":3.1,"n":78,"gx":24,"gy":45},{"ch":"w","abbr":"VT","name":"Vermont","tz":0,"pop":0.64,"n":6,"gx":84,"gy":35},{"ch":"x","abbr":"LA","name":"Louisiana","tz":-1,"pop":4.66,"n":33,"gx":60,"gy":63},{"ch":"y","abbr":"RI","name":"Rhode Island","tz":0,"pop":1.1,"n":1,"gx":87,"gy":39}],"places":{"mi_up":[64.92,34.8],"mt_ranch":[38.3,33.91],"oh":[72.34,45.35],"me_coast":[89.17,33.94],"dc":[80.79,46.55],"tx":[51.89,63.58],"ca_bay":[16.59,46.32],"nm_north":[39.34,53.34],"ne":[48.99,44.29],"or_mid":[20.46,35.01],"co":[40.29,48.36]},"insets":{"ak":[8.04,62.33,30.4,74.41],"hi":[30.4,67.2,40.89,74.41]}};
+
+const VR = (function () {
+  const TAU = Math.PI * 2, N = G.N;
+  const D36 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const ST = G.states, chIdx = {}, byAbbr = {};
+  ST.forEach(function (s, i) { s.i = i; chIdx[s.ch] = i; byAbbr[s.abbr] = s; });
+
+  function rng(seed) { let a = seed >>> 0; return function () { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  function hash(x, y) { let h = (Math.imul(x | 0, 374761393) + Math.imul(y | 0, 668265263)) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; }
+  function noise(x, y) { const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi, u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf); const a = hash(xi, yi), b = hash(xi + 1, yi), c = hash(xi, yi + 1), d = hash(xi + 1, yi + 1); return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v; }
+  const clamp = function (v, a, b) { return v < a ? a : v > b ? b : v; };
+
+  // Cells of the dot grid: state cells carry density, time zone and a vignette.
+  const cells = [];
+  for (let q = 0; q < N * N; q++) {
+    const ch = G.grid[q]; if (ch === ' ') continue;
+    const i = q % N, j = (q - i) / N, dx = i + 0.5 - N / 2, dy = j + 0.5 - N / 2;
+    let ang = Math.atan2(dx, -dy); if (ang < 0) ang += TAU;
+    const rr = Math.hypot(dx, dy) / (N / 2);
+    const c = { i: i, j: j, ang: ang, s: -1, tz: 0, dc: 0, vig: 1 - 0.36 * rr * rr * rr };
+    if (ch !== '+') { c.s = chIdx[ch]; c.tz = ST[c.s].tz; c.dc = Math.pow(D36.indexOf(G.dens[q]) / 35, 1.2); }
+    cells.push(c);
+  }
+
+  // One ballot per day; Sunday ratifies the week's patch. Sample content.
+  const DAYS = [
+    { k: 'MON', n: 16, name: 'Monday', ballot: 'Ballot 01', q: 'Publish every federal contract over $10k within 30 days', yea: 0.84, votes: 452120, journals: 36840, over: { CO: 0.9 } },
+    { k: 'TUE', n: 17, name: 'Tuesday', ballot: 'Ballot 02', q: 'Fund broadband for every home under 100 Mbps', yea: 0.78, votes: 471380, journals: 38110, over: { NE: 0.57 } },
+    { k: 'WED', n: 18, name: 'Wednesday', ballot: 'Ballot 03', q: 'End twice-yearly clock changes', yea: 0.71, votes: 498640, journals: 39520, over: { OH: 0.841, ME: 0.58 } },
+    { k: 'THU', n: 19, name: 'Thursday', ballot: 'Ballot 04', q: 'Require a plain-language summary on every bill', yea: 0.92, votes: 486270, journals: 37230, floor: 0.905 },
+    { k: 'FRI', n: 20, name: 'Friday', ballot: 'Ballot 05', q: 'Guarantee the right to repair farm and home equipment', yea: 0.88, votes: 433910, journals: 35870, over: { OR: 0.91 } },
+    { k: 'SAT', n: 21, name: 'Saturday', ballot: 'Ballot 06', q: 'Livestream and transcribe every public meeting', yea: 0.86, votes: 389450, journals: 41620 },
+    { k: 'SUN', n: 22, name: 'Sunday', ballot: 'Patch 0.4', q: 'Ratify the ballots that cleared 75% this week', yea: 0.81, votes: 517030, journals: 44060 }
+  ];
+  const R0 = rng(20261122);
+  let popTot = 0; ST.forEach(function (s) { popTot += s.pop; });
+  DAYS.forEach(function (d) {
+    const spread = d.floor ? 0.025 : 0.07, over = d.over || {};
+    const ys = ST.map(function (s) { return over[s.abbr] != null ? over[s.abbr] : d.yea + (R0() - 0.5) * 2 * spread; });
+    let tot = 0, free = 0;
+    ST.forEach(function (s, i) { tot += ys[i] * s.pop; if (over[s.abbr] == null) free += s.pop; });
+    const shift = (d.yea * popTot - tot) / free;
+    d.ys = ys.map(function (y, i) { return over[ST[i].abbr] != null ? y : clamp(y + shift, d.floor || 0.3, 0.985); });
+  });
+
+  // Hour-of-day curves (local time) for votes and journal writing, and their running totals.
+  function wV(h) { h = ((h % 24) + 24) % 24; return 0.05 + 0.9 * Math.exp(-(((h - 8.5) / 1.6) ** 2)) + 0.6 * Math.exp(-(((h - 12.5) / 1.8) ** 2)) + Math.exp(-(((h - 19.5) / 2) ** 2)) + 0.3 * Math.exp(-(((h - 22.8) / 1.1) ** 2)); }
+  function wJ(h) { h = ((h % 24) + 24) % 24; return 0.05 + 0.4 * Math.exp(-(((h - 7.5) / 1.5) ** 2)) + 0.5 * Math.exp(-(((h - 12.5) / 1.5) ** 2)) + 1.2 * Math.exp(-(((h - 21.5) / 1.8) ** 2)); }
+  function cum(w) {
+    const step = 0.05, lo = -24, n = Math.round(72 / step) + 1, T = new Float64Array(n);
+    for (let k = 1; k < n; k++) T[k] = T[k - 1] + w(lo + (k - 0.5) * step) * step;
+    return function (h) { const x = (h - lo) / step, k = clamp(Math.floor(x), 0, n - 2), f = x - k; return T[k] + (T[k + 1] - T[k]) * f; };
+  }
+  const CV = cum(wV), CJ = cum(wJ);
+  function frac(C, h, z) { const a = C(z), b = C(24 + z); return clamp((C(h + z) - a) / (b - a), 0, 1); }
+  const TZS = [0, -1, -2, -3, -4, -5], popTz = {};
+  TZS.forEach(function (z) { popTz[z] = 0; });
+  ST.forEach(function (s) { popTz[s.tz] += s.pop; });
+  function Fnat(C, h) { let a = 0; for (let k = 0; k < TZS.length; k++) a += popTz[TZS[k]] * frac(C, h, TZS[k]); return a / popTot; }
+
+  const vRate = new Float32Array(168), jRate = new Float32Array(168);
+  let vMax = 0, jMax = 0;
+  for (let k = 0; k < 168; k++) {
+    const d = Math.floor(k / 24), h = k - d * 24;
+    vRate[k] = DAYS[d].votes * (Fnat(CV, h + 1) - Fnat(CV, h));
+    jRate[k] = DAYS[d].journals * (Fnat(CJ, h + 1) - Fnat(CJ, h));
+    vMax = Math.max(vMax, vRate[k]); jMax = Math.max(jMax, jRate[k]);
+  }
+  function dissentAt(t) {
+    const d = clamp(Math.floor(t / 24), 0, 6), h = t - d * 24, F = Fnat(CV, h);
+    return clamp(1 - DAYS[d].yea + (noise(t * 0.45, d * 7.7) - 0.5) * 0.1 * Math.pow(1 - F, 1.4), 0.01, 0.6);
+  }
+
+  // Signals the radar calls out. t = hours since Mon Nov 16 00:00 ET. Sample content.
+  const EV = [
+    { t: 9.5, type: 'need', where: 'MICHIGAN', st: 'MI', place: 'mi_up', title: 'Heating costs', src: 'JOURNALS → NEEDS', desc: '1,240 journals from the Upper Peninsula mention winter heating bills. Promoted to a need for next week’s ballots.', win: 4, val: '+1' },
+    { t: 21, type: 'consensus', where: 'COLORADO', st: 'CO', place: 'co', title: 'Statewide consensus', src: 'BALLOT 01 · VOTES', desc: 'Every Colorado county is above 85% yea on publishing federal contracts.', win: 9, val: '90.0%' },
+    { t: 38, type: 'surge', where: 'MONTANA', st: 'MT', place: 'mt_ranch', title: 'Rural turnout doubled', src: 'BALLOT 02 · VOTES', desc: 'Ranch towns cast 2.1× their usual votes after a journal thread about dropped telehealth calls.', win: 3, val: '2.1×' },
+    { t: 45, type: 'dissent', where: 'NEBRASKA', st: 'NE', place: 'ne', title: 'Who pays for fiber', src: 'BALLOT 02 · VOTES', desc: 'Nay reached 43% as journals asked who pays for last-mile fiber. New need opened: cost sharing with counties.', win: 5, val: '43.0%', lvl: 0.5 },
+    { t: 60, type: 'consensus', where: 'OHIO', st: 'OH', place: 'oh', title: 'Statewide consensus', src: 'BALLOT 03 · VOTES', desc: 'Every Ohio county cleared 80% yea on ending clock changes by noon.', win: 5, val: '84.1%' },
+    { t: 65.5, type: 'dissent', where: 'MAINE', st: 'ME', place: 'me_coast', title: 'Dissent cluster', src: 'BALLOT 03 · VOTES', desc: 'Coastal towns want year-round standard time, not daylight time. Nay hit 46%, and a need opened: let states pick their clock.', win: 4.5, val: '46.0%', lvl: 0.55 },
+    { t: 81, type: 'need', where: 'NEW MEXICO', st: 'NM', place: 'nm_north', title: 'Late irrigation water', src: 'JOURNALS → NEEDS', desc: '960 journals from acequia communities say ditch water is arriving weeks late. Promoted to a need.', win: 5, val: '+1' },
+    { t: 87, type: 'national', where: 'ALL STATES', st: 'US', place: 'dc', title: 'Ballot 04 clears 90% everywhere', src: 'BALLOT 04 · VOTES', desc: 'First ballot this week above 90% yea in all 50 states and DC. Queued for Patch 0.4.', win: 15, val: '92.0%' },
+    { t: 107, type: 'need', where: 'TEXAS', st: 'TX', place: 'tx', title: 'Grid reliability', src: 'JOURNALS → NEEDS', desc: '3,800 journals mention power cuts and rising bills. Promoted to a need for next week’s ballots.', win: 5, val: '+1' },
+    { t: 118, type: 'consensus', where: 'OREGON', st: 'OR', place: 'or_mid', title: 'Repair ballot at 91%', src: 'BALLOT 05 · VOTES', desc: 'Farm counties led the right-to-repair ballot, and Oregon closed the day at 91% yea.', win: 11, val: '91.0%' },
+    { t: 139, type: 'surge', where: 'CALIFORNIA', st: 'CA', place: 'ca_bay', title: 'First-time voters', src: 'BALLOT 06 · VOTES', desc: '61k people cast their first ballot after city council journals trended in the Bay Area and LA.', win: 5, val: '61k' },
+    { t: 162, type: 'patch', where: 'NATIONAL', st: 'US', place: 'dc', title: 'Patch 0.4 ratified', src: 'PLAN · PATCH 0.4', desc: '5 of 6 ballots cleared 75% and merged into the plan. The diff ships to HappyBearLandia for simulation.', win: 18, val: '0.4' }
+  ];
+  const TYPE = { need: 'NEED', consensus: 'CONSENSUS', surge: 'TURNOUT SURGE', dissent: 'DISSENT', national: 'NEAR-UNANIMOUS', patch: 'PATCH' };
+  const FEEDLAB = { need: 'Need surfaced', consensus: 'Consensus', surge: 'Turnout surge', dissent: 'Dissent', national: 'All states 90%+', patch: 'Patch merged' };
+  function sparkPts(type, seed) {
+    const r = rng(seed), out = [];
+    for (let k = 0; k < 32; k++) {
+      const x = k / 31; let y;
+      if (type === 'need') y = 0.12 + 0.72 * x * x;
+      else if (type === 'consensus') y = 0.28 + 0.56 / (1 + Math.exp(-(x - 0.45) * 11));
+      else if (type === 'surge') y = 0.22 + 0.62 * Math.exp(-(((x - 0.64) / 0.1) ** 2));
+      else if (type === 'dissent') y = 0.18 + 0.55 * x + 0.06 * Math.sin(x * 9);
+      else if (type === 'patch') y = 0.15 + 0.14 * Math.floor(x * 5.999);
+      else y = 0.8 + 0.04 * Math.sin(x * 7);
+      out.push(clamp(y + (r() - 0.5) * 0.06, 0.03, 0.97));
+    }
+    return out;
+  }
+  EV.forEach(function (e, k) {
+    e.id = k;
+    const p = G.places[e.place] || [byAbbr[e.st].gx + 0.5, byAbbr[e.st].gy + 0.5];
+    e.gx = p[0] - 0.5; e.gy = p[1] - 0.5;
+    e.si = byAbbr[e.st] ? byAbbr[e.st].i : -1;
+    const pts = sparkPts(e.type, 91 + k * 13);
+    e.path = pts.map(function (v, n) { return (n ? 'L' : 'M') + (n / 31 * 300).toFixed(1) + ' ' + (43 - v * 40).toFixed(1); }).join('');
+    e.dx = '100%'; e.dy = ((43 - pts[31] * 40) / 46 * 100).toFixed(1) + '%';
+  });
+
+  const pickW = []; let pickTot = 0;
+  ST.forEach(function (s) { pickTot += Math.pow(s.pop, 0.7); pickW.push(pickTot); });
+  function pickState(r) { const x = r * pickTot; for (let k = 0; k < pickW.length; k++) if (x <= pickW[k]) return ST[k]; return ST[ST.length - 1]; }
+
+  const pad = function (n) { return (n < 10 ? '0' : '') + n; };
+  function hhmm(t) { const h = ((t % 24) + 24) % 24; let H = Math.floor(h), M = Math.round((h - H) * 60); if (M === 60) { H = (H + 1) % 24; M = 0; } return pad(H) + ':' + pad(M); }
+  function d3(d) { const k = DAYS[clamp(d, 0, 6)].k; return k[0] + k.slice(1).toLowerCase(); }
+  function dur(w) { const H = Math.floor(w), M = Math.round((w - H) * 60); return H + 'h' + (M ? ' ' + M + 'm' : ''); }
+  function winText(e) { const a = e.t - e.win, da = Math.floor(a / 24), db = Math.floor(e.t / 24); return d3(da) + ' ' + hhmm(a) + '–' + (da === db ? '' : d3(db) + ' ') + hhmm(e.t) + ' ET · ' + dur(e.win); }
+  const pct = function (x) { return (x * 100).toFixed(1) + '%'; };
+  const signed = function (x) { return (x >= 0 ? '+' : '') + x.toFixed(1) + '%'; };
+  const kfmt = function (x) { return x >= 1000 ? (x / 1000).toFixed(1) + 'k' : String(Math.round(x)); };
+  const comma = function (x) { return Math.round(x).toLocaleString('en-US'); };
+
+  return { N: N, TAU: TAU, cells: cells, ST: ST, DAYS: DAYS, EV: EV, TYPE: TYPE, FEEDLAB: FEEDLAB, CV: CV, CJ: CJ, frac: frac, Fnat: Fnat, vRate: vRate, jRate: jRate, vMax: vMax, jMax: jMax, dissentAt: dissentAt, noise: noise, clamp: clamp, pickState: pickState, hhmm: hhmm, d3: d3, winText: winText, pct: pct, signed: signed, kfmt: kfmt, comma: comma };
+})();
+
+const $ = (id) => document.getElementById(id);
+let reduce = false;
+try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (err) { /* no media queries */ }
+const SPEED = 1.5; // simulated hours per second
+const ACC = '#ff8a3d', RGB = [255, 138, 61];
+const ui = {
+  stage: $('stage'), cv: $('cv'), hub: $('hub'), tp: $('tp'), time: $('time'), feed: $('feed'), rows: $('rows'),
+  card: $('card'), cSq: $('cSq'), cTag: $('cTag'), cTitle: $('cTitle'), cSrc: $('cSrc'), cDesc: $('cDesc'), cPath: $('cPath'), cDot: $('cDot'), cWin: $('cWin'),
+  days: $('days'), ballotNo: $('ballotNo'), ballotQ: $('ballotQ'), play: $('play'), playLabel: $('playLabel'), icoPause: $('icoPause'), icoPlay: $('icoPlay'),
+  k1sub: $('k1sub'), k1: $('k1'), k1p: $('k1p'), k1d: $('k1d'), k2: $('k2'), k2past: $('k2past'), k2fut: $('k2fut'), k2r: $('k2r'),
+  k3: $('k3'), k3dim: $('k3dim'), k3now: $('k3now'), k4: $('k4'), k4area: $('k4area'), k4line: $('k4line'), k4d: $('k4d')
+};
+
+// Fill colours: 16 grey levels for yea, 16 accent levels for nay, 16 dim greys for neighbouring land.
+const PAL = [];
+for (let l = 0; l < 16; l++) { const v = Math.round(22 + 223 * Math.pow(l / 15, 1.15)); PAL.push('rgb(' + v + ',' + v + ',' + v + ')'); }
+for (let l = 0; l < 16; l++) { const k = 0.16 + 0.84 * (l / 15); PAL.push('rgb(' + Math.round(RGB[0] * k) + ',' + Math.round(RGB[1] * k) + ',' + Math.round(RGB[2] * k) + ')'); }
+for (let l = 0; l < 16; l++) { const v = 20 + l * 4; PAL.push('rgb(' + v + ',' + v + ',' + v + ')'); }
+
+const cells = VR.cells, TAU = VR.TAU;
+const vote = new Uint8Array(cells.length), lastD = new Float32Array(cells.length).fill(100);
+const buckets = []; for (let b = 0; b < 48; b++) buckets.push([]);
+let t = reduce ? 60.6 : 59.9, playing = !reduce;
+let lay = { W: 0, H: 0, cx: 0, cy: 0, R: 0, dpr: 1, wide: true };
+let act = [], cardEv = null, cardKey = -1, cardT0 = 0, lastNow = 0, lastRow = 0, lastUi = 0;
+
+const dayOf = (x) => VR.clamp(Math.floor(x / 24), 0, 6);
+
+function updateAct() {
+  const a = [];
+  for (const e of VR.EV) {
+    const s = e.t - e.win;
+    if (t >= s && t <= e.t + 4) { e._ramp = VR.clamp((t - s) / e.win, 0.25, 1); a.push(e); }
+  }
+  act = a;
+}
+
+function nayAt(c, d) {
+  const day = VR.DAYS[d];
+  let nay = 1 - day.ys[c.s] + (VR.noise(c.i * 0.15 + d * 31.7, c.j * 0.15 + d * 11.3) - 0.5) * (day.floor ? 0.03 : 0.18);
+  for (const e of act) {
+    if (e.type === 'dissent') {
+      const g = Math.exp(-(((c.i - e.gx) ** 2) + ((c.j - e.gy) ** 2)) / 32);
+      nay += (Math.max(nay, e.lvl * e._ramp) - nay) * g;
+    } else if (e.type === 'consensus' && c.s === e.si) {
+      nay = Math.min(nay, 0.1 + 0.06 * VR.noise(c.i * 0.3, c.j * 0.3));
+    }
+  }
+  return VR.clamp(nay, 0.01, 0.97);
+}
+
+function resampleAll() {
+  const d = dayOf(t);
+  for (let k = 0; k < cells.length; k++) { const c = cells[k]; if (c.s >= 0) vote[k] = Math.random() < nayAt(c, d) ? 1 : 0; }
+}
+
+// Live feed: newest row at the bottom; the column slides up one row per addition.
+function addRow(row, animate) {
+  const div = document.createElement('div');
+  div.className = row.ev ? 'row ev' : 'row';
+  const parts = [['', row.time], ['', row.st], [row.sq, ''], ['lab', row.lab], ['val', row.val]];
+  for (const p of parts) { const s = document.createElement('span'); if (p[0]) s.className = p[0]; s.textContent = p[1]; div.appendChild(s); }
+  ui.rows.appendChild(div);
+  while (ui.rows.childElementCount > 28) ui.rows.firstElementChild.remove();
+  if (animate && !reduce && ui.rows.animate) ui.rows.animate([{ transform: 'translateY(22px)' }, { transform: 'translateY(0)' }], { duration: 500, easing: 'cubic-bezier(.2,.7,.2,1)' });
+}
+
+function pushRow(at, animate) {
+  at = Math.max(0, at);
+  const d = dayOf(at), h = at - d * 24, day = VR.DAYS[d], s = VR.pickState(Math.random()), r = Math.random(), hh = VR.hhmm(Math.floor(h));
+  let row;
+  if (r < 0.3) row = { time: hh, lab: 'Yea share', sq: 'sq', val: VR.pct(day.ys[s.i] + (Math.random() - 0.5) * 0.012) };
+  else if (r < 0.5) { let a = 0; for (let k = 0; k <= d; k++) a += 1 - VR.DAYS[k].ys[s.i]; row = { time: '7d', lab: 'Nay share', sq: 'sq o', val: VR.pct(a / (d + 1)) }; }
+  else if (r < 0.72) row = { time: hh, lab: 'vs last week', sq: 'sq', val: VR.signed(Math.random() * 11 - 2.5) };
+  else if (r < 0.86) row = { time: '7d', lab: 'Journals', sq: 'sq', val: VR.kfmt(s.pop * (800 + Math.random() * 120)) };
+  else row = { time: hh, lab: 'Turnout', sq: 'sq', val: VR.pct(0.143 * VR.frac(VR.CV, h, s.tz) * (0.85 + Math.random() * 0.3)) };
+  row.st = s.abbr;
+  addRow(row, animate);
+}
+
+function eventRow(e) {
+  addRow({ time: VR.hhmm(e.t), st: e.st, sq: e.type === 'dissent' ? 'sq o' : 'sq w', lab: VR.FEEDLAB[e.type], val: e.val, ev: true }, true);
+}
+
+function jump(d) {
+  t = d * 24 + 6.5;
+  updateAct();
+  resampleAll();
+  lastD.fill(100);
+  syncCard(performance.now());
+  render();
+}
+
+function activeEvent(at) {
+  let best = null;
+  for (const e of VR.EV) { const a = at - e.t; if (a >= 0 && a < 5) best = e; }
+  return best;
+}
+
+function xy(e) {
+  const s = 2 * lay.R / VR.N;
+  return { x: lay.cx - lay.R + (e.gx + 0.5) * s, y: lay.cy - lay.R + (e.gy + 0.5) * s };
+}
+
+function cardTop() {
+  if (!cardEv || !lay.R) return;
+  ui.card.style.top = Math.round(VR.clamp(xy(cardEv).y - 96, 6, Math.max(6, lay.H - 300))) + 'px';
+}
+
+// Callout card for the signal that fired in the last five simulated hours.
+function syncCard(now) {
+  const e = activeEvent(t), key = e ? e.id : -1;
+  if (key === cardKey) return;
+  cardKey = key; cardT0 = now; cardEv = e;
+  if (!e) { ui.card.hidden = true; return; }
+  const dissent = e.type === 'dissent';
+  ui.cSq.className = dissent ? 'sq o' : 'sq w';
+  ui.cTag.textContent = VR.TYPE[e.type] + ' · ' + e.where;
+  ui.cTitle.textContent = e.title;
+  ui.cSrc.textContent = e.src;
+  ui.cDesc.textContent = e.desc;
+  ui.cPath.setAttribute('d', e.path);
+  ui.cPath.setAttribute('class', dissent ? 'o' : '');
+  ui.cDot.style.left = e.dx;
+  ui.cDot.style.top = e.dy;
+  ui.cWin.textContent = VR.winText(e);
+  ui.card.hidden = false;
+  cardTop();
+  if (!reduce && ui.card.animate) ui.card.animate([{ opacity: 0, transform: 'translateX(12px)' }, { opacity: 1, transform: 'none' }], { duration: 400, easing: 'cubic-bezier(.2,.7,.2,1)' });
+}
+
+function layout() {
+  const r = ui.stage.getBoundingClientRect(), W = r.width, H = r.height;
+  if (W < 20 || H < 20) { lay.R = 0; return; }
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  ui.cv.width = Math.round(W * dpr); ui.cv.height = Math.round(H * dpr);
+  const wide = getComputedStyle(ui.feed).position === 'absolute';
+  const feedW = wide ? ui.feed.getBoundingClientRect().width + 28 : 0;
+  const K = 1.2, R = Math.min(H, W - feedW) / 2 / K, cy = H / 2;
+  let cx = W / 2;
+  if (wide && cx + R * K > W - feedW) cx = Math.max(R * K, W - feedW - R * K);
+  lay = { W: W, H: H, cx: cx, cy: cy, R: Math.max(40, R), dpr: dpr, wide: wide };
+  render();
+}
+
+function toggle() { playing = !playing; render(); }
+
+// Header, time pill and the four running figures; runs about eight times a second.
+function render() {
+  const d = dayOf(t), h = t - d * 24, day = VR.DAYS[d];
+  tabs.forEach(function (x, i) {
+    x.b.setAttribute('aria-current', i === d ? 'true' : 'false');
+    x.fill.style.width = (i < d ? 100 : i === d ? h / 24 * 100 : 0).toFixed(2) + '%';
+    for (const m of x.marks) m.el.classList.toggle('on', m.e.t <= t);
+  });
+  ui.ballotNo.textContent = day.ballot.toUpperCase();
+  ui.ballotQ.textContent = day.q;
+  ui.play.setAttribute('aria-label', playing ? 'Pause the radar' : 'Play the radar');
+  ui.playLabel.textContent = playing ? 'PAUSE' : 'PLAY';
+  ui.icoPause.style.display = playing ? '' : 'none';
+  ui.icoPlay.style.display = playing ? 'none' : '';
+  const mm = Math.floor((h % 1) * 12) * 5;
+  ui.time.textContent = VR.d3(d) + ' ' + VR.hhmm(Math.floor(h)).slice(0, 3) + (mm < 10 ? '0' : '') + mm + ' ET';
+  if (lay.R) {
+    ui.tp.style.left = Math.round(lay.cx) + 'px';
+    ui.tp.style.top = Math.round(lay.cy + lay.R * 0.74) + 'px';
+    const hd = Math.max(44, Math.round(lay.R * 0.2));
+    ui.hub.style.left = Math.round(lay.cx) + 'px'; ui.hub.style.top = Math.round(lay.cy) + 'px';
+    ui.hub.style.width = hd + 'px'; ui.hub.style.height = hd + 'px';
+    cardTop();
+  }
+  const X = (k) => k / 168 * 1000;
+
+  // Dissent: share of nay votes so far on each day's ballot, broken at each new ballot.
+  const yD = (v) => 94 - Math.min(1, v / 0.36) * 86;
+  let p1 = '';
+  for (let dd = 0; dd <= d; dd++) {
+    const end = dd < d ? 24 : h;
+    p1 += 'M' + X(dd * 24).toFixed(1) + ' ' + yD(VR.dissentAt(dd * 24 + 0.01)).toFixed(1);
+    for (let hh = 1; hh < end; hh++) p1 += 'L' + X(dd * 24 + hh).toFixed(1) + ' ' + yD(VR.dissentAt(dd * 24 + hh)).toFixed(1);
+    p1 += 'L' + X(dd * 24 + end).toFixed(1) + ' ' + yD(VR.dissentAt(dd * 24 + Math.min(end, 23.99))).toFixed(1);
+  }
+  const dNow = VR.dissentAt(t);
+  ui.k1sub.textContent = day.ballot.toUpperCase();
+  ui.k1.textContent = VR.pct(dNow);
+  ui.k1p.setAttribute('d', p1);
+  ui.k1d.style.left = (X(t) / 10).toFixed(2) + '%'; ui.k1d.style.top = yD(dNow).toFixed(2) + '%';
+
+  // Signals: past ticks, future ticks, and the latest signal's window as a block.
+  let pPast = '', pFut = '', last = null, count = 0;
+  for (const e of VR.EV) { if (e.t <= t) { pPast += 'M' + X(e.t).toFixed(1) + ' 100V52'; last = e; count++; } else pFut += 'M' + X(e.t).toFixed(1) + ' 100V74'; }
+  ui.k2.textContent = String(count);
+  ui.k2past.setAttribute('d', pPast);
+  ui.k2fut.setAttribute('d', pFut);
+  const rx = last ? X(last.t - last.win) : 0;
+  ui.k2r.setAttribute('x', rx.toFixed(1));
+  ui.k2r.setAttribute('width', (last ? X(last.t) - rx : 0).toFixed(1));
+
+  // Votes per hour: earlier days dim, today bright.
+  let pDim = '', pNow = '';
+  const kNow = Math.floor(t);
+  for (let k = 0; k <= kNow && k < 168; k++) {
+    const v = k < kNow ? VR.vRate[k] : VR.vRate[k] * (t - kNow), y = 100 - v / VR.vMax * 94;
+    const seg = 'M' + X(k + 0.5).toFixed(1) + ' 100V' + y.toFixed(1);
+    if (k >= d * 24) pNow += seg; else pDim += seg;
+  }
+  ui.k3.textContent = VR.comma(day.votes * VR.Fnat(VR.CV, h));
+  ui.k3dim.setAttribute('d', pDim);
+  ui.k3now.setAttribute('d', pNow);
+
+  // Journals per hour as an area.
+  let pLine = '', pArea = 'M0 100';
+  const yJ = (k) => 96 - VR.jRate[Math.min(167, k)] / VR.jMax * 84;
+  for (let k = 0; k <= kNow && k < 168; k++) { const pt = X(k).toFixed(1) + ' ' + yJ(k).toFixed(1); pLine += (k ? 'L' : 'M') + pt; pArea += 'L' + pt; }
+  const yj = yJ(kNow) + (yJ(kNow + 1) - yJ(kNow)) * (t - kNow);
+  pLine += 'L' + X(t).toFixed(1) + ' ' + yj.toFixed(1);
+  pArea += 'L' + X(t).toFixed(1) + ' ' + yj.toFixed(1) + 'L' + X(t).toFixed(1) + ' 100Z';
+  ui.k4.textContent = VR.comma(day.journals * VR.Fnat(VR.CJ, h));
+  ui.k4line.setAttribute('d', pLine);
+  ui.k4area.setAttribute('d', pArea);
+  ui.k4d.style.left = (X(t) / 10).toFixed(2) + '%'; ui.k4d.style.top = yj.toFixed(2) + '%';
+}
+
+function draw(now) {
+  const cv = ui.cv, L = lay;
+  if (!L.R || !cv.getContext) return;
+  const ctx = cv.getContext('2d');
+  if (!ctx) return;
+  const dpr = L.dpr, W = L.W, H = L.H, cx = L.cx, cy = L.cy, R = L.R;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  const d = dayOf(t), h = t - d * 24, sw = h / 24 * TAU;
+
+  // Dial: 15-minute ticks, hour ticks, quarter labels.
+  const strokes = [['rgba(255,255,255,.14)', []], ['rgba(255,255,255,.3)', []], ['rgba(255,255,255,.55)', []]];
+  for (let k = 0; k < 96; k++) {
+    const a = k / 96 * TAU, big = k % 4 === 0, q = k % 24 === 0, sx = Math.sin(a), sy = -Math.cos(a);
+    const r0 = R * (big ? 1.035 : 1.045), r1 = R * (q ? 1.095 : big ? 1.078 : 1.062);
+    strokes[q ? 2 : big ? 1 : 0][1].push(cx + sx * r0, cy + sy * r0, cx + sx * r1, cy + sy * r1);
+  }
+  ctx.lineWidth = 1;
+  for (const st of strokes) { ctx.strokeStyle = st[0]; ctx.beginPath(); const p = st[1]; for (let k = 0; k < p.length; k += 4) { ctx.moveTo(p[k], p[k + 1]); ctx.lineTo(p[k + 2], p[k + 3]); } ctx.stroke(); }
+  ctx.fillStyle = 'rgba(255,255,255,.46)';
+  ctx.font = '500 ' + Math.max(9, Math.round(R * 0.032)) + 'px "Geist Mono", ui-monospace, monospace';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  [['00', 0], ['06', 1], ['12', 2], ['18', 3]].forEach(function (lb) { const a = lb[1] * TAU / 4; ctx.fillText(lb[0], cx + Math.sin(a) * R * 1.14, cy - Math.cos(a) * R * 1.14); });
+  ctx.strokeStyle = 'rgba(255,255,255,.95)'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(cx + Math.sin(sw) * R * 1.03, cy - Math.cos(sw) * R * 1.03); ctx.lineTo(cx + Math.sin(sw) * R * 1.1, cy - Math.cos(sw) * R * 1.1); ctx.stroke();
+
+  // Scope disc and range rings.
+  const g0 = ctx.createRadialGradient(cx, cy, R * 0.05, cx, cy, R);
+  g0.addColorStop(0, '#121212'); g0.addColorStop(1, '#070707');
+  ctx.fillStyle = g0; ctx.beginPath(); ctx.arc(cx, cy, R, 0, TAU); ctx.fill();
+  ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(255,255,255,.15)'; ctx.stroke();
+  ctx.strokeStyle = 'rgba(255,255,255,.06)';
+  ctx.beginPath(); ctx.arc(cx, cy, R * 0.34, 0, TAU); ctx.moveTo(cx + R * 0.67, cy); ctx.arc(cx, cy, R * 0.67, 0, TAU); ctx.stroke();
+
+  // Dots: each is the latest vote from that area. Brightness = turnout so far today; the sweep re-reads it.
+  const N = VR.N, s = 2 * R / N, sz = Math.max(1.2, s * 0.74), off = (s - sz) / 2, x0 = cx - R, y0 = cy - R;
+  const F = {}; for (const z of [0, -1, -2, -3, -4, -5]) F[z] = VR.frac(VR.CV, h, z);
+  for (const b of buckets) b.length = 0;
+  const flick = playing ? 0.016 : 0;
+  const surges = act.filter(function (e) { return e.type === 'surge'; });
+  for (let k = 0; k < cells.length; k++) {
+    const c = cells[k];
+    let D = sw - c.ang; if (D < 0) D += TAU;
+    const crossed = D < lastD[k];
+    lastD[k] = D;
+    const ph = Math.exp(-D / 0.5);
+    if (c.s < 0) { buckets[32 + (ph > 0.3 ? 3 : 1)].push(k); continue; }
+    if (crossed || (flick && Math.random() < flick * (0.3 + c.dc))) vote[k] = Math.random() < nayAt(c, d) ? 1 : 0;
+    let b = (0.16 + 0.84 * F[c.tz]) * (0.2 + 0.8 * c.dc) * c.vig + ph * 0.42 * (0.35 + 0.65 * c.dc);
+    for (const e of surges) b *= 1 + 1.4 * e._ramp * Math.exp(-(((c.i - e.gx) ** 2) + ((c.j - e.gy) ** 2)) / 40);
+    buckets[vote[k] * 16 + VR.clamp(Math.round(b * 15), 2, 15)].push(k);
+  }
+  const snap = (v) => Math.round(v * dpr) / dpr;
+  const zs = Math.max(1 / dpr, snap(sz));
+  for (let bi = 0; bi < 48; bi++) {
+    const list = buckets[bi]; if (!list.length) continue;
+    ctx.fillStyle = PAL[bi]; ctx.beginPath();
+    for (let k = 0; k < list.length; k++) { const c = cells[list[k]]; ctx.rect(snap(x0 + c.i * s + off), snap(y0 + c.j * s + off), zs, zs); }
+    ctx.fill();
+  }
+
+  // Sweep: trailing glow, beam and rim flare.
+  const hubR = R * 0.085, ex = cx + Math.sin(sw) * R, ey = cy - Math.cos(sw) * R;
+  ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, R, 0, TAU); ctx.clip();
+  if (ctx.createConicGradient) {
+    const wedge = 0.8, f = wedge / TAU, cg = ctx.createConicGradient(sw - Math.PI / 2 - wedge, cx, cy);
+    cg.addColorStop(0, 'rgba(255,236,214,0)'); cg.addColorStop(f * 0.7, 'rgba(255,236,214,.045)'); cg.addColorStop(f * 0.998, 'rgba(255,236,214,.15)'); cg.addColorStop(f + 0.001, 'rgba(255,236,214,0)'); cg.addColorStop(1, 'rgba(255,236,214,0)');
+    ctx.fillStyle = cg; ctx.fillRect(cx - R, cy - R, 2 * R, 2 * R);
+  }
+  const lg = ctx.createLinearGradient(cx, cy, ex, ey);
+  lg.addColorStop(0, 'rgba(255,240,225,0)'); lg.addColorStop(0.3, 'rgba(255,240,225,.35)'); lg.addColorStop(1, 'rgba(255,246,236,.95)');
+  ctx.strokeStyle = lg; ctx.lineWidth = 1.4;
+  ctx.beginPath(); ctx.moveTo(cx + Math.sin(sw) * hubR, cy - Math.cos(sw) * hubR); ctx.lineTo(ex, ey); ctx.stroke();
+  ctx.restore();
+  const rg = ctx.createRadialGradient(ex, ey, 0, ex, ey, R * 0.09);
+  rg.addColorStop(0, 'rgba(255,228,200,.5)'); rg.addColorStop(1, 'rgba(255,228,200,0)');
+  ctx.fillStyle = rg; ctx.beginPath(); ctx.arc(ex, ey, R * 0.09, 0, TAU); ctx.fill();
+
+  // Active signal: pulse rings, reticle and a leader line to the card.
+  const e = cardEv;
+  if (e) {
+    const p = xy(e), age = Math.max(0, (now - cardT0) / 1000), al = VR.clamp(age / 0.3, 0, 1);
+    const big = e.type === 'national' || e.type === 'patch';
+    ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, R, 0, TAU); ctx.clip();
+    for (let k = 0; k < 2; k++) {
+      const u = ((age + k * 0.8) % 1.6) / 1.6, rad = R * (0.015 + u * (big ? 0.95 : 0.13));
+      ctx.strokeStyle = e.type === 'dissent' ? 'rgba(' + RGB[0] + ',' + RGB[1] + ',' + RGB[2] + ',' + ((1 - u) * 0.6 * al).toFixed(3) + ')' : 'rgba(255,255,255,' + ((1 - u) * 0.5 * al).toFixed(3) + ')';
+      ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(p.x, p.y, rad, 0, TAU); ctx.stroke();
+    }
+    ctx.restore();
+    const sc = 1 + Math.max(0, 1 - age / 0.35) * 0.9, hs = Math.max(8, R * 0.032) * sc, cl = hs * 0.45;
+    ctx.strokeStyle = 'rgba(255,255,255,' + al + ')'; ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(function (q) { const X = p.x + q[0] * hs, Y = p.y + q[1] * hs; ctx.moveTo(X, Y - q[1] * cl); ctx.lineTo(X, Y); ctx.lineTo(X - q[0] * cl, Y); });
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,' + al + ')'; ctx.fillRect(p.x - 1.5, p.y - 1.5, 3, 3);
+    if (L.wide && !ui.card.hidden) {
+      const cr = ui.card.getBoundingClientRect(), sr = ui.stage.getBoundingClientRect();
+      const tx = cr.left - sr.left, ty = cr.top - sr.top + Math.min(64, cr.height * 0.3);
+      if (tx > p.x + hs + 24) {
+        const mx = Math.max(p.x + hs + 14, tx - Math.abs(ty - p.y) * 0.85 - 10);
+        ctx.strokeStyle = 'rgba(255,255,255,' + (0.7 * al).toFixed(3) + ')'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(p.x + hs + 4, p.y); ctx.lineTo(mx, p.y); ctx.lineTo(tx, ty); ctx.stroke();
+        ctx.fillStyle = 'rgba(255,255,255,' + al + ')'; ctx.beginPath(); ctx.arc(tx, ty, 2.5, 0, TAU); ctx.fill();
+      }
+    }
+  }
+
+  // Hub: check mark while running, play triangle while paused.
+  const hg = ctx.createRadialGradient(cx - hubR * 0.3, cy - hubR * 0.45, hubR * 0.1, cx, cy, hubR);
+  hg.addColorStop(0, '#3b3b3b'); hg.addColorStop(1, '#131313');
+  ctx.fillStyle = hg; ctx.beginPath(); ctx.arc(cx, cy, hubR, 0, TAU); ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,.3)'; ctx.lineWidth = 1; ctx.stroke();
+  ctx.strokeStyle = 'rgba(255,255,255,.2)'; ctx.beginPath();
+  for (let k = 0; k < 48; k++) { const a = k / 48 * TAU; ctx.moveTo(cx + Math.sin(a) * hubR * 1.16, cy - Math.cos(a) * hubR * 1.16); ctx.lineTo(cx + Math.sin(a) * hubR * (k % 4 ? 1.24 : 1.3), cy - Math.cos(a) * hubR * (k % 4 ? 1.24 : 1.3)); }
+  ctx.stroke();
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  if (playing) {
+    ctx.strokeStyle = ACC; ctx.lineWidth = Math.max(1.6, hubR * 0.13);
+    ctx.beginPath(); ctx.moveTo(cx - hubR * 0.36, cy + hubR * 0.02); ctx.lineTo(cx - hubR * 0.1, cy + hubR * 0.28); ctx.lineTo(cx + hubR * 0.38, cy - hubR * 0.26); ctx.stroke();
+  } else {
+    ctx.fillStyle = ACC; ctx.beginPath(); ctx.moveTo(cx - hubR * 0.22, cy - hubR * 0.34); ctx.lineTo(cx + hubR * 0.36, cy); ctx.lineTo(cx - hubR * 0.22, cy + hubR * 0.34); ctx.closePath(); ctx.fill();
+  }
+  ctx.lineCap = 'butt'; ctx.lineJoin = 'miter';
+}
+
+function frame(now) {
+  if (!lastNow) lastNow = now;
+  const dt = Math.min(0.1, (now - lastNow) / 1000);
+  lastNow = now;
+  if (!lay.R) layout();
+  if (playing) {
+    const a = t;
+    let b = a + dt * SPEED, wrapped = false;
+    if (b >= 168) { b -= 168; wrapped = true; }
+    t = b;
+    for (const e of VR.EV) { if ((!wrapped && a < e.t && e.t <= b) || (wrapped && (e.t > a || e.t <= b))) eventRow(e); }
+    updateAct();
+    if (wrapped) resampleAll();
+    if (now - lastRow > 560) { lastRow = now; pushRow(t, true); }
+  }
+  syncCard(now);
+  draw(now);
+  if (now - lastUi > 125) { lastUi = now; render(); }
+}
+
+// Day tabs, one ballot per day; the small marks are the day's signals.
+const tabs = VR.DAYS.map(function (x, i) {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'tab';
+  b.setAttribute('aria-label', x.name + ' ' + x.n + ', ' + x.ballot);
+  const lab = document.createElement('span'); lab.textContent = x.k + ' ' + x.n;
+  const track = document.createElement('span'); track.className = 'track';
+  const fill = document.createElement('span'); fill.className = 'fill'; track.appendChild(fill);
+  const marks = VR.EV.filter(function (e) { return Math.floor(e.t / 24) === i; }).map(function (e) {
+    const m = document.createElement('span'); m.className = 'mk'; m.style.left = ((e.t - i * 24) / 24 * 100).toFixed(1) + '%';
+    track.appendChild(m);
+    return { el: m, e: e };
+  });
+  b.append(lab, track);
+  b.addEventListener('click', function () { jump(i); });
+  ui.days.appendChild(b);
+  return { b: b, fill: fill, marks: marks };
+});
+
+ui.play.addEventListener('click', toggle);
+ui.hub.addEventListener('click', toggle);
+updateAct();
+resampleAll();
+for (let k = 22; k > 0; k--) pushRow(t - k * 0.37, false);
+syncCard(performance.now());
+layout();
+render();
+if (typeof ResizeObserver !== 'undefined') { const stageObserver = new ResizeObserver(layout); stageObserver.observe(ui.stage); }
+else window.addEventListener('resize', layout);
+let failed = false;
+const loop = function (now) {
+  requestAnimationFrame(loop);
+  try { frame(now); } catch (err) { if (!failed) { failed = true; console.error(err); } }
+};
+requestAnimationFrame(loop);
+}
+</script>
+</body>
+</html>
