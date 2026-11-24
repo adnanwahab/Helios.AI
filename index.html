@@ -195,6 +195,7 @@
         <button class="tab" id="tab-orbit" type="button" role="tab" aria-selected="false" aria-controls="view-orbit">Acts in Orbit</button>
         <button class="tab" id="tab-flags" type="button" role="tab" aria-selected="false" aria-controls="view-flags">Support Every Country</button>
         <button class="tab" id="tab-unified" type="button" role="tab" aria-selected="false" aria-controls="view-unified">Helios Unified</button>
+        <button class="tab" id="tab-coil" type="button" role="tab" aria-selected="false" aria-controls="view-coil">The Long Coil</button>
         <button class="tab" id="tab-lab" type="button" role="tab" aria-selected="false" aria-controls="view-lab">Dynamicland (Local)</button>
         <button class="tab" id="tab-morphlab" type="button" role="tab" aria-selected="false" aria-controls="view-morphlab">MorphLab · WebGPU</button>
         <button class="tab" id="tab-pocket" type="button" role="tab" aria-selected="false" aria-controls="view-pocket">HappyBearLandia Pocket</button>
@@ -295,6 +296,14 @@
       ></iframe>
 
       <iframe
+        id="view-coil"
+        class="view"
+        title="The Long Coil"
+        src="/embed/coil"
+        loading="lazy"
+      ></iframe>
+
+      <iframe
         id="view-lab"
         class="view"
         title="Dynamicland Local"
@@ -371,6 +380,7 @@
       orbit: document.getElementById('tab-orbit'),
       flags: document.getElementById('tab-flags'),
       unified: document.getElementById('tab-unified'),
+      coil: document.getElementById('tab-coil'),
       pocket: document.getElementById('tab-pocket'),
       pensieve: document.getElementById('tab-pensieve'),
       mail: document.getElementById('tab-mail'),
@@ -392,6 +402,7 @@
       orbit: document.getElementById('view-orbit'),
       flags: document.getElementById('view-flags'),
       unified: document.getElementById('view-unified'),
+      coil: document.getElementById('view-coil'),
       pocket: document.getElementById('view-pocket'),
       pensieve: document.getElementById('view-pensieve'),
       mail: document.getElementById('view-mail'),
@@ -420,6 +431,7 @@
     tabs.orbit.addEventListener('click', () => activate('orbit'));
     tabs.flags.addEventListener('click', () => activate('flags'));
     tabs.unified.addEventListener('click', () => activate('unified'));
+    tabs.coil.addEventListener('click', () => activate('coil'));
     tabs.pocket.addEventListener('click', () => activate('pocket'));
     tabs.pensieve.addEventListener('click', () => activate('pensieve'));
     tabs.mail.addEventListener('click', () => activate('mail'));

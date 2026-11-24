@@ -62,6 +62,17 @@
   to = "/happybearlandia_pocket.html"
   status = 200
 
+# The Long Coil: technology from 3.3 million BCE, one loop per century, projected to 2036.
+[[redirects]]
+  from = "/coil"
+  to = "/long_coil.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/coil"
+  to = "/long_coil.html"
+  status = 200
+
 [[redirects]]
   from = "/embed/world-plan"
   to = "/world_plan_simulator.html"
