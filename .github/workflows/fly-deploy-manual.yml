@@ -94,8 +94,10 @@ jobs:
                 if(after.proposalCount<before.proposalCount)process.exit(2);
                 console.log("Fly health OK, proposalCount before="+before.proposalCount+", after="+after.proposalCount);
               ' "$RUNNER_TEMP/helios-health-before.json" "$RUNNER_TEMP/helios-health-after.json"; then
-                if curl --fail --silent --show-error --max-time 15 https://helios-ai-laws.fly.dev/heliosai-particle-interface.html | grep -Fq 'id="local-guard-opt-in"' &&
-                   curl --fail --silent --show-error --max-time 15 https://helios-ai-laws.fly.dev/welcome.html | grep -Fq 'Start here'; then
+                if curl --fail --silent --show-error --max-time 15 https://helios-ai-laws.fly.dev/heliosai-particle-interface.html -o "$RUNNER_TEMP/helios-particle-live.html" &&
+                   curl --fail --silent --show-error --max-time 15 https://helios-ai-laws.fly.dev/welcome.html -o "$RUNNER_TEMP/helios-welcome-live.html" &&
+                   grep -Fq 'id="local-guard-opt-in"' "$RUNNER_TEMP/helios-particle-live.html" &&
+                   grep -Fq 'Start here' "$RUNNER_TEMP/helios-welcome-live.html"; then
                   echo "VERIFIED: latest Fly UI, welcome page, healthy database, and original volume."
                   exit 0
                 fi
