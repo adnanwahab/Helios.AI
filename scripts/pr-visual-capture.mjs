@@ -216,7 +216,7 @@ try {
     for(const [id,name] of [['city','city'],['decisions','branches'],['outcomes','street']]){
       if(id==='outcomes')await page.locator('.world').nth(36).click();
       await page.locator('nav a[href="#'+id+'"]').click();
-      await page.waitForFunction(id=>Math.abs(document.getElementById(id).getBoundingClientRect().top-56)<4,id);
+      await page.waitForFunction(id=>{const stage=document.querySelector('#'+id+' .stage');if(!stage)return false;const r=stage.getBoundingClientRect();return r.top>=-2&&r.top<=58&&r.bottom>=innerHeight-5;},id);
       await page.screenshot({path:join(output,'futures-'+name+'.png'),animations:'disabled'});
     }
     await page.setViewportSize({width:390,height:844});
