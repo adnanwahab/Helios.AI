@@ -53,9 +53,11 @@ Helios AI is a civic tool that reads what everyone in a community says they need
 - `helios_hippie_landing.html` — HeliosAI hippie-style landing page ("8 billion people, one big circle")
 - `helios_fork.html` — Fork Helios page with GitHub fork button, setup instructions and static preview (`/embed/fork`)
 - `world_plan_simulator.html` — World Plan Simulator: a synthetic year of daily journal pages from 8.2 billion people, turned into needs, a plan and a regional vote (served at `/embed/world-plan`)
+- `eight_billion_map.html` — Eight billion people, five laws: a deck.gl map that gives each person one response per law, with area shading and a sample of individual dots (served at `/eight-billion`). Laws, population and thoughts are synthetic placeholders, not polling data.
 - `helios_100_frontend_demo.html` — 100 Shared Goals demo, with estimated arrival dates for each goal ([assumptions](docs/arrival-estimates.md))
 - `heliosai_acts_orbit.html` — Acts in Orbit: all 111 HELIOSAI acts in one list, with a draft Universal Basic Income Act at #1, as a three.js solar system and D3 circle-pack, ranked by importance or shuffled (served at `/embed/orbit`)
 - `support_every_country.html` — Support Every Country: all 195 flags (the 193 UN members plus Vatican City and Palestine) waving one at a time under "Support <country>", with a custom message, seconds per flag, region filter, shuffle and a searchable wall of every flag (served at `/flags` and `/embed/flags`; images in `public/flags/`)
+- `neighborhood_consensus.html` — Neighborhood Consensus: a liquid 3D surface of how support for a local proposal spreads across a neighborhood, by blocks from the site and by week, with a cooperation view, a replayable sweep and five linked charts (map, time, turnout, across-blocks, all proposals). Sample ballots for a made-up neighborhood, not real votes; you can paste your own ([docs](docs/neighborhood-consensus.md); served at `/consensus` and `/embed/consensus`)
 - `helios_notion_preview.html` — the plan as a Notion document, synced through the Notion API ([docs](docs/notion.md))
 - `helios-unified.html` — Helios Unified (Universe · Communal Science Lab · Futures)
 - `communal_science_lab_webgpu (1).html` — the Communal Science Lab (WebGPU)
@@ -265,7 +267,6 @@ see everyone elses vote using deckgl map
 # happy bear landia has 2 responsiblities
 1. visualize constitution of each country / city
 2. simulate how edits to that document would affect simulation behavior
-
 ## MorphLab · WebGPU particle studio
 
 The Helios dashboard includes **MorphLab · WebGPU** (`/morphlab.html`): type a prompt and morph a glowing particle cloud into a procedural 3D sculpture, or drag in an uncompressed GLB model. OpenAI-powered shape recipes use a server-side, explicitly enabled API and fall back to local presets when unconfigured. See [MorphLab setup and security](docs/morphlab.md).

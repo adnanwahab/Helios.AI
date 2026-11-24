@@ -20,6 +20,7 @@ const demos = [
   'helios_100_frontend_demo.html',
   'heliosai_acts_orbit.html',
   'helios-unified.html',
+  'neighborhood_consensus.html',
   'communal_science_lab_webgpu (1).html',
   'health_wealth_of_nations.html',
   'heliosai-particle-interface.html',
@@ -69,6 +70,7 @@ replaceRequired('src="/embed/dynamicland"', 'src="./communal_science_lab_webgpu%
 replaceRequired('src="/embed/morphlab"', 'src="./morphlab.html"');
 replaceRequired('src="/embed/mail"', 'src="./helios_mail.html"');
 replaceRequired('src="/embed/rainbow-brain"', 'src="./rainbow_brain.html"');
+replaceRequired('src="/embed/consensus"', 'src="./neighborhood_consensus.html"');
 replaceRequired('src="/proxy/ycr/"', 'src="./pages-ycr.html"');
 
 // Email signup and shared proposal writes need the Bun backend. Do not

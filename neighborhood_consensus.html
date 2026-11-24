@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neighborhood Consensus · Helios</title>
+<meta name="description" content="How support for a local proposal spreads across a neighborhood, week by week: a liquid 3D surface plus five linked charts. Sample ballots for a made-up neighborhood, not real votes.">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: a trading-desk readout turned civic: exact, quiet, nocturnal.
+   IDEA: an options vol surface where the liquid is neighborhood consensus.
+   PICTURE: one glossy WebGL surface, yes % over blocks-from-site x weeks of voting.
+   COLOUR and TYPE: black ground, cream > orange > magenta > violet > indigo ramp, white rules; JetBrains Mono.
+   LAYOUT: ballot table left, surface fills the stage, colour bar right; stacks below 900px. */
+:root{color-scheme:dark;--bg:#000;--ink:#eceaf2;--mute:#827e8d;--dim:#55515e;--rule:#1d1b22;--hi:rgba(170,30,140,.46);--hi2:rgba(170,30,140,.24);--neg:#ff6f61;--pos:#f8b48d}
+:root[data-theme=light],:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font:13px/1.45 "JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow-x:clip}
+button{font:inherit;color:inherit}
+.app{display:grid;grid-template-columns:300px minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);height:100vh;height:100dvh;min-height:620px}
+.bar{grid-column:1/-1;padding:7px 14px;text-align:center;font-size:12px;color:#9a97a5;background:#0c0b10;border-bottom:1px solid var(--rule);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.panel{padding:16px 14px 18px;border-right:1px solid var(--rule);overflow:auto}
+.ph b{display:block;font-size:13px;letter-spacing:.02em}
+.ph span{display:block;color:var(--mute);font-size:12px;margin-top:2px}
+.props{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:14px 0 8px}
+.props button,.seg button,.act{min-height:36px;padding:6px 10px;background:#0c0b10;border:1px solid #2a2730;border-radius:4px;color:#bdb9c8;font-size:12px;cursor:pointer;letter-spacing:.02em}
+.props button:hover,.seg button:hover,.act:hover{border-color:#4a4552;color:#fff}
+.props button[aria-pressed=true],.seg button[aria-pressed=true],.act[aria-pressed=true]{background:#1f0a1c;border-color:#b02392;color:#fff}
+.seg button:disabled,.act:disabled{opacity:.35;cursor:not-allowed}
+button:focus-visible,canvas:focus-visible,summary:focus-visible,textarea:focus-visible,tr:focus-visible{outline:2px solid #f39bd6;outline-offset:2px}
+.tbl{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;margin-top:6px}
+.tbl th{font-weight:400;font-size:11.5px;color:var(--mute);text-align:right;padding:8px 4px 7px;border-bottom:1px solid var(--rule);white-space:nowrap}
+.tbl td{text-align:right;padding:5px 4px;white-space:nowrap}
+.tbl th:first-child,.tbl td:first-child{text-align:left;padding-left:6px}
+.tbl td:first-child,.tbl td.y{font-weight:700}
+.tbl td.wk{color:var(--mute)}
+.tbl td.neg{color:var(--neg)}.tbl td.pos{color:var(--pos)}
+.tbl tbody tr{cursor:pointer}
+.tbl tbody tr:hover td{background:rgba(255,255,255,.05)}
+.tbl tr.sw td{background:var(--hi2)}
+.tbl tr.sel td{background:var(--hi)}
+.note{color:var(--dim);font-size:11.5px;margin:8px 0 0 6px}
+.stats{margin:14px 0 0;padding:12px 0 0 6px;border-top:1px solid var(--rule);display:grid;grid-template-columns:auto minmax(0,1fr);gap:5px 10px}
+.stats dt{color:var(--mute)}
+.stats dd{margin:0;text-align:right;font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
+.stats dd.flash{animation:fl .7s ease-out}
+@keyframes fl{from{color:#ff8fd2}to{color:var(--ink)}}
+.own{margin-top:16px;border-top:1px solid var(--rule);padding-top:8px}
+.own summary{cursor:pointer;color:#c9c5d3;min-height:36px;display:flex;align-items:center;gap:8px}
+.own p{color:var(--mute);font-size:12px;margin:4px 0 8px}
+.own textarea{width:100%;min-height:130px;background:#09080c;color:var(--ink);border:1px solid #2a2730;border-radius:4px;font-family:inherit;font-size:12px;line-height:1.4;padding:8px;resize:vertical}
+.own .row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
+.msg{font-size:12px;color:var(--mute)}.msg.err{color:var(--neg)}
+.stage{position:relative;overflow:hidden;min-height:0;background:#000}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y;cursor:grab;outline:none}
+.stage canvas.drag{cursor:grabbing}
+#ov{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:2}
+.lyr{position:absolute;inset:0;pointer-events:none;z-index:2}
+.head{position:absolute;left:24px;top:16px;z-index:4;max-width:calc(100% - 150px);pointer-events:none}
+.title{font-size:17px;font-weight:700;letter-spacing:.01em}
+.sub{color:var(--mute);margin-top:3px}
+.ctrls{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;pointer-events:auto}
+.seg{display:inline-flex}
+.seg button{border-radius:0}.seg button:first-child{border-radius:4px 0 0 4px}.seg button:last-child{border-radius:0 4px 4px 0;margin-left:-1px}
+.act{display:inline-flex;align-items:center;gap:7px}
+.act svg{display:block}
+.act .dot{width:7px;height:7px;border-radius:50%;background:#58545f}
+.act[aria-pressed=true] .dot{background:#ff4fb8;box-shadow:0 0 8px #ff4fb8}
+.ax{position:absolute;left:0;top:0;font-size:12px;color:#d6d3de;white-space:nowrap;font-variant-numeric:tabular-nums}
+.ax.t{font-weight:700;color:#fff;letter-spacing:.06em}
+.pin{position:absolute;left:0;top:0;display:none;background:#000;border:1px solid rgba(255,255,255,.92);padding:2px 7px;font-size:12px;white-space:nowrap;color:#fff;font-variant-numeric:tabular-nums}
+.pin.tip{line-height:1.4;padding:4px 8px;border-color:rgba(255,255,255,.8)}
+.pin .m{color:#aaa6b5}
+.hint{position:absolute;left:24px;bottom:10px;font-size:11.5px;color:var(--dim);z-index:3;pointer-events:none;max-width:calc(100% - 120px)}
+.cbar{position:absolute;right:36px;top:60px;bottom:34px;width:12px;z-index:3;pointer-events:none}
+.cbar .g{position:absolute;inset:0;border-radius:1px;background:linear-gradient(to top,var(--stops))}
+.cbar .tk{position:absolute;top:calc((1 - var(--p)) * 100%);right:calc(100% + 9px);transform:translateY(-50%);font-size:12px;color:#cfccd6;white-space:nowrap;font-variant-numeric:tabular-nums}
+.cbar .tk.key{color:#fff;font-weight:700}
+.cbar .tk.key::after{content:"";position:absolute;left:calc(100% + 3px);top:50%;width:24px;height:1px;background:#fff}
+.cbar .mk{position:absolute;top:calc((1 - var(--p)) * 100%);left:100%;margin-left:3px;transform:translateY(-50%);display:none;line-height:0}
+.cbar .mk::before{content:"";position:absolute;right:100%;top:50%;width:16px;height:1px;background:#fff}
+.fallback{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--mute);padding:24px;z-index:5}
+.more{border-top:1px solid var(--rule);padding:clamp(28px,4vw,52px) max(3vw,16px) 64px}
+.more-h{max-width:1240px;margin:0 auto 18px}
+.more-h h2{font-size:clamp(20px,2.4vw,28px);line-height:1.15;margin:0 0 6px;text-wrap:balance}
+.more-h p{margin:0;color:var(--mute)}
+.more-h #moreNow{color:#d9d6e0;margin-top:4px}
+.cards{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+.card{background:#060509;border:1px solid var(--rule);border-radius:6px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:7px}
+#cMap{grid-row:span 2}
+.card h3{margin:0;font-size:15px;line-height:1.35;text-wrap:balance}
+.card .cap{margin:0;color:var(--mute);font-size:12.5px}
+.read{font-size:12.5px;color:#d9d6e0;min-height:1.45em;font-variant-numeric:tabular-nums}
+.vfig{position:relative;height:250px;touch-action:pan-y}
+.vfig.sm{height:62px}
+.vfig svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;cursor:crosshair}
+.vfig.race svg{cursor:default}
+.vfig text{font-family:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;font-size:12px;fill:#d6d3de}
+.vfig .tk{fill:#7f7b8a;font-size:11.5px}
+.vfig .kl{fill:#fff;font-weight:700;font-size:11.5px}
+.vfig .ln{fill:none;stroke-linejoin:round;stroke-linecap:round}
+.race g[data-i]{cursor:pointer;outline:none}
+.race g[data-i]:focus-visible rect{stroke:#f39bd6;stroke-width:2}
+.mapw{position:relative;width:100%;max-width:540px;margin:2px auto 0;aspect-ratio:1/1;touch-action:pan-y}
+.mapw canvas{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair}
+.mtip{position:absolute;left:0;top:0;display:none;background:#000;border:1px solid rgba(255,255,255,.85);padding:3px 8px;font-size:12px;line-height:1.4;white-space:nowrap;pointer-events:none;z-index:2}
+.mtip .m,.read .m{color:#aaa6b5}
+.leg{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mute);max-width:540px;width:100%;margin:0 auto}
+.leg i{flex:1;height:8px;border-radius:1px;background:linear-gradient(to right,var(--stops))}
+.mrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;max-width:540px;width:100%;margin:0 auto}
+.mrow input[type=range]{flex:1 1 150px;accent-color:#c22a9c;min-height:36px;margin:0}
+.fun{display:grid;gap:12px;margin-top:4px}
+.fr{display:grid;gap:5px}
+.fh{display:flex;gap:10px;align-items:baseline}
+.fh span{flex:1;color:#d9d6e0}
+.fh b{font-variant-numeric:tabular-nums}
+.fh em{font-style:normal;color:var(--mute);font-size:12px;min-width:8.5em;text-align:right;white-space:nowrap}
+.fb{height:12px;background:#141218;border-radius:2px;overflow:hidden}
+.fb i{display:block;height:100%;background:#d6cfee;border-radius:2px;transition:width .35s ease}
+@media (prefers-reduced-motion:reduce){.fb i{transition:none}}
+@media (max-width:899px){
+  .cards{grid-template-columns:minmax(0,1fr)}
+  #cMap{grid-row:auto}
+  .app{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto;height:auto;min-height:0}
+  .stage{order:1;height:clamp(540px,calc(48vw + 260px),760px)}
+  .panel{order:2;border-right:0;border-top:1px solid var(--rule)}
+}
+@media (max-width:600px){
+  .bar{white-space:normal;line-height:1.35}
+  .head{left:14px;top:12px;max-width:calc(100% - 28px)}
+  .title{font-size:15px}
+  .cbar{left:16px;right:16px;top:auto;bottom:60px;width:auto;height:8px}
+  .cbar .g{background:linear-gradient(to right,var(--stops))}
+  .cbar .tk{top:calc(100% + 4px);right:auto;left:calc(var(--p) * 100%);transform:translateX(-50%);font-size:11px}
+  .cbar .tk.key{top:auto;bottom:calc(100% + 5px)}
+  .cbar .tk.key.k0{transform:translateX(-100%)}
+  .cbar .tk.key.k1{transform:none}
+  .cbar .tk.key::after{left:auto;right:0;top:100%;width:1px;height:17px}
+  .cbar .tk.key.k1::after{right:auto;left:0}
+  .cbar .mk{top:100%;left:calc(var(--p) * 100%);margin:2px 0 0;transform:translateX(-50%) rotate(90deg)}
+  .hint{left:14px;max-width:calc(100% - 28px)}
+  .props button,.seg button,.act{padding:6px 8px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="bar">helios · neighborhood consensus · sample ballots for a made-up neighborhood, not real votes</div>
+  <aside class="panel" aria-label="Ballots by round">
+    <div class="ph"><b id="pTitle">5TH &amp; ELM · COMMUNITY GARDEN</b><span id="pSub">ballots · smoothed by block &amp; week</span></div>
+    <div class="props" id="props" role="group" aria-label="Proposal"></div>
+    <table class="tbl" id="tbl">
+      <thead><tr><th>ROUND</th><th>WK</th><th id="hY">YES %</th><th>NEAR–FAR</th><th id="hN">VOTES</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="note" id="note">Sample data for a made-up neighborhood. Tap a row to pin that week.</p>
+    <dl class="stats" id="stats"></dl>
+    <details class="own">
+      <summary>Use your own ballots</summary>
+      <p>Paste JSON: ballots per block (1–40 from the site) and week (1–30). Add residents per block to turn on cooperation, and a start date for real dates. Pasted ballots stay in this browser tab; nothing is sent or saved.</p>
+      <textarea id="ownTxt" spellcheck="false" aria-label="Ballot JSON" placeholder='{"title":"Dog park","site":"Oak Hollow","start":"2026-05-03","residents":[60,90],"ballots":[{"block":1,"week":1,"yes":9,"no":3}]}'></textarea>
+      <div class="row"><button class="act" id="ownGo" type="button">Render</button><button class="act" id="ownEx" type="button">Fill with sample</button><span class="msg" id="ownMsg" role="status"></span></div>
+    </details>
+  </aside>
+  <main class="stage" id="stage">
+    <canvas id="gl" tabindex="0" aria-label="3D surface of the yes-vote share by blocks from the site and by week. The table lists each round."></canvas>
+    <svg id="ov" aria-hidden="true"></svg>
+    <div class="lyr" id="lyr" aria-hidden="true"></div>
+    <div class="head" id="head">
+      <div class="title" id="title">GARDEN · yes(b, w) · 40 × 30 grid</div>
+      <div class="sub" id="sub">near–far · drift</div>
+      <div class="ctrls">
+        <div class="seg" role="group" aria-label="Measure"><button type="button" id="mVote" aria-pressed="true">VOTE</button><button type="button" id="mCoop" aria-pressed="false">COOPERATION</button></div>
+        <button class="act" type="button" id="bReplay"><svg width="9" height="10" viewBox="0 0 9 10" aria-hidden="true"><path d="M0 0l9 5-9 5z" fill="currentColor"/></svg>REPLAY</button>
+        <button class="act" type="button" id="bLive" aria-pressed="false"><span class="dot"></span>SIMULATE</button>
+        <button class="act" type="button" id="bMore">MORE VIEWS ↓</button>
+      </div>
+    </div>
+    <div class="cbar" id="cbar" aria-hidden="true">
+      <div class="g" id="cbg"></div>
+      <div class="mk" id="mkH"><svg width="10" height="12" viewBox="0 0 10 12"><path d="M10 0L0 6l10 6z" fill="#fff"/></svg></div>
+      <div class="mk" id="mkY"><svg width="10" height="12" viewBox="0 0 10 12"><path d="M9.4 1L1 6l8.4 5z" fill="#000" stroke="#fff" stroke-width="1.2"/></svg></div>
+    </div>
+    <div class="hint" id="hint">drag to orbit · ctrl + scroll to zoom · click the surface to set your block · double-click resets</div>
+  </main>
+</div>
+<section class="more" id="more" aria-label="More views">
+  <div class="more-h">
+    <h2>Five more views of the same ballots</h2>
+    <p>Each one follows the proposal, measure, week and block you pick, here or in the 3D view above.</p>
+    <p id="moreNow"></p>
+  </div>
+  <div class="cards">
+    <article class="card" id="cMap">
+      <h3 id="mapT">Neighborhood map</h3>
+      <p class="cap">Each square is a city block, colored by the share for its ring around the site (the white square). Ballots are counted by distance, so a ring shares one value. Bright circle: the 50% line. Dashed: your block's ring.</p>
+      <div class="mapw" id="mapw"><canvas id="map" role="img" aria-label="Map of blocks around the site colored by share"></canvas><div class="mtip" id="mtip"></div></div>
+      <div class="leg"><span id="legLo">30%</span><i></i><span id="legHi">100%</span></div>
+      <div class="mrow"><button class="act" type="button" id="mapPlay" aria-pressed="false"></button><input type="range" id="mapWk" min="1" max="30" value="5" aria-label="Week"><span class="read" id="mapRead"></span></div>
+    </article>
+    <article class="card" id="cTime">
+      <h3 id="timeT">Share by week</h3>
+      <p class="cap">Solid: everyone. Dashed: blocks 1–10 from the site. Dotted: blocks 31–40. Click a week to pin it.</p>
+      <div class="read" id="timeRead"></div>
+      <div class="vfig" id="fTime"><svg role="img" aria-label="Share by week"></svg></div>
+      <div class="vfig sm" id="fBal"><svg role="img" aria-label="Count per week"></svg></div>
+    </article>
+    <article class="card" id="cFun">
+      <h3 id="funT">Who took part</h3>
+      <p class="cap">Pitched in means voted, volunteered or came to a meeting. Follows the pinned week.</p>
+      <div class="fun" id="fun"></div>
+    </article>
+    <article class="card" id="cSlice">
+      <h3 id="sliceT">Share across blocks</h3>
+      <p class="cap">Lines: the smoothed share across blocks for the first week, the pinned week and now. Dots: raw tallies for the pinned week, bigger means more people. Click to set your block.</p>
+      <div class="read" id="sliceRead"></div>
+      <div class="vfig" id="fSlice"><svg role="img" aria-label="Share across blocks"></svg></div>
+    </article>
+    <article class="card" id="cRace">
+      <h3 id="raceT">All proposals</h3>
+      <p class="cap">Hollow dot: first week. Filled dot: now, colored like the surface. Click a row to open that proposal.</p>
+      <div class="vfig race" id="fRace"><svg role="img" aria-label="All proposals, first week to now"></svg></div>
+    </article>
+  </div>
+</section>
+<script>
+{
+const $ = s => document.querySelector(s);
+const stage = $('#stage'), cv = $('#gl'), lyr = $('#lyr'), ov = $('#ov'), cbar = $('#cbar'), tbody = $('#tbl tbody');
+const NX = 40, NT = 30, SUB = 4, NXF = (NX - 1) * SUB + 1, NTF = (NT - 1) * SUB + 1, NF = NXF * NTF, NC = NX * NT;
+const ZD = 0.8, HY = 0.92, LIFT = 0.006, AZ0 = 24, EL0 = 27;
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const COARSE = matchMedia('(pointer: coarse)').matches;
+const DAY = 864e5, MON = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+const ROUND_W = [1, 2, 3, 4, 5, 7, 9, 13, 18, 24, 30];
+const hintText = COARSE ? 'drag sideways to orbit · tap the surface to set your block' : 'drag to orbit · ctrl + scroll to zoom · click the surface to set your block · double-click resets';
+const SMV = [2.3, 1.7], SMC = [2.0, 1.5]; // smoothing bandwidths (blocks, weeks)
+
+/* ---------- helpers ---------- */
+const clamp = (x, a, b) => x < a ? a : x > b ? b : x;
+const sstep = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+const logi = x => 1 / (1 + Math.exp(-x));
+const gau = (x, m, s) => Math.exp(-(((x - m) / s) ** 2));
+const eob = t => { const s = 1.35, u = t - 1; return 1 + (s + 1) * u * u * u + s * u * u; };
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const int = x => Math.round(x).toLocaleString('en-US');
+const sgn1 = x => (x >= 0 ? '+' : '-') + Math.abs(x).toFixed(1);
+const sgn2 = x => (x >= 0 ? '+' : '-') + Math.abs(x).toFixed(2);
+const xB = b => -1 + 2 * (b - 1) / (NX - 1);
+const zW = w => ZD - 2 * ZD * (w - 1) / (NT - 1);
+function rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function nrm(r) { let u = 0; while (!u) u = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * r()); }
+function bin(r, n, p) { n = Math.round(n); if (n <= 0) return 0; if (n < 40) { let k = 0; for (let i = 0; i < n; i++) if (r() < p) k++; return k; } return clamp(Math.round(n * p + nrm(r) * Math.sqrt(n * p * (1 - p))), 0, n); }
+const dAt = (P, w) => new Date(P.start + (w - 1) * 7 * DAY);
+const wName = (P, w) => { if (P.start == null) return 'W' + w; const d = dAt(P, w); return String(d.getUTCDate()).padStart(2, '0') + ' ' + MON[d.getUTCMonth()]; };
+const wTag = (P, w) => { if (P.start == null) return 'W' + String(w).padStart(2, '0'); const d = dAt(P, w); return String(d.getUTCDate()).padStart(2, '0') + MON[d.getUTCMonth()] + String(d.getUTCFullYear()).slice(2); };
+
+/* ---------- colour ramp (sampled from the reference, lightness rises steadily) ---------- */
+const STOPS = [[0,[20,10,62]],[.114,[31,25,111]],[.2,[38,45,169]],[.257,[58,58,212]],[.286,[80,62,236]],[.329,[118,56,245]],[.386,[163,46,238]],[.443,[203,34,226]],[.5,[234,30,202]],[.529,[247,58,180]],[.571,[250,98,170]],[.629,[249,140,164]],[.686,[248,150,142]],[.757,[252,160,104]],[.857,[253,176,120]],[1,[253,212,178]]];
+function ramp(p) { p = clamp(p, 0, 1); let i = 1; while (i < STOPS.length - 1 && STOPS[i][0] < p) i++; const [p0, c0] = STOPS[i - 1], [p1, c1] = STOPS[i], t = (p - p0) / ((p1 - p0) || 1); return c0.map((c, k) => c + (c1[k] - c) * t); }
+
+/* ---------- measures ---------- */
+const MET = {
+  vote: { fn: 'yes', head: 'YES %', cnt: 'VOTES', axis: 'YES %', lo: 30, hi: 100, cl: 30, ch: 100, step: 10, keys: [[50, 'majority'], [200 / 3, '2/3']], word: 'yes', unit: 'ballots' },
+  coop: { fn: 'coop', head: 'IN %', cnt: 'PEOPLE', axis: 'PITCHED IN %', lo: 0, hi: 80, cl: 0, ch: 80, step: 20, keys: [[25, '1/4'], [50, '1/2']], word: 'pitched in', unit: 'neighbors' }
+};
+
+/* ---------- sample neighborhood: residents grow with distance (rings get bigger) ---------- */
+const RES = Array.from({ length: NX }, (_, b) => Math.round(40 + 26 * (b + 0.5)));
+const wf = w => 1 + 0.3 * gau(w, 9, 1.4) + 0.2 * gau(w, 21, 1.7); // town-meeting weeks lift turnout
+const START = Date.UTC(2026, 4, 3);
+const MODELS = [
+  { id: 'garden', tab: 'GARDEN', name: 'COMMUNITY GARDEN', site: '5TH & ELM', vol: '212 / 14', seed: 11,
+    yes: (u, v) => { const near = 99 - 5 * v, val = 41 + 12 * v ** 0.8, far = 51 + 7 * v, s = logi((u - 0.3 - 0.12 * v) / (0.11 + 0.05 * v));
+      return near * (1 - s) + val * s + (far - val) * Math.max(0, (u - 0.7) / 0.3) ** 2 * s + 1.6 * Math.sin(7 * u + 3.1 * v) * (1 - 0.5 * v); },
+    coop: (u, v) => 5 + 3 * v + (41 + 22 * v ** 0.7) * Math.exp(-u / (0.16 + 0.24 * v)) + 13 * gau(u, 0.62, 0.07) * sstep(0.3, 0.55, v) },
+  { id: 'bike', tab: 'BIKE LANE', name: 'PROTECTED BIKE LANE', site: 'MAPLE AVE', vol: '164 / 9', seed: 23,
+    yes: (u, v) => 63 + 7 * v - (30 - 27 * v ** 1.15) * Math.exp(-u / 0.11) + 12 * gau(u, 0.3, 0.16) * (1 - 0.25 * v) - 4 * sstep(0.75, 1, u) * (1 - v) + 1.2 * Math.sin(9 * u - 4 * v),
+    coop: (u, v) => 6 + 6 * v + (46 + 14 * v) * Math.exp(-u / (0.1 + 0.14 * v)) + 6 * gau(u, 0.3, 0.12) * v },
+  { id: 'library', tab: 'LIBRARY', name: 'LATE LIBRARY HOURS', site: 'CENTRAL BRANCH', vol: '88 / 5', seed: 37,
+    yes: (u, v) => 72 + 12 * v ** 0.9 - 10 * u * (1 - 0.4 * v) + 2 * Math.sin(9 * u + 2 * v),
+    coop: (u, v) => 4 + 14 * v + 18 * Math.exp(-u / 0.25) * (0.4 + 0.6 * v) },
+  { id: 'housing', tab: 'HOUSING', name: 'MID-RISE HOMES', site: 'STATION SQ', vol: '301 / 22', seed: 41,
+    yes: (u, v) => { const s1 = logi((u - 0.18) / 0.07), s2 = logi((u - 0.55) / 0.12); return (32 + 15 * v) * (1 - s1) + s1 * ((49 + 14 * v) * (1 - s2) + (63 + 6 * v) * s2) + 1.4 * Math.sin(8 * u + 5 * v); },
+    coop: (u, v) => 7 + 8 * v + (51 + 12 * v) * Math.exp(-u / (0.12 + 0.2 * v)) }
+];
+
+function simulate(m) {
+  const r = rng(m.seed * 7919 + 17), n = new Float32Array(NC), y = new Float32Array(NC), a = new Float32Array(NC), R = new Float32Array(NC);
+  for (let w = 0; w < NT; w++) for (let b = 0; b < NX; b++) {
+    const u = b / (NX - 1), v = w / (NT - 1), k = w * NX + b;
+    const c = clamp(m.coop(u, v) * wf(w + 1), 1, 92) / 100, p = clamp(m.yes(u, v), 2, 99) / 100;
+    R[k] = RES[b]; a[k] = bin(r, RES[b], c); n[k] = bin(r, a[k], 0.85); y[k] = bin(r, n[k], p);
+  }
+  return { n, y, a, R };
+}
+
+/* local-linear smoothing: honest at the edges, weights saturate so far rings don't drown near ones */
+function llSmooth(num, den, sb, sw, R, n0, out, w0 = 0, w1 = NT - 1) {
+  out = out || new Float32Array(NC);
+  const kb = [], kw = [];
+  for (let d = -R; d <= R; d++) { kb.push(Math.exp(-0.5 * (d / sb) ** 2)); kw.push(Math.exp(-0.5 * (d / sw) ** 2)); }
+  let gS = 0, gW = 0;
+  for (let w = w0; w <= w1; w++) for (let b = 0; b < NX; b++) {
+    let S0 = 0, Sx = 0, Sy = 0, Sxx = 0, Syy = 0, Sxy = 0, T0 = 0, Tx = 0, Ty = 0, nc = 0;
+    for (let dw = -R; dw <= R; dw++) {
+      const ww = w + dw; if (ww < 0 || ww >= NT) continue;
+      for (let db = -R; db <= R; db++) {
+        const bb = b + db; if (bb < 0 || bb >= NX) continue;
+        const i = ww * NX + bb, d = den[i]; if (!(d > 0)) continue;
+        const W = kw[dw + R] * kb[db + R] * d / (d + n0), p = num[i] / d;
+        S0 += W; Sx += W * db; Sy += W * dw; Sxx += W * db * db; Syy += W * dw * dw; Sxy += W * db * dw; T0 += W * p; Tx += W * p * db; Ty += W * p * dw; nc++;
+      }
+    }
+    let est = NaN;
+    if (S0 > 0.35) {
+      const A = Sxx * Syy - Sxy * Sxy;
+      const det = S0 * A - Sx * (Sx * Syy - Sxy * Sy) + Sy * (Sx * Sxy - Sxx * Sy);
+      est = nc >= 6 && Math.abs(det) > 1e-7 * S0 * S0 * S0 ? (T0 * A - Sx * (Tx * Syy - Sxy * Ty) + Sy * (Tx * Sxy - Sxx * Ty)) / det : T0 / S0;
+      est = 0.8 * clamp(est, 0, 1) + 0.2 * (T0 / S0);
+      gS += est; gW++;
+    }
+    out[w * NX + b] = est * 100;
+  }
+  // cells with nothing in reach: a wide kernel over the whole grid, then the nearest week, then the mean
+  for (let w = w0; w <= w1; w++) for (let b = 0; b < NX; b++) {
+    const k = w * NX + b; if (Number.isFinite(out[k])) continue;
+    let sN = 0, sD = 0;
+    for (let ww = 0; ww < NT; ww++) {
+      const kw2 = Math.exp(-0.5 * ((ww - w) / 4) ** 2); if (kw2 < 1e-4) continue;
+      for (let bb = 0; bb < NX; bb++) { const i = ww * NX + bb, d = den[i]; if (!(d > 0)) continue; const K = kw2 * Math.exp(-0.5 * ((bb - b) / 6) ** 2) * d / (d + n0); sN += K * num[i] / d; sD += K; }
+    }
+    if (sD > 1e-12) out[k] = 100 * sN / sD;
+  }
+  const mean = gW ? 100 * gS / gW : 50;
+  for (let b = 0; b < NX; b++) for (let w = w0; w <= w1; w++) {
+    const k = w * NX + b; if (Number.isFinite(out[k])) continue;
+    let v = mean; for (let d = 1; d < NT; d++) { const a = w - d, c = w + d; if (a >= 0 && Number.isFinite(out[a * NX + b])) { v = out[a * NX + b]; break; } if (c < NT && Number.isFinite(out[c * NX + b])) { v = out[c * NX + b]; break; } }
+    out[k] = v;
+  }
+  return out;
+}
+
+function rounds(raw, m) {
+  const V = m === 'vote';
+  return ROUND_W.map(w => {
+    const k0 = (w - 1) * NX; let N = 0, Y = 0, nN = 0, nY = 0, fN = 0, fY = 0;
+    for (let b = 0; b < NX; b++) {
+      const den = V ? raw.n[k0 + b] : raw.R[k0 + b], num = V ? raw.y[k0 + b] : raw.a[k0 + b];
+      N += den; Y += num; if (b < 10) { nN += den; nY += num; } if (b >= 30) { fN += den; fY += num; }
+    }
+    return { w, all: N ? 100 * Y / N : NaN, nf: nN && fN ? 100 * nY / nN - 100 * fY / fN : NaN, cnt: V ? N : Y };
+  });
+}
+function weekAll(raw, m) {
+  const out = new Float32Array(NT), V = m === 'vote';
+  for (let w = 0; w < NT; w++) { let N = 0, Y = 0; for (let b = 0; b < NX; b++) { const k = w * NX + b; N += V ? raw.n[k] : raw.R[k]; Y += V ? raw.y[k] : raw.a[k]; } out[w] = N ? 100 * Y / N : NaN; }
+  return out;
+}
+function nearFar(raw, m) {
+  const V = m === 'vote', near = new Float32Array(NT), far = new Float32Array(NT);
+  for (let w = 0; w < NT; w++) {
+    let nN = 0, nY = 0, fN = 0, fY = 0;
+    for (let b = 0; b < NX; b++) { const k = w * NX + b, d = V ? raw.n[k] : raw.R[k], y = V ? raw.y[k] : raw.a[k]; if (b < 10) { nN += d; nY += y; } if (b >= 30) { fN += d; fY += y; } }
+    near[w] = nN ? 100 * nY / nN : NaN; far[w] = fN ? 100 * fY / fN : NaN;
+  }
+  return { near, far };
+}
+function refresh(P) {
+  P.rounds = { vote: rounds(P.raw, 'vote'), coop: P.raw.R ? rounds(P.raw, 'coop') : null };
+  P.all = { vote: weekAll(P.raw, 'vote'), coop: P.raw.R ? weekAll(P.raw, 'coop') : null };
+  let mv = 1, mc = 1; for (let k = 0; k < NC; k++) { mv = Math.max(mv, P.raw.n[k]); if (P.raw.a) mc = Math.max(mc, P.raw.a[k]); }
+  P.maxN = { vote: mv, coop: mc };
+  const T = { n: new Float32Array(NT), y: new Float32Array(NT), a: new Float32Array(NT), R: new Float32Array(NT) };
+  for (let w = 0; w < NT; w++) for (let b = 0; b < NX; b++) { const k = w * NX + b; T.n[w] += P.raw.n[k]; T.y[w] += P.raw.y[k]; if (P.raw.a) { T.a[w] += P.raw.a[k]; T.R[w] += P.raw.R[k]; } }
+  P.tot = T;
+  P.nf = { vote: nearFar(P.raw, 'vote'), coop: P.raw.R ? nearFar(P.raw, 'coop') : null };
+}
+function makeProp(meta, raw) {
+  const P = Object.assign({}, meta, { raw });
+  P.grid = { vote: llSmooth(raw.y, raw.n, SMV[0], SMV[1], 6, 12), coop: raw.R ? llSmooth(raw.a, raw.R, SMC[0], SMC[1], 6, 40) : null };
+  P.base = P.grid.vote.slice(); // frozen odds for the live simulation, so new ballots never feed back into their own odds
+  refresh(P);
+  return P;
+}
+const PROPS = MODELS.map(m => makeProp({ id: m.id, tab: m.tab, name: m.name, site: m.site, vol: m.vol, snap: '22 NOV 08:10 CST', start: START }, simulate(m)));
+
+/* ---------- state ---------- */
+const S = {
+  prop: 0, metric: 'vote', you: 16, sel: 5, hover: null, rowHover: null,
+  az: AZ0, el: EL0, zoom: 1, W: 1, H: 1, dpr: 1, sized: false, headR: null,
+  tN: new Float32Array(NC), tP: new Float32Array(NC), cN: new Float32Array(NC), cP: new Float32Array(NC),
+  morph: null, sweep: null, ripples: [], drops: [], live: false, lastLive: 0,
+  upDirty: true, gDirty: true, hadRip: false, dirty: true, inited: false, vp: null, inv: null, eye: [0, 0, 0], rowKey: ''
+};
+const cur = () => PROPS[S.prop];
+const dirty = () => { S.dirty = true; };
+
+/* ---------- WebGL ---------- */
+const gl = cv.getContext('webgl2', { antialias: true, alpha: false, premultipliedAlpha: false });
+let OK = !!gl;
+const SURF_VS = `#version 300 es
+precision highp float;
+layout(location=0) in vec2 aXZ; layout(location=1) in vec2 aUV; layout(location=2) in float aY;
+layout(location=3) in float aV; layout(location=4) in float aP; layout(location=5) in vec3 aN;
+uniform mat4 uVP;
+out vec3 vPos; out vec3 vN; out float vV; out float vP; out vec2 vUV;
+void main(){ vPos = vec3(aXZ.x, aY, aXZ.y); vN = aN; vV = aV; vP = aP; vUV = aUV; gl_Position = uVP * vec4(vPos, 1.0); }`;
+const SURF_FS = `#version 300 es
+precision highp float;
+in vec3 vPos; in vec3 vN; in float vV; in float vP; in vec2 vUV;
+uniform sampler2D uRamp; uniform vec3 uEye; uniform vec2 uCells; uniform vec2 uKeys; uniform vec2 uHov;
+out vec4 o;
+void main(){
+  vec3 base = texture(uRamp, vec2(clamp(vP, 0.002, 0.998), 0.5)).rgb;
+  vec3 N = normalize(vN); vec3 V = normalize(uEye - vPos); float back = 0.0;
+  if (dot(N, V) < 0.0) { N = -N; back = 1.0; }
+  vec3 L = normalize(vec3(-0.5, 0.9, 0.45));
+  float dif = max(dot(N, L), 0.0);
+  float sp = pow(max(dot(N, normalize(L + V)), 0.0), 36.0);
+  float fr = pow(1.0 - max(dot(N, V), 0.0), 4.0);
+  vec3 col = base * (0.6 + 0.48 * dif) + vec3(1.0, 0.95, 1.0) * sp * 0.12 + mix(base, vec3(1.0), 0.55) * fr * 0.18;
+  vec2 g = vUV * uCells; vec2 fw = fwidth(g);
+  vec2 a = abs(fract(g - 0.5) - 0.5) / max(fw, vec2(1e-4));
+  float ln = (1.0 - min(min(a.x, a.y), 1.0)) * (1.0 - smoothstep(0.35, 0.75, max(fw.x, fw.y)));
+  float lum = dot(col, vec3(0.299, 0.587, 0.114));
+  col += ln * (0.42 - lum) * 0.42;
+  float fv = max(fwidth(vV), 1e-6);
+  float k1 = 1.0 - smoothstep(0.6, 1.6, abs(vV - uKeys.x) / fv);
+  float k2 = 1.0 - smoothstep(0.6, 1.6, abs(vV - uKeys.y) / fv);
+  col = mix(col, vec3(1.0), min(k1 * 0.72 + k2 * 0.3, 1.0));
+  if (uHov.x >= 0.0) { float du = abs(vUV.x - uHov.x) * uCells.x; col = mix(col, col * 0.55 + vec3(0.5), (1.0 - smoothstep(0.3, 1.0, du)) * 0.32); }
+  col *= 1.0 - back * 0.45;
+  o = vec4(col, 1.0);
+}`;
+const FLOOR_VS = `#version 300 es
+precision highp float;
+layout(location=0) in vec2 aXZ; layout(location=3) in float aV; layout(location=4) in float aP;
+uniform mat4 uVP; out float vV; out float vP;
+void main(){ vV = aV; vP = aP; gl_Position = uVP * vec4(aXZ.x, 0.0, aXZ.y, 1.0); }`;
+const FLOOR_FS = `#version 300 es
+precision highp float;
+in float vV; in float vP;
+uniform sampler2D uRamp; uniform float uStep; uniform vec2 uKeys;
+out vec4 o;
+void main(){
+  vec3 base = texture(uRamp, vec2(clamp(vP, 0.002, 0.998), 0.5)).rgb;
+  float k = vV / uStep; float fk = max(fwidth(k), 0.012);
+  float c = 1.0 - min(abs(fract(k - 0.5) - 0.5) / fk, 1.0);
+  float fv = max(fwidth(vV), 1e-6);
+  float key = max(1.0 - smoothstep(0.5, 1.5, abs(vV - uKeys.x) / fv), 1.0 - smoothstep(0.5, 1.5, abs(vV - uKeys.y) / fv));
+  vec3 col = base * 0.12 + base * c * 0.72;
+  col = mix(col, vec3(0.93), key * 0.8);
+  o = vec4(col, 1.0);
+}`;
+const THIN_VS = `#version 300 es
+precision highp float;
+layout(location=0) in vec3 aPos; layout(location=1) in vec4 aCol;
+uniform mat4 uVP; out vec4 vCol;
+void main(){ vCol = aCol; gl_Position = uVP * vec4(aPos, 1.0); }`;
+const FLAT_FS = `#version 300 es
+precision highp float;
+in vec4 vCol; out vec4 o;
+void main(){ o = vCol; }`;
+const THICK_VS = `#version 300 es
+precision highp float;
+layout(location=0) in vec3 aA; layout(location=1) in vec3 aB; layout(location=2) in vec2 aSE; layout(location=3) in vec4 aCol; layout(location=4) in vec2 aWD;
+uniform mat4 uVP; uniform vec2 uRes;
+out vec4 vCol; out float vD;
+void main(){
+  vec4 ca = uVP * vec4(aA, 1.0), cb = uVP * vec4(aB, 1.0);
+  vec2 sa = ca.xy / ca.w * uRes * 0.5, sb = cb.xy / cb.w * uRes * 0.5;
+  vec2 d = sb - sa; float l = length(d); d = l > 1e-5 ? d / l : vec2(1.0, 0.0);
+  vec2 n = vec2(-d.y, d.x);
+  vec4 c = aSE.y < 0.5 ? ca : cb;
+  c.xy += n * aSE.x * aWD.x * 0.5 / (uRes * 0.5) * c.w;
+  gl_Position = c; vCol = aCol; vD = aWD.y;
+}`;
+const THICK_FS = `#version 300 es
+precision highp float;
+in vec4 vCol; in float vD; uniform float uDash; out vec4 o;
+void main(){ if (vD >= 0.0 && fract(vD * uDash) > 0.5) discard; o = vCol; }`;
+const PTS_VS = `#version 300 es
+precision highp float;
+layout(location=0) in vec3 aPos; layout(location=1) in float aSize; layout(location=2) in vec4 aCol;
+uniform mat4 uVP; out vec4 vCol;
+void main(){ gl_Position = uVP * vec4(aPos, 1.0); gl_PointSize = aSize; vCol = aCol; }`;
+const PTS_FS = `#version 300 es
+precision highp float;
+in vec4 vCol; out vec4 o;
+void main(){ vec2 p = gl_PointCoord * 2.0 - 1.0; float r = dot(p, p); if (r > 1.0) discard; o = vec4(vCol.rgb, vCol.a * (1.0 - smoothstep(0.55, 1.0, r))); }`;
+
+function compile(vs, fs) {
+  const p = gl.createProgram();
+  for (const [t, src] of [[gl.VERTEX_SHADER, vs], [gl.FRAGMENT_SHADER, fs]]) {
+    const s = gl.createShader(t); gl.shaderSource(s, src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+    gl.attachShader(p, s);
+  }
+  gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+  const u = {}, n = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS);
+  for (let i = 0; i < n; i++) { const info = gl.getActiveUniform(p, i); u[info.name] = gl.getUniformLocation(p, info.name); }
+  return { p, u };
+}
+let PS, PF, PT, PK, PP;
+if (OK) { try { PS = compile(SURF_VS, SURF_FS); PF = compile(FLOOR_VS, FLOOR_FS); PT = compile(THIN_VS, FLAT_FS); PK = compile(THICK_VS, THICK_FS); PP = compile(PTS_VS, PTS_FS); } catch (e) { console.error(e); OK = false; } }
+if (!OK) { const f = document.createElement('div'); f.className = 'fallback'; f.textContent = 'This view needs WebGL2, which this browser has turned off. The table still lists every round.'; stage.appendChild(f); }
+
+const XS = new Float32Array(NXF), ZS = new Float32Array(NTF);
+for (let i = 0; i < NXF; i++) XS[i] = -1 + 2 * i / (NXF - 1);
+for (let j = 0; j < NTF; j++) ZS[j] = ZD - 2 * ZD * j / (NTF - 1);
+const fN = new Float32Array(NF), fP = new Float32Array(NF), fY = new Float32Array(NF), tmpU = new Float32Array(NT * NXF), dyn = new Float32Array(NF * 6);
+let vaoS, bDyn, nIdx = 0, vaoT, bThin, nThin = 0, vaoK, bK, vaoP, bP, texRamp;
+let LB = new Float32Array(14 * 6 * 3000), LN = 0, PB = new Float32Array(8 * 2048), PN = 0;
+function attrib(loc, size, stride, off) { gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, size, gl.FLOAT, false, stride, off); }
+if (OK) {
+  const st = new Float32Array(NF * 4);
+  for (let j = 0; j < NTF; j++) for (let i = 0; i < NXF; i++) { const k = (j * NXF + i) * 4; st[k] = XS[i]; st[k + 1] = ZS[j]; st[k + 2] = i / (NXF - 1); st[k + 3] = j / (NTF - 1); }
+  const idx = new Uint16Array((NXF - 1) * (NTF - 1) * 6);
+  for (let j = 0; j < NTF - 1; j++) for (let i = 0; i < NXF - 1; i++) { const a = j * NXF + i, b = a + 1, c = a + NXF, d = c + 1; idx.set([a, c, b, b, c, d], nIdx); nIdx += 6; }
+  vaoS = gl.createVertexArray(); gl.bindVertexArray(vaoS);
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, st, gl.STATIC_DRAW);
+  attrib(0, 2, 16, 0); attrib(1, 2, 16, 8);
+  bDyn = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, bDyn); gl.bufferData(gl.ARRAY_BUFFER, dyn.byteLength, gl.DYNAMIC_DRAW);
+  attrib(2, 1, 24, 0); attrib(3, 1, 24, 4); attrib(4, 1, 24, 8); attrib(5, 3, 24, 12);
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, idx, gl.STATIC_DRAW);
+  vaoT = gl.createVertexArray(); gl.bindVertexArray(vaoT); bThin = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, bThin); attrib(0, 3, 28, 0); attrib(1, 4, 28, 12);
+  vaoK = gl.createVertexArray(); gl.bindVertexArray(vaoK); bK = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, bK); attrib(0, 3, 56, 0); attrib(1, 3, 56, 12); attrib(2, 2, 56, 24); attrib(3, 4, 56, 32); attrib(4, 2, 56, 48);
+  vaoP = gl.createVertexArray(); gl.bindVertexArray(vaoP); bP = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, bP); attrib(0, 3, 32, 0); attrib(1, 1, 32, 12); attrib(2, 4, 32, 16);
+  gl.bindVertexArray(null);
+  const rp = new Uint8Array(256 * 4);
+  for (let i = 0; i < 256; i++) { const c = ramp(i / 255); rp.set([c[0], c[1], c[2], 255].map(Math.round), i * 4); }
+  texRamp = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, texRamp);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, rp);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+}
+
+/* ---------- bicubic upsampling coarse -> fine ---------- */
+function cw(f, n) { const g = f / SUB; let i = Math.floor(g); if (i > n - 1) i = n - 1; const t = g - i, t2 = t * t, t3 = t2 * t; return [i, (-t3 + 2 * t2 - t) / 2, (3 * t3 - 5 * t2 + 2) / 2, (-3 * t3 + 4 * t2 + t) / 2, (t3 - t2) / 2]; }
+const UX = Array.from({ length: NXF }, (_, f) => cw(f, NX)), UT = Array.from({ length: NTF }, (_, f) => cw(f, NT));
+function upsample(src, dst) {
+  for (let w = 0; w < NT; w++) { const o = w * NX; for (let f = 0; f < NXF; f++) { const u = UX[f], i = u[0]; tmpU[w * NXF + f] = u[1] * src[o + Math.max(i - 1, 0)] + u[2] * src[o + i] + u[3] * src[o + Math.min(i + 1, NX - 1)] + u[4] * src[o + Math.min(i + 2, NX - 1)]; } }
+  for (let g = 0; g < NTF; g++) {
+    const u = UT[g], j = u[0], j0 = Math.max(j - 1, 0) * NXF, j1 = j * NXF, j2 = Math.min(j + 1, NT - 1) * NXF, j3 = Math.min(j + 2, NT - 1) * NXF, o = g * NXF;
+    for (let f = 0; f < NXF; f++) dst[o + f] = u[1] * tmpU[j0 + f] + u[2] * tmpU[j1 + f] + u[3] * tmpU[j2 + f] + u[4] * tmpU[j3 + f];
+  }
+}
+
+/* ---------- geometry: heights, ripples, normals ---------- */
+function geom(now) {
+  if (S.upDirty) { upsample(S.cN, fN); upsample(S.cP, fP); S.upDirty = false; S.gDirty = true; }
+  const rp = S.ripples;
+  if (!S.gDirty && !rp.length && !S.hadRip) return;
+  S.hadRip = rp.length > 0;
+  for (let j = 0; j < NTF; j++) {
+    const z = ZS[j];
+    for (let i = 0; i < NXF; i++) {
+      const k = j * NXF + i; let y = Math.max(0.002, Math.min(1.12, fN[k]) * HY);
+      for (const r of rp) {
+        const age = (now - r.t0) / 1000; if (age < 0) continue;
+        const dx = XS[i] - r.x, dz = z - r.z, d = Math.sqrt(dx * dx + dz * dz), q = d - 0.8 * age;
+        if ((q > 0.5 || q < -0.7) && d > 0.16) continue;
+        y += r.a * Math.exp(-age * 1.8) * (Math.exp(-((q / 0.15) ** 2)) * Math.sin(24 * q) - 1.4 * Math.exp(-((d / 0.07) ** 2)) * Math.exp(-age * 10));
+      }
+      fY[k] = y;
+    }
+  }
+  const dx = XS[1] - XS[0], dz = ZS[0] - ZS[1];
+  for (let j = 0; j < NTF; j++) for (let i = 0; i < NXF; i++) {
+    const k = j * NXF + i, l = i > 0 ? k - 1 : k, r = i < NXF - 1 ? k + 1 : k, f = j > 0 ? k - NXF : k, b = j < NTF - 1 ? k + NXF : k;
+    const sx = (fY[r] - fY[l]) / (dx * ((i > 0) + (i < NXF - 1))), sz = (fY[b] - fY[f]) / (dz * ((j > 0) + (j < NTF - 1)));
+    const L = 1 / Math.hypot(sx, 1, sz), o = k * 6;
+    dyn[o] = fY[k]; dyn[o + 1] = fN[k]; dyn[o + 2] = fP[k]; dyn[o + 3] = -sx * L; dyn[o + 4] = L; dyn[o + 5] = sz * L;
+  }
+  if (OK) { gl.bindBuffer(gl.ARRAY_BUFFER, bDyn); gl.bufferSubData(gl.ARRAY_BUFFER, 0, dyn); }
+  S.gDirty = false;
+}
+function bil(arr, gi, gj) {
+  gi = clamp(gi, 0, NXF - 1); gj = clamp(gj, 0, NTF - 1);
+  const i0 = Math.min(Math.floor(gi), NXF - 2), j0 = Math.min(Math.floor(gj), NTF - 2), ti = gi - i0, tj = gj - j0, k = j0 * NXF + i0;
+  return (arr[k] * (1 - ti) + arr[k + 1] * ti) * (1 - tj) + (arr[k + NXF] * (1 - ti) + arr[k + NXF + 1] * ti) * tj;
+}
+const gI = x => (x + 1) / 2 * (NXF - 1), gJ = z => (ZD - z) / (2 * ZD) * (NTF - 1);
+const hAt = (x, z) => bil(fY, gI(x), gJ(z));
+const yCell = (b, w) => fY[(w - 1) * SUB * NXF + (b - 1) * SUB];
+
+/* ---------- camera ---------- */
+function persp(f, a, n, fa) { const t = 1 / Math.tan(f / 2), nf = 1 / (n - fa); return [t / a, 0, 0, 0, 0, t, 0, 0, 0, 0, (fa + n) * nf, -1, 0, 0, 2 * fa * n * nf, 0]; }
+function lookAt(e, c) {
+  let zx = e[0] - c[0], zy = e[1] - c[1], zz = e[2] - c[2], l = Math.hypot(zx, zy, zz); zx /= l; zy /= l; zz /= l;
+  let xx = zz, xy = 0, xz = -zx; l = Math.hypot(xx, xz); xx /= l; xz /= l;
+  const yx = zy * xz - zz * xy, yy = zz * xx - zx * xz, yz = zx * xy - zy * xx;
+  return [xx, yx, zx, 0, xy, yy, zy, 0, xz, yz, zz, 0, -(xx * e[0] + xy * e[1] + xz * e[2]), -(yx * e[0] + yy * e[1] + yz * e[2]), -(zx * e[0] + zy * e[1] + zz * e[2]), 1];
+}
+function mul(a, b) { const o = new Array(16); for (let c = 0; c < 4; c++) for (let r = 0; r < 4; r++) { let s = 0; for (let k = 0; k < 4; k++) s += a[k * 4 + r] * b[c * 4 + k]; o[c * 4 + r] = s; } return o; }
+function inv(m) {
+  const [a00, a01, a02, a03, a10, a11, a12, a13, a20, a21, a22, a23, a30, a31, a32, a33] = m;
+  const b00 = a00 * a11 - a01 * a10, b01 = a00 * a12 - a02 * a10, b02 = a00 * a13 - a03 * a10, b03 = a01 * a12 - a02 * a11, b04 = a01 * a13 - a03 * a11, b05 = a02 * a13 - a03 * a12;
+  const b06 = a20 * a31 - a21 * a30, b07 = a20 * a32 - a22 * a30, b08 = a20 * a33 - a23 * a30, b09 = a21 * a32 - a22 * a31, b10 = a21 * a33 - a23 * a31, b11 = a22 * a33 - a23 * a32;
+  const d = 1 / (b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06);
+  return [(a11 * b11 - a12 * b10 + a13 * b09) * d, (a02 * b10 - a01 * b11 - a03 * b09) * d, (a31 * b05 - a32 * b04 + a33 * b03) * d, (a22 * b04 - a21 * b05 - a23 * b03) * d,
+    (a12 * b08 - a10 * b11 - a13 * b07) * d, (a00 * b11 - a02 * b08 + a03 * b07) * d, (a32 * b02 - a30 * b05 - a33 * b01) * d, (a20 * b05 - a22 * b02 + a23 * b01) * d,
+    (a10 * b10 - a11 * b08 + a13 * b06) * d, (a01 * b08 - a00 * b10 - a03 * b06) * d, (a30 * b04 - a31 * b02 + a33 * b00) * d, (a21 * b02 - a20 * b04 - a23 * b00) * d,
+    (a11 * b07 - a10 * b09 - a12 * b06) * d, (a00 * b09 - a01 * b07 + a02 * b06) * d, (a31 * b01 - a30 * b03 - a32 * b00) * d, (a20 * b03 - a21 * b01 + a22 * b00) * d];
+}
+const CORN = []; for (const x of [-1, 1]) for (const y of [0, HY]) for (const z of [-ZD, ZD]) CORN.push([x, y, z]);
+function bbox(m) {
+  let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+  for (const [x, y, z] of CORN) { const w = m[3] * x + m[7] * y + m[11] * z + m[15], px = (m[0] * x + m[4] * y + m[8] * z + m[12]) / w, py = (m[1] * x + m[5] * y + m[9] * z + m[13]) / w; x0 = Math.min(x0, px); x1 = Math.max(x1, px); y0 = Math.min(y0, py); y1 = Math.max(y1, py); }
+  return [x0, x1, y0, y1];
+}
+function camera() {
+  const W = S.W, H = S.H, az = S.az * Math.PI / 180, el = S.el * Math.PI / 180, tgt = [0, HY * 0.4, 0];
+  const P = persp(30 * Math.PI / 180, W / H, 0.1, 60);
+  const narrow = W < 600, hb = S.headR ? S.headR.bottom : 100;
+  const m = narrow ? { l: 30, r: 58, t: hb + 26, b: 142 } : W < 900 ? { l: 80, r: 150, t: Math.max(104, hb + 40), b: 58 } : { l: 84, r: 196, t: Math.max(104, hb + 40), b: 58 };
+  const L = m.l / W * 2 - 1, R = (W - m.r) / W * 2 - 1, T = 1 - m.t / H * 2, B = 1 - (H - m.b) / H * 2;
+  let dist = 4.2, VP0, eye, bx;
+  const at = d => { eye = [tgt[0] + d * Math.sin(az) * Math.cos(el), tgt[1] + d * Math.sin(el), tgt[2] + d * Math.cos(az) * Math.cos(el)]; VP0 = mul(P, lookAt(eye, tgt)); bx = bbox(VP0); };
+  for (let it = 0; it < 4; it++) { at(dist); dist /= Math.min((R - L) / (bx[1] - bx[0]), (T - B) / (bx[3] - bx[2])); }
+  at(dist * S.zoom);
+  const sx = (L + R) / 2 - (bx[0] + bx[1]) / 2, sy = (T + B) / 2 - (bx[2] + bx[3]) / 2;
+  S.vp = mul([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, sx, sy, 0, 1], VP0); S.inv = inv(S.vp); S.eye = eye;
+}
+function proj(x, y, z) { const m = S.vp, w = m[3] * x + m[7] * y + m[11] * z + m[15]; return [((m[0] * x + m[4] * y + m[8] * z + m[12]) / w * 0.5 + 0.5) * S.W, (0.5 - (m[1] * x + m[5] * y + m[9] * z + m[13]) / w * 0.5) * S.H]; }
+function unp(nx, ny, nz) { const m = S.inv, w = m[3] * nx + m[7] * ny + m[11] * nz + m[15]; return [(m[0] * nx + m[4] * ny + m[8] * nz + m[12]) / w, (m[1] * nx + m[5] * ny + m[9] * nz + m[13]) / w, (m[2] * nx + m[6] * ny + m[10] * nz + m[14]) / w]; }
+
+/* ---------- picking: march the ray against the height field ---------- */
+function pick(mx, my) {
+  if (!S.inv) return null;
+  const nx = mx / S.W * 2 - 1, ny = 1 - my / S.H * 2, a = unp(nx, ny, -1), e = unp(nx, ny, 1), d = [e[0] - a[0], e[1] - a[1], e[2] - a[2]];
+  const lo = [-1, 0, -ZD], hi = [1, HY * 1.15, ZD]; let t0 = 0, t1 = 1;
+  for (let k = 0; k < 3; k++) {
+    if (Math.abs(d[k]) < 1e-12) { if (a[k] < lo[k] || a[k] > hi[k]) return null; continue; }
+    let u0 = (lo[k] - a[k]) / d[k], u1 = (hi[k] - a[k]) / d[k]; if (u0 > u1) [u0, u1] = [u1, u0];
+    t0 = Math.max(t0, u0); t1 = Math.min(t1, u1); if (t0 > t1) return null;
+  }
+  const F = t => a[1] + d[1] * t - hAt(a[0] + d[0] * t, a[2] + d[2] * t);
+  const hit = t => { const x = a[0] + d[0] * t, z = a[2] + d[2] * t, gi = gI(x), gj = gJ(z), M = MET[S.metric]; return { x, z, b: 1 + gi / SUB, w: 1 + gj / SUB, v: M.lo + bil(fN, gi, gj) * (M.hi - M.lo) }; };
+  if (F(t0) <= 0) { if (d[1] >= 0) return null; const tf = -a[1] / d[1], x = a[0] + d[0] * tf, z = a[2] + d[2] * tf; if (x < -1 || x > 1 || z < -ZD || z > ZD) return null; const h = hit(tf); h.floor = true; return h; }
+  let prev = t0;
+  for (let i = 1; i <= 160; i++) {
+    const t = t0 + (t1 - t0) * i / 160;
+    if (F(t) <= 0) { let l = prev, r = t; for (let k = 0; k < 14; k++) { const mid = (l + r) / 2; if (F(mid) > 0) l = mid; else r = mid; } return hit((l + r) / 2); }
+    prev = t;
+  }
+  return null;
+}
+
+/* ---------- line + point batches ---------- */
+function put(ax, ay, az, bx, by, bz, s, e, r, g, b, a, w, d) { const o = LN * 14; LB[o] = ax; LB[o + 1] = ay; LB[o + 2] = az; LB[o + 3] = bx; LB[o + 4] = by; LB[o + 5] = bz; LB[o + 6] = s; LB[o + 7] = e; LB[o + 8] = r; LB[o + 9] = g; LB[o + 10] = b; LB[o + 11] = a; LB[o + 12] = w; LB[o + 13] = d; LN++; }
+function seg(ax, ay, az, bx, by, bz, r, g, b, a, w, da = -1, db = -1) {
+  if ((LN + 6) * 14 > LB.length) { const n = new Float32Array(LB.length * 2); n.set(LB); LB = n; }
+  const W = w * S.dpr;
+  put(ax, ay, az, bx, by, bz, -1, 0, r, g, b, a, W, da); put(ax, ay, az, bx, by, bz, 1, 0, r, g, b, a, W, da); put(ax, ay, az, bx, by, bz, 1, 1, r, g, b, a, W, db);
+  put(ax, ay, az, bx, by, bz, -1, 0, r, g, b, a, W, da); put(ax, ay, az, bx, by, bz, 1, 1, r, g, b, a, W, db); put(ax, ay, az, bx, by, bz, -1, 1, r, g, b, a, W, db);
+}
+function pt(x, y, z, s, r, g, b, a) { if ((PN + 1) * 8 > PB.length) { const n = new Float32Array(PB.length * 2); n.set(PB); PB = n; } const o = PN * 8; PB[o] = x; PB[o + 1] = y; PB[o + 2] = z; PB[o + 3] = s * S.dpr; PB[o + 4] = r; PB[o + 5] = g; PB[o + 6] = b; PB[o + 7] = a; PN++; }
+function rowLine(jf, lift, a, w) {
+  const j0 = clamp(Math.floor(jf), 0, NTF - 2), t = clamp(jf - j0, 0, 1), z = ZD - 2 * ZD * jf / (NTF - 1);
+  let py = 0;
+  for (let i = 0; i < NXF; i++) { const k = j0 * NXF + i, y = fY[k] * (1 - t) + fY[k + NXF] * t + lift; if (i) seg(XS[i - 1], py, z, XS[i], y, z, 1, 1, 1, a, w); py = y; }
+}
+function colLine(i, lift, a, w, dash) {
+  let py = 0, dist = 0;
+  for (let j = 0; j < NTF; j++) { const y = fY[j * NXF + i] + lift; if (j) { const l = Math.hypot(ZS[j - 1] - ZS[j], y - py); seg(XS[i], py, ZS[j - 1], XS[i], y, ZS[j], 1, 1, 1, a, w, dash ? dist : -1, dash ? dist + l : -1); dist += l; } py = y; }
+}
+const EDGES = [[-1, 0, ZD, 1, 0, ZD], [1, 0, ZD, 1, 0, -ZD], [1, 0, -ZD, -1, 0, -ZD], [-1, 0, -ZD, -1, 0, ZD], [-1, HY, -ZD, 1, HY, -ZD], [1, 0, -ZD, 1, HY, -ZD], [-1, 0, -ZD, -1, HY, -ZD], [-1, HY, -ZD, -1, HY, ZD], [-1, 0, ZD, -1, HY, ZD]];
+
+function sweepState(now) {
+  const s = S.sweep; if (!s) return null;
+  const e = now - s.t0, p = e / s.dur;
+  return { w: 1 + (NT - 1) * clamp(p, 0, 1), fade: p <= 1 ? 1 : clamp(1 - (e - s.dur - 900) / 1400, 0, 1), done: p > 1 };
+}
+
+function buildMarks(now) {
+  LN = 0; PN = 0;
+  for (const e of EDGES) seg(...e, 1, 1, 1, 0.42, 1);
+  const P = cur(), M = MET[S.metric], sw = sweepState(now);
+  rowLine(NTF - 1, LIFT, 0.95, 2.2);
+  if (!sw && S.sel < NT) rowLine((S.sel - 1) * SUB, LIFT, 0.5, 1.2);
+  if (S.rowHover && S.rowHover !== S.sel) rowLine((S.rowHover - 1) * SUB, LIFT, 0.45, 1.2);
+  colLine((S.you - 1) * SUB, LIFT, 0.92, 1.7, true);
+  const h = S.hover;
+  if (h) {
+    rowLine(clamp(Math.round(gJ(h.z)), 0, NTF - 1), LIFT, 0.7, 1.2);
+    colLine(clamp(Math.round(gI(h.x)), 0, NXF - 1), LIFT, 0.4, 1);
+    const y = h.floor ? 0 : hAt(h.x, h.z);
+    if (!h.floor) seg(h.x, y, h.z, h.x, 0, h.z, 1, 1, 1, 0.55, 1, 0, y);
+  }
+  if (sw) {
+    rowLine((sw.w - 1) * SUB, LIFT * 1.6, 0.95 * sw.fade, 2.2);
+    const raw = P.raw, cnt = S.metric === 'vote' ? raw.n : raw.a, mx = P.maxN[S.metric], lead = Math.floor(sw.w + 1e-6);
+    for (let w = 1; w <= lead; w++) {
+      const age = sw.w - w, rise = RM ? 1 : eob(clamp(age / 0.9, 0, 1)), isL = w === lead && !sw.done;
+      const al = sw.fade * (isL ? 1 : 0.28 + 0.6 * Math.exp(-age / 3));
+      if (al < 0.02) continue;
+      for (let b = 1; b <= NX; b++) {
+        const c = cnt ? cnt[(w - 1) * NX + b - 1] : 0; if (!c) continue;
+        const base = yCell(b, w) + LIFT, len = (0.022 + 0.13 * Math.sqrt(c / mx)) * rise, x = xB(b), z = zW(w);
+        seg(x, base, z, x, base + len, z, 1, 1, 1, al * 0.75, isL ? 1.4 : 1);
+        pt(x, base + len, z, isL ? 6.4 : 4.2, 1, 1, 1, al);
+      }
+    }
+  }
+  for (const d of S.drops) {
+    const t = clamp((now - d.t0) / d.dur, 0, 1), y = d.y0 + (d.y1 - d.y0) * t * t, c = d.yes ? [1, 0.84, 0.7] : [0.42, 0.42, 1];
+    seg(d.x, y, d.z, d.x, y + 0.06, d.z, c[0], c[1], c[2], 0.35, 1.2);
+    pt(d.x, y, d.z, 6, c[0], c[1], c[2], 1);
+  }
+}
+
+/* ---------- walls ---------- */
+function buildWalls() {
+  if (!OK) return;
+  const M = MET[S.metric], A = [], c = [1, 1, 1, 0.09];
+  const L = (a, b, d, e, f, g) => A.push(a, b, d, ...c, e, f, g, ...c);
+  for (let v = M.lo; v <= M.hi + 1e-6; v += M.step / 2) { const y = (v - M.lo) / (M.hi - M.lo) * HY; L(-1, y, -ZD, 1, y, -ZD); L(-1, y, -ZD, -1, y, ZD); }
+  for (let b = 5; b <= NX; b += 5) L(xB(b), 0, -ZD, xB(b), HY, -ZD);
+  for (const [w] of weekTicks(cur())) L(-1, 0, zW(w), -1, HY, zW(w));
+  gl.bindBuffer(gl.ARRAY_BUFFER, bThin); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(A), gl.STATIC_DRAW); nThin = A.length / 7;
+}
+function weekTicks(P) {
+  if (P.start == null) return [1, 5, 10, 15, 20, 25, 30].map(w => [w, 'W' + w]);
+  const s = new Date(P.start); let y = s.getUTCFullYear(), m = s.getUTCMonth(); const out = [[1, MON[m]]];
+  for (let i = 0; i < 14; i++) { m++; if (m > 11) { m = 0; y++; } const w = 1 + (Date.UTC(y, m, 1) - P.start) / (7 * DAY); if (w > NT) break; if (w - out[out.length - 1][0] >= 2.2) out.push([w, MON[m]]); }
+  return out;
+}
+
+/* ---------- render ---------- */
+function resize() {
+  if (S.sized) return;
+  const r = stage.getBoundingClientRect();
+  S.W = Math.max(1, r.width); S.H = Math.max(1, r.height); S.dpr = Math.min(2, window.devicePixelRatio || 1);
+  cv.width = Math.round(S.W * S.dpr); cv.height = Math.round(S.H * S.dpr);
+  const hr = $('#head').getBoundingClientRect();
+  S.headR = { left: hr.left - r.left, top: hr.top - r.top, right: hr.right - r.left, bottom: hr.bottom - r.top };
+  let c0 = cbar.getBoundingClientRect(), u = { left: c0.left, top: c0.top, right: c0.right, bottom: c0.bottom };
+  for (const ch of cbar.querySelectorAll('.tk')) { const q = ch.getBoundingClientRect(); u = { left: Math.min(u.left, q.left), top: Math.min(u.top, q.top), right: Math.max(u.right, q.right), bottom: Math.max(u.bottom, q.bottom) }; }
+  S.cbR = { left: u.left - r.left - 4, top: u.top - r.top - 4, right: u.right - r.left + 22, bottom: u.bottom - r.top + 4 };
+  for (const el of lyr.querySelectorAll('.ax')) { el._w = el.offsetWidth; el._hh = el.offsetHeight; }
+  S.sized = true;
+}
+function render(now) {
+  resize(); camera(); geom(now);
+  if (!OK) { overlay(now); return; }
+  const M = MET[S.metric], kn = M.keys.map(([v]) => (v - M.lo) / (M.hi - M.lo));
+  gl.viewport(0, 0, cv.width, cv.height); gl.clearColor(0, 0, 0, 1); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  gl.enable(gl.DEPTH_TEST); gl.depthFunc(gl.LEQUAL);
+  gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false);
+  gl.useProgram(PT.p); gl.uniformMatrix4fv(PT.u.uVP, false, S.vp); gl.bindVertexArray(vaoT); gl.drawArrays(gl.LINES, 0, nThin);
+  gl.disable(gl.BLEND); gl.depthMask(true);
+  gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, texRamp); gl.bindVertexArray(vaoS);
+  gl.useProgram(PF.p); gl.uniformMatrix4fv(PF.u.uVP, false, S.vp); gl.uniform1i(PF.u.uRamp, 0); gl.uniform1f(PF.u.uStep, 5 / (M.hi - M.lo)); gl.uniform2f(PF.u.uKeys, kn[0], kn[1]);
+  gl.drawElements(gl.TRIANGLES, nIdx, gl.UNSIGNED_SHORT, 0);
+  gl.useProgram(PS.p); gl.uniformMatrix4fv(PS.u.uVP, false, S.vp); gl.uniform1i(PS.u.uRamp, 0); gl.uniform3fv(PS.u.uEye, S.eye);
+  gl.uniform2f(PS.u.uCells, NX - 1, NT - 1); gl.uniform2f(PS.u.uKeys, kn[0], kn[1]);
+  gl.uniform2f(PS.u.uHov, S.hover ? clamp((S.hover.b - 1) / (NX - 1), 0, 1) : -1, S.hover ? (S.hover.w - 1) / (NT - 1) : -1);
+  gl.drawElements(gl.TRIANGLES, nIdx, gl.UNSIGNED_SHORT, 0);
+  buildMarks(now);
+  gl.enable(gl.BLEND); gl.depthMask(false);
+  if (LN) { gl.useProgram(PK.p); gl.uniformMatrix4fv(PK.u.uVP, false, S.vp); gl.uniform2f(PK.u.uRes, cv.width, cv.height); gl.uniform1f(PK.u.uDash, 34); gl.bindVertexArray(vaoK); gl.bindBuffer(gl.ARRAY_BUFFER, bK); gl.bufferData(gl.ARRAY_BUFFER, LB.subarray(0, LN * 14), gl.DYNAMIC_DRAW); gl.drawArrays(gl.TRIANGLES, 0, LN); }
+  if (PN) { gl.useProgram(PP.p); gl.uniformMatrix4fv(PP.u.uVP, false, S.vp); gl.bindVertexArray(vaoP); gl.bindBuffer(gl.ARRAY_BUFFER, bP); gl.bufferData(gl.ARRAY_BUFFER, PB.subarray(0, PN * 8), gl.DYNAMIC_DRAW); gl.drawArrays(gl.POINTS, 0, PN); }
+  gl.depthMask(true); gl.bindVertexArray(null);
+  overlay(now);
+}
+
+/* ---------- HTML overlay: axes, pinned labels, colour-bar markers ---------- */
+const AX = { v: [], b: [], w: [], tv: null, tb: null, tw: null };
+function mk(cls, txt) { const d = document.createElement('div'); d.className = cls; d.textContent = txt; lyr.appendChild(d); return d; }
+function buildAxes() {
+  lyr.querySelectorAll('.ax').forEach(e => e.remove());
+  const M = MET[S.metric];
+  AX.v = []; for (let v = M.lo; v <= M.hi + 1e-6; v += 10) AX.v.push([v, mk('ax', v + '%')]);
+  AX.b = [1, 10, 20, 30, 40].map(b => [b, mk('ax', String(b))]);
+  AX.w = weekTicks(cur()).map(([w, s]) => [w, mk('ax', s)]);
+  AX.tv = mk('ax t', M.axis); AX.tb = mk('ax t', 'BLOCKS FROM SITE'); AX.tw = mk('ax t', 'WEEK');
+  for (const el of lyr.querySelectorAll('.ax')) { el._w = el.offsetWidth; el._hh = el.offsetHeight; }
+}
+function at(el, x, y, ax, ay) {
+  const w = el._w || 0, h = el._hh || 0, L = clamp(x + ax / 100 * w, 3, Math.max(3, S.W - w - 3)), T = clamp(y + ay / 100 * h, 3, Math.max(3, S.H - h - 3));
+  el.style.transform = `translate(${L.toFixed(1)}px,${T.toFixed(1)}px)`;
+  if (el.style.display !== 'none') placed.push({ left: L, top: T, right: L + w, bottom: T + h });
+}
+const SVGN = 'http://www.w3.org/2000/svg', LNS = {}, DTS = {};
+for (const k of ['now', 'you', 'sw', 'tip']) {
+  const l = document.createElementNS(SVGN, 'line'); l.setAttribute('stroke', '#fff'); l.setAttribute('stroke-width', '1'); l.setAttribute('stroke-opacity', '.85'); ov.appendChild(l); LNS[k] = l;
+  const c = document.createElementNS(SVGN, 'circle'); c.setAttribute('r', k === 'tip' ? '3.4' : '3.8'); c.setAttribute('fill', '#fff'); c.setAttribute('stroke', '#000'); c.setAttribute('stroke-width', '1.2'); ov.appendChild(c); DTS[k] = c;
+}
+const PINS = { now: mk('pin', ''), you: mk('pin', ''), sw: mk('pin', ''), tip: mk('pin tip', '') };
+const placed = [];
+function setPin(k, html) { const el = PINS[k]; if (el._h !== html) { el.innerHTML = html; el._h = html; el.style.display = 'block'; el._w = el.offsetWidth; el._ht = el.offsetHeight; } }
+function hidePin(k) { PINS[k].style.display = 'none'; LNS[k].style.display = 'none'; DTS[k].style.display = 'none'; }
+function putPin(k, ax, ay, dx, dy) {
+  const el = PINS[k]; el.style.display = 'block';
+  const w = el._w || el.offsetWidth, h = el._ht || el.offsetHeight;
+  const hits = (L, T) => placed.find(r => L < r.right + 4 && L + w > r.left - 4 && T < r.bottom + 4 && T + h > r.top - 4);
+  const spot = (ddx, ddy) => [clamp(ddx >= 0 ? ax + ddx : ax + ddx - w, 4, S.W - w - 4), clamp(ay + ddy - h / 2, 4, S.H - h - 4)];
+  let [L, T] = spot(dx, dy);
+  for (const [cx, cy] of [[dx, dy], [-dx, dy], [dx, -dy], [-dx, -dy]]) { const [l2, t2] = spot(cx, cy); if (!hits(l2, t2)) { L = l2; T = t2; break; } }
+  for (let it = 0; it < 8; it++) {
+    const o = placed.find(r => L < r.right + 4 && L + w > r.left - 4 && T < r.bottom + 4 && T + h > r.top - 4); if (!o) break;
+    const up = o.top - h - 6, dn = o.bottom + 6;
+    T = (T + h / 2 <= (o.top + o.bottom) / 2 && up >= 4) || dn > S.H - h - 4 ? up : dn;
+    if (T < 4) { T = 4; L = L + w / 2 < (o.left + o.right) / 2 ? o.left - w - 6 : o.right + 6; L = clamp(L, 4, S.W - w - 4); }
+  }
+  placed.push({ left: L, top: T, right: L + w, bottom: T + h });
+  el.style.transform = `translate(${Math.round(L)}px,${Math.round(T)}px)`;
+  const ex = clamp(ax, L, L + w), ey = clamp(ay, T, T + h), ln = LNS[k], dt = DTS[k];
+  ln.setAttribute('x1', ax.toFixed(1)); ln.setAttribute('y1', ay.toFixed(1)); ln.setAttribute('x2', ex.toFixed(1)); ln.setAttribute('y2', ey.toFixed(1)); ln.style.display = '';
+  dt.setAttribute('cx', ax.toFixed(1)); dt.setAttribute('cy', ay.toFixed(1)); dt.style.display = '';
+}
+function marker(id, v) { const el = $(id); if (v == null) { el.style.display = 'none'; return; } const M = MET[S.metric]; el.style.display = 'block'; el.style.setProperty('--p', clamp((v - M.lo) / (M.hi - M.lo), 0, 1).toFixed(4)); }
+
+function overlay(now) {
+  const M = MET[S.metric], P = cur(), sw = sweepState(now), narrow = S.W < 600;
+  placed.length = 0;
+  for (const [v, el] of AX.v) { const [x, y] = proj(-1, (v - M.lo) / (M.hi - M.lo) * HY, ZD); el.style.display = narrow && (v - M.lo) % 20 ? 'none' : ''; at(el, x - 10, y, -100, -50); }
+  { const [x, y] = proj(-1, HY * 1.1, ZD); at(AX.tv, x - 10, y, -100, -50); }
+  for (const [b, el] of AX.b) { const [x, y] = proj(xB(b), 0, ZD); at(el, x, y + 9, -50, 0); }
+  { const [x, y] = proj(xB(narrow ? 7 : 10), 0, ZD); at(AX.tb, x, y + (narrow ? 38 : 33), -50, 0); }
+  AX.w.forEach(([w, el], i) => { const [x, y] = proj(1, 0, zW(w)); el.style.display = narrow && i % 2 ? 'none' : ''; at(el, x + 12, y, 0, -50); });
+  { const [x, y] = proj(1, 0, zW(NT * 0.42)); AX.tw.style.display = narrow ? 'none' : ''; at(AX.tw, x + (S.W < 900 ? 56 : 62), y, 0, -50); }
+  if (!OK) return;
+  if (S.headR) placed.push(S.headR);
+  if (S.cbR) placed.push(S.cbR);
+  const val = (b, w) => P.grid[S.metric][(w - 1) * NX + b - 1];
+  // now: the back edge, latest week
+  { const [x, y] = proj(1, yCell(NX, NT) + LIFT, -ZD); setPin('now', `${M.fn}(b, ${esc(wName(P, NT))})`); putPin('now', x, y, 10, 0); }
+  // your block at the pinned week
+  { const v = val(S.you, S.sel), [x, y] = proj(xB(S.you), yCell(S.you, S.sel) + LIFT, zW(S.sel)); setPin('you', `BLK ${S.you} · ${esc(wName(P, S.sel))}&nbsp; ${M.word} ${v.toFixed(1)}%`); putPin('you', x, y, 34, -40); }
+  // sweep slice
+  if (sw && sw.fade > 0.05) {
+    const wk = clamp(Math.round(sw.w), 1, NT), b = 13, [x, y] = proj(xB(b), yCell(b, wk) + LIFT, zW(sw.w));
+    const all = P.all[S.metric][wk - 1];
+    setPin('sw', `${M.fn}(b, ${esc(wName(P, wk))})&nbsp; all ${Number.isFinite(all) ? all.toFixed(1) + '%' : '—'}`); putPin('sw', x, y, -6, -44);
+    PINS.sw.style.opacity = sw.fade; LNS.sw.style.opacity = sw.fade; DTS.sw.style.opacity = sw.fade;
+  } else hidePin('sw');
+  // hover
+  const h = S.hover;
+  if (h) {
+    const b = clamp(Math.round(h.b), 1, NX), w = clamp(Math.round(h.w), 1, NT), k = (w - 1) * NX + b - 1, raw = P.raw;
+    const extra = S.metric === 'vote' ? (raw.n[k] ? `${int(raw.n[k])} ballots` : 'no ballots · estimate') : `${int(raw.a[k])} of ${int(raw.R[k])}`;
+    setPin('tip', `BLK ${b} · W${w}${P.start != null ? ' · ' + esc(wName(P, w)) : ''}<br>${M.word} <b>${h.v.toFixed(2)}%</b> <span class="m">· ${extra}</span>`);
+    const [x, y] = proj(h.x, h.floor ? 0 : hAt(h.x, h.z), h.z); putPin('tip', x, y, 22, 30);
+  } else hidePin('tip');
+  const swAll = sw ? P.all[S.metric][clamp(Math.round(sw.w), 1, NT) - 1] : NaN;
+  marker('#mkH', h ? h.v : Number.isFinite(swAll) ? swAll : null);
+  marker('#mkY', val(S.you, S.sel));
+  rowClasses(sw && !sw.done ? sw.w : null);
+}
+
+/* ---------- panel ---------- */
+function renderProps() { $('#props').innerHTML = PROPS.map((p, i) => `<button type="button" data-i="${i}" aria-pressed="${i === S.prop}">${esc(p.tab)}</button>`).join(''); }
+function renderTable() {
+  const P = cur(), M = MET[S.metric], R = P.rounds[S.metric];
+  $('#hY').textContent = M.head; $('#hN').textContent = M.cnt;
+  const f = (x, fn) => Number.isFinite(x) ? fn(x) : '—';
+  tbody.innerHTML = R.map(r => `<tr data-w="${r.w}" tabindex="0"><td>${esc(wTag(P, r.w))}</td><td class="wk">${r.w}</td><td class="y">${f(r.all, x => x.toFixed(1))}</td><td class="${r.nf < 0 ? 'neg' : 'pos'}">${f(r.nf, sgn1)}</td><td>${int(r.cnt)}</td></tr>`).join('');
+  S.rowKey = ''; rowClasses(null);
+}
+function rowClasses(sw) {
+  const key = [S.sel, sw == null ? '' : Math.floor(sw), S.prop, S.metric, tbody.rows.length].join('|'); if (key === S.rowKey) return; S.rowKey = key;
+  const rows = tbody.rows; let lo = -1;
+  if (sw != null) for (let i = 0; i < rows.length; i++) if (+rows[i].dataset.w <= sw) lo = i;
+  const hi = sw != null && sw < NT ? Math.min(lo + 1, rows.length - 1) : lo;
+  for (let i = 0; i < rows.length; i++) { rows[i].classList.toggle('sel', sw == null && +rows[i].dataset.w === S.sel); rows[i].classList.toggle('sw', sw != null && (i === lo || i === hi)); }
+}
+function renderStats(flash) {
+  const P = cur(), rv = P.rounds.vote, z = rv[rv.length - 1], a = rv[0];
+  let res = 0; if (P.raw.R) for (let b = 0; b < NX; b++) res += P.raw.R[(NT - 1) * NX + b];
+  const f = (x, fn) => Number.isFinite(x) ? fn(x) : '—', pc = P.rounds.coop ? P.rounds.coop[P.rounds.coop.length - 1].all : NaN;
+  const rows = [['residents', res ? int(res) : '—'], ['ballots · now', int(z.cnt)], ['turnout · now', res ? (100 * z.cnt / res).toFixed(1) + '%' : '—'], ['yes · now', f(z.all, x => x.toFixed(2) + '%')],
+    ['near–far · now', f(z.nf, sgn2)], ['drift · W1→now', f(z.all - a.all, sgn2)], ['pitched in · now', f(pc, x => x.toFixed(1) + '%')], ['volunteers / meetups', P.vol], ['snapshot', P.snap]];
+  $('#stats').innerHTML = rows.map(([k, v], i) => `<dt>${k}</dt><dd${flash && i === 1 ? ' class="flash"' : ''}>${esc(v)}</dd>`).join('');
+}
+function setTitles() {
+  const P = cur(), M = MET[S.metric], R = P.rounds[S.metric], a = R[0], z = R[R.length - 1];
+  $('#title').textContent = `${P.tab} · ${M.fn}(b, w) · ${NX} × ${NT} grid`;
+  $('#sub').textContent = `near–far ${Number.isFinite(z.nf) ? sgn1(z.nf) : '—'} · drift ${Number.isFinite(z.all - a.all) ? sgn1(z.all - a.all) : '—'}`;
+  $('#pTitle').textContent = `${P.site} · ${P.name}`;
+  $('#mCoop').disabled = !P.grid.coop;
+  const sim = P.id !== 'own'; $('#bLive').disabled = !sim; $('#bLive').title = sim ? 'Adds made-up ballots to this sample' : 'The simulation runs on the sample data only';
+  if (!sim && S.live) { S.live = false; $('#bLive').setAttribute('aria-pressed', 'false'); $('#hint').textContent = hintText; }
+  cv.setAttribute('aria-label', `3D surface of ${S.metric === 'vote' ? 'the yes-vote share' : 'the share of neighbors who pitched in'} for ${P.name.toLowerCase()} by blocks from ${P.site.toLowerCase()} and by week. The table lists each round.`);
+}
+function buildColorbar() {
+  const M = MET[S.metric];
+  document.documentElement.style.setProperty('--stops', STOPS.map(([p, c]) => `rgb(${c.join(',')}) ${(p * 100).toFixed(2)}%`).join(', '));
+  cbar.querySelectorAll('.tk').forEach(e => e.remove());
+  const add = (v, txt, cls) => { const d = document.createElement('div'); d.className = 'tk' + (cls ? ' ' + cls : ''); d.textContent = txt; d.style.setProperty('--p', ((v - M.lo) / (M.hi - M.lo)).toFixed(4)); cbar.appendChild(d); };
+  for (let v = M.lo; v <= M.hi + 1e-6; v += M.step) if (!M.keys.some(([kv]) => Math.abs(kv - v) < M.step * 0.34)) add(v, String(v));
+  M.keys.forEach(([kv, name], i) => add(kv, `${name} ${Math.round(kv)}`, 'key k' + i));
+  S.sized = false;
+}
+
+/* ---------- state changes ---------- */
+function setTargets(instant) {
+  const P = cur(), M = MET[S.metric], g = P.grid[S.metric];
+  for (let k = 0; k < NC; k++) { S.tN[k] = (g[k] - M.lo) / (M.hi - M.lo); S.tP[k] = (g[k] - M.cl) / (M.ch - M.cl); }
+  if (instant || RM || !S.inited) { S.cN.set(S.tN); S.cP.set(S.tP); S.morph = null; S.upDirty = true; S.inited = true; }
+  else S.morph = { fN: S.cN.slice(), fP: S.cP.slice(), t0: performance.now(), dur: 950 };
+  dirty();
+}
+function setMetric(m) {
+  if (m === S.metric || (m === 'coop' && !cur().grid.coop)) return;
+  S.metric = m; $('#mVote').setAttribute('aria-pressed', m === 'vote'); $('#mCoop').setAttribute('aria-pressed', m === 'coop');
+  S.hover = null; buildAxes(); buildWalls(); buildColorbar(); renderTable(); setTitles(); setTargets(false); syncMore();
+}
+function setProp(i) {
+  S.prop = i; if (!cur().grid.coop && S.metric === 'coop') { S.metric = 'vote'; $('#mVote').setAttribute('aria-pressed', 'true'); $('#mCoop').setAttribute('aria-pressed', 'false'); buildColorbar(); }
+  S.hover = null; renderProps(); buildAxes(); buildWalls(); renderTable(); renderStats(); setTitles(); setTargets(false); syncMore();
+}
+function ripple(x, z, a, now = performance.now()) { if (RM) return; S.ripples.push({ x, z, a, t0: now }); if (S.ripples.length > 10) S.ripples.shift(); dirty(); }
+function startSweep() { S.sweep = { t0: performance.now(), dur: RM ? 2600 : 6800 }; dirty(); }
+
+function liveTick(now) {
+  if (now - S.lastLive < 240) return; S.lastLive = now;
+  const P = cur(), raw = P.raw, w = NT - 1;
+  let tot = 0; for (let b = 0; b < NX; b++) tot += raw.n[w * NX + b] + 1;
+  let r = Math.random() * tot, b = 0; for (; b < NX - 1; b++) { r -= raw.n[w * NX + b] + 1; if (r <= 0) break; }
+  const k = w * NX + b, yes = Math.random() < P.base[k] / 100;
+  raw.n[k] += 1; if (yes) raw.y[k] += 1; if (raw.a && raw.a[k] < raw.R[k] && Math.random() < 0.35) raw.a[k] += 1;
+  llSmooth(raw.y, raw.n, SMV[0], SMV[1], 6, 12, P.grid.vote, NT - 7, NT - 1);
+  if (raw.R) llSmooth(raw.a, raw.R, SMC[0], SMC[1], 6, 40, P.grid.coop, NT - 7, NT - 1);
+  refresh(P);
+  const M = MET[S.metric], g = P.grid[S.metric];
+  for (let kk = (NT - 7) * NX; kk < NC; kk++) { S.tN[kk] = (g[kk] - M.lo) / (M.hi - M.lo); S.tP[kk] = (g[kk] - M.cl) / (M.ch - M.cl); if (!S.morph) { S.cN[kk] = S.tN[kk]; S.cP[kk] = S.tP[kk]; } }
+  S.upDirty = true;
+  renderTable(); renderStats(true); setTitles(); syncMore();
+  const x = xB(b + 1); S.drops.push({ x, z: -ZD, y0: HY * 1.3, y1: yCell(b + 1, NT), t0: now, dur: 520, yes });
+}
+
+function step(now) {
+  let anim = false;
+  if (S.morph) {
+    const m = S.morph, T = (now - m.t0) / m.dur; let done = true;
+    for (let w = 0; w < NT; w++) for (let b = 0; b < NX; b++) {
+      const k = w * NX + b, t = clamp(T * 1.3 - 0.3 * (b / (NX - 1)) - 0.08 * (w / (NT - 1)), 0, 1); if (t < 1) done = false;
+      S.cN[k] = m.fN[k] + (S.tN[k] - m.fN[k]) * eob(t); S.cP[k] = m.fP[k] + (S.tP[k] - m.fP[k]) * Math.min(1, t * 1.2);
+    }
+    if (done) { S.cN.set(S.tN); S.cP.set(S.tP); S.morph = null; }
+    S.upDirty = true; anim = true;
+  }
+  const sw = sweepState(now);
+  if (sw) { anim = true; if (sw.fade <= 0) { S.sweep = null; S.rowKey = ''; } }
+  if (S.ripples.length) { S.ripples = S.ripples.filter(r => now - r.t0 < 2600); anim = true; }
+  if (S.hadRip) anim = true;
+  if (S.drops.length) { S.drops = S.drops.filter(d => { if (now - d.t0 >= d.dur) { ripple(d.x, d.z, 0.022, now); return false; } return true; }); anim = true; }
+  if (S.live) { anim = true; liveTick(now); }
+  return anim;
+}
+function frame(now) {
+  requestAnimationFrame(frame);
+  const anim = step(now);
+  if (!anim && !S.dirty) return;
+  S.dirty = false;
+  try { render(now); } catch (e) { console.error(e); }
+}
+
+/* ---------- interaction ---------- */
+let drag = null;
+const rel = e => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+cv.addEventListener('pointerdown', e => { drag = { x: e.clientX, y: e.clientY, az: S.az, el: S.el, moved: false, touch: e.pointerType === 'touch', id: e.pointerId }; });
+cv.addEventListener('pointermove', e => {
+  const [mx, my] = rel(e);
+  if (drag) {
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (!drag.moved && Math.abs(dx) + Math.abs(dy) > 5) { drag.moved = true; try { cv.setPointerCapture(drag.id); } catch (_) {} cv.classList.add('drag'); }
+    if (drag.moved) { S.az = clamp(drag.az - dx * 0.35, -70, 85); if (!drag.touch) S.el = clamp(drag.el + dy * 0.25, 6, 78); S.hover = null; dirty(); }
+    return;
+  }
+  if (e.pointerType === 'touch') return;
+  S.hover = pick(mx, my); dirty();
+});
+cv.addEventListener('pointerup', e => {
+  const d = drag; drag = null; cv.classList.remove('drag');
+  if (!d || d.moved) return;
+  const [mx, my] = rel(e), h = pick(mx, my); if (!h) { if (d.touch) { S.hover = null; dirty(); } return; }
+  const act = () => { S.you = clamp(Math.round(h.b), 1, NX); S.sel = clamp(Math.round(h.w), 1, NT); S.rowKey = ''; ripple(h.x, h.z, 0.045); if (d.touch) S.hover = h; dirty(); syncMore(); };
+  clearTimeout(S.clickT); if (d.touch) act(); else S.clickT = setTimeout(act, 230);
+});
+cv.addEventListener('pointercancel', () => { drag = null; cv.classList.remove('drag'); });
+cv.addEventListener('pointerleave', () => { if (!drag) { S.hover = null; dirty(); } });
+cv.addEventListener('wheel', e => { if (!(e.ctrlKey || e.metaKey)) return; e.preventDefault(); S.zoom = clamp(S.zoom * Math.exp(e.deltaY * 0.0012), 0.55, 1.8); dirty(); }, { passive: false });
+cv.addEventListener('dblclick', () => { clearTimeout(S.clickT); S.az = AZ0; S.el = EL0; S.zoom = 1; dirty(); });
+cv.addEventListener('keydown', e => {
+  const k = e.key;
+  if (k === 'ArrowLeft') S.az = clamp(S.az + 5, -70, 85); else if (k === 'ArrowRight') S.az = clamp(S.az - 5, -70, 85);
+  else if (k === 'ArrowUp') S.el = clamp(S.el + 4, 6, 78); else if (k === 'ArrowDown') S.el = clamp(S.el - 4, 6, 78);
+  else if (k === '+' || k === '=') S.zoom = clamp(S.zoom / 1.12, 0.55, 1.8); else if (k === '-') S.zoom = clamp(S.zoom * 1.12, 0.55, 1.8);
+  else if (k === 'r' || k === 'R') startSweep(); else return;
+  e.preventDefault(); dirty();
+});
+const pickRow = tr => { if (!tr) return; S.sel = +tr.dataset.w; S.rowKey = ''; ripple(xB(S.you), zW(S.sel), 0.03); dirty(); syncMore(); };
+tbody.addEventListener('click', e => pickRow(e.target.closest('tr')));
+tbody.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pickRow(e.target.closest('tr')); } });
+tbody.addEventListener('mouseover', e => { const tr = e.target.closest('tr'); const w = tr ? +tr.dataset.w : null; if (w !== S.rowHover) { S.rowHover = w; dirty(); } });
+tbody.addEventListener('mouseleave', () => { S.rowHover = null; dirty(); });
+$('#props').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setProp(+b.dataset.i); });
+$('#mVote').addEventListener('click', () => setMetric('vote'));
+$('#mCoop').addEventListener('click', () => setMetric('coop'));
+$('#bReplay').addEventListener('click', startSweep);
+$('#bLive').addEventListener('click', () => {
+  S.live = !S.live; $('#bLive').setAttribute('aria-pressed', S.live);
+  $('#hint').textContent = S.live ? 'simulating: each drop is one made-up ballot landing this week · warm = yes, cool = no' : hintText; dirty();
+});
+$('#hint').textContent = hintText;
+
+/* ---------- your own ballots ---------- */
+function parseOwn(txt) {
+  let j; try { j = JSON.parse(txt); } catch (e) { throw new Error('That is not valid JSON: ' + e.message); }
+  const list = Array.isArray(j) ? j : j && j.ballots;
+  if (!Array.isArray(list) || !list.length) throw new Error('Expected a "ballots" array.');
+  const raw = { n: new Float32Array(NC), y: new Float32Array(NC), a: null, R: null }; let count = 0;
+  for (const r of list) {
+    if (!r || typeof r !== 'object') continue;
+    const b = Math.round(+r.block), w = Math.round(+r.week); if (!(b >= 1 && w >= 1)) continue;
+    const k = (Math.min(w, NT) - 1) * NX + Math.min(b, NX) - 1; let yes, no;
+    if (typeof r.yes === 'number' || typeof r.no === 'number') { yes = Math.max(0, +r.yes || 0); no = Math.max(0, +r.no || 0); }
+    else { const v = r.vote !== undefined ? r.vote : r.yes; const isY = v === true || /^(y|yes|true|1)$/i.test(String(v)); yes = isY ? 1 : 0; no = 1 - yes; }
+    raw.n[k] += yes + no; raw.y[k] += yes; count += yes + no;
+  }
+  if (!count) throw new Error('No ballots with a block and a week were found.');
+  if (Array.isArray(j.residents) && j.residents.length) {
+    raw.R = new Float32Array(NC); raw.a = new Float32Array(NC);
+    for (let w = 0; w < NT; w++) for (let b = 0; b < NX; b++) { const k = w * NX + b, R = Math.max(+j.residents[b] || 0, raw.n[k]); raw.R[k] = R; raw.a[k] = raw.n[k]; }
+  }
+  const st = j.start && !isNaN(Date.parse(j.start)) ? Date.parse(j.start) : null;
+  return { raw, count, start: st, title: String(j.title || 'Your proposal').slice(0, 36), site: String(j.site || 'Your site').slice(0, 28) };
+}
+$('#ownGo').addEventListener('click', () => {
+  const msg = $('#ownMsg');
+  try {
+    const d = parseOwn($('#ownTxt').value);
+    const P = makeProp({ id: 'own', tab: 'YOURS', name: d.title.toUpperCase(), site: d.site.toUpperCase(), vol: '—', snap: 'pasted', start: d.start }, d.raw);
+    const i = PROPS.findIndex(p => p.id === 'own'); if (i >= 0) PROPS[i] = P; else PROPS.push(P);
+    setProp(PROPS.indexOf(P)); msg.className = 'msg'; msg.textContent = `Rendered ${int(d.count)} ballots.`;
+  } catch (err) { msg.className = 'msg err'; msg.textContent = err.message; }
+});
+$('#ownEx').addEventListener('click', () => {
+  const P = PROPS[0], raw = P.raw, rows = [];
+  for (let w = 0; w < NT; w++) for (let b = 0; b < NX; b++) { const k = w * NX + b; if (raw.n[k]) rows.push(`    {"block":${b + 1},"week":${w + 1},"yes":${raw.y[k]},"no":${raw.n[k] - raw.y[k]}}`); }
+  $('#ownTxt').value = `{\n  "title": "Community garden (copy)",\n  "site": "5th & Elm",\n  "start": "2026-05-03",\n  "residents": [${RES.join(',')}],\n  "ballots": [\n${rows.join(',\n')}\n  ]\n}`;
+  $('#ownMsg').className = 'msg'; $('#ownMsg').textContent = 'Edit it, then Render.';
+});
+
+/* ---------- more views ---------- */
+const MV = { timeH: null, sliceH: null, mapH: null, play: null, rips: [], loop: false, raf: 0 };
+const fin = Number.isFinite;
+const colAt = v => { const M = MET[S.metric]; return `rgb(${ramp((v - M.cl) / (M.ch - M.cl)).map(Math.round).join(',')})`; };
+const pct0 = x => fin(x) ? Math.round(x) + '%' : '—';
+const pct1 = x => fin(x) ? x.toFixed(1) + '%' : '—';
+const sgn0 = x => fin(x) ? (Math.round(x) >= 0 ? '+' : '-') + Math.abs(Math.round(x)) : '—';
+const cap1 = t => t.charAt(0).toUpperCase() + t.slice(1);
+const pname = P => P.id === 'own' ? 'your proposal' : P.tab.toLowerCase();
+const svgOf = id => $(id).querySelector('svg');
+const ICON_PLAY = '<svg width="9" height="10" viewBox="0 0 9 10" aria-hidden="true"><path d="M0 0l9 5-9 5z" fill="currentColor"/></svg>';
+const ICON_PAUSE = '<svg width="9" height="10" viewBox="0 0 9 10" aria-hidden="true"><path d="M0 0h3v10H0zM6 0h3v10H6z" fill="currentColor"/></svg>';
+function pathOf(xs, ys) { let d = '', pen = false; for (let i = 0; i < xs.length; i++) { if (!fin(ys[i])) { pen = false; continue; } d += (pen ? 'L' : 'M') + xs[i].toFixed(1) + ' ' + ys[i].toFixed(1); pen = true; } return d; }
+function spread(items, gap, lo, hi) {
+  items.sort((a, b) => a.y - b.y);
+  for (let i = 1; i < items.length; i++) if (items[i].y - items[i - 1].y < gap) items[i].y = items[i - 1].y + gap;
+  const over = items.length ? items[items.length - 1].y - hi : 0; if (over > 0) for (const it of items) it.y -= over;
+  for (let i = items.length - 2; i >= 0; i--) if (items[i + 1].y - items[i].y < gap) items[i].y = items[i + 1].y - gap;
+  return items;
+}
+function yGrid(M, L, iw, Y) {
+  let h = '';
+  for (let v = M.lo; v <= M.hi + 1e-6; v += M.step) h += `<line x1="${L}" x2="${L + iw}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="#1f1d25"/><text class="tk" x="${L - 7}" y="${(Y(v) + 4).toFixed(1)}" text-anchor="end">${v}%</text>`;
+  M.keys.forEach(([kv, name], i) => { h += `<line x1="${L}" x2="${L + iw}" y1="${Y(kv).toFixed(1)}" y2="${Y(kv).toFixed(1)}" stroke="#fff" stroke-opacity="${i ? 0.3 : 0.55}" stroke-dasharray="3 4"/><text class="kl" x="${L + 6}" y="${(Y(kv) - 5).toFixed(1)}">${esc(name)}</text>`; });
+  return h;
+}
+function syncMore() { if (MV.raf) return; MV.raf = requestAnimationFrame(() => { MV.raf = 0; drawMore(); }); }
+function drawMore() {
+  try {
+    const P = cur(), M = MET[S.metric];
+    $('#moreNow').textContent = `Showing ${P.site} · ${P.name} · ${M.axis.toLowerCase()} · pinned week ${wName(P, S.sel)} · your block ${S.you}`;
+    drawMap(performance.now()); drawTime(); drawFunnel(); drawSlice(); drawRace();
+  } catch (e) { console.error(e); }
+}
+
+/* 1. neighborhood map: city blocks colored by their ring's share */
+function shareAbove(P, m, w, kv) { let A = 0, T = 0; for (let b = 1; b <= NX; b++) { const k = (w - 1) * NX + b - 1, wt = P.raw.R ? P.raw.R[k] : 1; T += wt; if (P.grid[m][k] >= kv) A += wt; } return T ? 100 * A / T : NaN; }
+function mapTitle(P, m, M) {
+  const kv = M.keys[0][0], s1 = shareAbove(P, m, S.sel, kv), s0 = shareAbove(P, m, 1, kv), first = S.sel === 1;
+  const where = m === 'vote' ? 'in majority-yes blocks' : 'where a quarter or more pitched in';
+  const head = P.raw.R ? `${pct0(s1)} of residents live ${where}` : `${pct0(s1)} of blocks are ${m === 'vote' ? 'majority-yes' : 'at a quarter or more'}`;
+  const dir = Math.round(s1) > Math.round(s0) ? 'up from' : Math.round(s1) < Math.round(s0) ? 'down from' : 'same as';
+  return `Week of ${wName(P, S.sel)}: ${head}${first ? '' : `, ${dir} ${pct0(s0)} on ${wName(P, 1)}`}`;
+}
+function drawMap(now) {
+  const wrap = $('#mapw'), c = $('#map'), W = wrap.clientWidth; if (!W) return;
+  const dpr = Math.min(2, window.devicePixelRatio || 1), px = Math.round(W * dpr);
+  if (c.width !== px) { c.width = px; c.height = px; }
+  const g = c.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, W);
+  const P = cur(), m = S.metric, M = MET[m], w = S.sel, R = NX, cell = W / (2 * R + 1), gap = Math.max(0.8, cell * 0.17), half = W / 2;
+  const v = b => P.grid[m][(w - 1) * NX + clamp(b, 1, NX) - 1];
+  const col = [null]; for (let b = 1; b <= NX; b++) col.push(colAt(v(b)));
+  for (let j = -R; j <= R; j++) for (let i = -R; i <= R; i++) {
+    const d = Math.hypot(i, j); if (d > R + 0.5) continue;
+    g.fillStyle = d < 0.5 ? '#fff' : col[Math.max(1, Math.round(d))];
+    g.fillRect(half + (i - 0.5) * cell + gap / 2, half + (j - 0.5) * cell + gap / 2, cell - gap, cell - gap);
+  }
+  const ring = (r, a, lw, dash) => { g.beginPath(); g.arc(half, half, Math.max(0, r), 0, 2 * Math.PI); g.setLineDash(dash || []); g.lineWidth = lw; g.strokeStyle = `rgba(255,255,255,${a})`; g.stroke(); };
+  M.keys.forEach(([kv], k) => { for (let b = 1; b < NX; b++) { const a = v(b), z = v(b + 1); if ((a - kv) * (z - kv) < 0) ring((b + (kv - a) / (z - a)) * cell, k ? 0.5 : 0.95, k ? 1 : 1.8); } });
+  ring(S.you * cell, 0.9, 1.3, [4, 4]);
+  if (MV.mapH) ring(MV.mapH.b * cell, 0.85, 2);
+  for (const r of MV.rips) { const t = (now - r.t0) / 1400; if (t >= 0 && t <= 1) ring(t * (R + 1) * cell, 0.45 * (1 - t), 2); }
+  g.setLineDash([]);
+  $('#mapT').textContent = mapTitle(P, m, M);
+  if (+$('#mapWk').value !== w) $('#mapWk').value = String(w);
+  $('#mapRead').textContent = `${wName(P, w)} · ${M.word} ${pct1(P.all[m] ? P.all[m][w - 1] : NaN)} overall`;
+  $('#legLo').textContent = M.cl + '%'; $('#legHi').textContent = M.ch + '%';
+}
+function mapTip() {
+  const t = $('#mtip'), h = MV.mapH; if (!h) { t.style.display = 'none'; return; }
+  const P = cur(), m = S.metric, M = MET[m], k = (S.sel - 1) * NX + h.b - 1, raw = P.raw;
+  const extra = m === 'vote' ? (raw.n[k] ? `${int(raw.n[k])} ballots` : 'no ballots · estimate') : `${int(raw.a[k])} of ${int(raw.R[k])}`;
+  t.innerHTML = `BLK ${h.b} from site · ${esc(wName(P, S.sel))}<br>${M.word} <b>${pct1(P.grid[m][k])}</b> <span class="m">· ${extra}</span>`;
+  t.style.display = 'block';
+  const W = $('#mapw').clientWidth, tw = t.offsetWidth, th = t.offsetHeight;
+  t.style.transform = `translate(${clamp(h.x + 14, 4, W - tw - 4)}px,${clamp(h.y + 16 + th > W ? h.y - th - 12 : h.y + 16, 4, W - th - 4)}px)`;
+}
+function playLabel() { const b = $('#mapPlay'); b.innerHTML = (MV.play ? ICON_PAUSE + 'PAUSE' : ICON_PLAY + 'PLAY WEEKS'); b.setAttribute('aria-pressed', String(!!MV.play)); }
+function mapLoop(now) {
+  let on = false;
+  if (MV.play) {
+    const wk = Math.min(NT, 1 + Math.floor((now - MV.play.t0) / 170));
+    if (wk !== S.sel) { S.sel = wk; S.rowKey = ''; if (!RM) MV.rips.push({ t0: now }); dirty(); syncMore(); }
+    if (now - MV.play.t0 > NT * 170 + 300) { MV.play = null; playLabel(); } else on = true;
+  }
+  MV.rips = MV.rips.filter(r => now - r.t0 < 1400); if (MV.rips.length) on = true;
+  drawMap(now);
+  if (on) requestAnimationFrame(mapLoop); else MV.loop = false;
+}
+function kickMap() { if (!MV.loop) { MV.loop = true; requestAnimationFrame(mapLoop); } }
+$('#map').addEventListener('pointermove', e => {
+  const r = e.currentTarget.getBoundingClientRect(), cell = r.width / (2 * NX + 1), x = e.clientX - r.left, y = e.clientY - r.top, d = Math.hypot(x - r.width / 2, y - r.width / 2) / cell;
+  MV.mapH = d >= 0.5 && d <= NX + 0.5 ? { b: clamp(Math.round(d), 1, NX), x, y } : null;
+  mapTip(); drawMap(performance.now());
+});
+$('#map').addEventListener('pointerleave', () => { MV.mapH = null; mapTip(); drawMap(performance.now()); });
+$('#map').addEventListener('click', () => { if (!MV.mapH) return; S.you = MV.mapH.b; S.rowKey = ''; dirty(); syncMore(); });
+$('#mapPlay').addEventListener('click', () => { MV.play = MV.play ? null : { t0: performance.now() }; if (MV.play) { S.sel = 1; S.rowKey = ''; dirty(); syncMore(); } playLabel(); kickMap(); });
+$('#mapWk').addEventListener('input', e => { MV.play = null; playLabel(); S.sel = clamp(+e.target.value, 1, NT); S.rowKey = ''; if (!RM) MV.rips.push({ t0: performance.now() }); dirty(); syncMore(); kickMap(); });
+
+/* 2. share by week: everyone, near and far, plus a count strip */
+const timeGeom = W => ({ L: 42, R: W < 520 ? 66 : 100, narrow: W < 520 });
+function timeTitle(P, m) {
+  const Rr = P.rounds[m], a = Rr[0], z = Rr[Rr.length - 1];
+  if (!fin(a.all) || !fin(z.all)) return m === 'vote' ? 'Yes share by week' : 'Pitched-in share by week';
+  let t = `${m === 'vote' ? 'Yes' : 'Pitching in'} ${z.all >= a.all ? 'rose' : 'fell'} from ${pct0(a.all)} to ${pct0(z.all)}`;
+  if (fin(a.nf) && fin(z.nf)) t += `; the near–far gap ${Math.abs(z.nf) <= Math.abs(a.nf) ? 'narrowed' : 'widened'} from ${Math.round(Math.abs(a.nf))} to ${Math.round(Math.abs(z.nf))} pts`;
+  return t;
+}
+function drawTime() {
+  const s = svgOf('#fTime'), W = s.clientWidth, H = s.clientHeight; if (!W || !H) return;
+  const P = cur(), m = S.metric, M = MET[m], all = P.all[m], nf = P.nf[m];
+  const { L, R, narrow } = timeGeom(W), T = 12, B = 24, iw = W - L - R, ih = H - T - B;
+  const X = w => L + (w - 1) / (NT - 1) * iw, Y = v => T + (1 - clamp((v - M.lo) / (M.hi - M.lo), 0, 1)) * ih;
+  let h = yGrid(M, L, iw, Y);
+  weekTicks(P).forEach(([w, lab], i) => { if (!(narrow && i % 2)) h += `<text class="tk" x="${X(w).toFixed(1)}" y="${H - 6}" text-anchor="middle">${esc(lab)}</text>`; });
+  const xs = Array.from({ length: NT }, (_, i) => X(i + 1));
+  if (nf) {
+    let ok = true; for (let i = 0; i < NT; i++) if (!fin(nf.near[i]) || !fin(nf.far[i])) ok = false;
+    if (ok) h += `<path d="${pathOf(xs, Array.from(nf.near, Y))}L${xs.map((x, i) => x.toFixed(1) + ' ' + Y(nf.far[i]).toFixed(1)).reverse().join('L')}Z" fill="#fff" fill-opacity=".05"/>`;
+    h += `<path class="ln" d="${pathOf(xs, Array.from(nf.far, Y))}" stroke="#9c98a8" stroke-width="1.6" stroke-dasharray="1.5 3.5"/>`;
+    h += `<path class="ln" d="${pathOf(xs, Array.from(nf.near, Y))}" stroke="#d8d4e2" stroke-width="1.6" stroke-dasharray="6 4"/>`;
+  }
+  h += `<path class="ln" d="${pathOf(xs, Array.from(all, Y))}" stroke="#fff" stroke-width="2.4"/>`;
+  const lastOf = arr => { for (let i = NT - 1; i >= 0; i--) if (fin(arr[i])) return arr[i]; return NaN; };
+  const labs = [];
+  const add = (arr, name) => { const v = arr ? lastOf(arr) : NaN; if (fin(v)) labs.push({ y: Y(v), t: `${name} ${pct0(v)}` }); };
+  add(all, narrow ? 'all' : 'everyone'); if (nf) { add(nf.near, 'near'); add(nf.far, 'far'); }
+  spread(labs, 15, T, T + ih).forEach(l => { h += `<text x="${L + iw + 8}" y="${(l.y + 4).toFixed(1)}">${l.t}</text>`; });
+  const mark = (w, a, dash) => {
+    h += `<line x1="${X(w).toFixed(1)}" x2="${X(w).toFixed(1)}" y1="${T}" y2="${T + ih}" stroke="#fff" stroke-opacity="${a}"${dash ? ' stroke-dasharray="3 3"' : ''}/>`;
+    for (const arr of [all, nf && nf.near, nf && nf.far]) if (arr && fin(arr[w - 1])) h += `<circle cx="${X(w).toFixed(1)}" cy="${Y(arr[w - 1]).toFixed(1)}" r="3.4" fill="#fff" stroke="#000" stroke-width="1.2"/>`;
+  };
+  mark(S.sel, 0.7);
+  if (MV.timeH && MV.timeH !== S.sel) mark(MV.timeH, 0.45, true);
+  s.innerHTML = h;
+  const w = MV.timeH || S.sel;
+  $('#timeRead').innerHTML = `<b>${esc(wName(P, w))}</b>${P.start != null ? ` <span class="m">W${w}</span>` : ''} &nbsp;everyone ${pct1(all[w - 1])}${nf ? ` · near ${pct1(nf.near[w - 1])} · far ${pct1(nf.far[w - 1])}` : ''}`;
+  $('#timeT').textContent = timeTitle(P, m);
+  drawBal(L, R);
+}
+function drawBal(L, R) {
+  const s = svgOf('#fBal'), W = s.clientWidth, H = s.clientHeight; if (!W || !H) return;
+  const P = cur(), m = S.metric, cnt = m === 'vote' ? P.tot.n : P.tot.a, iw = W - L - R, T = 16, ih = H - T - 2;
+  let mx = 1; for (const c of cnt) mx = Math.max(mx, c);
+  const bw = Math.max(2, iw / NT - 3);
+  let h = `<text class="tk" x="${L}" y="11">${m === 'vote' ? 'ballots' : 'people pitching in'} per week · max ${int(mx)}</text>`;
+  for (let w = 1; w <= NT; w++) {
+    const x = L + (w - 1) / (NT - 1) * iw, c = cnt[w - 1], bh = c ? Math.max(1, c / mx * ih) : 0;
+    h += `<rect x="${(x - bw / 2).toFixed(1)}" y="${(T + ih - bh).toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="1.5" fill="${w === S.sel ? '#fff' : w === MV.timeH ? '#8d889a' : '#3a3742'}"/>`;
+  }
+  s.innerHTML = h;
+}
+function timeAt(e, svg) { const r = svg.getBoundingClientRect(), { L, R } = timeGeom(r.width); return clamp(Math.round(1 + (e.clientX - r.left - L) / (r.width - L - R) * (NT - 1)), 1, NT); }
+for (const id of ['#fTime', '#fBal']) {
+  const svg = svgOf(id);
+  svg.addEventListener('pointermove', e => { const w = timeAt(e, svg); if (w !== MV.timeH) { MV.timeH = w; drawTime(); } });
+  svg.addEventListener('pointerleave', () => { MV.timeH = null; drawTime(); });
+  svg.addEventListener('click', e => { S.sel = timeAt(e, svg); S.rowKey = ''; dirty(); syncMore(); });
+}
+
+/* 3. who took part: residents > pitched in > voted > yes */
+function drawFunnel() {
+  const P = cur(), w = S.sel, i = w - 1, T = P.tot, res = T.R[i], acts = T.a[i], n = T.n[i], y = T.y[i];
+  const rows = res ? [['Residents within 40 blocks', res], ['Pitched in', acts], ['Voted', n], ['Voted yes', y]] : [['Voted', n], ['Voted yes', y]];
+  const base = rows[0][1] || 1;
+  $('#fun').innerHTML = rows.map(([lab, v], k) => `<div class="fr"><div class="fh"><span>${lab}</span><b>${int(v)}</b><em>${k && rows[k - 1][1] ? `${pct0(100 * v / rows[k - 1][1])} of the row above` : ''}</em></div><div class="fb"><i style="width:${(100 * v / base).toFixed(2)}%"></i></div></div>`).join('');
+  const when = `Week of ${wName(P, w)}`;
+  $('#funT').textContent = !n ? `${when}: no ballots${res ? ` from ${int(res)} residents` : ''}`
+    : res ? `${when}: ${pct0(100 * acts / res)} of neighbors pitched in, ${pct0(100 * n / (acts || 1))} of them voted, and ${pct0(100 * y / n)} of voters said yes`
+    : `${when}: ${int(n)} ballots, ${pct0(100 * y / n)} yes`;
+}
+
+/* 4. share across blocks: first week, pinned week, now, with raw tallies */
+const sliceGeom = W => ({ L: 42, R: W < 520 ? 60 : 88 });
+function sliceTitle(P, m) {
+  const g = P.grid[m], avg = (w, b0, b1) => { let t = 0; for (let b = b0; b <= b1; b++) t += g[(w - 1) * NX + b - 1]; return t / (b1 - b0 + 1); };
+  return `Since ${wName(P, 1)}: next door ${sgn0(avg(NT, 1, 5) - avg(1, 1, 5))} pts, far side ${sgn0(avg(NT, 36, 40) - avg(1, 36, 40))} pts`;
+}
+function drawSlice() {
+  const s = svgOf('#fSlice'), W = s.clientWidth, H = s.clientHeight; if (!W || !H) return;
+  const P = cur(), m = S.metric, M = MET[m], g = P.grid[m], raw = P.raw, narrow = W < 520;
+  const { L, R } = sliceGeom(W), T = 12, B = 24, iw = W - L - R, ih = H - T - B, w = S.sel;
+  const X = b => L + (b - 1) / (NX - 1) * iw, Y = v => T + (1 - clamp((v - M.lo) / (M.hi - M.lo), 0, 1)) * ih;
+  let h = yGrid(M, L, iw, Y);
+  [1, 10, 20, 30, 40].forEach(b => { h += `<text class="tk" x="${X(b).toFixed(1)}" y="${H - 6}" text-anchor="middle">${b === 40 && !narrow ? '40 blocks' : b}</text>`; });
+  h += `<line x1="${X(S.you).toFixed(1)}" x2="${X(S.you).toFixed(1)}" y1="${T}" y2="${T + ih}" stroke="#fff" stroke-opacity=".6" stroke-dasharray="3 3"/><text class="kl" x="${X(S.you).toFixed(1)}" y="${T + ih - 6}" text-anchor="middle">you</text>`;
+  let mx = 1; for (let b = 0; b < NX; b++) mx = Math.max(mx, m === 'vote' ? raw.n[(w - 1) * NX + b] : raw.R[(w - 1) * NX + b]);
+  for (let b = 1; b <= NX; b++) {
+    const k = (w - 1) * NX + b - 1, n = m === 'vote' ? raw.n[k] : raw.R[k]; if (!n) continue;
+    h += `<circle cx="${X(b).toFixed(1)}" cy="${Y(100 * (m === 'vote' ? raw.y[k] : raw.a[k]) / n).toFixed(1)}" r="${(1.6 + 4.2 * Math.sqrt(n / mx)).toFixed(1)}" fill="#fff" fill-opacity=".22"/>`;
+  }
+  const weeks = [], pushW = (wk, st) => { if (!weeks.some(o => o.w === wk)) weeks.push({ w: wk, st, name: st === 'now' ? 'now' : wName(P, wk) }); };
+  pushW(w, 'sel'); pushW(1, 'first'); pushW(NT, 'now');
+  const xs = Array.from({ length: NX }, (_, i) => X(i + 1));
+  const sty = { first: 'stroke="#8f8a9b" stroke-width="1.5" stroke-dasharray="1.5 3.5"', now: 'stroke="#cfcadb" stroke-width="1.6" stroke-dasharray="6 4"', sel: 'stroke="#fff" stroke-width="2.4"' };
+  for (const o of [...weeks].reverse()) h += `<path class="ln" d="${pathOf(xs, Array.from({ length: NX }, (_, i) => Y(g[(o.w - 1) * NX + i])))}" ${sty[o.st]}/>`;
+  spread(weeks.map(o => ({ y: Y(g[(o.w - 1) * NX + NX - 1]), t: o.name })), 15, T, T + ih).forEach(l => { h += `<text x="${L + iw + 8}" y="${(l.y + 4).toFixed(1)}">${esc(l.t)}</text>`; });
+  if (MV.sliceH) {
+    const b = MV.sliceH;
+    h += `<line x1="${X(b).toFixed(1)}" x2="${X(b).toFixed(1)}" y1="${T}" y2="${T + ih}" stroke="#fff" stroke-opacity=".45" stroke-dasharray="3 3"/>`;
+    for (const o of weeks) h += `<circle cx="${X(b).toFixed(1)}" cy="${Y(g[(o.w - 1) * NX + b - 1]).toFixed(1)}" r="3.4" fill="#fff" stroke="#000" stroke-width="1.2"/>`;
+  }
+  s.innerHTML = h;
+  const b = MV.sliceH || S.you, k = (w - 1) * NX + b - 1, n = m === 'vote' ? raw.n[k] : raw.R[k];
+  const rv = n ? 100 * (m === 'vote' ? raw.y[k] : raw.a[k]) / n : NaN;
+  $('#sliceRead').innerHTML = `<b>BLK ${b}${b === S.you ? ' (you)' : ''}</b> &nbsp;${weeks.map(o => `${esc(o.name)} ${pct1(g[(o.w - 1) * NX + b - 1])}`).join(' · ')}${n ? ` <span class="m">· raw ${pct1(rv)} of ${int(n)}</span>` : ''}`;
+  $('#sliceT').textContent = sliceTitle(P, m);
+}
+{
+  const svg = svgOf('#fSlice'), at = e => { const r = svg.getBoundingClientRect(), { L, R } = sliceGeom(r.width); return clamp(Math.round(1 + (e.clientX - r.left - L) / (r.width - L - R) * (NX - 1)), 1, NX); };
+  svg.addEventListener('pointermove', e => { const b = at(e); if (b !== MV.sliceH) { MV.sliceH = b; drawSlice(); } });
+  svg.addEventListener('pointerleave', () => { MV.sliceH = null; drawSlice(); });
+  svg.addEventListener('click', e => { S.you = at(e); S.rowKey = ''; dirty(); syncMore(); });
+}
+
+/* 5. all proposals: first week to now */
+function raceTitle(list, m) {
+  const now = o => o.R[o.R.length - 1];
+  if (m === 'vote') {
+    const n = list.filter(o => now(o).all >= 200 / 3).length;
+    const sp = list.filter(o => fin(now(o).nf)).sort((a, b) => Math.abs(now(b).nf) - Math.abs(now(a).nf))[0];
+    return `${n} of ${list.length} proposals clear two-thirds now` + (sp ? `; ${pname(sp.P)} has the widest near–far split (${sgn0(now(sp).nf)} pts)` : '');
+  }
+  const srt = list.filter(o => fin(now(o).all)).sort((a, b) => now(b).all - now(a).all);
+  return srt.length ? cap1(`${pname(srt[0].P)} has the most neighbors pitching in (${pct0(now(srt[0]).all)}); ${pname(srt[srt.length - 1].P)} the fewest (${pct0(now(srt[srt.length - 1]).all)})`) : 'All proposals';
+}
+function drawRace() {
+  const box = $('#fRace'), s = svgOf('#fRace'), m = S.metric, M = MET[m];
+  const list = PROPS.map((P, i) => ({ P, i, R: P.rounds[m] })).filter(o => o.R);
+  const rowH = 48, top = 30, H = top + list.length * rowH + 4;
+  if (box.style.height !== H + 'px') box.style.height = H + 'px';
+  const W = s.clientWidth; if (!W) return;
+  const narrow = W < 460, L = narrow ? 112 : 210, R = 46, iw = W - L - R;
+  const X = v => L + clamp((v - M.lo) / (M.hi - M.lo), 0, 1) * iw;
+  let h = '';
+  for (let v = M.lo; v <= M.hi + 1e-6; v += M.step) h += `<line x1="${X(v).toFixed(1)}" x2="${X(v).toFixed(1)}" y1="${top - 6}" y2="${H}" stroke="#1f1d25"/>${narrow && (v - M.lo) % (2 * M.step) ? '' : `<text class="tk" x="${X(v).toFixed(1)}" y="${top - 12}" text-anchor="middle">${v}%</text>`}`;
+  M.keys.forEach(([kv], k) => { h += `<line x1="${X(kv).toFixed(1)}" x2="${X(kv).toFixed(1)}" y1="${top - 6}" y2="${H}" stroke="#fff" stroke-opacity="${k ? 0.3 : 0.55}" stroke-dasharray="3 4"/>`; });
+  list.forEach((o, r) => {
+    const y = top + r * rowH + rowH / 2, Rr = o.R, a = Rr[0].all, z = Rr[Rr.length - 1].all, last = Rr[Rr.length - 1], sel = o.i === S.prop;
+    const res = o.P.tot.R[NT - 1], turn = res ? 100 * o.P.tot.n[NT - 1] / res : NaN;
+    h += `<g data-i="${o.i}" tabindex="0" role="button" aria-label="${esc(o.P.tab)}: ${pct0(a)} in the first week, ${pct0(z)} now">`;
+    h += `<rect x="0" y="${y - rowH / 2 + 2}" width="${W}" height="${rowH - 4}" rx="4" fill="${sel ? 'rgba(170,30,140,.3)' : 'rgba(255,255,255,.015)'}"/>`;
+    h += `<text x="10" y="${y - 3}" font-weight="700">${esc(o.P.tab)}</text><text class="tk" x="10" y="${y + 13}">${narrow ? `${sgn0(last.nf)} gap · ${pct0(turn)}` : `near–far ${sgn0(last.nf)} · turnout ${pct0(turn)}`}</text>`;
+    if (fin(a) && fin(z)) {
+      const up = z >= a;
+      h += `<line x1="${X(a).toFixed(1)}" x2="${X(z).toFixed(1)}" y1="${y}" y2="${y}" stroke="#fff" stroke-opacity=".55" stroke-width="1.6"/>`;
+      h += `<circle cx="${X(a).toFixed(1)}" cy="${y}" r="4.5" fill="#000" stroke="#fff" stroke-width="1.4"/><circle cx="${X(z).toFixed(1)}" cy="${y}" r="6.5" fill="${colAt(z)}" stroke="#fff" stroke-width="1.4"/>`;
+      h += `<text x="${(X(z) + (up ? 12 : -12)).toFixed(1)}" y="${y + 4}" text-anchor="${up ? 'start' : 'end'}" font-weight="700">${pct0(z)}</text>`;
+    }
+    h += '</g>';
+  });
+  s.innerHTML = h;
+  $('#raceT').textContent = raceTitle(list, m);
+}
+{
+  const svg = svgOf('#fRace');
+  svg.addEventListener('click', e => { const g = e.target.closest('g[data-i]'); if (g) setProp(+g.dataset.i); });
+  svg.addEventListener('keydown', e => { if (e.key !== 'Enter' && e.key !== ' ') return; const g = e.target.closest('g[data-i]'); if (g) { e.preventDefault(); setProp(+g.dataset.i); } });
+}
+$('#bMore').addEventListener('click', () => $('#more').scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'start' }));
+const moreWatch = new ResizeObserver(() => syncMore());
+for (const id of ['#mapw', '#fTime', '#fBal', '#fSlice', '#fRace']) moreWatch.observe($(id));
+playLabel();
+
+/* ---------- boot ---------- */
+const sizeWatch = new ResizeObserver(() => { S.sized = false; dirty(); });
+sizeWatch.observe(stage); sizeWatch.observe($('#head'));
+renderProps(); buildAxes(); buildWalls(); buildColorbar(); renderTable(); renderStats(); setTitles(); setTargets(true); syncMore();
+requestAnimationFrame(frame);
+if (document.fonts) document.fonts.ready.then(() => { for (const k in PINS) PINS[k]._h = null; S.sized = false; dirty(); syncMore(); });
+if (!RM) {
+  const introWatch = new IntersectionObserver(entries => {
+    if (!entries.some(e => e.isIntersecting)) return;
+    introWatch.disconnect(); setTimeout(startSweep, 500);
+  });
+  introWatch.observe(stage);
+}
+}
+</script>
+</body>
+</html>
