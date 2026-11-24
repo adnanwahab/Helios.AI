@@ -66,8 +66,8 @@ test('braindance statuses match the mirror line and every event ahead cites a so
   }
 });
 
-test('braindance is a home page tab and ships in both Fly/Netlify and fork-safe static builds', () => {
-  const index = source('index.html');
+test('braindance is a archived dashboard tab and ships in both Fly/Netlify and fork-safe static builds', () => {
+  const index = source('docs/legacy-home.html');
   expect(index).toContain('id="tab-braindance"');
   expect(index).toContain('src="/embed/braindance"');
   expect(index).toContain("activate('braindance')");

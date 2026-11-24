@@ -7,7 +7,7 @@ const source = filename => readFileSync(join(root.pathname, filename), 'utf8');
 const record = () => JSON.parse(source('long_coil.html').match(/<script type="application\/json" id="coil-data">([\s\S]*?)<\/script>/)[1]);
 
 test('The Long Coil has its own route, a home tab and a place in both static builds', () => {
-  const index = source('index.html');
+  const index = source('docs/legacy-home.html');
   expect(index).toContain('aria-controls="view-coil">The Long Coil</button>');
   expect(index).toContain('src="/embed/coil"');
   const toml = source('netlify.toml');

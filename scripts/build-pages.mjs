@@ -54,7 +54,8 @@ if (/["(]\/public\//.test(coilPage)) throw new Error('Root-relative /public/ pat
 await writeFile(join(out, 'long_coil.html'), coilPage);
 await writeFile(join(out, 'notion-preview.json'), JSON.stringify(buildPlanDocument(seedCatalog)));
 
-let index = await readFile(join(root, 'index.html'), 'utf8');
+// Preserve the unlisted historical dashboard for direct links only.
+let index = await readFile(join(root, 'docs', 'legacy-home.html'), 'utf8');
 function replaceRequired(from, to) {
   if (!index.includes(from)) throw new Error('Expected entry-page route missing: ' + from);
   index = index.replaceAll(from, to);
@@ -104,7 +105,12 @@ index = index.replace('<h1 class="title">', '<h1 class="title">Static preview ·
 if (index.includes('src="/embed/') || index.includes('src="/proxy/') || index.includes('src="/signup')) {
   throw new Error('Server-only iframe route remains in Pages index');
 }
-await writeFile(join(out, 'index.html'), index);
+await writeFile(join(out, 'experiments.html'), index);
+// The actual homepage has no demo tabs or backend writes on static hosts.
+const loop = await readFile(join(root, 'index.html'), 'utf8');
+const mode = '<meta name="helios-mode" content="live">';
+if (!loop.includes(mode)) throw new Error('Helios Loop mode marker missing');
+await writeFile(join(out, 'index.html'), loop.replace(mode, '<meta name="helios-mode" content="static">'));
 // All welcome links remain under a fork's GitHub Pages base path.
 const welcome = (await readFile(join(root, 'welcome.html'), 'utf8'))
   .replaceAll('href="/laws"', 'href="./helios_100_frontend_demo.html"')

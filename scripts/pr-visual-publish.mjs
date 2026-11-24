@@ -89,7 +89,7 @@ const live = await deployment();
 
 const images = [];
 const pngSignature = Buffer.from([137,80,78,71,13,10,26,10]);
-for (const name of ['desktop.png', 'mobile.png', 'mail.png']) {
+for (const name of ['desktop.png', 'mobile.png', 'synthesis.png', 'proposal.png', 'mail.png']) {
   try {
     const data = await readFile(join('pr-visual-output', name));
     if (!data.subarray(0, 8).equals(pngSignature) || data.length > 10000000) {
@@ -168,6 +168,12 @@ if (hosted && images.some(x => x.name === 'mobile.png')) {
   lines.push('<details><summary>Mobile screenshot</summary>', '',
     `<img alt="Mobile screenshot of HeliosAI PR #${number}" width="390" src="${imageUrl('mobile.png')}">`, '',
     '</details>', '');
+}
+for (const [name, label] of [['synthesis.png', 'Screen 2 · Synthesis'], ['proposal.png', 'Screen 3 · Proposed law']]) {
+  if (hosted && images.some(x => x.name === name)) {
+    lines.push('<details><summary>' + label + '</summary>', '',
+      `![${label}](${imageUrl(name)})`, '', '</details>', '');
+  }
 }
 if (hosted && images.some(x => x.name === 'mail.png')) {
   lines.push('<details><summary>Mail tab (locked operator view)</summary>', '',

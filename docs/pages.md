@@ -2,7 +2,7 @@
 
 This repository includes a GitHub Actions workflow at
 .github/workflows/pages.yml. It builds a static mirror of the HTML demos
-on every push to main, and can also be run manually.
+on every push to main, and can also be run manually. The default entry is the three-screen Helios Loop in local drafting mode; archived demos are unlisted (see [experience inventory](experiences.md)).
 
 ## Enable it on this repository
 
@@ -31,7 +31,7 @@ automatically deploy the fork's latest HTML demo.
 
 GitHub Pages serves only static files. The workflow runs
 node scripts/build-pages.mjs to copy the HTML demos and public assets,
-replace Bun-only iframe URLs with relative links that work at a subpath,
+rewrite the archived dashboard's Bun-only iframe URLs with relative links that work at a subpath,
 and generate an external link for the YC Research proxy tab.
 
 The static Pages version **does not run Bun, SQLite, server-side proxy

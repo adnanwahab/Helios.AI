@@ -10,8 +10,8 @@ test('The Long Coil: projected decade, search, ledger and phone layout',async({p
  await page.setViewportSize({width:390,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  expect(errors).toEqual([]);
 });
-test('home page tab embeds The Long Coil',async({page})=>{
- await page.goto('/');await page.getByRole('tab',{name:'The Long Coil'}).click();
+test('archived dashboard tab embeds The Long Coil',async({page})=>{
+ await page.goto('/experiments.html');await page.getByRole('tab',{name:'The Long Coil'}).click();
  await expect(page.locator('#view-coil')).toBeVisible();await expect(page.locator('#view-coil')).toHaveAttribute('src','/embed/coil');
  await expect(page.frameLocator('#view-coil').locator('#panel')).toContainText('milestones projected for 2027 to 2036');
 });

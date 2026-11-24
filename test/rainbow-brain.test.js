@@ -6,7 +6,7 @@ const root = new URL('../', import.meta.url);
 const source = filename => readFileSync(join(root.pathname, filename), 'utf8');
 
 test('Rainbow Brain Realms is a tab on the merged index and routed on Fly, Netlify and Pages', () => {
-  const index = source('index.html');
+  const index = source('docs/legacy-home.html');
   expect(index).toContain('id="tab-rainbow"');
   expect(index).toContain('src="/embed/rainbow-brain"');
   expect(index).toContain("activate('rainbow')");

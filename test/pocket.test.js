@@ -5,8 +5,8 @@ import {join} from 'node:path';
 const root = new URL('../', import.meta.url);
 const source = filename => readFileSync(join(root.pathname, filename), 'utf8');
 
-test('HappyBearLandia Pocket is a homepage tab with routes and builds', () => {
-  const index = source('index.html');
+test('HappyBearLandia Pocket is a archived dashboard tab with routes and builds', () => {
+  const index = source('docs/legacy-home.html');
   expect(index).toContain('id="tab-pocket"');
   expect(index).toContain('src="/embed/pocket"');
   expect(index).toContain("tabs.pocket.addEventListener");

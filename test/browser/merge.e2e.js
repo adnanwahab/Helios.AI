@@ -79,8 +79,8 @@ test('Three-editor merge: journals merge into a constitution across 8 billion jo
   expect(errors).toEqual([]);
 });
 
-test('home page tab embeds the three-editor merge', async ({page}) => {
-  await page.goto('/');
+test('archived dashboard tab embeds the three-editor merge', async ({page}) => {
+  await page.goto('/experiments.html');
   await page.getByRole('tab', {name: 'Three-Editor Merge'}).click();
   await expect(page.locator('#view-merge')).toBeVisible();
   await expect(page.locator('#view-merge')).toHaveAttribute('src', '/embed/merge');

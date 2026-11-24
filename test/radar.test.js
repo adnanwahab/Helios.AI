@@ -12,11 +12,11 @@ test('vote radar labels its votes as simulated sample data, not an official ball
   expect(page).toContain('Sample data, not an official ballot.');
 });
 
-test('vote radar is routed, linked from the homepage and included in both builds', () => {
+test('vote radar is routed, linked from the archived dashboard and included in both builds', () => {
   const toml = source('netlify.toml');
   expect(toml).toMatch(/from = "\/radar"\s+to = "\/vote_radar.html"/);
   expect(toml).toMatch(/from = "\/embed\/radar"\s+to = "\/vote_radar.html"/);
-  const index = source('index.html');
+  const index = source('docs/legacy-home.html');
   expect(index).toContain('id="tab-radar"');
   expect(index).toContain('src="/embed/radar"');
   expect(source('scripts/build-netlify.mjs')).toContain("'vote_radar.html'");

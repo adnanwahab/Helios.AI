@@ -41,10 +41,10 @@ test('neighborhood consensus: surface, table, five linked views and pasted ballo
   expect(errors).toEqual([]);
 });
 
-test('the home page embeds it as a tab, and phones do not scroll sideways', async ({page}, info) => {
+test('the archived dashboard embeds it as a tab, and phones do not scroll sideways', async ({page}, info) => {
   const errors = [];
   page.on('pageerror', e => errors.push(e.message));
-  await page.goto('/');
+  await page.goto('/experiments.html');
   await page.locator('#tab-consensus').click();
   await expect(page.locator('#tab-consensus')).toHaveAttribute('aria-selected', 'true');
   await expect(page.locator('#view-consensus')).toBeVisible();

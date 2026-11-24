@@ -54,8 +54,12 @@ try {
     reducedMotion: 'reduce',
   });
   await page.goto(base + '/', {waitUntil: 'domcontentloaded', timeout: 45000});
-  await page.locator('#tab-helios-ai').waitFor({timeout: 20000});
-  await page.frameLocator('#view-helios-ai').locator('body').waitFor({timeout: 30000});
+  const loop = await page.locator('#journal-form').count() > 0;
+  if (loop) await page.locator('#journal').waitFor({timeout: 20000});
+  else {
+    await page.locator('#tab-helios-ai').waitFor({timeout: 20000});
+    await page.frameLocator('#view-helios-ai').locator('body').waitFor({timeout: 30000});
+  }
   await page.waitForTimeout(3000);
   await page.screenshot({path: join(output, 'desktop.png'), animations: 'disabled'});
 
@@ -64,6 +68,16 @@ try {
   await page.screenshot({path: join(output, 'mobile.png'), animations: 'disabled'});
 
   await page.setViewportSize({width: 1440, height: 900});
+  if (loop) {
+    // Never submit to a real deployment; these screenshots stop at the editable draft.
+    await page.locator('#example').click();
+    await page.locator('#journal-form button[type=submit]').click();
+    await page.locator('#outcome').fill('Accessible, comfortable bus stops.');
+    await page.locator('#approach').fill('Test shaded stops on a voluntary city pilot.');
+    await page.screenshot({path: join(output, 'synthesis.png'), fullPage: true, animations: 'disabled'});
+    await page.locator('#synthesis-form button[type=submit]').click();
+    await page.screenshot({path: join(output, 'proposal.png'), fullPage: true, animations: 'disabled'});
+  }
   const mailTab = page.locator('#tab-mail');
   if (await mailTab.count()) {
     // Never unlock the operator console or enter any credentials.

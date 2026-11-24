@@ -3,8 +3,8 @@ import {readFileSync} from 'node:fs';
 
 const source = name => readFileSync(new URL('../' + name, import.meta.url), 'utf8');
 
-test('Neighborhood Consensus is a homepage tab with routes, builds and a sitemap entry', () => {
-  const index = source('index.html');
+test('Neighborhood Consensus is a archived dashboard tab with routes, builds and no public sitemap entry', () => {
+  const index = source('docs/legacy-home.html');
   expect(index).toContain('id="tab-consensus"');
   expect(index).toContain('aria-controls="view-consensus"');
   expect(index).toContain('src="/embed/consensus"');
@@ -16,7 +16,8 @@ test('Neighborhood Consensus is a homepage tab with routes, builds and a sitemap
   const pages = source('scripts/build-pages.mjs');
   expect(pages).toContain("'neighborhood_consensus.html'");
   expect(pages).toContain(`replaceRequired('src="/embed/consensus"', 'src="./neighborhood_consensus.html"')`);
-  expect(source('sitemap.xml')).toContain('<loc>https://helioshtml.com/consensus</loc>');
+  expect(source('sitemap.xml')).not.toContain('<loc>https://helioshtml.com/consensus</loc>');
+  expect(source('index.html')).not.toContain('id="tab-consensus"');
 });
 
 test('the page is self-contained, labels its sample data and its script parses', () => {

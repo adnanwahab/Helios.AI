@@ -1,490 +1,127 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0b1220">
-  <link rel="icon" href="/public/favicon.ico" sizes="any">
-  <link rel="icon" href="/public/favicon.svg" type="image/svg+xml">
-  <link rel="icon" type="image/png" sizes="32x32" href="/public/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/public/favicon-16x16.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/public/apple-touch-icon.png">
-  <link rel="manifest" href="/public/site.webmanifest">
-  <title>Please vote. Eight billion people can't all be wrong. Actually, never mind.</title>
-  <meta name="description" content="Explore 100 draft shared goals, save private notes in your browser, or propose public amendments for review. This is not an official ballot.">
-  <link rel="canonical" href="https://helioshtml.com/">
-  <!-- Link previews: iMessage, SMS, Slack, Discord, Facebook, LinkedIn, X -->
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Helios.AI">
-  <meta property="og:title" content="Please vote. Eight billion people can't all be wrong. Actually, never mind.">
-  <meta property="og:description" content="Explore 100 draft shared goals, save private notes in your browser, or propose public amendments for review. This is not an official ballot.">
-  <meta property="og:url" content="https://helioshtml.com/">
-  <meta property="og:image" content="https://helioshtml.com/public/og.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="A journal wish, &ldquo;Please build a bridge from New York to France,&rdquo; becomes the Transatlantic Connection Initiative.">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Please vote. Eight billion people can't all be wrong. Actually, never mind.">
-  <meta name="twitter:description" content="Explore 100 draft shared goals, save private notes in your browser, or propose public amendments for review. This is not an official ballot.">
-  <meta name="twitter:image" content="https://helioshtml.com/public/og.png">
-  <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"WebSite","name":"Helios.AI","url":"https://helioshtml.com/","description":"Explore draft goals and suggest amendments for public review. This is not an official ballot."}
-  </script>
-  <style>
-    :root {
-      --bg: #0b1220;
-      --panel: #121b2d;
-      --line: #26344e;
-      --text: #e7eef9;
-      --muted: #9fb1cc;
-      --active: #7ce4cf;
-    }
-    * { box-sizing: border-box; }
-    html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
-
-    .app {
-      height: 100%;
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      grid-template-columns: minmax(0, 1fr);
-    }
-
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      min-height: 64px;
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--line);
-      background: linear-gradient(180deg, #101a2b, #0e1727);
-      position: sticky;
-      top: 0;
-      z-index: 5;
-    }
-
-    .title {
-      margin: 0;
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: .02em;
-      white-space: normal;
-      line-height: 1.3;
-      flex-shrink: 0;
-      max-width: 250px;
-    }
-
-    .welcome-start { color:#09221c; background:var(--active); border-radius:999px; padding:10px 15px; font-size:13px; font-weight:800; white-space:nowrap; text-decoration:none; }
-    .welcome-start:focus-visible { outline:3px solid #ffdfa0; outline-offset:3px; }
-
-    .tabs {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .tab {
-      border: 1px solid var(--line);
-      background: var(--panel);
-      color: var(--muted);
-      border-radius: 999px;
-      padding: 8px 12px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .tab[aria-selected="true"] {
-      color: #07101d;
-      background: var(--active);
-      border-color: transparent;
-    }
-
-    .signup {
-      flex: 0 0 340px;
-      width: 340px;
-      height: 44px;
-      border: 0;
-      background: transparent;
-    }
-
-    .views {
-      position: relative;
-      min-height: 0;
-    }
-
-    .view {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-      display: none;
-      background: #0b1220;
-    }
-
-    .view.active {
-      display: block;
-    }
-
-    .byline {
-      display: flex;
-      justify-content: center;
-      padding: 8px 14px 10px;
-      border-top: 1px solid var(--line);
-      background: #0e1727;
-      font-size: 15px;
-      font-weight: 800;
-      letter-spacing: .04em;
-    }
-
-    .byline a { text-decoration: none; display: inline-flex; }
-    .byline { flex-wrap: wrap; gap: 12px 24px; }
-    .byline .contact-link { color: var(--active); font-size: 14px; font-weight: 700; letter-spacing: 0; align-items: center; }
-    .byline .contact-link:hover { text-decoration: underline; }
-    .byline .contact-link:focus-visible { outline: 2px solid var(--active); outline-offset: 3px; border-radius: 4px; }
-
-    .byline span {
-      display: inline-block;
-      white-space: pre;
-      color: hsl(calc(var(--i) * 30deg) 100% 65%);
-      text-shadow: 0 0 8px currentColor;
-      animation: hue-cycle 3s linear infinite, bob 1.2s ease-in-out infinite;
-      animation-delay: 0s, calc(var(--i) * 0.08s);
-    }
-
-    @keyframes hue-cycle {
-      from { filter: hue-rotate(0deg); }
-      to   { filter: hue-rotate(360deg); }
-    }
-
-    @keyframes bob {
-      0%, 100% { transform: translateY(0); }
-      50%      { transform: translateY(-3px); }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .byline span { animation: hue-cycle 3s linear infinite; }
-    }
-
-    @media (max-width: 900px) {
-      .topbar {
-        height: auto;
-        align-items: flex-start;
-        flex-direction: column;
-      }
-      .tabs { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; }
-      .tab { flex: 0 0 auto; }
-      .signup { flex-basis: auto; width: 100%; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101a1a">
+<meta name="helios-mode" content="live">
+<meta name="description" content="Turn a private reflection into a civic proposal for public review.">
+<link rel="icon" href="./public/favicon.svg" type="image/svg+xml">
+<title>Helios AI — From journal to proposed law</title>
+<style>
+:root{color-scheme:dark;--bg:#101a1a;--panel:#182625;--text:#eff7ef;--muted:#a9bdb6;--line:#35504b;--accent:#baf2be;--dark:#14251b;--danger:#ffc5b8;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 90% 0,#263d35 0,transparent 45%),var(--bg);color:var(--text);min-height:100vh;line-height:1.55}button,input,textarea,select{font:inherit}button,a,input,textarea,select{outline-offset:4px}button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--accent)}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.55}a{color:var(--accent)}[hidden]{display:none!important}.wrap{width:min(100% - 32px,900px);margin:auto}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:24px 0;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:10px;font-weight:750;letter-spacing:.13em}.sun{display:grid;place-items:center;width:34px;height:34px;border:1px solid var(--accent);border-radius:50%;color:var(--accent);font-size:22px}.topnote{font-size:12px;color:var(--muted);text-align:right}
+main{padding:44px 0 30px}.eyebrow{font-size:11px;font-weight:750;color:var(--accent);letter-spacing:.16em;text-transform:uppercase;margin:0 0 12px}.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;list-style:none;padding:0;margin:0 0 32px}.steps li{padding:12px 6px;border-top:2px solid var(--line);color:var(--muted);font-size:13px;display:flex;gap:8px;align-items:center}.steps li[aria-current="step"]{border-color:var(--accent);color:var(--text);font-weight:700}.steps li.done{border-color:#759d82}.stepnum{font-variant-numeric:tabular-nums;color:var(--accent)}
+h1{font-size:clamp(34px,6vw,60px);letter-spacing:-.055em;line-height:1.05;margin:0 0 16px;font-weight:650;max-width:750px}h2{font-size:19px;margin:0 0 12px}p{margin:0 0 16px}.lede{font-size:clamp(16px,2.5vw,20px);color:var(--muted);max-width:650px;margin-bottom:28px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:clamp(16px,4vw,30px)}label,.field-label{display:block;font-size:14px;font-weight:650;margin-bottom:8px}textarea,input:not([type=checkbox]),select{display:block;width:100%;background:#101d1c;color:var(--text);border:1px solid #49625b;border-radius:10px;padding:12px;min-width:0}textarea{resize:vertical;min-height:100px}#journal{min-height:clamp(160px,26vh,300px);font-size:18px;line-height:1.6}textarea::placeholder,input::placeholder{color:#93aaa2}select{min-height:48px}.field{margin-bottom:20px}.hint{color:var(--muted);font-size:13px;font-weight:400;margin:8px 0 0}.between{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:20px}.primary,.secondary,.quiet{border:1px solid transparent;border-radius:10px;min-height:48px;padding:12px 18px;font-weight:700;line-height:1.3}.primary{background:var(--accent);color:var(--dark)}.primary:hover:not(:disabled){background:#d3fbd6}.secondary{background:transparent;color:var(--text);border-color:var(--line)}.quiet{color:var(--muted);background:none;padding-inline:6px}.quiet:hover,.secondary:hover{color:var(--accent)}.status{font-size:14px;color:var(--muted);min-height:22px;margin:12px 0 0;overflow-wrap:anywhere}.status.error{color:var(--danger)}.notice{border-left:2px solid var(--accent);padding:10px 14px;background:#20322d;font-size:14px;color:var(--muted);margin-bottom:22px}.excerpt{white-space:pre-wrap;overflow-wrap:anywhere;max-height:9rem;overflow:auto;margin:8px 0;color:var(--muted)}details{margin-bottom:20px}summary{cursor:pointer;color:var(--accent);font-size:14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.consent{display:flex;align-items:flex-start;gap:10px;font-weight:500;margin-top:24px}.consent input{width:20px;height:20px;flex:none;accent-color:var(--accent);margin-top:3px}.receipt{margin-top:24px;border:1px solid var(--accent);border-radius:12px;padding:18px;overflow-wrap:anywhere}footer{padding:24px 0 36px;color:var(--muted);font-size:12px;border-top:1px solid var(--line)}@media(max-width:600px){main{padding-top:28px}.steps{margin-bottom:24px}.steps li{font-size:12px;gap:4px}.grid{grid-template-columns:1fr;gap:0}.actions .primary{flex:1}.topnote{max-width:140px}.panel{border-radius:14px}}
+</style>
 </head>
 <body>
-  <div class="app">
-    <header class="topbar">
-      <h1 class="title">Please vote. Eight billion people can't all be wrong. Actually, never mind.</h1>
-      <a class="welcome-start" href="/welcome" aria-label="New here? Read the HeliosAI participation guide">New here? Start here</a>
-      <nav class="tabs" aria-label="Choose page">
-        <button class="tab" id="tab-helios-ai" type="button" role="tab" aria-selected="true" aria-controls="view-helios-ai">HELIOS AI Landing Page</button>
-        <button class="tab" id="tab-hippie" type="button" role="tab" aria-selected="false" aria-controls="view-hippie">HeliosAI · Hippie</button>
-        <button class="tab" id="tab-notion" type="button" role="tab" aria-selected="false" aria-controls="view-notion">Plan · Notion</button>
-        <button class="tab" id="tab-world-plan" type="button" role="tab" aria-selected="false" aria-controls="view-world-plan">World Plan Simulator</button>
-        <button class="tab" id="tab-radar" type="button" role="tab" aria-selected="false" aria-controls="view-radar">Vote Radar</button>
-        <button class="tab" id="tab-consensus" type="button" role="tab" aria-selected="false" aria-controls="view-consensus">Neighborhood Consensus</button>
-        <button class="tab" id="tab-merge" type="button" role="tab" aria-selected="false" aria-controls="view-merge">Three-Editor Merge</button>
-        <button class="tab" id="tab-demo" type="button" role="tab" aria-selected="false" aria-controls="view-demo">100 Shared Goals</button>
-        <button class="tab" id="tab-orbit" type="button" role="tab" aria-selected="false" aria-controls="view-orbit">Acts in Orbit</button>
-        <button class="tab" id="tab-flags" type="button" role="tab" aria-selected="false" aria-controls="view-flags">Support Every Country</button>
-        <button class="tab" id="tab-unified" type="button" role="tab" aria-selected="false" aria-controls="view-unified">Helios Unified</button>
-        <button class="tab" id="tab-coil" type="button" role="tab" aria-selected="false" aria-controls="view-coil">The Long Coil</button>
-        <button class="tab" id="tab-lab" type="button" role="tab" aria-selected="false" aria-controls="view-lab">Dynamicland (Local)</button>
-        <button class="tab" id="tab-morphlab" type="button" role="tab" aria-selected="false" aria-controls="view-morphlab">MorphLab · WebGPU</button>
-        <button class="tab" id="tab-pocket" type="button" role="tab" aria-selected="false" aria-controls="view-pocket">HappyBearLandia Pocket</button>
-        <button class="tab" id="tab-pensieve" type="button" role="tab" aria-selected="false" aria-controls="view-pensieve">Digital Pensieve</button>
-        <button class="tab" id="tab-braindance" type="button" role="tab" aria-selected="false" aria-controls="view-braindance">Braindance</button>
-        <button class="tab" id="tab-mail" type="button" role="tab" aria-selected="false" aria-controls="view-mail">Mail · Resend</button>
-        <button class="tab" id="tab-ycr" type="button" role="tab" aria-selected="false" aria-controls="view-ycr">YC Research</button>
-        <button class="tab" id="tab-fork" type="button" role="tab" aria-selected="false" aria-controls="view-fork">Fork Helios</button>
-        <button class="tab" id="tab-rainbow" type="button" role="tab" aria-selected="false" aria-controls="view-rainbow">Rainbow Brain Realms</button>
-        <button class="tab" id="tab-sunshine" type="button" role="tab" aria-selected="false" aria-controls="view-sunshine">Sunshine for Breakfast</button>
-        <button class="tab" id="tab-eight-billion-five-laws" type="button" role="tab" aria-selected="false" aria-controls="view-eight-billion-five-laws">Eight Billion, Five Laws</button>
-      </nav>
-      <iframe
-        class="signup"
-        title="Get one email from Helios"
-        src="/signup?layout=inline"
-      ></iframe>
-    </header>
-
-    <main class="views">
-      <iframe
-        id="view-helios-ai"
-        class="view active"
-        title="HELIOS AI Landing Page"
-        src="/embed/helios-ai"
-        loading="lazy"
-      ></iframe>
-
-      <iframe
-        id="view-hippie"
-        class="view"
-        title="HeliosAI Hippie Landing Page"
-        src="/embed/hippie"
-        loading="lazy"
-      ></iframe>
-
-      <iframe
-        id="view-notion"
-        class="view"
-        title="Helios plan as a Notion document"
-        src="/embed/notion"
-        loading="lazy"
-      ></iframe>
-
-      <iframe
-        id="view-world-plan"
-        class="view"
-        title="World Plan Simulator"
-        src="/embed/world-plan"
-        loading="lazy"
-      ></iframe>
-
-      <iframe
-        id="view-radar"
-        class="view"
-        title="Vote Radar"
-        src="/embed/radar"
-        loading="lazy"
-      ></iframe>
-
-      <iframe
-        id="view-consensus"
-        class="view"
-        title="Neighborhood Consensus: how support for a local proposal spreads across a neighborhood"
-        src="/embed/consensus"
-        loading="lazy"
-      ></iframe>
-
-      <iframe
-        id="view-merge"
-        class="view"
-        title="Three-Editor Merge"
-        src="/embed/merge"
-        loading="lazy"
-      ></iframe>
-
-      <iframe
-        id="view-demo"
-        class="view"
-        title="100 Shared Goals"
-        src="/embed/goals"
-        loading="lazy"
-      ></iframe>
-
-      <iframe
-        id="view-orbit"
-        class="view"
-        title="HELIOSAI Acts in Orbit"
-        src="/embed/orbit"
-        loading="lazy"
-      ></iframe>
-
-      <iframe
-        id="view-flags"
-        class="view"
-        title="Support Every Country"
-        src="/embed/flags"
-        loading="lazy"
-        allow="fullscreen"
-        allowfullscreen
-      ></iframe>
-
-      <iframe
-        id="view-unified"
-        class="view"
-        title="Helios Unified"
-        src="/embed/unified"
-        loading="lazy"
-      ></iframe>
-
-      <iframe
-        id="view-coil"
-        class="view"
-        title="The Long Coil"
-        src="/embed/coil"
-        loading="lazy"
-      ></iframe>
-
-      <iframe
-        id="view-lab"
-        class="view"
-        title="Dynamicland Local"
-        src="/embed/dynamicland"
-        loading="lazy"
-      ></iframe>
-
-      <iframe
-        id="view-pocket"
-        class="view"
-        title="HappyBearLandia Pocket"
-        src="/embed/pocket"
-        loading="lazy"
-        allow="fullscreen; autoplay; xr-spatial-tracking; gyroscope; accelerometer; web-share; clipboard-write"
-        allowfullscreen
-      ></iframe>
-
-      <iframe id="view-morphlab" class="view" title="Helios MorphLab — prompt-to-particle 3D studio" src="/embed/morphlab" loading="lazy"></iframe>
-      <iframe
-        id="view-pensieve"
-        class="view"
-        title="Digital Pensieve"
-        src="https://digital-pensieve.fly.dev/"
-        loading="lazy"
-        allow="fullscreen; xr-spatial-tracking; autoplay"
-        allowfullscreen
-      ></iframe>
-
-      <iframe
-        id="view-braindance"
-        class="view"
-        title="Braindance: Mirrorworld Pensieve, key events 2019 to 2033"
-        src="/embed/braindance"
-        loading="lazy"
-      ></iframe>
-
-      <iframe id="view-mail" class="view" title="Helios Mail · Resend inbox and compose" src="/embed/mail" loading="lazy"></iframe>
-
-      <iframe
-        id="view-ycr"
-        class="view"
-        title="YC Research"
-        src="/proxy/ycr/"
-        loading="lazy"
-      ></iframe>
-      <iframe
-        id="view-fork"
-        class="view"
-        title="Fork Helios"
-        src="/embed/fork"
-        loading="lazy"
-      ></iframe>
-      <iframe
-        id="view-rainbow"
-        class="view"
-        title="Rainbow Brain Realms"
-        src="/embed/rainbow-brain"
-        loading="lazy"
-        allow="gamepad; fullscreen"
-        allowfullscreen
-      ></iframe>
-
-      <iframe
-        id="view-sunshine"
-        class="view"
-        title="Sunshine for Breakfast"
-        src="/embed/sunshine"
-        loading="lazy"
-      ></iframe>
-
-      <iframe
-        id="view-eight-billion-five-laws"
-        class="view"
-        title="Eight Billion, Five Laws"
-        src="/public/eight-billion-five-laws/index.html"
-        loading="lazy"
-      ></iframe>
-    </main>
-
-    <footer class="byline">
-      <a class="contact-link" href="mailto:hello@heliosai.lol" aria-label="Email HeliosAI at hello@heliosai.lol">✉ Email HeliosAI</a>
-      <a href="https://happybearlandia.fly.dev/" target="_blank" rel="noopener" aria-label="by happybear"><span style="--i:0">b</span><span style="--i:1">y</span><span style="--i:2"> </span><span style="--i:3">h</span><span style="--i:4">a</span><span style="--i:5">p</span><span style="--i:6">p</span><span style="--i:7">y</span><span style="--i:8">b</span><span style="--i:9">e</span><span style="--i:10">a</span><span style="--i:11">r</span></a>
-    </footer>
-  </div>
-
-  <script>
-    const tabs = {
-      lab: document.getElementById('tab-lab'),
-      morphlab: document.getElementById('tab-morphlab'),
-      heliosAi: document.getElementById('tab-helios-ai'),
-      hippie: document.getElementById('tab-hippie'),
-      notion: document.getElementById('tab-notion'),
-      worldPlan: document.getElementById('tab-world-plan'),
-      radar: document.getElementById('tab-radar'),
-      consensus: document.getElementById('tab-consensus'),
-      merge: document.getElementById('tab-merge'),
-      demo: document.getElementById('tab-demo'),
-      orbit: document.getElementById('tab-orbit'),
-      flags: document.getElementById('tab-flags'),
-      unified: document.getElementById('tab-unified'),
-      coil: document.getElementById('tab-coil'),
-      pocket: document.getElementById('tab-pocket'),
-      pensieve: document.getElementById('tab-pensieve'),
-      braindance: document.getElementById('tab-braindance'),
-      mail: document.getElementById('tab-mail'),
-      ycr: document.getElementById('tab-ycr'),
-      fork: document.getElementById('tab-fork'),
-      rainbow: document.getElementById('tab-rainbow'),
-      sunshine: document.getElementById('tab-sunshine'),
-      eightBillionFiveLaws: document.getElementById('tab-eight-billion-five-laws')
-    };
-
-    const views = {
-      lab: document.getElementById('view-lab'),
-      morphlab: document.getElementById('view-morphlab'),
-      heliosAi: document.getElementById('view-helios-ai'),
-      hippie: document.getElementById('view-hippie'),
-      notion: document.getElementById('view-notion'),
-      worldPlan: document.getElementById('view-world-plan'),
-      radar: document.getElementById('view-radar'),
-      consensus: document.getElementById('view-consensus'),
-      merge: document.getElementById('view-merge'),
-      demo: document.getElementById('view-demo'),
-      orbit: document.getElementById('view-orbit'),
-      flags: document.getElementById('view-flags'),
-      unified: document.getElementById('view-unified'),
-      coil: document.getElementById('view-coil'),
-      pocket: document.getElementById('view-pocket'),
-      pensieve: document.getElementById('view-pensieve'),
-      braindance: document.getElementById('view-braindance'),
-      mail: document.getElementById('view-mail'),
-      ycr: document.getElementById('view-ycr'),
-      fork: document.getElementById('view-fork'),
-      rainbow: document.getElementById('view-rainbow'),
-      sunshine: document.getElementById('view-sunshine'),
-      eightBillionFiveLaws: document.getElementById('view-eight-billion-five-laws')
-    };
-
-    function activate(which) {
-      for (const key of Object.keys(tabs)) {
-        const isActive = key === which;
-        tabs[key].setAttribute('aria-selected', String(isActive));
-        views[key].classList.toggle('active', isActive);
-      }
-    }
-
-    tabs.lab.addEventListener('click', () => activate('lab'));
-    tabs.morphlab.addEventListener('click', () => activate('morphlab'));
-    tabs.heliosAi.addEventListener('click', () => activate('heliosAi'));
-    tabs.hippie.addEventListener('click', () => activate('hippie'));
-    tabs.notion.addEventListener('click', () => activate('notion'));
-    tabs.worldPlan.addEventListener('click', () => activate('worldPlan'));
-    tabs.radar.addEventListener('click', () => activate('radar'));
-    tabs.consensus.addEventListener('click', () => activate('consensus'));
-    tabs.merge.addEventListener('click', () => activate('merge'));
-    tabs.demo.addEventListener('click', () => activate('demo'));
-    tabs.orbit.addEventListener('click', () => activate('orbit'));
-    tabs.flags.addEventListener('click', () => activate('flags'));
-    tabs.unified.addEventListener('click', () => activate('unified'));
-    tabs.coil.addEventListener('click', () => activate('coil'));
-    tabs.pocket.addEventListener('click', () => activate('pocket'));
-    tabs.pensieve.addEventListener('click', () => activate('pensieve'));
-    tabs.braindance.addEventListener('click', () => activate('braindance'));
-    tabs.mail.addEventListener('click', () => activate('mail'));
-    tabs.ycr.addEventListener('click', () => activate('ycr'));
-    tabs.fork.addEventListener('click', () => activate('fork'));
-    tabs.rainbow.addEventListener('click', () => activate('rainbow'));
-    tabs.sunshine.addEventListener('click', () => activate('sunshine'));
-    tabs.eightBillionFiveLaws.addEventListener('click', () => activate('eightBillionFiveLaws'));
-  </script>
+<header class="wrap"><div class="brand"><span class="sun" aria-hidden="true">✳</span> HELIOS AI</div><div class="topnote">A civic proposal workshop</div></header>
+<main class="wrap">
+<ol class="steps" aria-label="Proposal progress">
+<li data-step="1" aria-current="step"><span class="stepnum">01</span> Journal</li>
+<li data-step="2"><span class="stepnum">02</span> Synthesis</li>
+<li data-step="3"><span class="stepnum">03</span> Proposed law</li>
+</ol>
+<p id="static-notice" class="notice" hidden>Static preview: drafting and downloading work here. Public submission requires the live app. <a href="https://helioshtml.com/" rel="noopener noreferrer">Open live Helios</a>.</p>
+<section id="screen-1" aria-labelledby="heading-1">
+<p class="eyebrow">01 / Listen</p><h1 id="heading-1" tabindex="-1">What would you like to change?</h1>
+<p class="lede">Start with something you noticed, experienced, or wish were different. It doesn't have to sound like a law.</p>
+<form id="journal-form" class="panel">
+<label for="journal">Your journal</label>
+<textarea id="journal" maxlength="10000" required placeholder="I've been thinking about…"></textarea>
+<div class="between hint"><span>Private draft · stays in this page, not sent or stored by Helios.</span><span id="journal-count">0 / 10,000</span></div>
+<div class="actions"><button class="primary" type="submit">Find the civic idea →</button><button class="quiet" id="example" type="button">Try an example</button></div>
+<p id="journal-status" class="status" role="status"></p>
+</form>
+</section>
+<section id="screen-2" aria-labelledby="heading-2" hidden>
+<p class="eyebrow">02 / Understand</p><h1 id="heading-2" tabindex="-1">Turn a thought into a public goal.</h1>
+<p class="lede">Separate the concern from the personal details. Define what should change and what could be tested.</p>
+<form id="synthesis-form" class="panel">
+<details><summary>Look back at your private journal</summary><p id="journal-excerpt" class="excerpt"></p></details>
+<div class="notice">Guided local synthesis suggests a topic and an excerpt. Review or replace the text; only the proposal you explicitly approve on the next screen can become public.</div>
+<div class="field"><label for="issue">What is the public problem or opportunity?</label><textarea id="issue" required maxlength="1500"></textarea><p class="hint">Remove names, addresses and any personal details.</p></div>
+<div class="field"><label for="category">Policy area</label><select id="category" required></select></div>
+<div class="field"><label for="outcome">What would a better outcome look like?</label><textarea id="outcome" maxlength="1500" required placeholder="People should be able to…"></textarea></div>
+<div class="field"><label for="approach">What practical first step could help?</label><textarea id="approach" maxlength="2500" required placeholder="Test a small voluntary pilot, improve a service, or change a rule…"></textarea></div>
+<div class="actions"><button class="secondary" type="button" data-back="1">← Journal</button><button class="primary" type="submit">Draft a proposed law →</button></div>
+<p id="synthesis-status" class="status" role="status"></p>
+</form>
+</section>
+<section id="screen-3" aria-labelledby="heading-3" hidden>
+<p class="eyebrow">03 / Propose</p><h1 id="heading-3" tabindex="-1">A proposal worth reviewing.</h1>
+<p class="lede">Edit the public draft, add safeguards and success measures, then decide whether to submit it. This is a proposal, not enacted law or an official ballot.</p>
+<form id="proposal-form" class="panel">
+<div class="field"><label for="title">Proposed law title</label><input id="title" required maxlength="160"></div>
+<div class="field"><label for="public-category">Policy area</label><select id="public-category" required></select></div>
+<div class="field"><label for="goal">Shared public goal</label><textarea id="goal" required maxlength="4000"></textarea></div>
+<div class="field"><label for="option">Illustrative implementation</label><textarea id="option" required maxlength="6000"></textarea></div>
+<div class="field"><label for="safeguards">Risks and safeguards</label><textarea id="safeguards" required maxlength="4000"></textarea></div>
+<div class="field"><label for="measures">Success measures (one per line, up to eight)</label><textarea id="measures" required rows="3"></textarea></div>
+<label class="consent" id="consent-label"><input id="consent" type="checkbox" required><span>I have reviewed all fields above, removed private information, and agree to save this exact proposal to the public Helios library. Public copies may persist.</span></label>
+<div class="actions"><button class="secondary" type="button" data-back="2">← Synthesis</button><button class="secondary" type="button" id="download">Download draft</button><button class="primary" id="publish" type="submit" disabled>Submit public proposal</button></div>
+<p id="publish-status" class="status" role="status" aria-live="polite"></p>
+</form>
+<div id="receipt" class="receipt" hidden><h2 tabindex="-1" id="receipt-heading">Proposal submitted for review.</h2><p id="receipt-id"></p><p>It is a public proposal, not a passed law. You can revisit its record and suggest amendments.</p><div class="actions"><a id="receipt-link" class="secondary" href="/laws">View proposal ↗</a><button type="button" id="restart" class="primary">Start a new journal →</button></div></div>
+</section>
+</main>
+<footer class="wrap">Helios AI · Reflection → synthesis → proposal. No account, model download or official vote required.</footer>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const categories=[
+'Economic security and freedom from desperation','Housing and livable cities','Physical and mental health','Education and human development','Meaningful work, autonomy, and time','Friendship, community, and belonging','Justice, dignity, and second chances','Democracy, wisdom, and government','Technology, AI, and digital freedom','Nature, safety, and future generations'];
+const topics=[/\b(wages?|income|poverty|prices?|food|money|bills?)\b/i,/\b(housing|rent|homes?|transit|bus|buses|traffic|streets?|roads?|commute)\b/i,/\b(health|hospital|mental|medicine|medical|care)\b/i,/\b(school|schools|education|students?|teachers?|learning)\b/i,/\b(work|jobs?|hours|employment|workers?)\b/i,/\b(community|friends?|parks?|libraries|lonely|neighbou?rhood)\b/i,/\b(justice|prison|jail|courts?|rights|police)\b/i,/\b(vot(e|ing)|government|council|democracy|elections?)\b/i,/\b(ai|internet|digital|privacy|technology|software)\b/i,/\b(climate|flood|nature|water|pollution|energy|environment)\b/i];
+for(const id of ['category','public-category']) for(const name of categories){const opt=document.createElement('option');opt.value=name;opt.textContent=name;$(id).append(opt)}
+const isStatic=document.querySelector('meta[name="helios-mode"]').content==='static';
+$('static-notice').hidden=!isStatic;
+$('consent-label').hidden=isStatic;
+$('consent').required=!isStatic;
+$('publish').hidden=isStatic;
+let priorJournal='', priorSynthesis='', busy=false, submitted=false, receiptKey=null, receiptBody=null;
+function show(step){for(let i=1;i<=3;i++)$('screen-'+i).hidden=i!==step;for(const el of document.querySelectorAll('[data-step]')){const n=Number(el.dataset.step);el.classList.toggle('done',n<step);if(n===step)el.setAttribute('aria-current','step');else el.removeAttribute('aria-current')} $('heading-'+step).focus({preventScroll:true});window.scrollTo(0,0)}
+function message(id,text,error=false){$(id).textContent=text;$(id).classList.toggle('error',error)}
+function count(){$('journal-count').textContent=$('journal').value.length.toLocaleString()+' / 10,000'}
+$('journal').addEventListener('input',count);
+$('example').addEventListener('click',()=>{if($('journal').value.trim()&&!confirm('Replace your journal with the example?'))return;$('journal').value='My neighborhood bus stops have no shade. Waiting in the summer heat is difficult, especially for older people and children. I wish our city would make public transit more comfortable.';count();$('journal').focus()});
+function suggestCategory(text){const i=topics.findIndex(re=>re.test(text));return categories[i<0?7:i]}
+function firstThought(text){return (text.trim().split(/(?<=[.!?])\s+|\n/)[0]||'').slice(0,1500)}
+$('journal-form').addEventListener('submit',e=>{e.preventDefault();const value=$('journal').value.trim();if(!value){message('journal-status','Write a thought before continuing.',true);return}
+if(value!==priorJournal){if(priorJournal&&$('issue').value.trim()&&!confirm('Use the revised journal to replace the previous synthesis and proposal draft?'))return;priorJournal=value;priorSynthesis='';$('issue').value=firstThought(value);$('category').value=suggestCategory(value);$('outcome').value='';$('approach').value=''}
+$('journal-excerpt').textContent=value;message('journal-status','');show(2)});
+function readSynthesis(){return {issue:$('issue').value.trim(),category:$('category').value,outcome:$('outcome').value.trim(),approach:$('approach').value.trim()}}
+function setPublish(){ $('publish').disabled=isStatic||busy||submitted||!$('consent').checked }
+$('synthesis-form').addEventListener('submit',e=>{e.preventDefault();const d=readSynthesis();if(!d.issue||!d.outcome||!d.approach){message('synthesis-status','Complete all three fields before drafting.',true);return}
+const signature=JSON.stringify(d);if(signature!==priorSynthesis){if(priorSynthesis&&!confirm('Regenerate the public draft from your revised synthesis? This replaces previous proposal edits.'))return;priorSynthesis=signature;
+$('title').value=(firstThought(d.issue).replace(/[.!?]+$/,'').slice(0,139)+' — Initiative').slice(0,160);
+$('public-category').value=d.category;
+$('goal').value='Public concern: '+d.issue+'\n\nIntended outcome: '+d.outcome;
+$('option').value=d.approach+'\n\nIdentify the responsible public authority, consult affected people, estimate costs, and test feasibility before wider implementation.';
+$('safeguards').value='Protect privacy and equal access; invite affected communities to review the proposal; identify legal authority, costs and unintended consequences before adoption.';
+$('measures').value='Progress toward the intended outcome\nParticipation and equitable access\nImplementation cost and unintended effects';
+}
+$('consent').checked=false;setPublish();message('synthesis-status','');show(3)});
+for(const b of document.querySelectorAll('[data-back]'))b.addEventListener('click',()=>{if(!busy&&!submitted)show(Number(b.dataset.back))});
+$('consent').addEventListener('change',setPublish);
+$('proposal-form').addEventListener('input',e=>{if(e.target!==$('consent')){$('consent').checked=false;setPublish()}});
+function getProposal(){const p={title:$('title').value.trim(),category:$('public-category').value,sharedGoal:$('goal').value.trim(),illustrativeLocalOption:$('option').value.trim(),risksAndSafeguards:$('safeguards').value.trim(),suggestedMeasures:$('measures').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean)};if(!p.title||!p.sharedGoal||!p.illustrativeLocalOption||!p.risksAndSafeguards||!categories.includes(p.category)||!p.suggestedMeasures.length||p.suggestedMeasures.length>8||p.suggestedMeasures.some(s=>s.length>240))throw Error('Complete all proposal fields and provide 1–8 measures, each at most 240 characters.');return p}
+$('download').addEventListener('click',()=>{try{const p=getProposal();const url=URL.createObjectURL(new Blob([JSON.stringify(p,null,2)+'\n'],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='helios-proposal-draft.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);message('publish-status','Public proposal draft downloaded. Nothing was submitted.')}catch(err){message('publish-status',err.message,true)}});
+async function jsonRequest(path,options){const response=await fetch(path,{credentials:'same-origin',cache:'no-store',signal:AbortSignal.timeout(20000),...options});const data=await response.json().catch(()=>null);if(!response.ok)throw Error(typeof data?.error==='string'?data.error:'Request failed (HTTP '+response.status+').');if(!data)throw Error('The server did not confirm a JSON response.');return data}
+$('proposal-form').addEventListener('submit',async e=>{e.preventDefault();if(isStatic||busy||submitted||!$('consent').checked)return;
+let body;try{body=JSON.stringify(getProposal())}catch(err){message('publish-status',err.message,true);return}
+if(receiptKey&&receiptBody!==body&&!confirm('A previous attempt may have reached the server. Submit this edited version as a new proposal?'))return;
+if(receiptBody!==body){receiptKey=crypto.randomUUID();receiptBody=body}
+busy=true;setPublish();const controls=[...$('proposal-form').querySelectorAll('input,textarea,select,button')];for(const control of controls)control.disabled=true;message('publish-status','Submitting for public review…');
+try{const session=await jsonRequest('/api/session');if(typeof session.csrfToken!=='string')throw Error('Could not establish a submission session.');
+const result=await jsonRequest('/api/laws',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':session.csrfToken,'Idempotency-Key':receiptKey},body});
+const id=result.law?.id;if(typeof id!=='string'||!/^HGP-[A-Za-z0-9-]+$/.test(id))throw Error('The server did not confirm a proposal record.');
+submitted=true;$('receipt-id').textContent='Record: '+id;$('receipt-link').href='/laws?goal='+encodeURIComponent(id);$('receipt').hidden=false;message('publish-status','');$('receipt-heading').focus();$('receipt').scrollIntoView({block:'nearest'});
+}catch(err){message('publish-status','Submission not confirmed: '+err.message+' Retry the unchanged draft to reuse the same request key.',true)}
+finally{busy=false;if(!submitted)for(const control of controls)control.disabled=false;setPublish()}});
+$('restart').addEventListener('click',()=>{for(const form of document.querySelectorAll('form')){form.reset();for(const control of form.querySelectorAll('input,textarea,select,button'))control.disabled=false}priorJournal='';priorSynthesis='';receiptKey=null;receiptBody=null;submitted=false;busy=false;$('journal-excerpt').textContent='';$('receipt-id').textContent='';$('receipt-link').href='/laws';$('receipt').hidden=true;for(const id of ['journal-status','synthesis-status','publish-status'])message(id,'');count();setPublish();show(1)});
+count();setPublish();
+</script>
 </body>
 </html>
