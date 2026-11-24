@@ -28,6 +28,7 @@ header.wrap,main.wrap,footer.wrap{width:min(100% - 40px,1560px)}#government-view
 @media(max-width:950px){.law-layout{grid-template-columns:1fr}.law-tiles{grid-template-columns:repeat(5,minmax(0,1fr));max-height:360px}}
 @media(max-width:550px){.law-top{gap:10px}.law-top h1{font-size:34px}.law-atlas,.law-detail{padding:11px}.law-tiles{grid-template-columns:repeat(4,minmax(0,1fr));max-height:360px}.law-filters{grid-template-columns:1fr}.law-tile{min-height:85px}.law-sliders{gap:8px}.law-chart{min-height:100px}.law-top-actions{width:100%}.law-top-actions .primary{flex:1}}
 .netherbrain-link{margin:0 0 14px;padding:9px 11px;background:#21182c;border:1px solid #59426d;border-radius:9px;font-size:12px;line-height:1.4}.netherbrain-link a{display:inline-block;color:#f4d49d;font-weight:700;text-underline-offset:3px;padding:4px 0}.netherbrain-link span{display:block;color:#c9b8dc;font-size:11px}
+.law-assembly-feature{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px 20px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(115deg,#203b32,#182625);padding:clamp(16px,3vw,24px);margin:0 0 16px}.law-assembly-feature h2{font-size:clamp(23px,4vw,35px);letter-spacing:-.04em;margin:0 0 8px;line-height:1.1}.law-assembly-feature p:not(.eyebrow){margin:0;color:var(--muted)}.law-assembly-feature .primary{display:inline-flex;align-items:center;text-decoration:none;justify-content:center}.law-assembly-links{display:flex;gap:8px 16px;flex-wrap:wrap;grid-column:1/-1}.law-assembly-links a{font-size:13px;font-weight:700}.law-assembly-feature .hint{grid-column:1/-1}#law-assembly-selected{display:inline-flex;align-items:center;text-decoration:none;margin:0 0 12px}@media(max-width:600px){.law-assembly-feature{grid-template-columns:minmax(0,1fr)}.law-assembly-feature .primary{justify-self:start}}
 </style>
 </head>
 <body>
@@ -36,6 +37,12 @@ header.wrap,main.wrap,footer.wrap{width:min(100% - 40px,1560px)}#government-view
 <main class="wrap">
 <section class="law-section" id="laws-workbench" aria-labelledby="law-section-title">
 <div class="law-top"><div><p class="eyebrow">HELIOS / 100 SHARED GOALS</p><h1 id="law-section-title">A hundred possible futures.</h1><p class="lede">Explore, simulate and help improve the original 100 law proposals. Change the assumptions and see the potential trade-offs before deciding what you support.</p></div><div class="law-top-actions"><span id="law-source" class="law-source">Editorial catalog · not enacted law</span><button type="button" class="primary" id="law-connect" disabled>Connect shared votes</button><button type="button" class="secondary" id="law-refresh" hidden>Refresh votes</button><a class="secondary" href="#journal-workbench">Write in journal ↓</a></div></div>
+<aside class="law-assembly-feature" aria-labelledby="law-assembly-title">
+<div><p class="eyebrow">HELIOS / FIELD NOTES · 03 OF 100</p><h2 id="law-assembly-title">Built from the ground up.</h2><p>Scroll to assemble three proposed laws, piece by piece. Explore their physical components, implementation choices and safeguards.</p></div>
+<a class="primary" href="./public/helios-law-assembly.html" target="_blank" rel="noopener noreferrer">Explore 3D assembly ↗</a>
+<div class="law-assembly-links" aria-label="Assembly chapters"><a href="./public/helios-law-assembly.html#homes" target="_blank" rel="noopener noreferrer">012 · Backyard homes ↗</a><a href="./public/helios-law-assembly.html#places" target="_blank" rel="noopener noreferrer">051 · Third places ↗</a><a href="./public/helios-law-assembly.html#water" target="_blank" rel="noopener noreferrer">091 · Lead-free water ↗</a></div>
+<p class="hint">Illustrative models · editorial proposals, not enacted laws · opens in a new tab.</p>
+</aside>
 <p id="law-board-status" class="status" role="status">Loading the original 100 proposals…</p>
 <div class="law-layout">
 <div class="law-atlas"><div class="lane-header"><div><p class="eyebrow">01 / Explore</p><h2><span id="law-count">100</span> proposals</h2></div><span class="lane-tag">HGA-001–100</span></div>
@@ -45,6 +52,7 @@ header.wrap,main.wrap,footer.wrap{width:min(100% - 40px,1560px)}#government-view
 <div class="law-detail" aria-labelledby="law-title">
 <div class="law-detail-head"><div><p id="law-id" class="eyebrow">HGA-001</p><h2 id="law-title">Select a proposal</h2></div><span id="law-version" class="lane-tag">Original draft</span></div>
 <p id="law-goal" class="law-goal"></p>
+<a id="law-assembly-selected" class="secondary" href="./public/helios-law-assembly.html" target="_blank" rel="noopener noreferrer" hidden>See how it works · 3D assembly ↗</a>
 <div id="law-votes" class="law-counts" aria-label="Actual advisory votes on this revision"></div>
 <div class="law-controls" aria-label="Vote on selected law"><button type="button" class="secondary" data-law-vote="support" aria-pressed="false" disabled>Support law</button><button type="button" class="secondary" data-law-vote="oppose" aria-pressed="false" disabled>Oppose law</button><button type="button" class="secondary" data-law-vote="unsure" aria-pressed="false" disabled>Unsure</button><button type="button" class="quiet" id="law-clear-vote" disabled>Clear vote</button></div>
 <div class="law-sim"><div class="law-sim-top"><h3>02 / Simulate this future</h3><button type="button" class="quiet" id="law-reset">Reset assumptions</button></div>
