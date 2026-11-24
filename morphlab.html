@@ -1,0 +1,1268 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#080b1a" />
+  <meta name="description" content="Turn a thought into a living cloud of WebGPU particles with OpenAI." />
+  <title>HeliosAI · MorphLab — WebGPU Particle Studio</title>
+  <style>:root{font-family:'DM Sans',system-ui,-apple-system,sans-serif;color:#f1f4ff;background:#080b19;font-synthesis:none;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;--ink:#e9eaf6;--muted:#848ba5;--border:rgba(180,187,235,.12);--aqua:#88e9f5;--mono:'DM Mono',ui-monospace,monospace;--title:'Space Grotesk',system-ui,sans-serif}
+*{box-sizing:border-box}html,body{height:100%;margin:0}body{min-width:320px;background:radial-gradient(ellipse at 12% 4%,#17142b 0,transparent 40%),#080b19}button,input,textarea{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--aqua);outline-offset:3px}a{text-decoration:none;color:inherit}input[type=range]{accent-color:var(--aqua)}
+.app-shell{min-height:100dvh;display:flex;flex-direction:column;padding:0 38px;max-width:2100px;margin:0 auto}
+.topbar{height:78px;flex:none;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}.brand{display:flex;align-items:center;gap:12px}.brand-mark{position:relative;width:31px;height:31px}.brand-mark span{position:absolute;width:9px;height:9px;background:#b7a0ff;border-radius:3px;transform:rotate(45deg)}.brand-mark span:nth-child(1){left:10px;top:0}.brand-mark span:nth-child(2){left:21px;top:11px;background:#74e8f4}.brand-mark span:nth-child(3){left:10px;top:22px;background:#81eec7}.brand-mark span:nth-child(4){left:0;top:11px;background:#cba5fc}.brand-word{font:700 23px var(--title);letter-spacing:-1.1px}.brand-word>span:first-child{color:#ab97f8}.brand-beta{display:inline-block;vertical-align:middle;margin-left:14px;color:#717993;font:9px var(--mono);letter-spacing:1.2px}.top-right{display:flex;gap:35px;align-items:center}.status-text,.docs-link{font:10px var(--mono);letter-spacing:1.4px;color:#9da4bf}.status-dot{display:inline-block;width:6px;height:6px;background:#7fe3bd;border-radius:50%;box-shadow:0 0 12px #71ffc7;margin-right:8px;vertical-align:2px}.docs-link{color:#d7daf7;transition:color .2s}.docs-link:hover{color:#91fff5}
+.main-grid{display:grid;grid-template-columns:minmax(355px,392px) minmax(0,1fr);min-height:0;flex:1;gap:22px;padding:21px 0 17px}.control-panel{min-height:0;position:relative;display:flex;flex-direction:column}.panel-scroll{min-height:0;overflow-y:auto;padding:17px 22px 15px 1px;scrollbar-width:thin;scrollbar-color:#403c63 transparent}.eyebrow,.section-label,.input-heading,.input-hint,.stage-overline,.tech-badge,.coordinates,.interaction-sub,.interaction-icon,.morph-label,.footer,.range-ends,.setting-value,.prompt-helper,.char-count{font-family:var(--mono)}.eyebrow{display:flex;align-items:center;gap:12px;color:#a594ea;font-size:10px;letter-spacing:1.8px;margin-bottom:17px}.eyebrow-line{width:22px;height:1px;background:#9d87e5}h1{font:600 clamp(35px,3.15vw,51px)/1.09 var(--title);letter-spacing:-2.3px;margin:0 0 16px}h1 span{background:linear-gradient(92deg,#bcadff 0%,#8fe8ed 100%);background-clip:text;-webkit-background-clip:text;color:transparent}.intro-copy{color:#9ba2bc;font-size:13px;line-height:1.75;max-width:355px;margin:0 0 28px}.input-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;font-size:10px;letter-spacing:1.35px;color:#e6e7f1}.input-hint{color:#75819a;font-size:9px}.composer{border:1px solid #514a70;background:linear-gradient(130deg,rgba(50,43,79,.36),rgba(12,16,35,.75));border-radius:12px;transition:box-shadow .2s,border-color .2s;overflow:hidden}.composer:focus-within{border-color:#9d8ff0;box-shadow:0 0 0 3px rgba(150,135,238,.09)}.composer textarea{display:block;resize:vertical;background:transparent;color:#eef2ff;border:0;outline:0;width:100%;min-height:105px;max-height:200px;padding:16px 16px 0;font-size:14px;line-height:1.55}.composer textarea::placeholder{color:#66708e}.composer-bottom{display:flex;justify-content:space-between;padding:11px 15px 13px}.prompt-helper,.char-count{font-size:9px;letter-spacing:.4px;color:#707890}.helper-separator{color:#a19cac;margin:0 5px}.generate-button{width:100%;height:48px;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid #af9bff;border-radius:10px;margin-top:11px;background:linear-gradient(120deg,#b0a2ff,#8a91f5 56%,#8dc8e5);color:#12152a;font-weight:700;font-size:13px;box-shadow:0 10px 30px rgba(122,101,220,.16);transition:transform .15s,filter .2s}.generate-button:hover{filter:brightness(1.09);transform:translateY(-1px)}.generate-button:active{transform:translateY(1px)}.generate-button:disabled{opacity:.7;cursor:wait}.button-sparkle{font-size:20px;font-weight:400}.button-arrow{margin-left:auto;font-size:17px;padding-right:17px}.generate-button #button-text{margin-left:auto}
+.examples,.settings,.import{padding-top:29px}.section-label{display:flex;justify-content:space-between;gap:12px;color:#a3abc0;font-size:10px;letter-spacing:1.05px;margin-bottom:16px}.section-index{color:#56637c}.sample-chips{display:flex;flex-wrap:wrap;gap:8px}.chip{padding:9px 12px;border:1px solid rgba(171,175,227,.17);background:rgba(23,27,50,.66);border-radius:8px;color:#cbd0e8;font-size:11px;transition:all .2s}.chip:hover,.chip.active{border-color:#ae9beb;color:#e8e5ff;background:rgba(124,110,189,.19)}.chip-icon{color:#a59bff;margin-right:6px;font-size:10px}.setting-row{margin-bottom:19px}.setting-name{display:flex;justify-content:space-between;font-size:12px;color:#c7cde0;margin-bottom:12px}.setting-value{color:#99e9e5;font-size:11px}.range-control{display:block;width:100%;height:4px;appearance:none;border-radius:999px;background:linear-gradient(90deg,#a99aff,#80dfec);cursor:pointer}.range-control::-webkit-slider-thumb{appearance:none;width:14px;height:14px;background:#e5eeff;border:3px solid #928af3;border-radius:50%;box-shadow:0 0 0 4px rgba(148,133,224,.15)}.range-control::-moz-range-thumb{width:11px;height:11px;background:#e5eeff;border:3px solid #928af3;border-radius:50%}.range-ends{display:flex;justify-content:space-between;font-size:9px;color:#69748c;margin-top:10px}.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:13px 0 2px;cursor:pointer}.toggle-row strong{display:block;font-size:12px;font-weight:600;color:#d9dcec}.toggle-row small{display:block;color:#74809a;font-size:11px;margin-top:4px}.toggle-row input{position:absolute;opacity:0}.switch{position:relative;display:inline-block;flex:none;width:36px;height:20px;border-radius:15px;background:#323950;border:1px solid #4b516d;transition:background .2s}.switch:after{content:'';position:absolute;left:3px;top:3px;width:12px;height:12px;border-radius:50%;background:#a3aec9;transition:transform .2s}.toggle-row input:checked+.switch{background:#8176cf;border-color:#9e95f4}.toggle-row input:checked+.switch:after{transform:translateX(16px);background:white}.toggle-row input:focus-visible+.switch{outline:2px solid var(--aqua);outline-offset:3px}
+.import-drop{display:flex;align-items:center;gap:12px;padding:14px;border:1px dashed #4a4b70;border-radius:10px;background:rgba(25,27,50,.37);cursor:pointer;transition:border-color .2s,background .2s}.import-drop:hover,.import-drop.drag-over{border-color:#8c9be1;background:rgba(75,78,121,.22)}.upload-glyph{font-size:23px;width:35px;height:35px;border:1px solid rgba(176,181,236,.18);border-radius:8px;display:grid;place-items:center;color:#a8a2f8}.import-drop strong{display:block;color:#dce0f4;font-size:12px}.import-drop small{display:block;margin-top:5px;color:#73809e;font-size:10px}.upload-arrow{margin-left:auto;color:#7d86b6}.panel-footnote{display:flex;gap:9px;margin-top:24px;color:#79849e;font-size:10px;line-height:1.6}.note-orb{width:7px;height:7px;background:#86c4f3;border-radius:50%;flex:none;margin-top:4px;box-shadow:0 0 12px #4f9fdc}
+.stage{position:relative;min-width:0;min-height:585px;overflow:hidden;border-radius:18px;border:1px solid rgba(115,124,193,.24);background:radial-gradient(ellipse at 52% 43%,#152144 0,#0a1028 52%,#050916 100%);isolation:isolate}.stage canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}.stage #fallback-canvas:not([hidden]){z-index:1}.stage-vignette{z-index:2;position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 48% 48%,transparent 34%,rgba(5,9,22,.18) 65%,rgba(5,9,22,.77) 100%),linear-gradient(transparent 75%,rgba(5,9,22,.35) 100%)}.stage:before{content:'';position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.13;background-image:linear-gradient(rgba(161,178,234,.2) 1px,transparent 1px),linear-gradient(90deg,rgba(161,178,234,.2) 1px,transparent 1px);background-size:56px 56px;mask-image:radial-gradient(circle at center,black,transparent 85%)}.stage-top-left,.stage-top-right,.stage-bottom-left,.stage-bottom-right,.morph-progress{z-index:3;position:absolute;pointer-events:none}.stage-top-left{left:28px;top:24px;display:flex;align-items:center;gap:12px}.corner-symbol{font-size:29px;color:#a7d4ff;font-family:Arial;line-height:1}.stage-top-left>div{display:flex;flex-direction:column;gap:5px}.stage-overline{color:#7789b4;font-size:10px;letter-spacing:1.3px}.stage-title{font:600 14px var(--title);letter-spacing:.6px;color:#e4e8ff}.stage-top-right{right:25px;top:25px;display:flex;gap:8px}.tech-badge{background:rgba(23,42,60,.75);border:1px solid rgba(98,237,205,.25);border-radius:6px;padding:9px 10px;font-size:9px;letter-spacing:.65px;color:#a1f3d9;white-space:nowrap}.tech-led{display:inline-block;width:5px;height:5px;border-radius:50%;background:#62dfc6;margin-right:5px;vertical-align:1px;box-shadow:0 0 7px #57ffc6}.tech-badge-muted{color:#b1b9df;border-color:rgba(171,166,232,.24);background:rgba(26,30,58,.8)}.stage-axis{position:absolute;pointer-events:none;z-index:2;opacity:.5}.stage-axis-x{left:50%;top:49.9%;width:20px;height:1px;background:#8b93c1;transform:translateX(-50%)}.stage-axis-y{left:50%;top:49.9%;height:20px;width:1px;background:#8b93c1;transform:translateY(-50%)}.stage-bottom-left{left:30px;bottom:69px;max-width:58%}.coordinates{font-size:9px;letter-spacing:1px;color:#6a78a0}.coordinates span{color:#a8b4df}.stage-description{display:block;color:#d1d6ec;font-size:11px;margin-top:9px;line-height:1.5}.stage-bottom-right{right:27px;bottom:70px;text-align:right;color:#b9c5e6;font:9px/2 var(--mono);letter-spacing:.6px}.interaction-icon{font-size:17px;margin-right:5px}.interaction-sub{font-size:9px;color:#6d7aa0}.morph-progress{left:30px;right:30px;bottom:24px}.morph-track{height:2px;width:100%;border-radius:5px;background:rgba(118,133,177,.21);overflow:hidden}.morph-fill{height:100%;width:100%;background:linear-gradient(90deg,#b8a4ff,#6cf2e2);box-shadow:0 0 14px rgba(103,240,226,.8);transition:width .11s linear}.morph-label{display:flex;justify-content:space-between;margin-top:10px;font-size:9px;letter-spacing:1.2px;color:#8c9abd}
+.footer{flex:none;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);height:55px;color:#78809a;font-size:10px;letter-spacing:1px}.footer-star{color:#d5a8ff;font-size:14px;margin-right:8px}.footer-right{display:flex;align-items:center;gap:16px}.footer-right strong{font-weight:500;color:#c5cbe3}.footer-divider{display:inline-block;width:1px;height:12px;background:#39415d}.toast{position:fixed;z-index:20;bottom:72px;left:50%;transform:translateX(-50%);padding:13px 17px;max-width:min(90vw,560px);border:1px solid #596083;border-radius:9px;background:#161d38;color:#e2e7ff;font-size:12px;box-shadow:0 12px 48px rgba(0,0,0,.5);text-align:center}.toast[hidden]{display:none}
+@media (min-width:1500px){.app-shell{padding-left:62px;padding-right:62px}.main-grid{grid-template-columns:minmax(375px,425px) minmax(0,1fr)}.panel-scroll{padding-top:30px;padding-right:28px}.intro-copy{font-size:14px}.stage{min-height:640px}}
+@media (max-height:900px) and (min-width:901px){.topbar{height:65px}.main-grid{padding-top:14px;padding-bottom:12px}.panel-scroll{padding-top:7px}.eyebrow{margin-bottom:12px}h1{font-size:40px;margin-bottom:10px}.intro-copy{margin-bottom:19px;font-size:12px}.composer textarea{min-height:78px}.examples,.settings,.import{padding-top:20px}.setting-row{margin-bottom:14px}.footer{height:45px}}
+@media (max-width:1000px){.app-shell{padding:0 22px}.main-grid{grid-template-columns:minmax(300px,350px) minmax(0,1fr);gap:16px}.stage-top-left{top:19px;left:17px}.stage-top-right{top:61px;left:17px;right:auto}.stage-bottom-left{left:20px}.stage-bottom-right{right:20px}.panel-scroll{padding-right:14px}h1{font-size:38px}}
+@media (max-width:760px){.app-shell{padding:0 16px}.topbar{height:63px}.status-text{display:none}.main-grid{display:flex;flex-direction:column;padding:13px 0;gap:0}.stage{order:0;flex:none;min-height:460px;height:58svh;margin-bottom:30px}.control-panel{order:1}.panel-scroll{overflow:visible;padding:0 2px 20px}.intro-copy{max-width:540px}.footer{gap:12px;flex-wrap:wrap;height:auto;padding:14px 0;line-height:1.8}.stage-top-right{top:25px;left:auto;right:14px}.stage-top-left{left:15px}.stage-title{font-size:11px}.stage-overline{font-size:8px}.tech-badge{padding:6px;font-size:8px}.tech-badge-muted{display:none}.stage-bottom-right{display:none}.stage-bottom-left{max-width:83%;bottom:65px}.morph-progress{left:20px;right:20px}.stage-description{font-size:10px}}
+@media (max-width:430px){.docs-link{font-size:9px}.brand-beta{display:none}.stage{min-height:370px;height:49svh}.stage-top-right{top:64px;left:15px;right:auto}.main-grid{padding-top:10px}.footer-right{gap:10px}.footer-left{display:none}}
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{transition-duration:0s!important;animation-duration:0s!important}}
+/* Keep the desktop composition to one viewport; settings scroll independently. */
+@media (min-width:761px){.app-shell{height:100dvh}.main-grid{overflow:hidden}.stage{min-height:0}}</style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        <div class="brand-word">morph<span>lab</span><span class="brand-beta">BETA / 001</span></div>
+      </div>
+      <div class="top-right"><a class="docs-link" href="./index.html" aria-label="Return to Helios dashboard">← HELIOS HOME</a>
+        <div class="status-text"><span class="status-dot"></span> REALTIME GENERATIVE CANVAS</div>
+        <a class="docs-link" href="https://developers.openai.com/api/docs/guides/structured-outputs" target="_blank" rel="noopener noreferrer">THE TECH <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <main class="main-grid">
+      <aside class="control-panel" aria-labelledby="hero-title">
+        <div class="panel-scroll">
+          <div class="eyebrow"><span class="eyebrow-line"></span> A NEW KIND OF SCULPTURE</div>
+          <h1 id="hero-title">Imagine it.<br /><span>See it form.</span></h1>
+          <p class="intro-copy">A thought becomes geometry. Geometry becomes thousands of glowing particles. Type anything and watch the universe rearrange itself.</p>
+
+          <form id="prompt-form" autocomplete="off">
+            <div class="input-heading"><label for="prompt">DESCRIBE SOMETHING</label><span class="input-hint">TEXT → 3D</span></div>
+            <div class="composer">
+              <textarea id="prompt" name="prompt" maxlength="500" rows="4" spellcheck="true" placeholder="A luminous jellyfish drifting through a midnight ocean…">a bioluminescent jellyfish</textarea>
+              <div class="composer-bottom"><span class="prompt-helper">PAUSE TO MORPH <span class="helper-separator">·</span> ⌘ + ENTER</span><span id="char-count" class="char-count">25 / 500</span></div>
+            </div>
+            <button type="submit" class="generate-button" id="generate-button"><span class="button-sparkle">✧</span><span id="button-text">Morph particles</span><span class="button-arrow" aria-hidden="true">↗</span></button>
+          </form>
+
+          <section class="examples" aria-label="Example shapes">
+            <div class="section-label"><span>START WITH AN IDEA</span><span class="section-index">01 / 03</span></div>
+            <div id="sample-chips" class="sample-chips"></div>
+          </section>
+
+          <section class="settings" aria-labelledby="settings-title">
+            <div class="section-label"><span id="settings-title">FINE TUNE YOUR UNIVERSE</span><span class="section-index">02 / 03</span></div>
+            <div class="setting-row">
+              <div class="setting-name">Particle density <span id="count-display" class="setting-value">22,000</span></div>
+              <input id="particle-count" class="range-control" type="range" min="0" max="2" step="1" value="1" aria-label="Particle density" />
+              <div class="range-ends"><span>10K / PERFORMANCE</span><span>42K / DETAIL</span></div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-name">Particle motion <span id="motion-display" class="setting-value">65%</span></div>
+              <input id="motion" class="range-control" type="range" min="0" max="100" step="5" value="65" aria-label="Particle motion" />
+            </div>
+            <label class="toggle-row" for="auto-morph"><span><strong>Auto-morph</strong><small>Generate when you stop typing</small></span><input type="checkbox" id="auto-morph" checked /><span class="switch" aria-hidden="true"></span></label>
+          </section>
+
+          <section class="import" aria-labelledby="import-title">
+            <div class="section-label"><span id="import-title">OR USE A REAL 3D MODEL</span><span class="section-index">03 / 03</span></div>
+            <label class="import-drop" for="glb-input" id="drop-zone"><span class="upload-glyph" aria-hidden="true">⇧</span><span><strong>Drop a .GLB here</strong><small>or click to import your own mesh</small></span><span class="upload-arrow">↗</span></label>
+            <input id="glb-input" type="file" accept=".glb,model/gltf-binary" hidden />
+          </section>
+          <div class="panel-footnote"><span class="note-orb" aria-hidden="true"></span><span id="mode-caption">Demo shapes run locally. Add an OpenAI API key to sculpt anything.</span></div>
+        </div>
+      </aside>
+
+      <section class="stage" id="stage" aria-label="Interactive glowing 3D particle sculpture">
+        <canvas id="particle-canvas" aria-label="Morphing WebGPU particle visualizer"></canvas>
+        <canvas id="fallback-canvas" hidden aria-label="Canvas fallback particle visualizer"></canvas>
+        <div class="stage-vignette" aria-hidden="true"></div>
+        <div class="stage-top-left"><span class="corner-symbol">✳</span><div><span class="stage-overline">LIVE SCULPTURE</span><span id="stage-title" class="stage-title">MOONLIGHT JELLYFISH</span></div></div>
+        <div class="stage-top-right"><span id="render-badge" class="tech-badge"><span class="tech-led"></span> INITIALIZING</span><span class="tech-badge tech-badge-muted" id="api-badge">LOCAL MODE</span></div>
+        <div class="stage-axis stage-axis-x" aria-hidden="true"></div>
+        <div class="stage-axis stage-axis-y" aria-hidden="true"></div>
+        <div class="stage-bottom-left">
+          <span class="coordinates">X <span id="coord-x">+00.0</span> &nbsp; Y <span id="coord-y">+00.0</span> &nbsp; Z +00.0</span>
+          <span class="stage-description" id="stage-description">A luminous bell and gently trailing tentacles.</span>
+        </div>
+        <div class="stage-bottom-right"><span class="interaction-icon">⟳</span> DRAG TO ROTATE<br /><span class="interaction-sub">SCROLL TO ZOOM</span></div>
+        <div class="morph-progress" id="morph-progress" aria-live="polite"><div class="morph-track"><div id="morph-fill" class="morph-fill"></div></div><div class="morph-label"><span id="morph-status">READY TO CREATE</span><span id="morph-percentage">100%</span></div></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-left"><span class="footer-star">✦</span><span>HELIOSAI · MADE OF LIGHT, NOT MATTER.</span></div>
+      <div class="footer-right"><span><strong id="particle-stat">22,000</strong> PARTICLES</span><span class="footer-divider"></span><span><strong id="fps-stat">—</strong> FPS</span><span class="footer-divider"></span><span id="source-stat">GPU-READY</span></div>
+    </footer>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <script>(function(){
+// Deterministic particle-surface sampling for OpenAI's safe, declarative shape recipe.
+// Everything here runs locally; no model-generated code is executed.
+
+const PALETTES = {
+  aurora:  { primary: '#7DE9FF', secondary: '#AC8CFF', accent: '#5AFFD4', highlight: '#E9FCFF', shadow: '#6277C6' },
+  ocean:   { primary: '#70D5FF', secondary: '#3C8CFF', accent: '#5AF5DE', highlight: '#F3FFFF', shadow: '#316AB0' },
+  orchid:  { primary: '#F5A6FF', secondary: '#947BFF', accent: '#FF7DBE', highlight: '#FFECFB', shadow: '#8559D1' },
+  ember:   { primary: '#FFC07C', secondary: '#FF6B76', accent: '#F5E879', highlight: '#FFF5C4', shadow: '#AE5265' },
+  galaxy:  { primary: '#A6A3FF', secondary: '#6C73E9', accent: '#53DFFA', highlight: '#F4E8FF', shadow: '#7B59CA' },
+  jade:    { primary: '#8CF8C1', secondary: '#40B8B0', accent: '#D9FF8C', highlight: '#F1FFF0', shadow: '#408C79' },
+};
+const TAU = Math.PI * 2;
+const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+const v3 = (x = 0, y = 0, z = 0) => ({ x, y, z });
+const part = (kind, center, size, color = 'primary', extra = {}) => ({
+  kind, center: v3(...center), size: v3(...size), color,
+  rotation: v3(0, 0, 0), path: [], weight: 1, ...extra,
+});
+
+function hashString(input) {
+  let h = 2166136261 >>> 0;
+  for (let i = 0; i < input.length; i++) {
+    h ^= input.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+function seeded(seed) {
+  let a = seed >>> 0;
+  return () => {
+    a += 0x6D2B79F5;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function gaussian(rng) {
+  return Math.sqrt(-2 * Math.log(Math.max(0.000001, rng()))) * Math.cos(TAU * rng());
+}
+function choose(rng, probabilities) {
+  let n = rng() * probabilities.reduce((a, b) => a + b, 0);
+  for (let i = 0; i < probabilities.length; i++) {
+    n -= probabilities[i];
+    if (n <= 0) return i;
+  }
+  return probabilities.length - 1;
+}
+function randomSphere(rng) {
+  const y = rng() * 2 - 1;
+  const a = rng() * TAU;
+  const r = Math.sqrt(1 - y * y);
+  return [r * Math.cos(a), y, r * Math.sin(a)];
+}
+function xform(point, shape) {
+  let [x, y, z] = point;
+  const r = shape.rotation || v3();
+  const cx = Math.cos(r.x), sx = Math.sin(r.x);
+  const cy = Math.cos(r.y), sy = Math.sin(r.y);
+  const cz = Math.cos(r.z), sz = Math.sin(r.z);
+  [y, z] = [y * cx - z * sx, y * sx + z * cx];
+  [x, z] = [x * cy + z * sy, -x * sy + z * cy];
+  [x, y] = [x * cz - y * sz, x * sz + y * cz];
+  return [x + shape.center.x, y + shape.center.y, z + shape.center.z];
+}
+function cross(a, b) {
+  return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+}
+function norm(a) {
+  const l = Math.hypot(...a) || 1;
+  return a.map(x => x / l);
+}
+function sampleTube(shape, rng) {
+  const path = shape.path || [];
+  if (path.length < 2) return randomSphere(rng).map(x => x * shape.size.x);
+  const segs = [];
+  let length = 0;
+  for (let i = 1; i < path.length; i++) {
+    const a = path[i - 1], b = path[i];
+    const d = Math.hypot(b.x - a.x, b.y - a.y, b.z - a.z);
+    if (d > 0.0001) { segs.push({ a, b, end: length + d }); length += d; }
+  }
+  if (!segs.length) return [0, 0, 0];
+  let distance = rng() * length;
+  const seg = segs.find(s => s.end >= distance) || segs.at(-1);
+  const start = seg.end - Math.hypot(seg.b.x - seg.a.x, seg.b.y - seg.a.y, seg.b.z - seg.a.z);
+  const t = clamp((distance - start) / (seg.end - start), 0, 1);
+  const d = norm([seg.b.x - seg.a.x, seg.b.y - seg.a.y, seg.b.z - seg.a.z]);
+  const n = norm(cross(d, Math.abs(d[1]) < 0.9 ? [0, 1, 0] : [1, 0, 0]));
+  const b = cross(d, n);
+  const a = TAU * rng();
+  const radius = shape.size.x * (0.9 + rng() * 0.2);
+  return [
+    seg.a.x + (seg.b.x - seg.a.x) * t + radius * (n[0] * Math.cos(a) + b[0] * Math.sin(a)),
+    seg.a.y + (seg.b.y - seg.a.y) * t + radius * (n[1] * Math.cos(a) + b[1] * Math.sin(a)),
+    seg.a.z + (seg.b.z - seg.a.z) * t + radius * (n[2] * Math.cos(a) + b[2] * Math.sin(a)),
+  ];
+}
+function sampleWing(shape, rng) {
+  const pts = shape.path || [];
+  if (pts.length < 3) return randomSphere(rng).map(x => x * 0.2);
+  const root = pts[0];
+  const triangles = [];
+  for (let i = 1; i < pts.length - 1; i++) {
+    const a = [pts[i].x - root.x, pts[i].y - root.y, pts[i].z - root.z];
+    const b = [pts[i + 1].x - root.x, pts[i + 1].y - root.y, pts[i + 1].z - root.z];
+    triangles.push(Math.hypot(...cross(a, b)) / 2);
+  }
+  const index = choose(rng, triangles);
+  const a = pts[index + 1], b = pts[index + 2];
+  const u = Math.sqrt(rng()), v = rng();
+  const w0 = 1 - u, w1 = u * (1 - v), w2 = u * v;
+  return [
+    root.x * w0 + a.x * w1 + b.x * w2,
+    root.y * w0 + a.y * w1 + b.y * w2,
+    root.z * w0 + a.z * w1 + b.z * w2,
+  ];
+}
+function samplePart(shape, rng) {
+  const s = shape.size || v3(1, 1, 1);
+  let p;
+  switch (shape.kind) {
+    case 'box': {
+      const side = choose(rng, [s.y * s.z, s.y * s.z, s.x * s.z, s.x * s.z, s.x * s.y, s.x * s.y]);
+      const a = rng() * 2 - 1, b = rng() * 2 - 1;
+      p = side < 2 ? [side ? s.x : -s.x, a * s.y, b * s.z]
+        : side < 4 ? [a * s.x, side === 3 ? s.y : -s.y, b * s.z]
+          : [a * s.x, b * s.y, side === 5 ? s.z : -s.z];
+      break;
+    }
+    case 'cylinder': {
+      const capWeight = s.x / Math.max(0.01, s.y + s.x);
+      if (rng() < capWeight) {
+        const a = rng() * TAU, radius = Math.sqrt(rng()) * s.x;
+        p = [radius * Math.cos(a), rng() < 0.5 ? -s.y : s.y, radius * Math.sin(a)];
+      } else {
+        const a = rng() * TAU;
+        p = [s.x * Math.cos(a), (rng() * 2 - 1) * s.y, s.x * Math.sin(a)];
+      }
+      break;
+    }
+    case 'cone': {
+      const a = rng() * TAU;
+      if (rng() < 0.08) {
+        const r = Math.sqrt(rng()) * s.x;
+        p = [r * Math.cos(a), -s.y, r * Math.sin(a)];
+      } else {
+        const r = Math.sqrt(rng());
+        p = [s.x * r * Math.cos(a), s.y * (1 - 2 * r), s.x * r * Math.sin(a)];
+      }
+      break;
+    }
+    case 'torus': {
+      const u = rng() * TAU, v = rng() * TAU;
+      const radius = s.x + s.y * Math.cos(v);
+      p = [radius * Math.cos(u), s.y * Math.sin(v), radius * Math.sin(u)];
+      break;
+    }
+    case 'tube': p = sampleTube(shape, rng); break;
+    case 'wing': p = sampleWing(shape, rng); break;
+    default: {
+      const [x, y, z] = randomSphere(rng);
+      p = [x * s.x, y * s.y, z * s.z];
+    }
+  }
+  return xform(p, shape);
+}
+
+function jellyfish(rng) {
+  const category = rng();
+  if (category < 0.45) {
+    const a = TAU * rng(), theta = Math.acos(1 - rng() * 0.75);
+    const r = 1.65 * Math.sin(theta) * (1 + Math.sin(a * 14) * 0.028);
+    return { p: [r * Math.cos(a), 0.65 + 1.5 * Math.cos(theta), r * Math.sin(a) * 0.78], slot: rng() < 0.14 ? 'highlight' : 'primary' };
+  }
+  if (category < 0.9) {
+    const strand = Math.floor(rng() * 19), a = strand * TAU / 19;
+    const t = rng();
+    const ring = strand % 3 === 0 ? 0.65 : 1.32;
+    const length = strand % 4 === 0 ? 3.35 : 2.6 + (strand % 5) * 0.19;
+    const weave = Math.sin(t * 10 + strand * 1.9) * (0.06 + t * 0.15);
+    return {
+      p: [(ring + weave) * Math.cos(a) + Math.sin(t * 9 + strand) * 0.12, 0.85 - t * length,
+        (ring + weave) * Math.sin(a) * 0.75 + Math.cos(t * 11 + strand) * 0.1],
+      slot: strand % 4 === 0 ? 'secondary' : 'accent',
+    };
+  }
+  const a = rng() * TAU, r = Math.sqrt(rng()) * 0.75;
+  return { p: [Math.cos(a) * r, 0.45 + rng() * 1.0, Math.sin(a) * r * 0.6], slot: 'highlight' };
+}
+function butterfly(rng) {
+  const mode = rng();
+  if (mode < 0.77) {
+    const side = rng() < 0.5 ? -1 : 1;
+    const top = rng() < 0.54;
+    const a = rng() * TAU, rad = Math.sqrt(rng());
+    const x = top ? 1.14 + 1.0 * Math.cos(a) * rad : 1.02 + 0.73 * Math.cos(a) * rad;
+    const y = top ? 0.74 + 0.95 * Math.sin(a) * rad : -0.66 + 0.68 * Math.sin(a) * rad;
+    const z = 0.33 + 0.24 * Math.sin(x * 1.4) + 0.10 * gaussian(rng);
+    const edge = rad > 0.89;
+    return { p: [side * x, y, z], slot: edge ? 'highlight' : (top ? 'secondary' : 'accent') };
+  }
+  if (mode < 0.96) {
+    const a = rng() * TAU, t = rng();
+    return { p: [0.13 * Math.cos(a), 1.13 - t * 2.1, 0.15 * Math.sin(a)], slot: 'primary' };
+  }
+  const side = rng() < 0.5 ? -1 : 1, t = rng();
+  return { p: [side * (0.08 + t * 0.45), 1.05 + t * 0.6, 0], slot: 'highlight' };
+}
+function galaxy(rng) {
+  if (rng() < 0.12) {
+    const [x, y, z] = randomSphere(rng);
+    const r = Math.pow(rng(), 2) * 0.77;
+    return { p: [x * r, y * r * 0.65, z * r], slot: 'highlight' };
+  }
+  const arm = Math.floor(rng() * 4), r = Math.pow(rng(), 0.62) * 2.75;
+  const angle = arm * TAU / 4 + r * 1.72 + gaussian(rng) * (0.12 + r * 0.04);
+  return { p: [r * Math.cos(angle), gaussian(rng) * (0.08 + (1 - r / 2.75) * 0.18), r * Math.sin(angle) * 0.91],
+    slot: r < 0.65 ? 'highlight' : arm === 1 ? 'accent' : (arm === 3 ? 'secondary' : 'primary') };
+}
+function heart(rng) {
+  const a = rng() * TAU;
+  const x = 16 * Math.pow(Math.sin(a), 3);
+  const y = 13 * Math.cos(a) - 5 * Math.cos(2 * a) - 2 * Math.cos(3 * a) - Math.cos(4 * a);
+  const fill = Math.sqrt(rng());
+  return { p: [x * fill * 0.15, y * fill * 0.15 - 0.15, gaussian(rng) * (0.13 + (1 - fill) * 0.18)],
+    slot: fill > 0.93 ? 'highlight' : (x < 0 ? 'primary' : 'accent') };
+}
+function dna(rng) {
+  const t = rng() * 5.5 - 2.75;
+  const a = (t + 2.75) * 3.2;
+  if (rng() < 0.7) {
+    const strand = rng() < 0.5 ? 0 : Math.PI;
+    return { p: [0.87 * Math.cos(a + strand), t, 0.87 * Math.sin(a + strand)],
+      slot: strand ? 'secondary' : 'accent' };
+  }
+  const f = rng() * 2 - 1;
+  const rungT = Math.round(t / 0.22) * 0.22;
+  const rungA = (rungT + 2.75) * 3.2;
+  return { p: [f * 0.87 * Math.cos(rungA), rungT, f * 0.87 * Math.sin(rungA)], slot: 'highlight' };
+}
+function saturn(rng) {
+  if (rng() < 0.48) {
+    const [x, y, z] = randomSphere(rng);
+    return { p: [x * 1.12, y * 1.12, z * 1.12], slot: y > 0.6 ? 'highlight' : (y < -0.3 ? 'secondary' : 'primary') };
+  }
+  const a = rng() * TAU, radius = 1.35 + rng() * 1.3;
+  const x = radius * Math.cos(a), z = radius * Math.sin(a);
+  return { p: [x, -z * 0.32 + gaussian(rng) * 0.025, z * 0.94 + 0.16 * x],
+    slot: radius > 2.2 ? 'accent' : (radius < 1.6 ? 'highlight' : 'secondary') };
+}
+
+function builtInParts(name) {
+  if (name === 'dragon') return [
+    part('ellipsoid', [-0.45, -0.5, 0], [1.15, 0.60, 0.55], 'primary', { weight: 2 }),
+    part('ellipsoid', [0.55, 0.1, 0], [0.45, 0.87, 0.39], 'primary'),
+    part('ellipsoid', [1.03, 0.77, 0], [0.69, 0.34, 0.40], 'accent', { weight: 2 }),
+    part('ellipsoid', [1.45, 0.59, 0.02], [0.39, 0.17, 0.25], 'primary'),
+    part('ellipsoid', [1.24, 0.89, 0.33], [0.065, 0.067, 0.04], 'highlight', { weight: 2 }),
+    part('ellipsoid', [1.24, 0.89, -0.33], [0.065, 0.067, 0.04], 'highlight', { weight: 2 }),
+    part('tube', [-1.2, -0.6, 0], [0.10, 0.12, 0.12], 'accent', { path: [v3(0,0,0),v3(-0.7,-0.3,0),v3(-1.5,-0.7,0.15),v3(-2,-0.35,0.3),v3(-2.4,0.1,0.3)] }),
+    part('tube', [0, -0.55, 0.34], [0.11, 0.11, 0.11], 'secondary', { path: [v3(-0.4,0,0),v3(-0.48,-0.7,0.1),v3(-0.7,-0.95,0.15)] }),
+    part('tube', [0.4, -0.45, 0.27], [0.09, 0.1, 0.1], 'secondary', { path: [v3(0,0,0),v3(0.1,-0.85,0.1),v3(0.35,-1.1,0.18)] }),
+    part('cone', [0.68, 1.18, 0.21], [0.14,0.37,0.14], 'highlight', { rotation: v3(0,0,-0.35) }),
+    part('cone', [0.68, 1.18, -0.21], [0.14,0.37,0.14], 'highlight', { rotation: v3(0,0,-0.35) }),
+    part('wing', [-0.36, 0.12, 0.24], [1,1,1], 'secondary', { weight: 3.2, path: [v3(0,0,0),v3(-0.28,1.64,0.1),v3(-1.58,1.92,0.1),v3(-1.12,0.77,0.2),v3(-0.52,0.36,0.1)] }),
+    part('wing', [-0.36, 0.12, -0.24], [1,1,1], 'accent', { weight: 2.5, path: [v3(0,0,0),v3(-0.28,1.64,-0.1),v3(-1.58,1.92,-0.1),v3(-1.12,0.77,-0.2),v3(-0.52,0.36,-0.1)] }),
+  ];
+  if (name === 'flower') {
+    const parts = [
+      part('ellipsoid', [0,0.65,0.2], [0.42,0.42,0.30], 'highlight', { weight: 2 }),
+      part('tube',[0,-1.15,0],[0.085,0.085,0.085],'secondary',{path:[v3(0,0,0),v3(0,1,0),v3(0,1.8,0.2)]}),
+      part('wing',[0,-0.7,0],[1,1,1],'secondary',{path:[v3(0,0,0),v3(-1.0,0.55,0),v3(-0.4,0.26,0.4)]}),
+      part('wing',[0,-1.0,0],[1,1,1],'accent',{path:[v3(0,0,0),v3(0.95,0.5,0),v3(0.33,0.2,0.35)]}),
+    ];
+    for (let i = 0; i < 8; i++) {
+      const angle = i * TAU / 8;
+      parts.push(part('ellipsoid', [Math.cos(angle)*0.85,0.65+Math.sin(angle)*0.85,0.14], [0.55,0.29,0.18], i%2?'primary':'accent', {rotation:v3(0,0,angle),weight:1.25}));
+    }
+    return parts;
+  }
+  if (name === 'bonsai') return [
+    part('tube',[0,-0.6,0],[0.15,0.15,0.15],'shadow',{path:[v3(0,-1.5,0),v3(0.15,-0.5,0),v3(-0.2,0.5,0),v3(0,1.15,0)]}),
+    part('tube',[0,0.05,0],[0.09,0.09,0.09],'shadow',{path:[v3(0,0,0),v3(-0.7,0.4,0),v3(-1.3,0.35,0)]}),
+    part('tube',[0,0.5,0],[0.08,0.08,0.08],'shadow',{path:[v3(0,0,0),v3(0.8,0.3,0),v3(1.35,0.2,0)]}),
+    part('ellipsoid',[-1.1,0.55,0],[0.86,0.4,0.6],'primary',{weight:2}),
+    part('ellipsoid',[1.05,0.95,0],[0.9,0.47,0.6],'accent',{weight:2}),
+    part('ellipsoid',[0.0,1.55,0],[1.02,0.58,0.75],'primary',{weight:3}),
+    part('box',[0,-2.0,0],[0.7,0.26,0.6],'secondary'),
+  ];
+  if (name === 'fish') return [
+    part('ellipsoid',[0,0,0],[1.38,0.65,0.49],'primary',{weight:3}),
+    part('cone',[1.35,0,0],[0.42,0.5,0.4],'accent',{rotation:v3(0,0,-Math.PI/2)}),
+    part('wing',[-1.12,0,0],[1,1,1],'secondary',{path:[v3(0,0,0),v3(-1.15,1.15,0),v3(-0.78,0,0),v3(-1.15,-1.15,0)]}),
+    part('wing',[0.1,0.35,0],[1,1,1],'accent',{path:[v3(-0.5,0,0),v3(-0.3,0.97,0),v3(0.6,0.25,0)]}),
+    part('ellipsoid',[0.99,0.17,0.49],[0.105,0.105,0.04],'highlight',{weight:2}),
+  ];
+  return null;
+}
+
+const PRESETS = {
+  jellyfish: { title: 'Moonlight jellyfish', description: 'A luminous bell and nineteen gently trailing tentacles.', palette: 'aurora' },
+  butterfly: { title: 'Iridescent butterfly', description: 'A delicate winged silhouette woven from light.', palette: 'orchid' },
+  galaxy: { title: 'Spiral galaxy', description: 'Four cosmic arms winding around a bright central core.', palette: 'galaxy' },
+  heart: { title: 'Beating heart', description: 'A sparkling heart drawn as a field of floating particles.', palette: 'orchid' },
+  dna: { title: 'Double helix', description: 'Two intertwined strands connected by molecular rungs.', palette: 'ocean' },
+  saturn: { title: 'Saturn & its rings', description: 'A luminous planet suspended inside broad, tilted rings.', palette: 'ember' },
+  dragon: { title: 'Little dragon', description: 'A fantastical creature with swept wings, horns and tail.', palette: 'ember' },
+  flower: { title: 'Blooming flower', description: 'Eight petals surrounding a bright center, with leaves and stem.', palette: 'orchid' },
+  bonsai: { title: 'Ancient bonsai', description: 'An organic trunk supporting tiers of softly glowing leaves.', palette: 'jade' },
+  fish: { title: 'Glowing koi', description: 'A swimming fish with fins, wide tail and shining eyes.', palette: 'ocean' },
+};
+
+const EXAMPLES = [
+  { label: 'Jellyfish', prompt: 'a bioluminescent jellyfish' },
+  { label: 'Butterfly', prompt: 'an iridescent butterfly' },
+  { label: 'Dragon', prompt: 'a little flying dragon' },
+  { label: 'Galaxy', prompt: 'a spiral galaxy' },
+  { label: 'Heart', prompt: 'a beating heart' },
+  { label: 'DNA', prompt: 'a double helix of DNA' },
+  { label: 'Saturn', prompt: 'Saturn and its rings' },
+  { label: 'Flower', prompt: 'a blooming flower' },
+];
+
+function localSceneForPrompt(prompt) {
+  const lower = prompt.toLowerCase();
+  const key = lower.match(/jellyfish|medusa/) ? 'jellyfish'
+    : lower.match(/butterfly|moth/) ? 'butterfly'
+      : lower.match(/galaxy|nebula|spiral galaxy|milky way/) ? 'galaxy'
+        : lower.match(/heart|love/) ? 'heart'
+          : lower.match(/dna|double helix|helix/) ? 'dna'
+            : lower.match(/saturn|planet|ringed/) ? 'saturn'
+              : lower.match(/dragon/) ? 'dragon'
+                : lower.match(/flower|rose|daisy|sunflower|tulip/) ? 'flower'
+                  : lower.match(/tree|bonsai/) ? 'bonsai'
+                    : lower.match(/fish|koi|whale/) ? 'fish' : 'abstract';
+  if (key === 'abstract') {
+    const seed = hashString(prompt), rng = seeded(seed);
+    const parts = [part('torus',[0,0,0],[1.45,0.20,0.2],'primary',{rotation:v3(rng()*2,rng()*2,rng()*2),weight:3}),
+      part('ellipsoid',[0,0,0],[0.75,0.75,0.75],'highlight',{weight:0.8})];
+    for (let i = 0; i < 7; i++) {
+      const a = i * TAU / 7;
+      parts.push(part(i%2?'ellipsoid':'torus', [1.3*Math.cos(a),0.75*Math.sin(a),0.18*Math.sin(3*a)],
+        [0.25+rng()*0.4,0.17+rng()*0.25,0.23],i%2?'accent':'secondary',
+        {rotation:v3(rng()*Math.PI,rng()*Math.PI,rng()*Math.PI),weight:1.3}));
+    }
+    return { title: prompt.slice(0, 52), description: 'Abstract local sketch — enable OpenAI for a custom 3D interpretation.', palette: 'aurora', parts };
+  }
+  const preset = PRESETS[key];
+  return { ...preset, special: builtInParts(key) ? undefined : key, parts: builtInParts(key) || [] };
+}
+
+function hexRgb(hex) {
+  const num = Number.parseInt(hex.slice(1), 16);
+  return [(num >> 16 & 255) / 255, (num >> 8 & 255) / 255, (num & 255) / 255];
+}
+function sampleScene(scene, count = 22000) {
+  const n = Math.max(500, Math.min(50000, Math.floor(count)));
+  const positions = new Float32Array(n * 4), colors = new Float32Array(n * 4);
+  const rng = seeded(hashString(scene.title + '/' + scene.description));
+  const palette = PALETTES[scene.palette] || PALETTES.aurora;
+  const paletteRgb = Object.fromEntries(Object.entries(palette).map(([k, v]) => [k, hexRgb(v)]));
+  const generator = { jellyfish, butterfly, galaxy, heart, dna, saturn }[scene.special];
+  const parts = scene.parts?.length ? scene.parts : [part('ellipsoid',[0,0,0],[1,1,1])];
+  const partWeights = parts.map(p => Math.max(0.05,p.weight || 1) * Math.pow(Math.max(0.06, (p.size?.x || 1) * (p.size?.y || 1) * (p.size?.z || 1)), 0.18));
+  let minX=Infinity,minY=Infinity,minZ=Infinity,maxX=-Infinity,maxY=-Infinity,maxZ=-Infinity;
+  for (let i = 0; i < n; i++) {
+    const spec = generator ? generator(rng) : (() => {
+      const selected = parts[choose(rng, partWeights)];
+      return { p: samplePart(selected, rng), slot: selected.color || 'primary' };
+    })();
+    const [x,y,z] = spec.p;
+    const o = i * 4;
+    positions[o] = x; positions[o+1] = y; positions[o+2] = z; positions[o+3] = 1;
+    minX = Math.min(minX,x); maxX = Math.max(maxX,x);
+    minY = Math.min(minY,y); maxY = Math.max(maxY,y);
+    minZ = Math.min(minZ,z); maxZ = Math.max(maxZ,z);
+    const rgb = paletteRgb[spec.slot] || paletteRgb.primary;
+    const jitter = 0.82 + rng()*0.38;
+    colors[o] = clamp(rgb[0]*jitter,0,1.4);
+    colors[o+1] = clamp(rgb[1]*jitter,0,1.4);
+    colors[o+2] = clamp(rgb[2]*jitter,0,1.4);
+    colors[o+3] = rng() < 0.018 ? 1.9 : 0.73 + rng() * 0.55;
+  }
+  const longest = Math.max(maxX-minX, maxY-minY, maxZ-minZ, 0.01);
+  const fit = clamp(5.25 / longest, 0.3, 2.8);
+  const cx = (minX + maxX) * 0.5, cy = (minY + maxY) * 0.5, cz = (minZ + maxZ) * 0.5;
+  for (let i = 0; i < n; i++) {
+    const o = i*4;
+    positions[o] = (positions[o]-cx)*fit;
+    positions[o+1] = (positions[o+1]-cy)*fit;
+    positions[o+2] = (positions[o+2]-cz)*fit;
+  }
+  return { positions, colors, count: n, title: scene.title, description: scene.description, palette: scene.palette };
+}
+
+function introCloud(n) {
+  const rng = seeded(0xC0FFEE);
+  const positions = new Float32Array(n*4), colors = new Float32Array(n*4);
+  for (let i=0;i<n;i++) {
+    const [x,y,z] = randomSphere(rng), r = 0.8 + rng()*1.95, j=i*4;
+    positions[j]=x*r; positions[j+1]=y*r; positions[j+2]=z*r;positions[j+3]=1;
+    colors[j]=0.17+rng()*0.25; colors[j+1]=0.54+rng()*0.2;
+    colors[j+2]=0.8+rng()*0.25; colors[j+3]=0.5+rng()*0.6;
+  }
+  return {positions,colors,count:n};
+}
+
+window.__shapes={EXAMPLES,introCloud,localSceneForPrompt,sampleScene,hashString};})();
+(function(){
+// Raw WebGPU, zero rendering dependencies. Every point is a GPU-instanced soft quad.
+// Particle motion, 3D projection and staggered morph interpolation happen in WGSL.
+
+const SHADER = /* wgsl */ `
+struct Params {
+  viewport: vec2f,
+  time: f32,
+  progress: f32,
+  yaw: f32,
+  pitch: f32,
+  cameraDist: f32,
+  pointSize: f32,
+  motion: f32,
+  pad0: f32,
+  pad1: f32,
+  pad2: f32,
+};
+
+@group(0) @binding(0) var<uniform> uniforms: Params;
+@group(0) @binding(1) var<storage, read> previousPositions: array<vec4f>;
+@group(0) @binding(2) var<storage, read> nextPositions: array<vec4f>;
+@group(0) @binding(3) var<storage, read> previousColors: array<vec4f>;
+@group(0) @binding(4) var<storage, read> nextColors: array<vec4f>;
+
+struct VertexOutput {
+  @builtin(position) position: vec4f,
+  @location(0) local: vec2f,
+  @location(1) color: vec4f,
+};
+
+fn hash(n: f32) -> f32 {
+  return fract(sin(n * 12.9898) * 43758.5453);
+}
+
+@vertex
+fn vertexMain(@builtin(vertex_index) vertex: u32, @builtin(instance_index) id: u32) -> VertexOutput {
+  let index = f32(id);
+  let delay = hash(index * 0.731) * 0.17;
+  let t = clamp((uniforms.progress - delay) / max(0.001, 1.0 - delay), 0.0, 1.0);
+  let ease = t * t * (3.0 - 2.0 * t);
+  var p = mix(previousPositions[id].xyz, nextPositions[id].xyz, ease);
+
+  let drift = vec3f(
+    sin(index * 0.071 + uniforms.time * 0.68),
+    cos(index * 0.089 + uniforms.time * 0.56),
+    sin(index * 0.061 + uniforms.time * 0.49)
+  );
+  let agitation = 0.020 + 0.085 * sin(3.1415926 * t);
+  p += drift * agitation * uniforms.motion;
+
+  let yaw = uniforms.yaw + uniforms.time * 0.035;
+  let a = cos(yaw);
+  let b = sin(yaw);
+  p = vec3f(p.x * a + p.z * b, p.y, -p.x * b + p.z * a);
+
+  let c = cos(uniforms.pitch);
+  let d = sin(uniforms.pitch);
+  p = vec3f(p.x, p.y * c - p.z * d, p.y * d + p.z * c);
+
+  let distance = max(1.3, uniforms.cameraDist + p.z);
+  let perspective = 1.92 / distance;
+  let screen = vec2f(p.x * perspective * uniforms.viewport.y / uniforms.viewport.x,
+                      -p.y * perspective);
+
+  let isRight = vertex == 1u || vertex == 3u;
+  let isTop = vertex >= 2u;
+  let corner = vec2f(select(-1.0, 1.0, isRight), select(-1.0, 1.0, isTop));
+  let radiusPixels = max(0.5, uniforms.pointSize * (9.0 / distance)) *
+                     mix(0.75, 1.2, hash(index * 0.229));
+  let offset = vec2f(corner.x * radiusPixels * 2.0 / uniforms.viewport.x,
+                     corner.y * radiusPixels * 2.0 / uniforms.viewport.y);
+
+  var output: VertexOutput;
+  output.position = vec4f(screen + offset, 0.50, 1.0);
+  output.local = corner;
+  output.color = mix(previousColors[id], nextColors[id], ease);
+  return output;
+}
+
+@fragment
+fn fragmentMain(input: VertexOutput) -> @location(0) vec4f {
+  let distance = length(input.local);
+  if (distance > 1.0) { discard; }
+  let core = exp(-distance * distance * 13.0);
+  let halo = exp(-distance * distance * 3.7);
+  let alpha = (core * 0.69 + halo * 0.13) * input.color.a;
+  return vec4f(input.color.rgb * (0.70 + core * 0.88), alpha);
+}
+`;
+
+class ParticleStage {
+  constructor(canvas, fallback) {
+    this.canvas = canvas;
+    this.fallback = fallback;
+    this.mode = 'initializing';
+    this.count = 0;
+    this.cloudA = null;
+    this.cloudB = null;
+    this.width = 1;
+    this.height = 1;
+    this.dpr = 1;
+    this._buffers = [];
+    this.params = new Float32Array(12);
+  }
+
+  async init() {
+    if (!navigator.gpu) return this._fallback('WebGPU not available in this browser');
+    try {
+      const adapter = await navigator.gpu.requestAdapter({ powerPreference: 'high-performance' });
+      if (!adapter) return this._fallback('No compatible WebGPU adapter');
+      const device = await adapter.requestDevice();
+      const context = this.canvas.getContext('webgpu');
+      if (!context) return this._fallback('Could not create WebGPU canvas context');
+      this.device = device;
+      this.context = context;
+      this.format = navigator.gpu.getPreferredCanvasFormat();
+      this.shader = device.createShaderModule({ label: 'MorphLab particle shader', code: SHADER });
+      const info = await this.shader.getCompilationInfo();
+      const errors = info.messages.filter(m => m.type === 'error');
+      if (errors.length) throw new Error(errors.map(e => e.message).join('\n'));
+      this.pipeline = device.createRenderPipeline({
+        label: 'Instanced luminous point sprites',
+        layout: 'auto',
+        vertex: { module: this.shader, entryPoint: 'vertexMain' },
+        fragment: {
+          module: this.shader,
+          entryPoint: 'fragmentMain',
+          targets: [{ format: this.format, blend: {
+            color: { srcFactor: 'src-alpha', dstFactor: 'one', operation: 'add' },
+            alpha: { srcFactor: 'one', dstFactor: 'one', operation: 'add' },
+          } }],
+        },
+        primitive: { topology: 'triangle-strip', cullMode: 'none' },
+      });
+      this.uniformBuffer = device.createBuffer({
+        label: 'Morph frame uniforms', size: 48, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      });
+      this.mode = 'webgpu';
+      this.resize();
+      device.lost.then(reason => {
+        if (this.mode === 'webgpu') {
+          console.warn('WebGPU device lost:', reason.message);
+          this._fallback('GPU device lost');
+        }
+      });
+      return this.mode;
+    } catch (err) {
+      console.warn('WebGPU initialization failed; using Canvas 2D:', err);
+      return this._fallback(err.message || 'WebGPU unavailable');
+    }
+  }
+
+  _fallback(reason) {
+    this.mode = 'canvas';
+    this.reason = reason;
+    this.fallback.hidden = false;
+    this.ctx = this.fallback.getContext('2d', { alpha: false });
+    this.resize();
+    return this.mode;
+  }
+
+  resize() {
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    this.dpr = dpr;
+    this.width = Math.max(1, Math.floor(rect.width * dpr));
+    this.height = Math.max(1, Math.floor(rect.height * dpr));
+    if (this.mode === 'webgpu') {
+      this.canvas.width = this.width;
+      this.canvas.height = this.height;
+      this.context.configure({ device: this.device, format: this.format, alphaMode: 'opaque' });
+    } else {
+      this.fallback.width = this.width;
+      this.fallback.height = this.height;
+    }
+  }
+
+  setClouds(source, target) {
+    this.cloudA = source;
+    this.cloudB = target;
+    this.count = target.count;
+    if (this.mode !== 'webgpu') return;
+    this._buffers.forEach(b => b.destroy());
+    const buffers = [source.positions, target.positions, source.colors, target.colors].map((data, i) => {
+      const buf = this.device.createBuffer({
+        label: ['From positions', 'To positions', 'From colors', 'To colors'][i],
+        size: data.byteLength, usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      });
+      this.device.queue.writeBuffer(buf, 0, data);
+      return buf;
+    });
+    this._buffers = buffers;
+    this.bindGroup = this.device.createBindGroup({
+      layout: this.pipeline.getBindGroupLayout(0),
+      entries: [
+        { binding: 0, resource: { buffer: this.uniformBuffer } },
+        ...buffers.map((buffer, i) => ({ binding: i + 1, resource: { buffer } })),
+      ],
+    });
+  }
+
+  render(time, progress, view) {
+    if (!this.cloudA || !this.cloudB) return;
+    if (this.mode === 'webgpu') this._renderGPU(time, progress, view);
+    else if (this.ctx) this._renderCanvas(time, progress, view);
+  }
+
+  _renderGPU(time, progress, view) {
+    const u = this.params;
+    u[0] = this.width;
+    u[1] = this.height;
+    u[2] = time;
+    u[3] = progress;
+    u[4] = view.yaw;
+    u[5] = view.pitch;
+    u[6] = view.distance;
+    u[7] = view.pointSize * this.dpr;
+    u[8] = view.motion;
+    this.device.queue.writeBuffer(this.uniformBuffer, 0, u);
+    const encoder = this.device.createCommandEncoder({ label: 'MorphLab frame' });
+    const pass = encoder.beginRenderPass({
+      colorAttachments: [{
+        view: this.context.getCurrentTexture().createView(),
+        clearValue: { r: 0.023, g: 0.031, b: 0.067, a: 1 },
+        loadOp: 'clear', storeOp: 'store',
+      }],
+    });
+    pass.setPipeline(this.pipeline);
+    pass.setBindGroup(0, this.bindGroup);
+    pass.draw(4, this.count);
+    pass.end();
+    this.device.queue.submit([encoder.finish()]);
+  }
+
+  _renderCanvas(time, progress, view) {
+    const ctx = this.ctx, width = this.width, height = this.height;
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = '#060a18';
+    ctx.fillRect(0, 0, width, height);
+    ctx.globalCompositeOperation = 'lighter';
+    const stride = Math.max(1, Math.ceil(this.count / 7000));
+    const cy = Math.cos(view.yaw + time * 0.035), sy = Math.sin(view.yaw + time * 0.035);
+    const cp = Math.cos(view.pitch), sp = Math.sin(view.pitch);
+    const a = this.cloudA.positions, b = this.cloudB.positions;
+    const ca = this.cloudA.colors, cb = this.cloudB.colors;
+    for (let i = 0; i < this.count; i += stride) {
+      const j = i * 4;
+      const hash = ((Math.sin(i * 0.731 * 12.9898) * 43758.5453) % 1 + 1) % 1;
+      const delay = hash * 0.17;
+      let t = Math.max(0, Math.min(1, (progress - delay) / (1 - delay)));
+      t = t*t*(3-2*t);
+      const dx = Math.sin(i*.071+time*.68) * (.02+.085*Math.sin(Math.PI*t))*view.motion;
+      const dy = Math.cos(i*.089+time*.56) * (.02+.085*Math.sin(Math.PI*t))*view.motion;
+      const dz = Math.sin(i*.061+time*.49) * (.02+.085*Math.sin(Math.PI*t))*view.motion;
+      let x = a[j] + (b[j]-a[j])*t + dx;
+      let y = a[j+1] + (b[j+1]-a[j+1])*t + dy;
+      let z = a[j+2] + (b[j+2]-a[j+2])*t + dz;
+      [x,z] = [x*cy+z*sy,-x*sy+z*cy];
+      [y,z] = [y*cp-z*sp,y*sp+z*cp];
+      const depth = Math.max(1.3,view.distance+z), f = 1.92/depth;
+      const sx = width*0.5+x*f*height*0.5;
+      const sy2=height*0.5-y*f*height*0.5;
+      if(sx < -4||sx >width+4||sy2 < -4||sy2 >height+4)continue;
+      const r = Math.max(0.6,view.pointSize*this.dpr*(9/depth));
+      const cr = (ca[j]+(cb[j]-ca[j])*t)*255;
+      const cg = (ca[j+1]+(cb[j+1]-ca[j+1])*t)*255;
+      const cbv = (ca[j+2]+(cb[j+2]-ca[j+2])*t)*255;
+      const opacity = Math.min(0.65,0.19*(ca[j+3]+(cb[j+3]-ca[j+3])*t));
+      ctx.fillStyle = `rgba(${cr|0},${cg|0},${cbv|0},${opacity})`;
+      ctx.beginPath(); ctx.arc(sx,sy2,r,0,Math.PI*2); ctx.fill();
+    }
+    ctx.globalCompositeOperation = 'source-over';
+  }
+}
+
+window.__ParticleStage=ParticleStage;})();
+(function(){
+const {hashString}=window.__shapes;
+// Minimal .glb triangle-mesh importer for morph targets.
+// Supports glTF 2.0 binary meshes, standard node transforms, indexed/interleaved POSITION accessors.
+// Materials and animation are intentionally ignored: we sample the actual model surface into particles.
+
+
+const IDENTITY = [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1];
+const clamp = (v,a,b)=>Math.min(b,Math.max(a,v));
+function mul4(a,b) {
+  const out = new Array(16).fill(0);
+  for (let c=0;c<4;c++) for(let r=0;r<4;r++) {
+    for(let k=0;k<4;k++) out[c*4+r]+=a[k*4+r]*b[c*4+k];
+  }
+  return out;
+}
+function point4(m,p) {
+  return [m[0]*p[0]+m[4]*p[1]+m[8]*p[2]+m[12],
+    m[1]*p[0]+m[5]*p[1]+m[9]*p[2]+m[13],
+    m[2]*p[0]+m[6]*p[1]+m[10]*p[2]+m[14]];
+}
+function trs(node) {
+  if(Array.isArray(node.matrix)&&node.matrix.length===16) return node.matrix;
+  const [x,y,z,w] = node.rotation || [0,0,0,1];
+  const [sx,sy,sz] = node.scale || [1,1,1];
+  const [tx,ty,tz] = node.translation || [0,0,0];
+  return [
+    (1-2*y*y-2*z*z)*sx, (2*x*y+2*z*w)*sx, (2*x*z-2*y*w)*sx, 0,
+    (2*x*y-2*z*w)*sy, (1-2*x*x-2*z*z)*sy, (2*y*z+2*x*w)*sy, 0,
+    (2*x*z+2*y*w)*sz, (2*y*z-2*x*w)*sz, (1-2*x*x-2*y*y)*sz, 0,
+    tx,ty,tz,1,
+  ];
+}
+function cross(a,b) {
+  return [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]];
+}
+function seedGen(seed) {
+  let state=seed;
+  return ()=>{state+=0x6D2B79F5;let t=state;
+    t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);
+    return ((t^(t>>>14))>>>0)/4294967296;};
+}
+function readAccessor(json,bin,accessorIndex) {
+  const accessor = json.accessors?.[accessorIndex];
+  if (!accessor || accessor.sparse || accessor.bufferView === undefined) throw new Error('Unsupported sparse or missing mesh accessor.');
+  const view = json.bufferViews?.[accessor.bufferView];
+  if (!view || view.buffer !== 0) throw new Error('This GLB needs an unsupported external mesh buffer.');
+  const components={SCALAR:1,VEC2:2,VEC3:3,VEC4:4}[accessor.type];
+  const widths={5120:1,5121:1,5122:2,5123:2,5125:4,5126:4};
+  const bytes=widths[accessor.componentType];
+  if (!components||!bytes) throw new Error('Unsupported glTF attribute type.');
+  const stride=view.byteStride||components*bytes;
+  const start=(view.byteOffset||0)+(accessor.byteOffset||0);
+  const data=new DataView(bin);
+  const read = (i,k=0) => {
+    const off=start+i*stride+k*bytes;
+    if(off<0||off+bytes>data.byteLength) throw new Error('Corrupt mesh buffer bounds.');
+    if(accessor.componentType===5126)return data.getFloat32(off,true);
+    if(accessor.componentType===5125)return data.getUint32(off,true);
+    if(accessor.componentType===5123)return data.getUint16(off,true);
+    if(accessor.componentType===5121)return data.getUint8(off);
+    if(accessor.componentType===5122)return data.getInt16(off,true);
+    return data.getInt8(off);
+  };
+  return {count:accessor.count,components,read};
+}
+function parseGLB(buffer) {
+  const data = new DataView(buffer);
+  if(data.byteLength<20 || data.getUint32(0,true)!==0x46546C67 || data.getUint32(4,true)!==2)
+    throw new Error('Not a supported glTF 2.0 .glb file.');
+  if(data.getUint32(8,true)>data.byteLength) throw new Error('Truncated GLB.');
+  let offset=12,json,bin;
+  while(offset+8<=data.byteLength) {
+    const length=data.getUint32(offset,true),kind=data.getUint32(offset+4,true);
+    if(offset+8+length>data.byteLength) throw new Error('Corrupt GLB chunk size.');
+    const bytes=buffer.slice(offset+8,offset+8+length);
+    if(kind===0x4E4F534A)json=JSON.parse(new TextDecoder().decode(bytes));
+    if(kind===0x004E4942)bin=bytes;
+    offset+=8+length;
+  }
+  if(!json||!bin)throw new Error('Missing GLB mesh data.');
+  const meshes=[];
+  const nodes=json.nodes||[];
+  const scene = json.scenes?.[json.scene || 0];
+  const children = new Set(nodes.flatMap(n=>n.children||[]));
+  const roots=scene?.nodes || nodes.map((_,i)=>i).filter(i=>!children.has(i));
+  let triangleCount=0;
+  const visited=new Set();
+  function walk(nodeIndex,parent) {
+    if(visited.has(nodeIndex))return;
+    visited.add(nodeIndex);
+    const node=nodes[nodeIndex];
+    if(!node) return;
+    const world=mul4(parent,trs(node));
+    if(node.mesh!==undefined){
+      const mesh=json.meshes?.[node.mesh];
+      for(const primitive of mesh?.primitives||[]) {
+        if(primitive.mode!==undefined&&primitive.mode!==4)continue;
+        if(primitive.attributes?.POSITION===undefined)continue;
+        const positions=readAccessor(json,bin,primitive.attributes.POSITION);
+        if(positions.components!==3||positions.count>2_000_000)continue;
+        const indices=primitive.indices===undefined?null:readAccessor(json,bin,primitive.indices);
+        const n=indices?indices.count:positions.count;
+        triangleCount+=Math.floor(n/3);
+        if(triangleCount>2_000_000)throw new Error('Model is too large to import.');
+        meshes.push({positions,indices,n,world});
+      }
+    }
+    for(const child of node.children||[])walk(child,world);
+  }
+  for(const i of roots)walk(i,IDENTITY);
+  if(meshes.length===0)throw new Error('No triangle mesh positions were found in this GLB.');
+  return {meshes,triangleCount};
+}
+
+function sampleGLB(buffer,count,name='Imported model') {
+  const {meshes,triangleCount}=parseGLB(buffer);
+  const rng=seedGen(hashString(name));
+  const triangles=[];
+  let totalArea=0;
+  const skip=Math.max(1,Math.floor(triangleCount/140000));
+  for(const mesh of meshes){
+    for(let i=0;i+2<mesh.n;i+=3*skip){
+      const pointIndex=k=>mesh.indices?mesh.indices.read(k):k;
+      const vertex=k=>{
+        const j=pointIndex(k);
+        if(j>=mesh.positions.count)return [0,0,0];
+        return point4(mesh.world,[mesh.positions.read(j,0),mesh.positions.read(j,1),mesh.positions.read(j,2)]);
+      };
+      const a=vertex(i),b=vertex(i+1),c=vertex(i+2);
+      const ab=[b[0]-a[0],b[1]-a[1],b[2]-a[2]];
+      const ac=[c[0]-a[0],c[1]-a[1],c[2]-a[2]];
+      const cr=cross(ab,ac);
+      const area=Math.hypot(...cr)*0.5;
+      if(!Number.isFinite(area)||area<1e-9)continue;
+      totalArea+=area;
+      triangles.push({a,b,c,end:totalArea});
+    }
+  }
+  if(!triangles.length)throw new Error('The GLB mesh has no non-degenerate triangles.');
+  const n=clamp(Math.floor(count),500,50000);
+  const positions=new Float32Array(n*4),colors=new Float32Array(n*4);
+  let min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];
+  for(let i=0;i<n;i++) {
+    const needle=rng()*totalArea;
+    let low=0,high=triangles.length-1;
+    while(low<high){const mid=(low+high)>>>1;
+      if(triangles[mid].end<needle)low=mid+1;else high=mid;}
+    const {a,b,c}=triangles[low];
+    const u=Math.sqrt(rng()),v=rng();
+    const weights=[1-u,u*(1-v),u*v],j=i*4;
+    for(let axis=0;axis<3;axis++){
+      const value=a[axis]*weights[0]+b[axis]*weights[1]+c[axis]*weights[2];
+      positions[j+axis]=value;min[axis]=Math.min(min[axis],value);max[axis]=Math.max(max[axis],value);
+    }
+    positions[j+3]=1;
+    const glimmer=0.75+rng()*0.33;
+    colors[j]=0.54*glimmer;colors[j+1]=0.84*glimmer;
+    colors[j+2]=1.0*glimmer;colors[j+3]=rng()<0.02?1.8:0.9;
+  }
+  const mid=min.map((v,i)=>(v+max[i])/2);
+  const ext=Math.max(...max.map((v,i)=>v-min[i]),1e-5);
+  const scale=clamp(5.3/ext,0.00001,100000);
+  for(let i=0;i<n;i++)for(let axis=0;axis<3;axis++)positions[i*4+axis]=(positions[i*4+axis]-mid[axis])*scale;
+  return {positions,colors,count:n,title:name.replace(/\.glb$/i,''),
+    description:`Particle-sampled from ${triangleCount.toLocaleString()} triangles in the original GLB mesh.`,palette:'ocean'};
+}
+
+window.__sampleGLB=sampleGLB;})();
+(function(){
+const {EXAMPLES,introCloud,localSceneForPrompt,sampleScene}=window.__shapes; const ParticleStage=window.__ParticleStage;const sampleGLB=window.__sampleGLB;
+
+const $ = selector => document.querySelector(selector);
+const COUNT_CHOICES = [10000, 22000, 42000];
+const stage = $('#stage');
+const canvas = $('#particle-canvas');
+const renderer = new ParticleStage(canvas, $('#fallback-canvas'));
+const promptInput = $('#prompt');
+const generateButton = $('#generate-button');
+const chipContainer = $('#sample-chips');
+const statusLabel = $('#morph-status');
+const toast = $('#toast');
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const state = {
+  count: COUNT_CHOICES[1],
+  sourceCloud: null,
+  targetCloud: null,
+  currentScene: null,
+  importedBuffer: null,
+  importedName: null,
+  progress: 0,
+  morphStart: performance.now(),
+  morphDuration: reducedMotion ? 750 : 2400,
+  view: { yaw: -0.15, pitch: -0.05, distance: 8.4, pointSize: 2.45, motion: reducedMotion ? 0 : 0.65 },
+  aiEnabled: false,
+  busy: false,
+  sequence: 0,
+  abort: null,
+  autoTimer: null,
+  lastPrompt: '',
+  lastSource: 'local',
+  frames: 0,
+  lastFpsAt: performance.now(),
+  fps: 0,
+  toastTimer: null,
+};
+
+const digits = n => n.toLocaleString('en-US');
+function showToast(message) {
+  toast.textContent = message;
+  toast.hidden = false;
+  clearTimeout(state.toastTimer);
+  state.toastTimer = setTimeout(() => { toast.hidden = true; }, 4800);
+}
+function clearAuto() { clearTimeout(state.autoTimer); state.autoTimer = null; }
+function setBusy(loading) {
+  state.busy = loading;
+  generateButton.disabled = loading;
+  $('#button-text').textContent = loading ? 'Imagining the shape…' : 'Morph particles';
+}
+function setTitle(cloud, source) {
+  $('#stage-title').textContent = (cloud.title || 'A NEW SHAPE').toUpperCase();
+  $('#stage-description').textContent = cloud.description || 'A sculpture of light and motion.';
+  const rendererLabel = renderer.mode === 'webgpu' ? 'WEBGPU' : 'CANVAS';
+  $('#source-stat').textContent = source === 'openai' ? `OPENAI → ${rendererLabel}`
+    : source === 'glb' ? `GLB → ${rendererLabel}` : `PROCEDURAL → ${rendererLabel}`;
+  state.lastSource = source;
+}
+function updateMeta() {
+  $('#particle-stat').textContent = digits(state.count);
+  $('#count-display').textContent = digits(state.count);
+  $('#char-count').textContent = `${promptInput.value.length} / 500`;
+  $('#coord-x').textContent = `${state.view.yaw >= 0 ? '+' : ''}${state.view.yaw.toFixed(1)}`;
+  $('#coord-y').textContent = `${state.view.pitch >= 0 ? '+' : ''}${state.view.pitch.toFixed(1)}`;
+}
+function interpolateCloud(a, b, progress) {
+  if (progress >= 1) return b;
+  if (progress <= 0) return a;
+  const positions = new Float32Array(a.positions.length);
+  const colors = new Float32Array(a.colors.length);
+  // Exact staggered easing in the WGSL vertex shader, mirrored here for smooth interruptions.
+  for (let i = 0; i < a.count; i++) {
+    const hash = ((Math.sin(i * 0.731 * 12.9898) * 43758.5453) % 1 + 1) % 1;
+    const delay = hash * 0.17;
+    let t = Math.max(0, Math.min(1, (progress - delay) / (1 - delay)));
+    t = t * t * (3 - 2 * t);
+    const k = i * 4;
+    for (let j=0;j<4;j++) {
+      positions[k+j] = a.positions[k+j] + (b.positions[k+j]-a.positions[k+j])*t;
+      colors[k+j] = a.colors[k+j] + (b.colors[k+j]-a.colors[k+j])*t;
+    }
+  }
+  return { positions, colors, count:a.count };
+}
+function morphToCloud(next, source='local') {
+  const previous = state.sourceCloud && state.targetCloud
+    ? interpolateCloud(state.sourceCloud, state.targetCloud, state.progress)
+    : introCloud(next.count);
+  state.sourceCloud = previous;
+  state.targetCloud = next;
+  state.morphStart = performance.now();
+  state.progress = 0;
+  renderer.setClouds(previous, next);
+  setTitle(next, source);
+  updateMeta();
+}
+function applyScene(scene, source) {
+  state.currentScene = scene;
+  state.importedBuffer = null;
+  state.importedName = null;
+  const next = sampleScene(scene,state.count);
+  morphToCloud(next,source);
+}
+async function generate(reason='manual') {
+  const prompt = promptInput.value.trim();
+  if (prompt.length < 2) { if(reason==='manual') showToast('Describe a shape in at least two characters.'); return; }
+  if (prompt === state.lastPrompt && reason === 'auto') return;
+  clearAuto();
+  state.lastPrompt = prompt;
+  const sequence = ++state.sequence;
+  if (state.abort) state.abort.abort();
+  state.abort = new AbortController();
+  document.querySelectorAll('.chip').forEach(chip => chip.classList.toggle('active', chip.dataset.prompt === prompt));
+  if (!state.aiEnabled) {
+    applyScene(localSceneForPrompt(prompt),'local');
+    return;
+  }
+
+  setBusy(true);
+  try {
+    const sessionResponse = await fetch('/api/session', {signal:state.abort.signal});
+    if(!sessionResponse.ok) throw new Error('Could not start a secure Helios session.');
+    const session = await sessionResponse.json();
+    const response = await fetch('/api/morphlab/shape', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'X-CSRF-Token':session.csrfToken },
+      body:JSON.stringify({prompt}),
+      signal:state.abort.signal,
+    });
+    const result=await response.json();
+    if(!response.ok)throw new Error(result.error || `OpenAI request failed (${response.status})`);
+    if(sequence!==state.sequence)return;
+    applyScene(result.shape,'openai');
+  } catch(error) {
+    if(error.name==='AbortError' || sequence!==state.sequence)return;
+    console.warn('AI unavailable:',error);
+    applyScene(localSceneForPrompt(prompt),'local');
+    showToast(`${error.message} Showing a local sketch instead.`);
+  } finally {
+    if(sequence===state.sequence) setBusy(false);
+  }
+}
+function changeCount(newCount) {
+  if (newCount===state.count)return;
+  state.count=newCount;
+  try {
+    const newCloud=state.importedBuffer
+      ? sampleGLB(state.importedBuffer,state.count,state.importedName)
+      : sampleScene(state.currentScene || localSceneForPrompt('a jellyfish'),state.count);
+    state.sourceCloud=newCloud;
+    state.targetCloud=newCloud;
+    state.progress=1;
+    state.morphStart=performance.now()-state.morphDuration;
+    renderer.setClouds(newCloud,newCloud);
+    updateMeta();
+  } catch(error){ showToast(error.message); }
+}
+async function importGLB(file) {
+  if(!file)return;
+  if(!file.name.toLowerCase().endsWith('.glb')) {showToast('Please use a binary glTF file (.glb).');return;}
+  if(file.size>24*1024*1024){showToast('GLB files must be smaller than 24 MB in this demo.');return;}
+  try {
+    const bytes=await file.arrayBuffer();
+    const cloud=sampleGLB(bytes,state.count,file.name);
+    state.sequence++;
+    state.abort?.abort();
+    setBusy(false);
+    state.currentScene=null;
+    state.importedBuffer=bytes;
+    state.importedName=file.name;
+    state.lastPrompt='';
+    morphToCloud(cloud,'glb');
+    showToast(`Imported ${file.name} — morphing into the actual mesh surface.`);
+  } catch(err) {console.error(err);showToast(`Could not read model: ${err.message}`);}
+}
+
+function bindUI() {
+  const icon=['✳','❋','✧','✺','♡','⊹','◎','✿'];
+  for(const [i,example] of EXAMPLES.entries()){
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='chip';
+    button.dataset.prompt=example.prompt;
+    const symbol=document.createElement('span');
+    symbol.className='chip-icon';symbol.textContent=icon[i];
+    button.append(symbol,document.createTextNode(example.label));
+    button.addEventListener('click',()=>{
+      promptInput.value=example.prompt;
+      updateMeta();
+      generate('chip');
+    });
+    chipContainer.append(button);
+  }
+  $('#prompt-form').addEventListener('submit',event=>{
+    event.preventDefault();generate('manual');
+  });
+  promptInput.addEventListener('keydown',event=>{
+    if(event.key==='Enter' && (event.metaKey||event.ctrlKey)){
+      event.preventDefault();generate('manual');
+    }
+  });
+  promptInput.addEventListener('input',()=>{
+    updateMeta();
+    clearAuto();
+    if(!$('#auto-morph').checked || promptInput.value.trim().length<3)return;
+    state.autoTimer=setTimeout(()=>generate('auto'),1600);
+  });
+  $('#auto-morph').addEventListener('change',()=>clearAuto());
+  $('#particle-count').addEventListener('input',event=>changeCount(COUNT_CHOICES[Number(event.target.value)]));
+  $('#motion').value=reducedMotion?'0':'65';
+  $('#motion-display').textContent=reducedMotion?'0%':'65%';
+  $('#motion').addEventListener('input',event=>{
+    state.view.motion=Number(event.target.value)/100;
+    $('#motion-display').textContent=event.target.value+'%';
+  });
+  $('#glb-input').addEventListener('change',event=>{
+    importGLB(event.target.files?.[0]);
+    event.target.value='';
+  });
+  const dropZone=$('#drop-zone');
+  dropZone.addEventListener('dragover',event=>{event.preventDefault();dropZone.classList.add('drag-over');});
+  dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop',event=>{
+    event.preventDefault();dropZone.classList.remove('drag-over');
+    importGLB(event.dataTransfer.files?.[0]);
+  });
+  let drag=null;
+  stage.addEventListener('pointerdown',event=>{
+    if(event.button!==0)return;
+    drag={x:event.clientX,y:event.clientY,yaw:state.view.yaw,pitch:state.view.pitch};
+    stage.setPointerCapture(event.pointerId);
+    stage.style.cursor='grabbing';
+  });
+  stage.addEventListener('pointermove',event=>{
+    if(!drag)return;
+    state.view.yaw=drag.yaw+(event.clientX-drag.x)*0.008;
+    state.view.pitch=Math.max(-1.45,Math.min(1.45,drag.pitch+(event.clientY-drag.y)*0.006));
+    updateMeta();
+  });
+  const release=()=>{drag=null;stage.style.cursor='grab';};
+  stage.addEventListener('pointerup',release);
+  stage.addEventListener('pointercancel',release);
+  stage.addEventListener('lostpointercapture',release);
+  stage.addEventListener('wheel',event=>{
+    event.preventDefault();
+    state.view.distance=Math.max(4.4,Math.min(17,state.view.distance+Math.sign(event.deltaY)*0.45));
+  },{passive:false});
+  stage.style.cursor='grab';
+  window.addEventListener('resize',()=>renderer.resize());
+  if(typeof ResizeObserver!=='undefined')new ResizeObserver(()=>renderer.resize()).observe(stage);
+}
+
+function frame(now) {
+  const seconds=now*.001;
+  state.progress=Math.max(0,Math.min(1,(now-state.morphStart)/state.morphDuration));
+  if(state.targetCloud)renderer.render(seconds,state.progress,state.view);
+  $('#morph-fill').style.width=`${Math.round(state.progress*100)}%`;
+  $('#morph-percentage').textContent=`${Math.round(state.progress*100)}%`;
+  statusLabel.textContent=state.busy ? 'INTERPRETING THE PROMPT…'
+    : state.progress<1 ? 'REARRANGING MATTER…' : 'SCULPTURE STABLE';
+  state.frames++;
+  if(now-state.lastFpsAt>=700){
+    state.fps=Math.round(state.frames*1000/(now-state.lastFpsAt));
+    $('#fps-stat').textContent=state.fps;
+    state.frames=0;state.lastFpsAt=now;
+  }
+  requestAnimationFrame(frame);
+}
+
+async function init() {
+  bindUI();
+  const mode=await renderer.init();
+  $('#render-badge').innerHTML=mode==='webgpu'
+    ? '<span class="tech-led"></span> WEBGPU LIVE'
+    : '<span class="tech-led"></span> CANVAS 2D';
+  if(mode!=='webgpu') {
+    $('#mode-caption').textContent=`Canvas fallback active (${renderer.reason || 'no GPU'}). The downloaded project uses native WebGPU when supported.`;
+  }
+  const initial=localSceneForPrompt(promptInput.value);
+  state.currentScene=initial;
+  morphToCloud(sampleScene(initial,state.count),'local');
+  updateMeta();
+  requestAnimationFrame(frame);
+  try {
+    const response=await fetch('/api/morphlab/config');
+    const config=await response.json();
+    state.aiEnabled=Boolean(config.enabled);
+    $('#api-badge').textContent=state.aiEnabled ? `OPENAI · ${config.model}` : 'LOCAL PREVIEW';
+    if(state.aiEnabled){
+      $('#mode-caption').textContent='OpenAI is connected. Every new text prompt generates a custom 3D shape recipe.';
+    }
+  } catch(error){
+    console.warn('Could not check API configuration:',error);
+    $('#api-badge').textContent='LOCAL PREVIEW';
+  }
+}
+init().catch(error=>{
+  console.error('MorphLab failed to initialize:',error);
+  showToast(`Startup error: ${error.message}`);
+});
+
+})();</script>
+</body>
+</html>

@@ -265,3 +265,7 @@ see everyone elses vote using deckgl map
 # happy bear landia has 2 responsiblities
 1. visualize constitution of each country / city
 2. simulate how edits to that document would affect simulation behavior
+
+## MorphLab · WebGPU particle studio
+
+The Helios dashboard includes **MorphLab · WebGPU** (`/morphlab.html`): type a prompt and morph a glowing particle cloud into a procedural 3D sculpture, or drag in an uncompressed GLB model. OpenAI-powered shape recipes use a server-side, explicitly enabled API and fall back to local presets when unconfigured. See [MorphLab setup and security](docs/morphlab.md).
