@@ -201,6 +201,7 @@
         <button class="tab" id="tab-morphlab" type="button" role="tab" aria-selected="false" aria-controls="view-morphlab">MorphLab · WebGPU</button>
         <button class="tab" id="tab-pocket" type="button" role="tab" aria-selected="false" aria-controls="view-pocket">HappyBearLandia Pocket</button>
         <button class="tab" id="tab-pensieve" type="button" role="tab" aria-selected="false" aria-controls="view-pensieve">Digital Pensieve</button>
+        <button class="tab" id="tab-braindance" type="button" role="tab" aria-selected="false" aria-controls="view-braindance">Braindance</button>
         <button class="tab" id="tab-mail" type="button" role="tab" aria-selected="false" aria-controls="view-mail">Mail · Resend</button>
         <button class="tab" id="tab-ycr" type="button" role="tab" aria-selected="false" aria-controls="view-ycr">YC Research</button>
         <button class="tab" id="tab-fork" type="button" role="tab" aria-selected="false" aria-controls="view-fork">Fork Helios</button>
@@ -342,6 +343,14 @@
         allowfullscreen
       ></iframe>
 
+      <iframe
+        id="view-braindance"
+        class="view"
+        title="Braindance: Mirrorworld Pensieve, key events 2019 to 2033"
+        src="/embed/braindance"
+        loading="lazy"
+      ></iframe>
+
       <iframe id="view-mail" class="view" title="Helios Mail · Resend inbox and compose" src="/embed/mail" loading="lazy"></iframe>
 
       <iframe
@@ -393,6 +402,7 @@
       coil: document.getElementById('tab-coil'),
       pocket: document.getElementById('tab-pocket'),
       pensieve: document.getElementById('tab-pensieve'),
+      braindance: document.getElementById('tab-braindance'),
       mail: document.getElementById('tab-mail'),
       ycr: document.getElementById('tab-ycr'),
       fork: document.getElementById('tab-fork'),
@@ -416,6 +426,7 @@
       coil: document.getElementById('view-coil'),
       pocket: document.getElementById('view-pocket'),
       pensieve: document.getElementById('view-pensieve'),
+      braindance: document.getElementById('view-braindance'),
       mail: document.getElementById('view-mail'),
       ycr: document.getElementById('view-ycr'),
       fork: document.getElementById('view-fork'),
@@ -446,6 +457,7 @@
     tabs.coil.addEventListener('click', () => activate('coil'));
     tabs.pocket.addEventListener('click', () => activate('pocket'));
     tabs.pensieve.addEventListener('click', () => activate('pensieve'));
+    tabs.braindance.addEventListener('click', () => activate('braindance'));
     tabs.mail.addEventListener('click', () => activate('mail'));
     tabs.ycr.addEventListener('click', () => activate('ycr'));
     tabs.fork.addEventListener('click', () => activate('fork'));
