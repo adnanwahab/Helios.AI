@@ -131,3 +131,14 @@
   from = "/embed/rainbow-brain"
   to = "/rainbow_brain.html"
   status = 200
+
+# Braindance: key events of the last seven years and the next seven, as a 3D mirrorworld.
+[[redirects]]
+  from = "/braindance"
+  to = "/helios_braindance.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/braindance"
+  to = "/helios_braindance.html"
+  status = 200

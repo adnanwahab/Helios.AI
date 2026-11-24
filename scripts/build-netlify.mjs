@@ -14,6 +14,7 @@ const pages = [
   'helios_ai_landing_page.html',
   'helios_hippie_landing.html',
   'helios_fork.html',
+  'helios_braindance.html',
   'world_plan_simulator.html',
   'happybearlandia_pocket.html',
   'eight_billion_map.html',
