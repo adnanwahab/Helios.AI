@@ -51,3 +51,43 @@ test('connected vote counts persist across browser contexts, pending comments ar
  await expect(other.locator('#clause-comments')).not.toContainText('Test comment pending review.');
  }finally{await other.close()}
 });
+
+test('Docs opens a full archive with one toggled iframe and preserves the journal',async({page})=>{
+ await page.setViewportSize({width:1440,height:900});
+ await page.goto('/');
+ await page.locator('#journal').fill('Private journal draft retained across archive views.');
+ await expect(page.locator('iframe')).toHaveCount(0);
+ await page.locator('#docs-open').click();
+ await expect(page.locator('#docs-drawer')).toHaveAttribute('data-view','tabs');
+ await expect(page.locator('#docs-links a')).toHaveCount(34);
+ await expect(page.locator('#docs-frame')).toHaveCount(0);
+ await page.locator('#docs-links a[data-experience="Neighborhood Consensus"]').click();
+ await expect(page.locator('#docs-current')).toHaveText('Neighborhood Consensus');
+ await expect(page.locator('#docs-frame')).toHaveAttribute('src',/\/neighborhood_consensus\.html$/);
+ await expect(page.frameLocator('#docs-frame').locator('body')).toBeVisible();
+ await expect(page.locator('#docs-links a[data-experience="Neighborhood Consensus"]')).toHaveAttribute('aria-current','true');
+ await expect(page.locator('#docs-external')).toHaveAttribute('href','neighborhood_consensus.html');
+ await page.locator('#docs-links a[data-experience="Three-Editor Merge"]').click();
+ await expect(page.locator('#docs-frame')).toHaveCount(1);
+ await expect(page.locator('#docs-frame')).toHaveAttribute('src',/\/three_editor_merge\.html$/);
+ await expect(page.locator('#docs-links a[data-experience="Three-Editor Merge"]')).toHaveAttribute('aria-current','true');
+ await expect(page.locator('#docs-links a[data-experience="Repository documentation"]')).toHaveAttribute('target','_blank');
+ await expect(page.locator('#docs-links a[data-experience="YC Research"]')).toHaveAttribute('data-separate','true');
+ await page.locator('#docs-layout').click();
+ await expect(page.locator('#docs-drawer')).toHaveAttribute('data-view','drawer');
+ await expect(page.locator('#docs-frame')).toHaveCount(0);
+ await page.locator('#docs-layout').click();
+ await expect(page.locator('#docs-frame')).toHaveAttribute('src',/\/three_editor_merge\.html$/);
+ await page.locator('#docs-close').click();
+ await expect(page.locator('#docs-drawer')).toBeHidden();
+ await expect(page.locator('#docs-frame')).toHaveCount(0);
+ await expect(page.locator('#journal')).toHaveValue('Private journal draft retained across archive views.');
+ await page.setViewportSize({width:390,height:844});
+ await page.locator('#docs-open').click();
+ await page.locator('#docs-search').fill('Neighborhood Consensus');
+ await page.locator('#docs-links a[data-experience="Neighborhood Consensus"]').click();
+ await expect(page.locator('#docs-frame')).toBeVisible();
+ expect(await page.locator('#docs-drawer').evaluate(el=>el.scrollWidth<=el.clientWidth)).toBe(true);
+ await page.locator('#docs-close').click();
+ await expect(page.locator('#journal')).toHaveValue('Private journal draft retained across archive views.');
+});

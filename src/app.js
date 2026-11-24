@@ -109,6 +109,17 @@ export function createApp({store, email, notion = null, morphlab = null, origins
       if (!adminToken || !equal(request.headers.get('authorization'), 'Bearer ' + adminToken)) throw new Problem(403, 'Maintainer authorization required.');
       return response(await store.constitution.moderationQueue());
     }
+    // Shared law votes and updates are enabled on Supabase. Local PGlite
+    // development may exercise the contract; deployed Fly PGlite is read-only
+    // for these new endpoints, avoiding a second public voting database.
+    const lawBoardWritable=health.storage==='supabase-postgres'||(health.storage==='pglite'&&health.runtime==='node-server');
+    const lawBoardPath=path.match(/^\/api\/law-board\/(HGA-\d{3})(?:\/(vote|update))?$/);
+    if(method==='GET'&&path==='/api/law-board'){
+      const session=await store.authenticate(cookie);
+      return response({storage:health.storage,writable:lawBoardWritable,records:await store.lawBoard(session?.id)});
+    }
+    if(method==='GET'&&lawBoardPath&&!lawBoardPath[2])return response(await store.lawHistory(lawBoardPath[1]));
+    if(method==='POST'&&lawBoardPath?.[2]&&!lawBoardWritable)throw new Problem(503,'Shared law votes and updates require the configured Supabase database.');
     if (method === 'GET' && ['/api/catalog', '/api/laws'].includes(path)) return response(await store.catalog());
     if (path === '/api/notion/preview' && method === 'GET') {
       if (!notion) throw new Problem(503, 'Notion preview is not configured.');
@@ -145,6 +156,12 @@ export function createApp({store, email, notion = null, morphlab = null, origins
     let body;
     try { body = JSON.parse(Buffer.concat(chunks).toString('utf8')); } catch { throw new Problem(400, 'Invalid JSON.'); }
 
+    if (lawBoardPath?.[2]) {
+      const key=request.headers.get('idempotency-key');
+      if(!key||!/^[a-zA-Z0-9-]{16,80}$/.test(key))throw new Problem(400,'A unique Idempotency-Key is required.');
+      const fn=lawBoardPath[2]==='vote'?store.lawVoteIn:store.lawUpdateIn;
+      return response(await store.idempotent(session.id,key,hash(path+JSON.stringify(body)),q=>fn(q,lawBoardPath[1],body,session.id)),201);
+    }
     const constitutionAction = {'/api/constitution/vote':'vote','/api/constitution/contribute':'contribute','/api/constitution/comment':'comment','/api/constitution/moderate':'moderate'}[path];
     if (constitutionAction) {
       if (constitutionAction === 'moderate' && (!adminToken || !equal(request.headers.get('authorization'), 'Bearer ' + adminToken))) throw new Problem(403, 'Maintainer authorization required.');
