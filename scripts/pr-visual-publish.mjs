@@ -111,7 +111,7 @@ const live = await deployment();
 
 const images = [];
 const pngSignature = Buffer.from([137,80,78,71,13,10,26,10]);
-for (const name of ['desktop.png', 'mobile.png', 'synthesis.png', 'proposal.png', 'government-needs.png', 'government-evaluate.png', 'government-response.png', 'government-measure.png', 'citizen-feedback.png', 'constitution-workbench.png', 'constitution-mobile.png', 'docs-drawer.png', 'mail.png']) {
+for (const name of ['desktop.png', 'mobile.png', 'synthesis.png', 'proposal.png', 'government-needs.png', 'government-evaluate.png', 'government-response.png', 'government-measure.png', 'citizen-feedback.png', 'constitution-workbench.png', 'constitution-mobile.png', 'docs-drawer.png', 'mystery.png', 'mystery-evidence.png', 'mail.png']) {
   try {
     const data = await readFile(join('pr-visual-output', name));
     if (!data.subarray(0, 8).equals(pngSignature) || data.length > 10000000) {
@@ -191,7 +191,7 @@ if (hosted && images.some(x => x.name === 'mobile.png')) {
     `<img alt="Mobile screenshot of HeliosAI PR #${number}" width="390" src="${imageUrl('mobile.png')}">`, '',
     '</details>', '');
 }
-for (const [name, label] of [['synthesis.png', 'Citizen 2 · Synthesize'], ['proposal.png', 'Citizen 3 · Decide / proposed law'], ['government-needs.png', 'Government 1 · Understand'], ['government-evaluate.png', 'Government 2 · Evaluate'], ['government-response.png', 'Government 3 · Respond'], ['government-measure.png', 'Government 4 · Measure'], ['citizen-feedback.png', 'Citizen feedback preview'], ['constitution-workbench.png', 'Three-lane constitution workbench'], ['constitution-mobile.png', 'Constitution workbench on mobile'], ['docs-drawer.png', 'Docs & experiments drawer']]) {
+for (const [name, label] of [['synthesis.png', 'Citizen 2 · Synthesize'], ['proposal.png', 'Citizen 3 · Decide / proposed law'], ['government-needs.png', 'Government 1 · Understand'], ['government-evaluate.png', 'Government 2 · Evaluate'], ['government-response.png', 'Government 3 · Respond'], ['government-measure.png', 'Government 4 · Measure'], ['citizen-feedback.png', 'Citizen feedback preview'], ['constitution-workbench.png', 'Three-lane constitution workbench'], ['constitution-mobile.png', 'Constitution workbench on mobile'], ['docs-drawer.png', 'Docs & experiments drawer'], ['mystery.png', 'The Missing Amendment · mystery game'], ['mystery-evidence.png', 'Recovered evidence and fictional review']]) {
   if (hosted && images.some(x => x.name === name)) {
     lines.push('<details><summary>' + label + '</summary>', '',
       `![${label}](${imageUrl(name)})`, '', '</details>', '');

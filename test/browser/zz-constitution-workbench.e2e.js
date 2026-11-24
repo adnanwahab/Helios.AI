@@ -9,7 +9,7 @@ test('Docs drawer and three-lane workbench stay private in practice; matching is
  await expect(page.locator('#review-title')).toBeVisible();
  await page.locator('#docs-open').click();
  await expect(page.locator('#docs-drawer')).toBeVisible();
- await expect(page.locator('#docs-links a')).toHaveCount(32);
+ await expect(page.locator('#docs-links a')).toHaveCount(34);
  await page.locator('#docs-search').fill('morphlab');
  await expect(page.locator('#docs-links a')).toHaveCount(2);
  await page.keyboard.press('Escape');await expect(page.locator('#docs-drawer')).toBeHidden();

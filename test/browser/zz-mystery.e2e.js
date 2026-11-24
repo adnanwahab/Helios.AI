@@ -1,0 +1,24 @@
+import {test,expect} from '@playwright/test';
+test('fictional investigation recovers three clues and allows every position without a public write',async({page})=>{
+ const api=[];page.on('request',r=>{if(r.url().includes('/api/'))api.push(r.url())});
+ await page.goto('/public/mystery.html');
+ await expect(page.locator('#scene-title')).toHaveText('An unexpected discrepancy.');
+ await page.locator('[data-next="rumor"]').click();
+ await expect(page.locator('#scene-title')).toContainText('A rumor is not a receipt');
+ await page.locator('[data-next="ledger"]').click();
+ await expect(page.locator('#evidence-count')).toHaveText('1 / 3');
+ await page.locator('[data-next="receipts"]').click();
+ await expect(page.locator('#evidence-count')).toHaveText('2 / 3');
+ await page.locator('[data-next="import"]').click();
+ await expect(page.locator('#evidence-count')).toHaveText('3 / 3');
+ await page.locator('[data-next="decision"]').click();
+ await expect(page.locator('#choices button')).toHaveCount(4);
+ await page.getByRole('button',{name:/Oppose —/}).click();
+ await expect(page.locator('#ending')).toContainText('Oppose');
+ await expect(page.locator('#ending')).toContainText('Nothing was submitted');
+ expect(api).toEqual([]);
+ await page.locator('#restart').click();
+ await expect(page.locator('#evidence-count')).toHaveText('0 / 3');
+ await page.setViewportSize({width:390,height:844});
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
