@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Three-editor merge · HeliosAI</title>
+<meta name="description" content="Two journals in, one deduplicated constitution out, across 8 billion sample journals, with the S3 layout that would serve them.">
+<!-- Served at /merge and as the home-page tab /embed/merge. Journals are generated in the browser from their numbers; no S3 request is sent. -->
+<!-- The S3 key layout is also written up in docs/journal-merge-s3.md; keep the two in step. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@700&family=Red+Hat+Mono:wght@400&family=Red+Hat+Text:wght@400;500;600&display=swap">
+<style>
+/* VOICE everyday work tool, quiet, like a whiteboard you can type on
+   IDEA the FigJam board itself: three outlined boxes on a dotted canvas with the controls in the gaps
+   PICTURE three lanes of live editors, journals on the sides pouring into the constitution, scrolling through 4,000,000,000 pairs
+   COLOUR dotted grey canvas, white boxes with ink outlines; blue journal 1, orange journal 2, magenta constitution
+   TYPE Red Hat Display headings, Red Hat Text controls, Red Hat Mono inside the editors
+   LAYOUT laptop: journal | controls | constitution | controls | journal, one pair centred; under 1180px each pair stacks and the controls move to a sheet */
+:root{color-scheme:light dark;
+--canvas:light-dark(#f3f3f2,#141619);--dot:light-dark(#cbcbc7,#2d3139);
+--card:light-dark(#fff,#1c1f25);--line:light-dark(#1d2026,#5d6472);--rule:light-dark(#e6e6e3,#2e323a);
+--ink:light-dark(#15171c,#eceef2);--mute:light-dark(#5b6069,#a4aab5);
+--edge:light-dark(#c9ccd2,#3d434e);--sel:light-dark(#15171c,#eceef2);--sel-ink:light-dark(#fff,#15171c);--trk:light-dark(#d2d5da,#3d434e);
+--c1:light-dark(#2f66e8,#84aaff);--c2:light-dark(#e2710e,#ffa761);--c3:light-dark(#d1105a,#ff619a);
+--t1:light-dark(rgb(47 102 232/.15),rgb(132 170 255/.25));
+--t2:light-dark(rgb(240 138 46/.22),rgb(255 167 97/.32));
+--t3:light-dark(rgb(209 16 90/.14),rgb(255 97 154/.3));
+--hatch:light-dark(rgb(21 23 28/.13),rgb(236 238 242/.16));--strike:light-dark(rgb(21 23 28/.55),rgb(236 238 242/.6));
+--mono:"Red Hat Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+--sans:"Red Hat Text",system-ui,-apple-system,"Segoe UI",sans-serif;
+--disp:"Red Hat Display","Red Hat Text",system-ui,sans-serif;
+--gap:clamp(150px,13vw,230px);--cols:minmax(0,1fr) var(--gap) minmax(0,1.35fr) var(--gap) minmax(0,1fr)}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+[hidden]{display:none!important}
+html,body{height:100%}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;display:flex;flex-direction:column;overflow:hidden;background:var(--canvas);color:var(--ink);font:16px/1.5 var(--sans)}
+button,input,textarea{font:inherit;color:inherit}
+code{font-family:var(--mono);font-size:.92em;overflow-wrap:anywhere}
+
+.bar{position:relative;z-index:5;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 20px;padding:14px 20px 10px}
+h1{margin:0;font:700 clamp(24px,2.2vw,32px)/1.05 var(--disp);letter-spacing:-.02em}
+.ttl p{margin:5px 0 0;max-width:46ch;color:var(--mute);font-size:15px;line-height:1.4}
+.nav{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:8px 10px;background:var(--card);border:1px solid var(--edge);border-radius:12px}
+.jump{display:flex;align-items:center;gap:6px;margin:0}
+.jump label{font-size:14px;font-weight:600}
+.jump input{width:14ch;min-height:38px;padding:0 10px;border:1px solid var(--edge);border-radius:8px;background:var(--card);font-size:16px;font-variant-numeric:tabular-nums}
+.jump input:focus-visible{outline:2px solid var(--c3);outline-offset:1px}
+.pos{display:flex;align-items:center;gap:8px;font-size:14px;white-space:nowrap}
+.pos input{width:clamp(110px,11vw,200px);accent-color:var(--c3)}
+.pos output{font-weight:600;font-variant-numeric:tabular-nums}
+.pos small{font-size:14px;color:var(--mute)}
+.last{display:none;max-width:34ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:13px var(--mono);color:var(--mute)}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 13px;border:1px solid var(--edge);border-radius:8px;background:var(--card);color:var(--ink);font:600 14px/1 var(--sans);white-space:nowrap;cursor:pointer}
+.btn:hover{border-color:var(--ink)}
+.btn:focus-visible{outline:2px solid var(--c3);outline-offset:2px}
+.btn.ink{background:var(--sel);border-color:var(--sel);color:var(--sel-ink)}
+.btn.rs{background:var(--c3);border-color:var(--c3);color:light-dark(#fff,#15171c)}
+#setBtn{display:none}
+
+.feed{position:relative;flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;overflow-anchor:none;scroll-snap-type:y proximity;scrollbar-width:none;padding:0 20px;outline:0;background:radial-gradient(circle,var(--dot) 1.1px,transparent 1.6px) 0 0/22px 22px;background-attachment:local}
+.feed::-webkit-scrollbar{display:none}
+.dock{position:sticky;top:0;z-index:3;height:0;display:grid;grid-template-columns:var(--cols);grid-template-rows:0}
+.space{position:relative}
+.row{position:absolute;left:0;right:0;height:var(--card-h);display:grid;grid-template-columns:var(--cols);scroll-snap-align:center}
+.a{grid-column:1;--fx:var(--c1)}.c{grid-column:3;--fx:var(--c3)}.b{grid-column:5;--fx:var(--c2)}.ar{display:none}
+.card{display:flex;flex-direction:column;min-height:0;overflow:hidden;background:var(--card);border:1.5px solid var(--line);border-radius:8px}
+.card:focus-within,.card.hit{outline:2px solid var(--fx);outline-offset:3px}
+.card header{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;min-height:54px;padding:9px 12px 9px 14px;border-bottom:1px solid var(--rule)}
+.card h2{margin:0 auto 0 0;font:700 16px/1.2 var(--disp);white-space:nowrap}
+.card .btn{min-height:32px;padding:0 11px}
+.num{font-variant-numeric:tabular-nums}
+.badge{display:grid;place-items:center;flex:none;width:26px;height:26px;border-radius:50%;font:700 14px/1 var(--disp)}
+.b1{background:var(--c1);color:light-dark(#fff,#15171c)}.b2{background:var(--c2);color:#15171c}.b3{background:var(--c3);color:light-dark(#fff,#15171c)}
+.state{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--mute)}
+.state::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c3)}
+.key{display:flex;align-items:baseline;gap:8px;padding:7px 14px;border-top:1px solid var(--rule);font-size:13px;color:var(--mute);white-space:nowrap;overflow:hidden}
+.key code{overflow:hidden;text-overflow:ellipsis;font-size:13px;color:var(--ink)}
+.key span{flex:none}
+
+.box{position:relative;flex:1;min-height:0}
+.box textarea,.hl{font:400 14px/1.55 var(--mono);padding:12px 14px;white-space:pre-wrap;overflow-wrap:break-word;word-break:normal;tab-size:4;letter-spacing:0;font-variant-ligatures:none;text-align:left}
+.box textarea{position:absolute;inset:0;z-index:1;display:block;width:100%;height:100%;margin:0;border:0;border-radius:0;outline:0;resize:none;background:transparent;color:var(--ink);caret-color:var(--fx);overflow:auto;scrollbar-gutter:stable;scrollbar-width:thin;scrollbar-color:var(--rule) transparent}
+.box textarea::placeholder{color:var(--mute);opacity:1}
+.back{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.hl{min-height:100%;padding-bottom:60vh;color:transparent}
+.ios .hl{padding-left:17px;padding-right:17px}
+mark{border-radius:3px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.hl mark{color:transparent;padding:2px 0}
+.u1{background:var(--t1)}.u2{background:var(--t2)}.both{background:var(--t3)}
+.gone{background:repeating-linear-gradient(135deg,var(--hatch) 0 2px,transparent 2px 6px);text-decoration-line:line-through;text-decoration-color:var(--strike);text-decoration-thickness:2px}
+.no1 .a .box,.no2 .b .box{opacity:.4}
+.loading .box::before{content:"";position:absolute;top:16px;left:16px;right:30%;height:132px;background:repeating-linear-gradient(180deg,var(--rule) 0 9px,transparent 9px 22px);border-radius:3px}
+
+.gut{grid-row:1;height:var(--fh);display:flex;flex-direction:column;justify-content:flex-start;gap:16px;padding:calc((var(--fh) - var(--card-h)) / 2 + 60px) 14px 12px;overflow-y:auto;scrollbar-width:none}
+.g1{grid-column:2;--fx:var(--c1)}.g2{grid-column:4;--fx:var(--c2)}
+.gh{display:none}
+.flow{display:flex;align-items:center;flex:none;height:24px;color:var(--fx)}
+.flow i{flex:1;height:3px;border-radius:2px;background:repeating-linear-gradient(90deg,currentColor 0 7px,transparent 7px 12px)}
+.flow b{flex:none;width:11px;height:14px;background:currentColor;clip-path:polygon(0 0,100% 50%,0 100%)}
+.g2 .flow{flex-direction:row-reverse}
+.g2 .flow b{clip-path:polygon(100% 0,0 50%,100% 100%)}
+.g1.go .flow i{animation:runR .7s linear}
+.g2.go .flow i{animation:runL .7s linear}
+.no1 .g1 .flow,.no2 .g2 .flow{color:var(--edge)}
+@keyframes runR{to{background-position:24px 0}}
+@keyframes runL{to{background-position:-24px 0}}
+.pipe{display:grid;gap:8px}
+.tally{display:grid;gap:1px}
+.tally p{display:flex;align-items:baseline;gap:8px;margin:0;font-size:14px;color:var(--mute);white-space:nowrap}
+.tally b{min-width:2.2ch;text-align:right;font:700 19px/1.3 var(--disp);color:var(--ink);font-variant-numeric:tabular-nums}
+.set{display:grid;gap:16px}
+fieldset{margin:0;padding:0;border:0}
+legend{padding:0;margin-bottom:7px;font-size:14px;color:var(--mute)}
+.opts{display:flex;flex-direction:column;gap:6px}
+.opt,.sw{position:relative;display:flex;cursor:pointer}
+.opt input,.sw input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.opt span{display:flex;flex:1;align-items:center;gap:8px;min-height:36px;padding:0 10px;border:1px solid var(--edge);border-radius:8px;background:var(--card);font-size:14px;font-weight:500;line-height:1.2}
+.opt:hover span{border-color:var(--ink)}
+.opt input:checked+span{background:var(--sel);border-color:var(--sel);color:var(--sel-ink);font-weight:600}
+.opt input:focus-visible+span,.sw input:focus-visible+.trk{outline:2px solid var(--c3);outline-offset:2px}
+.chk span::before{content:"";flex:none;width:13px;height:13px;border:1.5px solid currentColor;border-radius:3px}
+.chk input:checked+span::before{border:0;background:currentColor;clip-path:polygon(0 55%,14% 41%,38% 64%,86% 15%,100% 29%,38% 92%)}
+.sw{align-items:center;gap:10px;min-height:36px;width:max-content;font-size:14px;font-weight:600}
+.trk{position:relative;flex:none;width:38px;height:22px;border-radius:11px;background:var(--trk);transition:background .15s}
+.trk::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .15s}
+.sw input:checked+.trk{background:var(--fx)}
+.sw input:checked+.trk::after{transform:translateX(16px)}
+.hl3{--fx:var(--c3)}
+
+.drawer{position:fixed;top:0;right:0;bottom:0;z-index:10;width:min(520px,100vw);overflow-y:auto;padding:18px 24px 40px;background:var(--card);color:var(--ink);border-left:1.5px solid var(--line);box-shadow:-8px 0 24px rgb(0 0 0/.12)}
+.dhead{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.drawer h2{margin:0;font:700 30px/1.1 var(--disp);letter-spacing:-.02em}
+.drawer h3{margin:24px 0 8px;font:700 17px/1.3 var(--disp)}
+.drawer p{margin:8px 0}
+.note{font-size:14px;color:var(--mute)}
+.tree{margin:0;padding:12px 14px;overflow-x:auto;background:var(--canvas);border-radius:8px;font:13px/1.65 var(--mono);white-space:pre}
+.rules{margin:0;padding-left:22px}
+.rules li{margin-bottom:10px}
+.rules b{font-weight:600}
+.drawer table{width:100%;border-collapse:collapse;font-size:15px}
+.drawer td{padding:7px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+.drawer td+td{padding-left:14px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.live,.log{list-style:none;margin:0;padding:0}
+.live li,.log li{padding:7px 0;border-bottom:1px solid var(--rule);font-size:14px}
+.live span,.log span{color:var(--mute)}
+.live code,.log code{display:block;font-size:13px;line-height:1.5}
+
+@media (min-width:1600px){.last{display:block}}
+@media (max-width:1399px){.pos small{display:none}}
+@media (max-width:1179px){
+.bar{padding:12px 14px 8px}
+.feed{padding:0 14px;scroll-snap-type:none}
+.row{grid-template-columns:minmax(0,1fr);grid-template-rows:var(--jh) 36px var(--ch) 36px var(--jh);scroll-snap-align:none}
+.a,.b,.c,.ar{grid-column:1}.a{grid-row:1}.a1{grid-row:2}.c{grid-row:3}.a2{grid-row:4}.b{grid-row:5}
+.ar{display:flex;flex-direction:column;align-items:center;padding:4px 0}
+.a1{color:var(--c1)}.a2{color:var(--c2);flex-direction:column-reverse}
+.ar i{flex:1;width:3px;background:repeating-linear-gradient(180deg,currentColor 0 6px,transparent 6px 11px)}
+.ar b{flex:none;width:13px;height:10px;background:currentColor;clip-path:polygon(0 0,100% 0,50% 100%)}
+.a2 b{clip-path:polygon(50% 0,100% 100%,0 100%)}
+.no1 .a1,.no2 .a2{color:var(--edge)}
+#setBtn{display:inline-flex}
+.dock{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:8;display:block;height:auto;max-height:min(80vh,640px);overflow-y:auto;padding:4px 18px 22px;background:var(--card);border-top:1.5px solid var(--line);border-radius:16px 16px 0 0;transform:translateY(105%);visibility:hidden;transition:transform .25s,visibility .25s}
+.dock.open{transform:none;visibility:visible}
+.gut{height:auto;display:block;padding:14px 0;overflow:visible}
+.gut+.gut{border-top:1px solid var(--rule)}
+.gh{display:block;margin:0 0 10px;font:700 16px/1.3 var(--disp)}
+.gut .flow{display:none}
+.pipe{display:flex;flex-wrap:wrap;align-items:center;gap:6px 22px;margin-bottom:14px}
+.tally{display:flex;flex-wrap:wrap;gap:2px 16px}
+.set{display:flex;flex-wrap:wrap;gap:12px 28px}
+.opts{flex-direction:row;flex-wrap:wrap}
+.box textarea,.hl{font-size:15px}
+}
+@media (max-width:600px){
+.ttl p{display:none}
+.nav{width:100%}
+.pos{flex:1 1 100%}
+.pos input{flex:1}
+}
+@media (pointer:coarse){.opt span,.sw,.btn,.card .btn,.jump input{min-height:44px}}
+.ios .box textarea,.ios .hl{font-size:16px}
+@media (prefers-reduced-motion:reduce){.flow i{animation:none!important}.trk,.trk::after,.dock{transition:none}}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="ttl">
+    <h1>Three-editor merge</h1>
+    <p>Two journals in, one constitution out, across 8,000,000,000 sample journals generated from their numbers.</p>
+  </div>
+  <div class="nav">
+    <form class="jump" id="jumpForm" autocomplete="off"><label for="jump">Journal</label><input id="jump" inputmode="numeric" placeholder="4,123,456,789"><button class="btn" type="submit">Go</button></form>
+    <button class="btn" id="rand" type="button">Random pair</button>
+    <div class="pos"><input type="range" id="pos" min="0" max="3999999999" step="1" value="0" aria-label="Pair position, 0 to 3,999,999,999"><output id="where" for="pos">Pair 0</output><small>of 4,000,000,000</small></div>
+    <button class="btn" id="setBtn" type="button" aria-expanded="false" aria-controls="dock">Settings</button>
+    <button class="btn ink" id="s3Btn" type="button" aria-expanded="false" aria-controls="drawer">S3 layout</button>
+    <span class="last" id="last"></span>
+  </div>
+</header>
+
+<main class="feed" id="feed" tabindex="0" aria-label="Journal pairs, scroll for more">
+  <div class="dock" id="dock">
+    <aside class="gut g1" id="g1" aria-label="Journal 1 into the constitution">
+      <p class="gh">Journal 1 into the constitution</p>
+      <div class="flow" aria-hidden="true"><i></i><b></b></div>
+      <div class="pipe">
+        <label class="sw"><input type="checkbox" role="switch" id="on1" checked><span class="trk"></span>Include</label>
+        <div class="tally"><p><b id="n1">–</b><span id="l1">lines in</span></p><p><b id="k1">–</b>kept</p><p><b id="r1">–</b>removed</p></div>
+      </div>
+      <div class="set">
+        <fieldset><legend>Split into</legend><div class="opts">
+          <label class="opt"><input type="radio" name="unit" id="u-line" value="line" checked><span>Lines</span></label>
+          <label class="opt"><input type="radio" name="unit" id="u-sentence" value="sentence"><span>Sentences</span></label>
+          <label class="opt"><input type="radio" name="unit" id="u-word" value="word"><span>Words</span></label>
+        </div></fieldset>
+        <fieldset><legend>Ignore</legend><div class="opts">
+          <label class="opt chk"><input type="checkbox" id="icase" checked><span>Case</span></label>
+          <label class="opt chk"><input type="checkbox" id="ispace" checked><span>Spacing</span></label>
+          <label class="opt chk"><input type="checkbox" id="ipunct"><span>Punctuation</span></label>
+        </div></fieldset>
+      </div>
+    </aside>
+    <aside class="gut g2" id="g2" aria-label="Journal 2 into the constitution">
+      <p class="gh">Journal 2 into the constitution</p>
+      <div class="flow" aria-hidden="true"><i></i><b></b></div>
+      <div class="pipe">
+        <label class="sw"><input type="checkbox" role="switch" id="on2" checked><span class="trk"></span>Include</label>
+        <div class="tally"><p><b id="n2">–</b><span id="l2">lines in</span></p><p><b id="k2">–</b>kept</p><p><b id="r2">–</b>removed</p></div>
+      </div>
+      <div class="set">
+        <fieldset><legend>Order</legend><div class="opts">
+          <label class="opt"><input type="radio" name="order" id="o-ab" value="ab" checked><span>1 then 2</span></label>
+          <label class="opt"><input type="radio" name="order" id="o-ba" value="ba"><span>2 then 1</span></label>
+          <label class="opt"><input type="radio" name="order" id="o-zip" value="zip"><span>Interleave</span></label>
+          <label class="opt"><input type="radio" name="order" id="o-az" value="az"><span>A to Z</span></label>
+        </div></fieldset>
+        <fieldset><legend>View</legend><div class="opts">
+          <label class="sw hl3"><input type="checkbox" role="switch" id="hl" checked><span class="trk"></span>Highlights</label>
+        </div></fieldset>
+      </div>
+    </aside>
+  </div>
+  <div class="space" id="space"></div>
+</main>
+
+<aside class="drawer" id="drawer" aria-labelledby="dh" hidden>
+  <div class="dhead"><h2 id="dh">S3 layout</h2><button class="btn" id="dclose" type="button">Close</button></div>
+  <p>One bucket, addressed by arithmetic: the client turns a scroll position into a key, so browsing never lists objects.</p>
+  <h3>Keys for the pair in view</h3>
+  <ul class="live" id="live"></ul>
+  <h3>Layout</h3>
+  <pre class="tree" id="tree"></pre>
+  <h3>Rules</h3>
+  <ol class="rules">
+    <li><b>The number is the path.</b> Write a journal's number as 10 digits: the first 5 name the chapter folder, the next 3 the page file, and the last 2 the line in that page, counting from 0. Journal 4,123,456,789 is line 89 of <code>l00/pages/41234/567</code>. Constitutions follow the same rule with their node number.</li>
+    <li><b>Scrolling is arithmetic, never LIST.</b> Pair r holds journals 2r and 2r+1, both on page floor(r ÷ 50). The client reads <code>CURRENT.json</code> once, a chapter head once per 100,000 journals, then one page per 50 pairs, fetching the next page before the reader reaches it. LIST returns at most 1,000 keys per call, so it stays out of the browse path.</li>
+    <li><b>Pages never change; heads do.</b> Rewriting a page writes the next generation (g0003, then g0004) under a new key, so the CDN can cache pages for a year. Each chapter's head lists the current generation of its 1,000 pages and is cached for 60 seconds.</li>
+    <li><b>Edits land in delta/, then compact.</b> An edit is a small PUT under <code>delta/</code>. A compactor folds a chapter's deltas into new page generations written with <code>If-None-Match: *</code>, then replaces the head with <code>If-Match</code> on its ETag, so two compactors can't overwrite each other.</li>
+    <li><b>Constitutions form a binary tree.</b> Node i at level k merges nodes 2i and 2i+1 of level k−1, so level 33 is one constitution for everyone. Editing journal n makes one node per level stale, node floor(n ÷ 2<sup>k</sup>), 33 in all. This page merges level 1 live; model-written constitutions would be read from <code>l01/</code> and up the same way as journals.</li>
+    <li><b>Number journals by place.</b> If numbers follow a Hilbert or S2 cell order of where writers live, every subtree is a place: level 10 is about 1,000 neighbors, level 20 about a million people.</li>
+    <li><b>Spread writes across chapters.</b> S3 handles at least 3,500 writes or 5,500 reads per second per partitioned prefix, with no limit on the number of prefixes. Backfill with one writer per range of chapter folders; readers come through the CDN.</li>
+    <li><b>Jump by id.</b> <code>ids/</code> maps a journal id to its number: the first 6 hex characters of the id pick one of 16,777,216 files of about 480 entries each.</li>
+  </ol>
+  <h3>Page format</h3>
+  <p>One JSON object per line, 100 lines, gzipped and served with <code>Content-Encoding: gzip</code> so the browser unpacks it.</p>
+  <pre class="tree">{"n":4123456789,"id":"8f3c2a91…","updated":"2026-11-21","text":"Need: …"}</pre>
+  <h3>Scale</h3>
+  <table>
+    <tr><td>Journals</td><td>8,000,000,000</td></tr>
+    <tr><td>Journal pages, 100 each</td><td>80,000,000</td></tr>
+    <tr><td>Chapter folders, 1,000 pages each</td><td>80,000</td></tr>
+    <tr><td>Constitutions, levels 1 to 33</td><td>about 8,000,000,000</td></tr>
+    <tr><td>Journals, gzipped</td><td>about 11 TB</td></tr>
+    <tr><td>With constitutions</td><td>about 21 TB, roughly $500 a month</td></tr>
+    <tr><td>First upload as pages</td><td>160,000,000 PUTs, about $800</td></tr>
+    <tr><td>First upload, one object per journal and node</td><td>16,000,000,000 PUTs, about $80,000</td></tr>
+    <tr><td>Scrolling 1,000 pairs</td><td>20 page GETs, 1 or 2 heads</td></tr>
+  </table>
+  <p class="note">Sizes assume about 4 KB of text per journal and 3× gzip. Prices are S3 Standard in us-east-1: $0.023 per GB-month for the first 50 TB and $0.005 per 1,000 PUTs.</p>
+  <h3>Requests from this tab</h3>
+  <p class="note">Simulated: journals are generated in the browser from their number, and each request is logged here instead of sent.</p>
+  <ul class="log" id="log"></ul>
+</aside>
+
+<template id="rowT"><div class="row">
+  <article class="card a"><header><span class="badge b1" aria-hidden="true">1</span><h2>Journal <span class="num"></span></h2></header><div class="box"><div class="back" aria-hidden="true"><div class="hl"></div></div><textarea data-role="a" spellcheck="false" autocomplete="off"></textarea></div><footer class="key"><code></code><span></span></footer></article>
+  <span class="ar a1" aria-hidden="true"><i></i><b></b></span>
+  <article class="card c"><header><span class="badge b3" aria-hidden="true">3</span><h2>Constitution</h2><span class="state">Live</span><button class="btn rs" type="button" hidden>Resync</button><button class="btn cp" type="button">Copy</button></header><div class="box"><div class="back" aria-hidden="true"><div class="hl"></div></div><textarea data-role="c" spellcheck="false" autocomplete="off"></textarea></div><footer class="key"><code></code><span></span></footer></article>
+  <span class="ar a2" aria-hidden="true"><i></i><b></b></span>
+  <article class="card b"><header><span class="badge b2" aria-hidden="true">2</span><h2>Journal <span class="num"></span></h2></header><div class="box"><div class="back" aria-hidden="true"><div class="hl"></div></div><textarea data-role="b" spellcheck="false" autocomplete="off"></textarea></div><footer class="key"><code></code><span></span></footer></article>
+</div></template>
+
+<script>
+{
+// BUCKET is a placeholder name: change it here to the bucket that will hold the journals.
+const N = 8e9, ROWS = N / 2, P = 100, CH = 1000, BUCKET = 's3://helios-journals/';
+const SPAN = 2000, EDGE = 300, SHIFT = 1000, START = 2061728394;
+const $ = id => document.getElementById(id);
+const fmt = n => n.toLocaleString('en-US');
+const pad = (n, w) => String(n).padStart(w, '0');
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+const esc = t => t.replace(/[&<>]/g, c => c === '&' ? '&amp;' : c === '<' ? '&lt;' : '&gt;');
+const tail = t => t.endsWith('\n') ? ' ' : '';
+const WS = /\s/, PUN = /[\p{P}\p{S}]+/gu, WORD = /[\p{L}\p{N}]+(?:['’.\-][\p{L}\p{N}]+)*/gu;
+const COLL = new Intl.Collator('en', {numeric: true, sensitivity: 'base'});
+let SENT = null;
+try { SENT = new Intl.Segmenter('en', {granularity: 'sentence'}); } catch (e) {}
+if (/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) document.documentElement.classList.add('ios');
+
+const DEF = {unit: 'line', order: 'ab', icase: true, ispace: true, ipunct: false, hl: true, on1: true, on2: true};
+const st = {...DEF}, edits = new Map(), cEdit = new Map();
+const feed = $('feed'), space = $('space'), drawer = $('drawer');
+
+// Sample journals: each one is generated from its number, so all 8,000,000,000 exist without storing any.
+const NEED = ['Need: buses that come every 10 minutes.', 'Need: rent under a third of take-home pay.', 'Need: clean tap water in every home.', 'Need: safe crossings near the school.', 'Need: childcare that costs less than rent.', 'Need: a clinic within a short walk.', 'Need: shade trees on the walk to work.', 'Need: fast internet at a fair price.', 'Need: streetlights that work after dark.', 'Need: drains that keep up with storms.', 'Need: longer hours at the library.', 'Need: quieter nights on our street.', 'Need: jobs within an hour of home.', 'Need: care for parents as they age.', 'Need: cleaner air near the highway.', 'Need: sidewalks without gaps.'];
+const FRUS = ['Frustrated: waited 40 minutes for the bus again.', 'Frustrated: the rent went up again this year.', 'Frustrated: potholes on every street to work.', 'Frustrated: three weeks to see a doctor.', 'Frustrated: the power went out during the heat.', 'Frustrated: forms that only work on paper.', 'Frustrated: the park closes before work ends.', 'Frustrated: nobody answers the city phone line.', 'Frustrated: the underpass floods after rain.', 'Frustrated: the internet drops every evening.'];
+const GOOD = ['Going well: the new bike lane on Main Street.', 'Going well: neighbors sharing tools.', 'Going well: the Saturday farmers market.', 'Going well: free classes at the library.', 'Going well: the community garden is growing.', 'Going well: kids walking to school together.', 'Going well: the clinic added evening hours.', 'Going well: the river trail is clean again.', 'Going well: the new playground.', 'Going well: our block party brought people out.'];
+const mix = h => { h = Math.imul(h ^ h >>> 16, 0x85ebca6b); h = Math.imul(h ^ h >>> 13, 0xc2b2ae35); return (h ^ h >>> 16) >>> 0; };
+function rng(n) {
+  let a = mix((n >>> 0) ^ mix(Math.floor(n / 4294967296) + 0x9e3779b9));
+  return () => { a = a + 0x6d2b79f5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+}
+const vary = (l, r) => { const x = r(); return x < .12 ? l[0].toLowerCase() + l.slice(1) : x < .22 ? l.replace(/\.$/, '') : x < .29 ? l.replace(': ', ':  ') : l; };
+const jCache = new Map();
+function journal(n) {
+  if (edits.has(n)) return edits.get(n);
+  let t = jCache.get(n);
+  if (t !== undefined) return t;
+  const r = rng(n), lines = [];
+  const pick = (pool, k) => { const used = new Set(); for (let i = 0; i < k; i++) { let j = Math.floor(r() ** 1.8 * pool.length); while (used.has(j)) j = (j + 1) % pool.length; used.add(j); lines.push(pool[j]); } };
+  pick(NEED, 1 + Math.floor(r() * 3)); pick(FRUS, 1 + Math.floor(r() * 2)); pick(GOOD, Math.floor(r() * 3));
+  for (let i = lines.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [lines[i], lines[j]] = [lines[j], lines[i]]; }
+  if (r() < .1) lines.push(lines[0]);
+  t = lines.map(l => vary(l, r)).join('\n');
+  if (jCache.size > 3000) jCache.clear();
+  jCache.set(n, t);
+  return t;
+}
+
+// Split text into pieces with their character ranges, so each journal can mark what was kept or dropped.
+function segment(text, unit) {
+  const out = [];
+  const add = (s, e, trim) => {
+    while (e > s && WS.test(text[e - 1])) e--;
+    let lead = 0;
+    while (s + lead < e && WS.test(text[s + lead])) lead++;
+    if (s + lead >= e) return;
+    if (trim) { s += lead; lead = 0; }
+    out.push({s, e, lead});
+  };
+  if (unit === 'line') {
+    for (let a = 0; ;) { const i = text.indexOf('\n', a); add(a, i < 0 ? text.length : i, false); if (i < 0) break; a = i + 1; }
+  } else if (unit === 'sentence') {
+    if (SENT) for (const x of SENT.segment(text)) add(x.index, x.index + x.segment.length, true);
+    else for (const m of text.matchAll(/[^.!?\n]+(?:[.!?]+["'”’)\]]*)?|[.!?]+/g)) add(m.index, m.index + m[0].length, true);
+  } else {
+    for (const m of text.matchAll(WORD)) out.push({s: m.index, e: m.index + m[0].length, lead: 0});
+  }
+  return out;
+}
+function keyOf(t) {
+  let k = t;
+  if (st.ipunct) { const p = k.replace(PUN, ''); if (p.trim()) k = p; }
+  if (st.ispace) k = k.replace(/\s+/g, ' ').trim();
+  if (st.icase) k = k.toLocaleLowerCase();
+  return k;
+}
+// Concatenate in the chosen order, keep the first copy of each key, note which keys both journals share.
+function merge(t1, t2) {
+  const take = (text, src) => segment(text, st.unit).map(g => { const t = text.slice(g.s, g.e); return {...g, src, t, k: keyOf(t), kept: false, shared: false}; });
+  const L1 = st.on1 ? take(t1, 1) : [], L2 = st.on2 ? take(t2, 2) : [];
+  const K1 = new Set(L1.map(g => g.k)), K2 = new Set(L2.map(g => g.k));
+  let seq = st.order === 'ba' ? [...L2, ...L1] : [...L1, ...L2];
+  if (st.order === 'zip') { seq = []; for (let i = 0; i < Math.max(L1.length, L2.length); i++) { if (i < L1.length) seq.push(L1[i]); if (i < L2.length) seq.push(L2[i]); } }
+  const seen = new Set(), out = [];
+  for (const g of seq) { g.shared = K1.has(g.k) && K2.has(g.k); if (!seen.has(g.k)) { seen.add(g.k); g.kept = true; out.push(g); } }
+  if (st.order === 'az') out.sort((a, b) => COLL.compare(a.t.trim(), b.t.trim()));
+  return {L1, L2, out};
+}
+function build(out) {
+  const sep = st.unit === 'word' ? ' ' : '\n';
+  let text = '';
+  const marks = [];
+  out.forEach((g, i) => { if (i) text += sep; marks.push({s: text.length, e: text.length + g.t.length, lead: g.lead, c: g.shared ? 'both' : 'u' + g.src}); text += g.t; });
+  return {text, marks};
+}
+function markup(text, items, cls) {
+  if (!st.hl) return esc(text) + tail(text);
+  let h = '', p = 0;
+  for (const g of items) { const a = g.s + g.lead; h += esc(text.slice(p, a)) + '<mark class="' + cls(g) + '">' + esc(text.slice(a, g.e)) + '</mark>'; p = g.e; }
+  return h + esc(text.slice(p)) + tail(text);
+}
+const srcCls = g => !g.kept ? 'gone' : g.shared ? 'both' : 'u' + g.src;
+
+// Storage: the same key arithmetic a real client would use against S3, with fetches simulated.
+const pages = new Map(), heads = new Set(), logs = [], putT = new Map();
+const parts = idx => { const s = pad(idx, 10); return {ch: s.slice(0, 5), pg: s.slice(5, 8), ln: s.slice(8)}; };
+const genOf = (lv, p) => 1 + mix(p + lv * 2654435769) % 4;
+const pageKey = (lv, idx) => { const k = parts(idx); return 'v1/l' + pad(lv, 2) + '/pages/' + k.ch + '/' + k.pg + '.g' + pad(genOf(lv, Math.floor(idx / P)), 4) + '.ndjson.gz'; };
+const headKey = (lv, idx) => 'v1/l' + pad(lv, 2) + '/heads/' + parts(idx).ch + '.json';
+function log(m, key, note) {
+  logs.unshift({m, key, note});
+  if (logs.length > 14) logs.pop();
+  $('last').textContent = m + ' ' + key;
+  if (!drawer.hidden) renderLog();
+}
+function ensure(p) {
+  const e = pages.get(p);
+  if (e) { e.t = performance.now(); return e.ready; }
+  let wait = 30 + Math.random() * 90;
+  const c = Math.floor(p / CH);
+  if (!heads.has(c)) { heads.add(c); log('GET', headKey(0, p * P), 'generation of each page in chapter ' + pad(c, 5)); wait += 45; }
+  pages.set(p, {ready: false, t: performance.now()});
+  log('GET', pageKey(0, p * P), 'journals ' + fmt(p * P) + ' to ' + fmt(p * P + P - 1));
+  setTimeout(() => { const x = pages.get(p); if (x) { x.ready = true; arrived(p); } }, wait);
+  if (pages.size > 48) {
+    const need = new Set([...live.keys()].map(i => Math.floor(2 * i / P)));
+    [...pages].filter(([k, v]) => v.ready && !need.has(k)).sort((x, y) => x[1].t - y[1].t).slice(0, pages.size - 40).forEach(([k]) => pages.delete(k));
+  }
+  return false;
+}
+function arrived(p) { for (const row of live.values()) if (Math.floor(2 * +row.dataset.i / P) === p) paintRow(row); tally(); }
+function queuePut(n) {
+  clearTimeout(putT.get(n));
+  putT.set(n, setTimeout(() => {
+    putT.delete(n);
+    const ts = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z');
+    log('PUT', 'v1/delta/l00/' + parts(n).ch + '/' + ts + '-' + Math.random().toString(16).slice(2, 6) + '.ndjson', 'edit to journal ' + fmt(n) + ', folded in at the next compaction');
+  }, 900));
+}
+
+// Rows: each editor is a transparent textarea over a backdrop that paints the highlights in the same font and wrap.
+const live = new Map(), free = [];
+const fitter = new ResizeObserver(list => { for (const e of list) if (e.target.fit) e.target.fit(); });
+function editor(box) {
+  const ta = box.querySelector('textarea'), back = box.querySelector('.back'), hl = back.firstElementChild;
+  ta.fit = () => { back.style.width = ta.clientWidth + 'px'; back.style.height = ta.clientHeight + 'px'; back.scrollTop = ta.scrollTop; };
+  ta.addEventListener('scroll', () => { back.scrollTop = ta.scrollTop; }, {passive: true});
+  fitter.observe(ta);
+  return {ta, paint(h) { hl.innerHTML = h; ta.fit(); }};
+}
+function makeRow() {
+  const row = $('rowT').content.firstElementChild.cloneNode(true), q = s => row.querySelector(s);
+  Object.assign(row, {A: editor(q('.a .box')), B: editor(q('.b .box')), C: editor(q('.c .box')), n1: q('.a .num'), n2: q('.b .num'), k1: q('.a .key'), k2: q('.b .key'), k3: q('.c .key'), liveTag: q('.state'), rs: q('.rs')});
+  space.appendChild(row);
+  return row;
+}
+function setKey(el, lv, idx) {
+  const k = parts(idx);
+  el.firstElementChild.textContent = 'l' + pad(lv, 2) + '/pages/' + k.ch + '/' + k.pg;
+  el.lastElementChild.textContent = 'line ' + Number(k.ln);
+  el.title = BUCKET + pageKey(lv, idx) + ', line ' + Number(k.ln);
+}
+function paintRow(row) {
+  const i = +row.dataset.i, n1 = 2 * i, n2 = n1 + 1, ready = ensure(Math.floor(n1 / P)), {A, B, C} = row;
+  row.n1.textContent = fmt(n1); row.n2.textContent = fmt(n2);
+  setKey(row.k1, 0, n1); setKey(row.k2, 0, n2); setKey(row.k3, 1, i);
+  A.ta.setAttribute('aria-label', 'Journal ' + fmt(n1)); B.ta.setAttribute('aria-label', 'Journal ' + fmt(n2));
+  C.ta.setAttribute('aria-label', 'Constitution from journals ' + fmt(n1) + ' and ' + fmt(n2));
+  row.classList.toggle('loading', !ready);
+  const manual = cEdit.has(i);
+  row.liveTag.hidden = manual; row.rs.hidden = !manual;
+  for (const E of [A, B, C]) { E.ta.disabled = !ready; E.ta.placeholder = ready ? (E === C ? 'Nothing to merge' : 'Empty journal') : ''; }
+  if (!ready) { for (const E of [A, B, C]) { E.ta.value = ''; E.paint(''); } row.r = null; return; }
+  const t1 = journal(n1), t2 = journal(n2), r = merge(t1, t2);
+  if (A.ta.value !== t1) A.ta.value = t1;
+  if (B.ta.value !== t2) B.ta.value = t2;
+  A.paint(markup(t1, r.L1, srcCls)); B.paint(markup(t2, r.L2, srcCls));
+  if (manual) { const t = cEdit.get(i); if (C.ta.value !== t) C.ta.value = t; C.paint(esc(t) + tail(t)); }
+  else { const o = build(r.out); if (C.ta.value !== o.text) C.ta.value = o.text; C.paint(markup(o.text, o.marks, g => g.c)); }
+  row.r = r;
+}
+
+// Infinite scroll: a window of SPAN rows; when the reader nears either end the window slides by SHIFT rows.
+let base = 0, focus = -1, H = 682, cardH = 620, padTop = 100, stacked = false, raf = 0, sliding = false, slideT = 0;
+function measure() {
+  stacked = matchMedia('(max-width: 1179px)').matches;
+  const vh = feed.clientHeight, s = document.documentElement.style;
+  if (stacked) { s.setProperty('--jh', '210px'); s.setProperty('--ch', '270px'); cardH = 210 * 2 + 270 + 72; padTop = 12; H = Math.ceil((cardH + 32) / 22) * 22; }
+  else { cardH = clamp(vh - 120, 360, 620); padTop = Math.max(16, Math.round((vh - cardH) / 2)); H = Math.ceil((cardH + 56) / 22) * 22; }
+  s.setProperty('--card-h', cardH + 'px'); s.setProperty('--fh', vh + 'px');
+  space.style.height = (padTop * 2 + (SPAN - 1) * H + cardH) + 'px';
+}
+const topOf = l => padTop + l * H;
+const scrollFor = l => stacked ? Math.max(0, topOf(l) - 10) : topOf(l) + cardH / 2 - feed.clientHeight / 2;
+function park(row, i) { if (row.contains(document.activeElement)) document.activeElement.blur(); row.hidden = true; live.delete(i); free.push(row); }
+function mount(i, li) {
+  const row = free.pop() || makeRow();
+  row.hidden = false; row.dataset.i = i; row.style.top = topOf(li) + 'px';
+  for (const c of row.querySelectorAll('.hit')) c.classList.remove('hit');
+  for (const E of [row.A, row.B, row.C]) E.ta.scrollTop = 0;
+  live.set(i, row); paintRow(row);
+}
+function update() {
+  raf = 0;
+  const vh = feed.clientHeight;
+  let top = feed.scrollTop, l = (top + vh / 2 - padTop - cardH / 2) / H, s = 0;
+  if (l < EDGE && base > 0) s = -Math.min(base, SHIFT);
+  else if (l > SPAN - EDGE && base + SPAN < ROWS) s = Math.min(ROWS - SPAN - base, SHIFT);
+  if (s) { base += s; top -= s * H; l -= s; feed.scrollTop = top; for (const [i, row] of live) row.style.top = topOf(i - base) + 'px'; }
+  const a = Math.max(0, Math.floor((top - padTop - cardH) / H)), b = Math.min(SPAN - 1, ROWS - 1 - base, Math.floor((top + vh - padTop) / H) + 1);
+  for (const [i, row] of live) { const li = i - base; if (li < a || li > b) park(row, i); }
+  for (let li = a; li <= b; li++) if (!live.has(base + li)) mount(base + li, li);
+  const f = clamp(base + Math.round(l), 0, ROWS - 1);
+  if (f !== focus) { focus = f; focused(); }
+}
+function jump(i, n) {
+  i = clamp(Math.floor(i), 0, ROWS - 1);
+  base = clamp(i - SPAN / 2, 0, ROWS - SPAN);
+  for (const [k, row] of live) park(row, k);
+  focus = -1;
+  feed.scrollTop = scrollFor(i - base);
+  update();
+  if (n !== undefined) { const row = live.get(Math.floor(n / 2)), card = row && row.querySelector(n % 2 ? '.b' : '.a'); if (card) { card.classList.add('hit'); setTimeout(() => card.classList.remove('hit'), 1800); } }
+}
+function focused() {
+  $('where').textContent = 'Pair ' + fmt(focus);
+  if (!sliding) $('pos').value = focus;
+  const p0 = Math.floor(2 * Math.max(0, focus - 25) / P), p1 = Math.floor((2 * Math.min(ROWS - 1, focus + 60) + 1) / P);
+  for (let p = p0; p <= p1; p++) ensure(p);
+  tally(); keysLive();
+}
+function tally() {
+  const row = live.get(focus), r = row && row.r;
+  for (const k of [1, 2]) {
+    let n = '–', kept = '–', gone = '–';
+    if (r) { const L = r['L' + k]; n = st['on' + k] ? L.length : segment((k === 1 ? row.A : row.B).ta.value, st.unit).length; kept = L.filter(g => g.kept).length; gone = L.length - kept; }
+    $('n' + k).textContent = n; $('l' + k).textContent = st.unit + (n === 1 ? '' : 's') + ' in'; $('k' + k).textContent = kept; $('r' + k).textContent = gone;
+  }
+}
+function keysLive() {
+  if (drawer.hidden || focus < 0) return;
+  const n = 2 * focus, item = (label, lv, idx) => '<li><b>' + label + '</b> <span>line ' + Number(parts(idx).ln) + '</span><code>' + BUCKET + pageKey(lv, idx) + '</code></li>';
+  $('live').innerHTML = item('Journal ' + fmt(n), 0, n) + item('Journal ' + fmt(n + 1), 0, n + 1) + item('Constitution, level 1 node ' + fmt(focus), 1, focus) + '<li><b>Chapter head</b> <span>cached 60 s</span><code>' + BUCKET + headKey(0, n) + '</code></li>';
+}
+function renderLog() { $('log').innerHTML = logs.map(x => '<li><code>' + x.m + ' ' + x.key + '</code><span>' + esc(x.note) + '</span></li>').join(''); }
+function tree() {
+  const j = 4123456789, c = 2061728394, v = k => '    ' + k.slice(3);
+  $('tree').textContent = [BUCKET, '  CURRENT.json', '  v1/', v(headKey(0, j)), v(pageKey(0, j)), v(headKey(1, c)), v(pageKey(1, c)), '    l02/ … l32/', v(pageKey(33, 0)), '    ids/8f3/c2a.json', '    delta/l00/41234/20261123T151004Z-7f2c.ndjson'].join('\n');
+}
+
+const timers = {};
+function pulse(k) {
+  for (const i of k ? [k] : [1, 2]) { const g = $('g' + i); g.classList.remove('go'); void g.offsetWidth; g.classList.add('go'); clearTimeout(timers[i]); timers[i] = setTimeout(() => g.classList.remove('go'), 750); }
+}
+function ui() {
+  for (const k of ['on1', 'on2', 'icase', 'ispace', 'ipunct', 'hl']) $(k).checked = st[k];
+  document.querySelector('input[name=unit][value=' + st.unit + ']').checked = true;
+  document.querySelector('input[name=order][value=' + st.order + ']').checked = true;
+  feed.classList.toggle('no1', !st.on1); feed.classList.toggle('no2', !st.on2);
+}
+function openDrawer(open) {
+  drawer.hidden = !open;
+  $('s3Btn').setAttribute('aria-expanded', String(open));
+  try { history.replaceState(null, '', open ? '#s3-layout' : location.pathname + location.search); } catch (e) {}
+  if (open) { keysLive(); renderLog(); $('dclose').focus(); }
+}
+async function copy(btn) {
+  const ta = btn.closest('.card').querySelector('textarea');
+  let ok = false;
+  try { await navigator.clipboard.writeText(ta.value); ok = true; }
+  catch (e) { try { ta.focus(); ta.select(); ok = document.execCommand('copy'); } catch (e2) {} }
+  btn.textContent = ok ? 'Copied' : 'Text selected';
+  clearTimeout(btn.t); btn.t = setTimeout(() => { btn.textContent = 'Copy'; }, 1600);
+}
+
+feed.addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(update); }, {passive: true});
+feed.addEventListener('input', e => {
+  const ta = e.target;
+  if (ta.tagName !== 'TEXTAREA') return;
+  const row = ta.closest('.row'), i = +row.dataset.i, role = ta.dataset.role;
+  if (role === 'c') cEdit.set(i, ta.value);
+  else { const n = 2 * i + (role === 'b' ? 1 : 0); edits.set(n, ta.value); queuePut(n); }
+  paintRow(row);
+  if (i === focus) { tally(); if (role !== 'c') pulse(role === 'b' ? 2 : 1); }
+});
+feed.addEventListener('click', e => {
+  const btn = e.target.closest('button'), row = btn && btn.closest('.row');
+  if (!row) return;
+  if (btn.classList.contains('rs')) { cEdit.delete(+row.dataset.i); paintRow(row); }
+  else if (btn.classList.contains('cp')) copy(btn);
+});
+document.addEventListener('change', e => {
+  const el = e.target;
+  if (el.name === 'unit' || el.name === 'order') st[el.name] = el.value;
+  else if (el.type === 'checkbox' && el.id in st) st[el.id] = el.checked;
+  else return;
+  ui(); for (const row of live.values()) paintRow(row); tally(); pulse(0);
+});
+$('jumpForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const v = $('jump').value.replace(/\D/g, '');
+  if (!v) return;
+  const n = clamp(Number(v), 0, N - 1);
+  $('jump').value = fmt(n); jump(Math.floor(n / 2), n);
+});
+$('rand').addEventListener('click', () => jump(Math.floor(Math.random() * ROWS)));
+$('pos').addEventListener('input', () => { sliding = true; if (!slideT) slideT = setTimeout(() => { slideT = 0; jump(+$('pos').value); }, 90); });
+$('pos').addEventListener('change', () => { sliding = false; clearTimeout(slideT); slideT = 0; jump(+$('pos').value); });
+$('s3Btn').addEventListener('click', () => openDrawer(drawer.hidden));
+$('dclose').addEventListener('click', () => { openDrawer(false); $('s3Btn').focus(); });
+$('setBtn').addEventListener('click', () => { const o = $('dock').classList.toggle('open'); $('setBtn').setAttribute('aria-expanded', String(o)); });
+document.addEventListener('keydown', e => { if (e.key !== 'Escape') return; if (!drawer.hidden) openDrawer(false); $('dock').classList.remove('open'); $('setBtn').setAttribute('aria-expanded', 'false'); });
+addEventListener('hashchange', () => openDrawer(location.hash === '#s3-layout'));
+
+let lastW = 0, lastH = 0;
+const feedSize = new ResizeObserver(() => {
+  if (feed.clientWidth === lastW && feed.clientHeight === lastH) return;
+  lastW = feed.clientWidth; lastH = feed.clientHeight;
+  const f = focus < 0 ? START : focus;
+  measure(); jump(f);
+});
+ui(); tree();
+lastW = feed.clientWidth; lastH = feed.clientHeight;
+measure(); jump(START);
+feedSize.observe(feed);
+if (location.hash === '#s3-layout') openDrawer(true);
+}
+</script>
+</body>
+</html>
