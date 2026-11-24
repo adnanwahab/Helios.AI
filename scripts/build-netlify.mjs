@@ -20,6 +20,7 @@ const pages = [
   'happybearlandia_pocket.html',
   'eight_billion_map.html',
   'three_editor_merge.html',
+  'grid.html',
   'helios_100_frontend_demo.html',
   'heliosai_acts_orbit.html',
   'support_every_country.html',
@@ -47,4 +48,5 @@ await copyFile(join(root, 'docs', 'legacy-home.html'), join(out, 'experiments.ht
 await cp(join(root, 'public'), join(out, 'public'), {recursive: true});
 // Fallback for the Notion screen if the API is unreachable.
 await writeFile(join(out, 'notion-preview.json'), JSON.stringify(buildPlanDocument(seedCatalog)));
+await writeFile(join(out, 'grid-catalog.json'), JSON.stringify({goals: seedCatalog.goals}));
 console.log(`Built Netlify static site in dist/ (${pages.length} files plus public assets).`);

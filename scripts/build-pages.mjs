@@ -20,6 +20,7 @@ const demos = [
   'happybearlandia_pocket.html',
   'eight_billion_map.html',
   'three_editor_merge.html',
+  'grid.html',
   'helios_100_frontend_demo.html',
   'heliosai_acts_orbit.html',
   'helios-unified.html',
@@ -54,6 +55,7 @@ const coilPage = (await readFile(join(root, 'long_coil.html'), 'utf8')).replaceA
 if (/["(]\/public\//.test(coilPage)) throw new Error('Root-relative /public/ path left in long_coil.html');
 await writeFile(join(out, 'long_coil.html'), coilPage);
 await writeFile(join(out, 'notion-preview.json'), JSON.stringify(buildPlanDocument(seedCatalog)));
+await writeFile(join(out, 'grid-catalog.json'), JSON.stringify({goals: seedCatalog.goals}));
 
 // Preserve the unlisted historical dashboard for direct links only.
 let index = await readFile(join(root, 'docs', 'legacy-home.html'), 'utf8');
