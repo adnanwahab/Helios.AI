@@ -1,0 +1,53 @@
+import {test,expect} from '@playwright/test';
+test('Docs drawer and three-lane workbench stay private in practice; matching is local',async({page})=>{
+ const api=[];page.on('request',r=>{if(r.url().includes('/api/'))api.push(r.url())});
+ await page.goto('/');
+ await expect(page.locator('#constitution-list .clause-card')).toHaveCount(12);
+ await expect(page.locator('#synthetic-people')).toHaveText('256');
+ await expect(page.locator('#journal')).toBeVisible();
+ await expect(page.locator('#constitution-title')).toBeVisible();
+ await expect(page.locator('#review-title')).toBeVisible();
+ await page.locator('#docs-open').click();
+ await expect(page.locator('#docs-drawer')).toBeVisible();
+ await expect(page.locator('#docs-links a')).toHaveCount(32);
+ await page.locator('#docs-search').fill('morphlab');
+ await expect(page.locator('#docs-links a')).toHaveCount(2);
+ await page.keyboard.press('Escape');await expect(page.locator('#docs-drawer')).toBeHidden();
+ await page.locator('#journal').fill('Public transit stops need shade. PRIVATE-SENTINEL');
+ await expect(page.locator('#review-match')).toBeVisible();
+ await page.locator('#review-match').click();
+ await page.locator('[data-clause-vote="support"]').click();
+ await expect(page.locator('#clause-status')).toContainText('Practice position');
+ await page.locator('#clause-comment').fill('Consider accessibility.');
+ await page.locator('#post-comment').click();
+ await expect(page.locator('#clause-comments')).toContainText('Consider accessibility.');
+ const text=await page.locator('#clause-text').textContent();
+ await page.locator('#new-clause').fill('  '+text.toUpperCase()+'  ');
+ await expect(page.locator('#dedupe-hint')).toContainText('Same normalized wording');
+ await page.locator('#contribute-clause').click();
+ await expect(page.locator('#constitution-list .clause-card')).toHaveCount(12);
+ expect(api).toEqual([]);
+ await page.setViewportSize({width:390,height:844});
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
+test('connected vote counts persist across browser contexts, pending comments are private',async({page,browser})=>{
+ await page.goto('/');
+ await page.locator('#board-connect').click();
+ await expect(page.locator('#review-mode')).toHaveText('Shared');
+ await page.locator('[data-clause-vote="support"]').click();
+ await expect(page.locator('#clause-status')).toContainText('Position recorded');
+ await expect(page.locator('#clause-real')).toContainText(/1 support/);
+ await page.locator('#clause-comment').fill('Test comment pending review.');
+ await page.locator('#post-comment').click();
+ await expect(page.locator('#comment-status')).toContainText('Confirm');
+ await page.locator('#comment-consent').check();
+ await page.locator('#post-comment').click();
+ await expect(page.locator('#clause-comments')).toContainText('pending moderation');
+ const other=await browser.newPage();
+ try{
+ await other.goto(page.url());
+ await other.locator('#board-connect').click();
+ await expect(other.locator('#clause-real')).toContainText(/1 support/);
+ await expect(other.locator('#clause-comments')).not.toContainText('Test comment pending review.');
+ }finally{await other.close()}
+});
