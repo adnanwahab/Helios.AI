@@ -90,8 +90,8 @@ async function refresh(){
 }
 $('board-connect').addEventListener('click',async()=>{
  if(isStatic||connected||busy)return;$('board-connect').disabled=true;message('board-status','Connecting to the shared board…');
- try{const session=await request('/api/session');if(typeof session.csrfToken!=='string')throw Error('No session token');const next=await request('/api/constitution');if(!Array.isArray(next.clauses)||!next.synthetic)throw Error('Invalid board response');csrf=session.csrfToken;board=next;connected=true;draw();message('board-status','Connected. Practice activity was not uploaded. Votes are public advisory counts; comments and new clauses await review.')}
- catch(e){message('board-status','Connection unavailable: '+e.message+' · practice remains available.',true)}
+ try{const session=await request('/api/session');if(typeof session.csrfToken!=='string')throw Error('No session token');const next=await request('/api/constitution');if(!Array.isArray(next.clauses)||!next.synthetic)throw Error('Invalid board response');csrf=session.csrfToken;board=next;connected=true;$('board-live-link').hidden=true;draw();message('board-status','Connected. Practice activity was not uploaded. Votes are public advisory counts; comments and new clauses await review.')}
+ catch(e){message('board-status','Connection unavailable: '+e.message+' · practice remains available.',true);$('board-live-link').hidden=false}
  finally{$('board-connect').disabled=false}
 });
 $('board-refresh').addEventListener('click',refresh);
