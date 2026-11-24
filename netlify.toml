@@ -51,6 +51,17 @@
   to = "/support_every_country.html"
   status = 200
 
+# HappyBearLandia Pocket: touch-first swipe feed of every HappyBearLandia world.
+[[redirects]]
+  from = "/pocket"
+  to = "/happybearlandia_pocket.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/pocket"
+  to = "/happybearlandia_pocket.html"
+  status = 200
+
 [[redirects]]
   from = "/embed/world-plan"
   to = "/world_plan_simulator.html"
