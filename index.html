@@ -190,6 +190,7 @@
         <button class="tab" id="tab-notion" type="button" role="tab" aria-selected="false" aria-controls="view-notion">Plan · Notion</button>
         <button class="tab" id="tab-world-plan" type="button" role="tab" aria-selected="false" aria-controls="view-world-plan">World Plan Simulator</button>
         <button class="tab" id="tab-radar" type="button" role="tab" aria-selected="false" aria-controls="view-radar">Vote Radar</button>
+        <button class="tab" id="tab-consensus" type="button" role="tab" aria-selected="false" aria-controls="view-consensus">Neighborhood Consensus</button>
         <button class="tab" id="tab-demo" type="button" role="tab" aria-selected="false" aria-controls="view-demo">100 Shared Goals</button>
         <button class="tab" id="tab-orbit" type="button" role="tab" aria-selected="false" aria-controls="view-orbit">Acts in Orbit</button>
         <button class="tab" id="tab-flags" type="button" role="tab" aria-selected="false" aria-controls="view-flags">Support Every Country</button>
@@ -200,6 +201,7 @@
         <button class="tab" id="tab-mail" type="button" role="tab" aria-selected="false" aria-controls="view-mail">Mail · Resend</button>
         <button class="tab" id="tab-ycr" type="button" role="tab" aria-selected="false" aria-controls="view-ycr">YC Research</button>
         <button class="tab" id="tab-fork" type="button" role="tab" aria-selected="false" aria-controls="view-fork">Fork Helios</button>
+        <button class="tab" id="tab-rainbow" type="button" role="tab" aria-selected="false" aria-controls="view-rainbow">Rainbow Brain Realms</button>
       </nav>
       <iframe
         class="signup"
@@ -246,6 +248,14 @@
         class="view"
         title="Vote Radar"
         src="/embed/radar"
+        loading="lazy"
+      ></iframe>
+
+      <iframe
+        id="view-consensus"
+        class="view"
+        title="Neighborhood Consensus: how support for a local proposal spreads across a neighborhood"
+        src="/embed/consensus"
         loading="lazy"
       ></iframe>
 
@@ -327,6 +337,15 @@
         src="/embed/fork"
         loading="lazy"
       ></iframe>
+      <iframe
+        id="view-rainbow"
+        class="view"
+        title="Rainbow Brain Realms"
+        src="/embed/rainbow-brain"
+        loading="lazy"
+        allow="gamepad; fullscreen"
+        allowfullscreen
+      ></iframe>
     </main>
 
     <footer class="byline">
@@ -343,6 +362,7 @@
       notion: document.getElementById('tab-notion'),
       worldPlan: document.getElementById('tab-world-plan'),
       radar: document.getElementById('tab-radar'),
+      consensus: document.getElementById('tab-consensus'),
       demo: document.getElementById('tab-demo'),
       orbit: document.getElementById('tab-orbit'),
       flags: document.getElementById('tab-flags'),
@@ -351,7 +371,8 @@
       pensieve: document.getElementById('tab-pensieve'),
       mail: document.getElementById('tab-mail'),
       ycr: document.getElementById('tab-ycr'),
-      fork: document.getElementById('tab-fork')
+      fork: document.getElementById('tab-fork'),
+      rainbow: document.getElementById('tab-rainbow')
     };
 
     const views = {
@@ -361,6 +382,7 @@
       notion: document.getElementById('view-notion'),
       worldPlan: document.getElementById('view-world-plan'),
       radar: document.getElementById('view-radar'),
+      consensus: document.getElementById('view-consensus'),
       demo: document.getElementById('view-demo'),
       orbit: document.getElementById('view-orbit'),
       flags: document.getElementById('view-flags'),
@@ -369,7 +391,8 @@
       pensieve: document.getElementById('view-pensieve'),
       mail: document.getElementById('view-mail'),
       ycr: document.getElementById('view-ycr'),
-      fork: document.getElementById('view-fork')
+      fork: document.getElementById('view-fork'),
+      rainbow: document.getElementById('view-rainbow')
     };
 
     function activate(which) {
@@ -386,6 +409,7 @@
     tabs.notion.addEventListener('click', () => activate('notion'));
     tabs.worldPlan.addEventListener('click', () => activate('worldPlan'));
     tabs.radar.addEventListener('click', () => activate('radar'));
+    tabs.consensus.addEventListener('click', () => activate('consensus'));
     tabs.demo.addEventListener('click', () => activate('demo'));
     tabs.orbit.addEventListener('click', () => activate('orbit'));
     tabs.flags.addEventListener('click', () => activate('flags'));
@@ -395,6 +419,7 @@
     tabs.mail.addEventListener('click', () => activate('mail'));
     tabs.ycr.addEventListener('click', () => activate('ycr'));
     tabs.fork.addEventListener('click', () => activate('fork'));
+    tabs.rainbow.addEventListener('click', () => activate('rainbow'));
   </script>
 </body>
 </html>
