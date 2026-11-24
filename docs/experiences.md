@@ -1,6 +1,6 @@
 # Archived Helios experiences
 
-The default homepage is now the citizen and government Helios Loops. The citizen has three steps (Express → Synthesize → Decide); the government preview has four (Understand → Evaluate → Respond → Measure). The original multi-tab dashboard is retained as `docs/legacy-home.html` and built as the unlisted `/experiments.html` route for compatibility and regression tests. No archived experience is linked from the new homepage. This is navigation hiding, not access control; old direct URLs still work.
+The default homepage is now the citizen and government Helios Loops. The citizen has three steps (Express → Synthesize → Decide); the government preview has four (Understand → Evaluate → Respond → Measure). The original multi-tab dashboard is retained as `docs/legacy-home.html` and built as `/experiments.html`. A small **Docs & Experiments** footer link opens it in a new tab, preserving the current journal or government review draft. Its footer links back to Helios and to the repository documentation. No old demo tabs appear in the primary homepage navigation. This is navigation hiding, not access control; old direct URLs still work.
 
 ## Experience inventory
 

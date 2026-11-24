@@ -71,3 +71,19 @@ test('static government sample and feedback stay in the browser',async({page})=>
  await completeReview(page);
  expect(requests).toEqual([]);
 });
+
+
+test('footer opens the archived experiments in a new tab without losing a private journal',async({page})=>{
+ await page.goto('/');
+ await page.locator('#journal').fill('Private draft that must remain in the original tab.');
+ const link=page.getByRole('link',{name:'Docs & Experiments (opens in a new tab)'});
+ await expect(link).toBeVisible();
+ const [archive]=await Promise.all([page.waitForEvent('popup'),link.click()]);
+ await archive.waitForLoadState('domcontentloaded');
+ expect(new URL(archive.url()).pathname).toBe('/experiments.html');
+ await expect(archive.locator('#tab-helios-ai')).toBeVisible();
+ await expect(archive.getByRole('link',{name:'Documentation ↗',exact:true})).toBeVisible();
+ await expect(archive.getByRole('link',{name:'← Helios Loop',exact:true})).toHaveAttribute('href','./index.html');
+ await expect(page.locator('#journal')).toHaveValue('Private draft that must remain in the original tab.');
+ await archive.close();
+});
