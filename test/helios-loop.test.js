@@ -2,9 +2,12 @@ import {test, expect} from 'bun:test';
 import {readFileSync} from 'node:fs';
 import catalog from '../data/catalog.json' with {type:'json'};
 const source=name=>readFileSync(new URL('../'+name,import.meta.url),'utf8');
-test('homepage exposes exactly three sequential screens and no legacy iframe navigation',()=>{
+test('homepage exposes three citizen screens, four government preview screens and no legacy iframe navigation',()=>{
   const html=source('index.html');
   expect([...html.matchAll(/<section id="screen-([123])"/g)].map(x=>x[1])).toEqual(['1','2','3']);
+  expect([...html.matchAll(/<section id="gov-([1234])"/g)].map(x=>x[1])).toEqual(['1','2','3','4']);
+  expect(html).toContain('id="mode-government"');
+  expect(html).toContain('id="citizen-feedback"');
   expect(html).not.toMatch(/<iframe|id="tab-|href="\/experiments/);
   expect(html).toContain('name="helios-mode" content="live"');
   for(const category of catalog.categories)expect(html).toContain(category);

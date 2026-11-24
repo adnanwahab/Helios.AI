@@ -78,6 +78,26 @@ try {
     await page.locator('#synthesis-form button[type=submit]').click();
     await page.screenshot({path: join(output, 'proposal.png'), fullPage: true, animations: 'disabled'});
   }
+  if (await page.locator('#mode-government').count()) {
+    await page.locator('#mode-government').click();
+    await page.screenshot({path: join(output, 'government-needs.png'), fullPage: true, animations: 'disabled'});
+    await page.locator('#gov-example').click();
+    await page.locator('#gov-authority').fill('Municipal transport authority (example)');
+    await page.locator('#gov-evidence').fill('Study heat exposure at stops, shelter costs and maintenance options.');
+    await page.locator('#gov-dissent').fill('Consult riders and disability advocates; test equitable placement.');
+    await page.screenshot({path: join(output, 'government-evaluate.png'), fullPage: true, animations: 'disabled'});
+    await page.locator('#gov-evaluate button[type=submit]').click();
+    await page.locator('#gov-disposition').selectOption('Request more evidence');
+    await page.locator('#gov-reason').fill('Compare accessible shelters and consult riders before recommending a pilot.');
+    await page.locator('#gov-owner').fill('Transport planning team (example)');
+    await page.screenshot({path: join(output, 'government-response.png'), fullPage: true, animations: 'disabled'});
+    await page.locator('#gov-respond button[type=submit]').click();
+    await page.locator('#gov-date').fill('2027-02-01');
+    await page.screenshot({path: join(output, 'government-measure.png'), fullPage: true, animations: 'disabled'});
+    await page.locator('#gov-measure button[type=submit]').click();
+    await page.locator('#citizen-feedback').waitFor({state:'visible'});
+    await page.screenshot({path: join(output, 'citizen-feedback.png'), fullPage: true, animations: 'disabled'});
+  }
   const mailTab = page.locator('#tab-mail');
   if (await mailTab.count()) {
     // Never unlock the operator console or enter any credentials.
