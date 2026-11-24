@@ -189,12 +189,16 @@
         <button class="tab" id="tab-hippie" type="button" role="tab" aria-selected="false" aria-controls="view-hippie">HeliosAI · Hippie</button>
         <button class="tab" id="tab-notion" type="button" role="tab" aria-selected="false" aria-controls="view-notion">Plan · Notion</button>
         <button class="tab" id="tab-world-plan" type="button" role="tab" aria-selected="false" aria-controls="view-world-plan">World Plan Simulator</button>
+        <button class="tab" id="tab-radar" type="button" role="tab" aria-selected="false" aria-controls="view-radar">Vote Radar</button>
         <button class="tab" id="tab-consensus" type="button" role="tab" aria-selected="false" aria-controls="view-consensus">Neighborhood Consensus</button>
+        <button class="tab" id="tab-merge" type="button" role="tab" aria-selected="false" aria-controls="view-merge">Three-Editor Merge</button>
         <button class="tab" id="tab-demo" type="button" role="tab" aria-selected="false" aria-controls="view-demo">100 Shared Goals</button>
         <button class="tab" id="tab-orbit" type="button" role="tab" aria-selected="false" aria-controls="view-orbit">Acts in Orbit</button>
         <button class="tab" id="tab-flags" type="button" role="tab" aria-selected="false" aria-controls="view-flags">Support Every Country</button>
         <button class="tab" id="tab-unified" type="button" role="tab" aria-selected="false" aria-controls="view-unified">Helios Unified</button>
+        <button class="tab" id="tab-coil" type="button" role="tab" aria-selected="false" aria-controls="view-coil">The Long Coil</button>
         <button class="tab" id="tab-lab" type="button" role="tab" aria-selected="false" aria-controls="view-lab">Dynamicland (Local)</button>
+        <button class="tab" id="tab-morphlab" type="button" role="tab" aria-selected="false" aria-controls="view-morphlab">MorphLab · WebGPU</button>
         <button class="tab" id="tab-pocket" type="button" role="tab" aria-selected="false" aria-controls="view-pocket">HappyBearLandia Pocket</button>
         <button class="tab" id="tab-pensieve" type="button" role="tab" aria-selected="false" aria-controls="view-pensieve">Digital Pensieve</button>
         <button class="tab" id="tab-braindance" type="button" role="tab" aria-selected="false" aria-controls="view-braindance">Braindance</button>
@@ -244,10 +248,26 @@
       ></iframe>
 
       <iframe
+        id="view-radar"
+        class="view"
+        title="Vote Radar"
+        src="/embed/radar"
+        loading="lazy"
+      ></iframe>
+
+      <iframe
         id="view-consensus"
         class="view"
         title="Neighborhood Consensus: how support for a local proposal spreads across a neighborhood"
         src="/embed/consensus"
+        loading="lazy"
+      ></iframe>
+
+      <iframe
+        id="view-merge"
+        class="view"
+        title="Three-Editor Merge"
+        src="/embed/merge"
         loading="lazy"
       ></iframe>
 
@@ -286,6 +306,14 @@
       ></iframe>
 
       <iframe
+        id="view-coil"
+        class="view"
+        title="The Long Coil"
+        src="/embed/coil"
+        loading="lazy"
+      ></iframe>
+
+      <iframe
         id="view-lab"
         class="view"
         title="Dynamicland Local"
@@ -302,6 +330,8 @@
         allow="fullscreen; autoplay; xr-spatial-tracking; gyroscope; accelerometer; web-share; clipboard-write"
         allowfullscreen
       ></iframe>
+
+      <iframe id="view-morphlab" class="view" title="Helios MorphLab — prompt-to-particle 3D studio" src="/embed/morphlab" loading="lazy"></iframe>
 
       <iframe
         id="view-pensieve"
@@ -357,15 +387,19 @@
   <script>
     const tabs = {
       lab: document.getElementById('tab-lab'),
+      morphlab: document.getElementById('tab-morphlab'),
       heliosAi: document.getElementById('tab-helios-ai'),
       hippie: document.getElementById('tab-hippie'),
       notion: document.getElementById('tab-notion'),
       worldPlan: document.getElementById('tab-world-plan'),
+      radar: document.getElementById('tab-radar'),
       consensus: document.getElementById('tab-consensus'),
+      merge: document.getElementById('tab-merge'),
       demo: document.getElementById('tab-demo'),
       orbit: document.getElementById('tab-orbit'),
       flags: document.getElementById('tab-flags'),
       unified: document.getElementById('tab-unified'),
+      coil: document.getElementById('tab-coil'),
       pocket: document.getElementById('tab-pocket'),
       pensieve: document.getElementById('tab-pensieve'),
       braindance: document.getElementById('tab-braindance'),
@@ -377,15 +411,19 @@
 
     const views = {
       lab: document.getElementById('view-lab'),
+      morphlab: document.getElementById('view-morphlab'),
       heliosAi: document.getElementById('view-helios-ai'),
       hippie: document.getElementById('view-hippie'),
       notion: document.getElementById('view-notion'),
       worldPlan: document.getElementById('view-world-plan'),
+      radar: document.getElementById('view-radar'),
       consensus: document.getElementById('view-consensus'),
+      merge: document.getElementById('view-merge'),
       demo: document.getElementById('view-demo'),
       orbit: document.getElementById('view-orbit'),
       flags: document.getElementById('view-flags'),
       unified: document.getElementById('view-unified'),
+      coil: document.getElementById('view-coil'),
       pocket: document.getElementById('view-pocket'),
       pensieve: document.getElementById('view-pensieve'),
       braindance: document.getElementById('view-braindance'),
@@ -404,15 +442,19 @@
     }
 
     tabs.lab.addEventListener('click', () => activate('lab'));
+    tabs.morphlab.addEventListener('click', () => activate('morphlab'));
     tabs.heliosAi.addEventListener('click', () => activate('heliosAi'));
     tabs.hippie.addEventListener('click', () => activate('hippie'));
     tabs.notion.addEventListener('click', () => activate('notion'));
     tabs.worldPlan.addEventListener('click', () => activate('worldPlan'));
+    tabs.radar.addEventListener('click', () => activate('radar'));
     tabs.consensus.addEventListener('click', () => activate('consensus'));
+    tabs.merge.addEventListener('click', () => activate('merge'));
     tabs.demo.addEventListener('click', () => activate('demo'));
     tabs.orbit.addEventListener('click', () => activate('orbit'));
     tabs.flags.addEventListener('click', () => activate('flags'));
     tabs.unified.addEventListener('click', () => activate('unified'));
+    tabs.coil.addEventListener('click', () => activate('coil'));
     tabs.pocket.addEventListener('click', () => activate('pocket'));
     tabs.pensieve.addEventListener('click', () => activate('pensieve'));
     tabs.braindance.addEventListener('click', () => activate('braindance'));

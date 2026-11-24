@@ -16,8 +16,10 @@ const demos = [
   'helios_fork.html',
   'helios_braindance.html',
   'world_plan_simulator.html',
+  'vote_radar.html',
   'happybearlandia_pocket.html',
   'eight_billion_map.html',
+  'three_editor_merge.html',
   'helios_100_frontend_demo.html',
   'heliosai_acts_orbit.html',
   'helios-unified.html',
@@ -26,7 +28,8 @@ const demos = [
   'health_wealth_of_nations.html',
   'heliosai-particle-interface.html',
   'sand_castle.html',
-  'rainbow_brain.html'
+  'rainbow_brain.html',
+  'morphlab.html'
 ];
 for (const name of demos) {
   await copyFile(join(root, name), join(out, name));
@@ -43,6 +46,11 @@ const flagsPage = (await readFile(join(root, 'support_every_country.html'), 'utf
   .replaceAll('url(/public/', 'url(./public/');
 if (/["(]\/public\//.test(flagsPage)) throw new Error('Root-relative /public/ path left in support_every_country.html');
 await writeFile(join(out, 'support_every_country.html'), flagsPage);
+
+// The Long Coil carries its record inline; only its icon link is root-relative.
+const coilPage = (await readFile(join(root, 'long_coil.html'), 'utf8')).replaceAll('"/public/', '"./public/');
+if (/["(]\/public\//.test(coilPage)) throw new Error('Root-relative /public/ path left in long_coil.html');
+await writeFile(join(out, 'long_coil.html'), coilPage);
 await writeFile(join(out, 'notion-preview.json'), JSON.stringify(buildPlanDocument(seedCatalog)));
 
 let index = await readFile(join(root, 'index.html'), 'utf8');
@@ -62,12 +70,16 @@ replaceRequired('src="/embed/fork"', 'src="./helios_fork.html"');
 replaceRequired('src="/embed/braindance"', 'src="./helios_braindance.html"');
 replaceRequired('src="/embed/notion"', 'src="./helios_notion_preview.html"');
 replaceRequired('src="/embed/world-plan"', 'src="./world_plan_simulator.html"');
+replaceRequired('src="/embed/radar"', 'src="./vote_radar.html"');
 replaceRequired('src="/embed/orbit"', 'src="./heliosai_acts_orbit.html"');
 replaceRequired('src="/embed/pocket"', 'src="./happybearlandia_pocket.html"');
+replaceRequired('src="/embed/merge"', 'src="./three_editor_merge.html"');
 replaceRequired('src="/embed/goals"', 'src="./helios_100_frontend_demo.html"');
 replaceRequired('src="/embed/flags"', 'src="./support_every_country.html"');
 replaceRequired('src="/embed/unified"', 'src="./helios-unified.html"');
+replaceRequired('src="/embed/coil"', 'src="./long_coil.html"');
 replaceRequired('src="/embed/dynamicland"', 'src="./communal_science_lab_webgpu%20(1).html"');
+replaceRequired('src="/embed/morphlab"', 'src="./morphlab.html"');
 replaceRequired('src="/embed/mail"', 'src="./helios_mail.html"');
 replaceRequired('src="/embed/rainbow-brain"', 'src="./rainbow_brain.html"');
 replaceRequired('src="/embed/consensus"', 'src="./neighborhood_consensus.html"');
