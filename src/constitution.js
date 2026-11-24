@@ -31,7 +31,7 @@ export function constitutionStore(db,Problem){
      db.query("SELECT clause_id,COUNT(*) AS n FROM constitution_comments WHERE status='approved' GROUP BY clause_id"),
      db.query("SELECT id,clause_id,text,status,created_at FROM (SELECT id,clause_id,text,status,created_at,ROW_NUMBER() OVER(PARTITION BY clause_id ORDER BY created_at DESC,id) AS rn FROM constitution_comments WHERE status='approved' OR (author=$1 AND status='pending')) c WHERE rn<=8 ORDER BY created_at DESC,id",[actor||'']),
      db.query('SELECT clause_id,position FROM constitution_votes WHERE actor=$1',[actor||'']),
-     db.query("SELECT id,text,status FROM constitution_clauses WHERE author=$1 AND status='pending' ORDER BY created_at DESC LIMIT 30",[actor||''])
+     db.query("SELECT c.id,c.text,c.status FROM constitution_clauses c JOIN constitution_contributions k ON k.clause_id=c.id WHERE k.actor=$1 AND c.status='pending' ORDER BY c.created_at DESC LIMIT 30",[actor||''])
    ]);
    for(const row of clauses.rows)result.clauses.push({id:row.id,topic:'Community contribution',text:row.text,source:'community',status:row.status,synthetic:{mentions:0,support:0,oppose:0,unsure:0},live:blank(),myVote:null,comments:[]});
    const map=new Map(result.clauses.map(c=>[c.id,c]));
@@ -53,14 +53,15 @@ export function constitutionStore(db,Problem){
    shape(input,['text','consent']);if(input.consent!==true)fail(400,'Explicit public contribution consent required.');
    const text=validateText(input.text,280),key=normalizeClause(text),seed=byText.get(key);
    const id=seed?.id||'C-'+createHash('sha256').update(key).digest('hex');
-   let status='approved';
+   let status='approved', deduplicated=!!seed;
    if(!seed){
-     await q.query("INSERT INTO constitution_clauses(id,text,author,status,created_at) VALUES($1,$2,$3,'pending',$4) ON CONFLICT(id) DO NOTHING",[id,text,actor,new Date().toISOString()]);
+     const inserted=await q.query("INSERT INTO constitution_clauses(id,text,author,status,created_at) VALUES($1,$2,$3,'pending',$4) ON CONFLICT(id) DO NOTHING RETURNING id",[id,text,actor,new Date().toISOString()]);
+     deduplicated=inserted.rows.length===0;
      status=(await q.query('SELECT status FROM constitution_clauses WHERE id=$1',[id])).rows[0].status;
      if(status==='rejected')fail(409,'This clause was not approved for publication.');
    }
    await q.query('INSERT INTO constitution_contributions(clause_id,actor) VALUES($1,$2) ON CONFLICT DO NOTHING',[id,actor]);
-   return {clauseId:id,status,deduplicated:!!seed};
+   return {clauseId:id,status,deduplicated};
  }
  async function comment(q,input,actor){
    shape(input,['clauseId','text','consent']);if(input.consent!==true)fail(400,'Explicit public comment consent required.');await visible(q,input.clauseId);
