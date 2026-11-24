@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sand Castle Breakdown</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<style>
+  /* Fel night: an obsidian stage, violet ash, veins of fel green. One theme. */
+  :root {
+    --bg: #0b0812;
+    --line: #2b2238;
+    --ink: #ece6f4;
+    --muted: #9a90ab;
+    --lamp: #5dff7a;
+    --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    display: flex; flex-direction: column; overflow: hidden;
+    background: var(--bg); color: var(--ink); color-scheme: dark;
+    font: 400 15px/1.5 var(--sans);
+  }
+  header {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: 12px 24px; padding: 14px 20px; border-bottom: 1px solid var(--line);
+  }
+  h1 { margin: 0; font-size: 17px; font-weight: 600; }
+  .hint { margin: 3px 0 0; font-size: 13px; color: var(--muted); max-width: 66ch; }
+  .tools { display: flex; align-items: center; gap: 14px; }
+  #stat { font: 400 12px/1.2 var(--mono); color: var(--muted); white-space: nowrap; }
+  button {
+    font: 500 13px/1 var(--sans); color: var(--ink); background: transparent;
+    border: 1px solid #3b4753; border-radius: 6px; padding: 9px 14px; cursor: pointer;
+  }
+  button:hover { border-color: var(--lamp); }
+  button:focus-visible { outline: 2px solid var(--lamp); outline-offset: 2px; }
+  #stage { position: relative; flex: 1 1 auto; min-height: 0; overflow: hidden; }
+  #gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+  #divider { position: absolute; background: var(--line); pointer-events: none; }
+  .label {
+    position: absolute; top: 12px; left: 14px; pointer-events: none;
+    font: 500 11px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+  }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Sand Castle Breakdown</h1>
+    <p class="hint">Click or drag on the sand, or click the model, to break the castle. Anything cut off from the ground falls. Drag the model to orbit and scroll to zoom. Press R to rebuild.</p>
+  </div>
+  <div class="tools">
+    <span id="stat" aria-live="polite"></span>
+    <button id="rebuild" type="button">Rebuild castle</button>
+  </div>
+</header>
+<main id="stage">
+  <canvas id="gl" aria-label="Left: a sand castle made of grains that you can break apart. Right: a 3D model of the same castle."></canvas>
+  <div id="divider"></div>
+  <div class="label" id="labelSand">Sand grains</div>
+  <div class="label" id="labelModel">3D model</div>
+</main>
+<script>
+(function () {
+  'use strict';
+
+  /* ==================================================================
+     1. THE CASTLE
+     One list of simple shapes. The grains are sampled from it and the 3D
+     model is cut from the same shapes, so the two views match.
+     ================================================================== */
+  const prims = [];
+  const box = (x, y, z, hx, hy, hz) => prims.push({ t: 0, x, y, z, hx, hy, hz });
+  const cyl = (x, z, y0, y1, r) => prims.push({ t: 1, x, z, y0, y1, r });
+
+  const HALF = 0.8, WT = 0.12, ZF = HALF - WT / 2;     // curtain wall: half size, thickness, inner face
+  const WALL_TOP = 0.4, MERLON_Y = WALL_TOP + 0.05;
+
+  box(0, 0.04, 0, 0.92, 0.04, 0.92);                    // sand mound
+  box(0, 0.2, -ZF, HALF, 0.2, WT / 2);                  // back wall
+  box(ZF, 0.2, 0, WT / 2, 0.2, HALF);                   // right wall
+  box(-ZF, 0.2, 0, WT / 2, 0.2, HALF);                  // left wall
+  box(-0.46, 0.2, ZF, 0.34, 0.2, WT / 2);               // front wall, left of the gate
+  box(0.46, 0.2, ZF, 0.34, 0.2, WT / 2);                // front wall, right of the gate
+  box(0, 0.33, ZF, 0.12, 0.07, WT / 2);                 // lintel over the gate
+  for (const s of [-0.72, -0.56, -0.4, -0.24, -0.08, 0.08, 0.24, 0.4, 0.56, 0.72]) {
+    box(s, MERLON_Y, -ZF, 0.04, 0.05, WT / 2);          // crenellations: back
+    if (Math.abs(s) > 0.2) box(s, MERLON_Y, ZF, 0.04, 0.05, WT / 2); // front, clear of the gate
+    box(ZF, MERLON_Y, s, WT / 2, 0.05, 0.04);           // right
+    box(-ZF, MERLON_Y, s, WT / 2, 0.05, 0.04);          // left
+  }
+  const TOWER_H = 0.62, TOWER_R = 0.15;
+  for (const [sx, sz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+    const cx = sx * HALF, cz = sz * HALF;
+    cyl(cx, cz, 0, TOWER_H, TOWER_R);
+    for (let a = 0; a < 4; a++) {
+      const t = (a * Math.PI) / 2;
+      box(cx + 0.12 * Math.cos(t), TOWER_H + 0.05, cz + 0.12 * Math.sin(t), 0.045, 0.05, 0.045);
+    }
+  }
+  const KEEP_H = 0.9;
+  box(0, KEEP_H / 2, 0, 0.2, KEEP_H / 2, 0.2);          // central keep
+  for (const o of [-0.12, 0, 0.12]) {
+    box(o, KEEP_H + 0.05, -0.16, 0.04, 0.05, 0.04);
+    box(o, KEEP_H + 0.05, 0.16, 0.04, 0.05, 0.04);
+    box(-0.16, KEEP_H + 0.05, o, 0.04, 0.05, 0.04);
+    box(0.16, KEEP_H + 0.05, o, 0.04, 0.05, 0.04);
+  }
+  cyl(0, 0, KEEP_H, 1.12, 0.1);                         // turret on the keep
+  for (let a = 0; a < 4; a++) {
+    const t = (a * Math.PI) / 2;
+    box(0.085 * Math.cos(t), 1.17, 0.085 * Math.sin(t), 0.035, 0.05, 0.035);
+  }
+  for (const p of prims) {                              // bounds, for quick rejection
+    p.a = p.t === 0
+      ? [p.x - p.hx, p.y - p.hy, p.z - p.hz, p.x + p.hx, p.y + p.hy, p.z + p.hz]
+      : [p.x - p.r, p.y0, p.z - p.r, p.x + p.r, p.y1, p.z + p.r];
+  }
+
+  /* Signed distance to the whole castle. Negative inside. */
+  function sdf(x, y, z) {
+    let best = Infinity;
+    for (const p of prims) {
+      const a = p.a;
+      if (best >= 0 && best < Infinity) {               // skip shapes that cannot beat `best`
+        const dx = Math.max(a[0] - x, 0, x - a[3]);
+        const dy = Math.max(a[1] - y, 0, y - a[4]);
+        const dz = Math.max(a[2] - z, 0, z - a[5]);
+        if (dx * dx + dy * dy + dz * dz >= best * best) continue;
+      }
+      let d;
+      if (p.t === 0) {
+        const qx = Math.abs(x - p.x) - p.hx, qy = Math.abs(y - p.y) - p.hy, qz = Math.abs(z - p.z) - p.hz;
+        const ox = Math.max(qx, 0), oy = Math.max(qy, 0), oz = Math.max(qz, 0);
+        d = Math.sqrt(ox * ox + oy * oy + oz * oz) + Math.min(Math.max(qx, qy, qz), 0);
+      } else {
+        const dr = Math.sqrt((x - p.x) * (x - p.x) + (z - p.z) * (z - p.z)) - p.r;
+        const dy = Math.max(p.y0 - y, y - p.y1);
+        const ox = Math.max(dr, 0), oy = Math.max(dy, 0);
+        d = Math.sqrt(ox * ox + oy * oy) + Math.min(Math.max(dr, dy), 0);
+      }
+      if (d < best) best = d;
+    }
+    return best;
+  }
+
+  /* A random point on one shape's surface, written to out = [x, y, z, nx, ny, nz]. */
+  function surfacePoint(p, out) {
+    if (p.t === 0) {
+      const ax = 4 * p.hy * p.hz, ay = 4 * p.hx * p.hz, az = 4 * p.hx * p.hy;
+      const pick = Math.random() * (ax + ay + az);
+      const s = Math.random() < 0.5 ? -1 : 1;
+      const u = 2 * Math.random() - 1, v = 2 * Math.random() - 1;
+      if (pick < ax) {
+        out[0] = p.x + s * p.hx; out[1] = p.y + u * p.hy; out[2] = p.z + v * p.hz;
+        out[3] = s; out[4] = 0; out[5] = 0;
+      } else if (pick < ax + ay) {
+        out[0] = p.x + u * p.hx; out[1] = p.y + s * p.hy; out[2] = p.z + v * p.hz;
+        out[3] = 0; out[4] = s; out[5] = 0;
+      } else {
+        out[0] = p.x + u * p.hx; out[1] = p.y + v * p.hy; out[2] = p.z + s * p.hz;
+        out[3] = 0; out[4] = 0; out[5] = s;
+      }
+    } else {
+      const h = p.y1 - p.y0, side = 2 * Math.PI * p.r * h, caps = 2 * Math.PI * p.r * p.r;
+      const a = 2 * Math.PI * Math.random(), ca = Math.cos(a), sa = Math.sin(a);
+      if (Math.random() * (side + caps) < side) {
+        out[0] = p.x + p.r * ca; out[1] = p.y0 + h * Math.random(); out[2] = p.z + p.r * sa;
+        out[3] = ca; out[4] = 0; out[5] = sa;
+      } else {
+        const top = Math.random() < 0.5, rr = p.r * Math.sqrt(Math.random());
+        out[0] = p.x + rr * ca; out[1] = top ? p.y1 : p.y0; out[2] = p.z + rr * sa;
+        out[3] = 0; out[4] = top ? 1 : -1; out[5] = 0;
+      }
+    }
+  }
+
+  const areaCum = [];
+  let areaSum = 0;
+  for (const p of prims) {
+    areaSum += p.t === 0
+      ? 8 * (p.hx * p.hy + p.hy * p.hz + p.hz * p.hx)
+      : 2 * Math.PI * p.r * (p.y1 - p.y0 + p.r);
+    areaCum.push(areaSum);
+  }
+  function pickShape() {                                // shapes chosen in proportion to their area
+    const r = Math.random() * areaSum;
+    let lo = 0, hi = areaCum.length - 1;
+    while (lo < hi) {
+      const m = (lo + hi) >> 1;
+      if (areaCum[m] < r) lo = m + 1; else hi = m;
+    }
+    return prims[lo];
+  }
+
+  /* ==================================================================
+     2. THE GRID AND THE GRAINS
+     The grid decides what is solid: what holds the castle up, what loose
+     grains bounce off, and where the model has been carved away.
+     ================================================================== */
+  const VOX = 0.03, INV = 1 / VOX, OX = -2.7, OY = 0, OZ = -2.7;
+  const NX = 180, NY = 72, NZ = 180, GRID = NX * NY * NZ;
+  const G = 9.8, R = 0.01, REST = 0.22, DRAG = 0.35, GRIP = 6, MAXK = 12, SUB = 1 / 120;
+  const jit = (a) => (Math.random() * 2 - 1) * a;
+
+  function cellOf(x, y, z) {
+    const ix = Math.floor((x - OX) * INV), iy = Math.floor((y - OY) * INV), iz = Math.floor((z - OZ) * INV);
+    if (ix < 0 || iy < 0 || iz < 0 || ix >= NX || iy >= NY || iz >= NZ) return -1;
+    return ix + NX * (iy + NY * iz);
+  }
+
+  /* The castle's box in grid cells. Its own cells are numbered from one corner. */
+  let minX = Infinity, minY = Infinity, minZ = Infinity;
+  let maxX = -Infinity, maxY = -Infinity, maxZ = -Infinity;
+  for (const p of prims) {
+    minX = Math.min(minX, p.a[0]); minY = Math.min(minY, p.a[1]); minZ = Math.min(minZ, p.a[2]);
+    maxX = Math.max(maxX, p.a[3]); maxY = Math.max(maxY, p.a[4]); maxZ = Math.max(maxZ, p.a[5]);
+  }
+  const BX0 = Math.floor((minX - OX) * INV), BX1 = Math.floor((maxX - OX) * INV);
+  const BY0 = Math.floor((minY - OY) * INV), BY1 = Math.floor((maxY - OY) * INV);
+  const BZ0 = Math.floor((minZ - OZ) * INV), BZ1 = Math.floor((maxZ - OZ) * INV);
+  const BNX = BX1 - BX0 + 1, BNY = BY1 - BY0 + 1, BNZ = BZ1 - BZ0 + 1;
+  const BSLAB = BNX * BNY, BN = BSLAB * BNZ;
+  const gOf = (lx, ly, lz) => (lx + BX0) + NX * ((ly + BY0) + NY * (lz + BZ0));
+  function localOf(g) {
+    const ix = g % NX, iy = Math.floor(g / NX) % NY, iz = Math.floor(g / (NX * NY));
+    if (ix < BX0 || ix > BX1 || iy < BY0 || iy > BY1 || iz < BZ0 || iz > BZ1) return -1;
+    return (ix - BX0) + BNX * ((iy - BY0) + BNY * (iz - BZ0));
+  }
+
+  const SHELL = 62000;
+  const raw = [];                                       // x y z nx ny nz for every grain
+  const tmp = new Float64Array(6);
+  let nShell = 0;
+  for (let tries = 0; nShell < SHELL && tries < 1000000; tries++) {
+    surfacePoint(pickShape(), tmp);
+    if (tmp[4] < -0.5) continue;                        // underside: sits on the ground
+    if (sdf(tmp[0], tmp[1], tmp[2]) > -0.0008) {        // exposed: nothing else covers this face
+      raw.push(tmp[0], tmp[1], tmp[2], tmp[3], tmp[4], tmp[5]);
+      nShell++;
+    }
+  }
+  // The hidden core: one grain in each grid cell well inside the castle, so the
+  // solid has no holes for the support check to trip on.
+  let nCore = 0;
+  for (let iz = BZ0; iz <= BZ1; iz++) for (let iy = BY0; iy <= BY1; iy++) for (let ix = BX0; ix <= BX1; ix++) {
+    const cx = OX + (ix + 0.5) * VOX, cy = OY + (iy + 0.5) * VOX, cz = OZ + (iz + 0.5) * VOX;
+    if (sdf(cx, cy, cz) < -0.012) {
+      raw.push(cx + jit(0.35 * VOX), cy + jit(0.35 * VOX), cz + jit(0.35 * VOX), 0, 1, 0);
+      nCore++;
+    }
+  }
+  const N = nShell + nCore;
+
+  const home = new Float32Array(3 * N), nrm = new Float32Array(3 * N);
+  const col = new Float32Array(3 * N), siz = new Float32Array(N);
+  const SAND = [[0.4, 0.35, 0.5], [0.33, 0.29, 0.42], [0.27, 0.23, 0.35], [0.46, 0.41, 0.55]];
+  for (let i = 0; i < N; i++) {
+    const g = 6 * i, b = 3 * i;
+    const lift = i < nShell ? 0.006 : 0;                // shell grains sit just proud of the surface
+    for (let k = 0; k < 3; k++) {
+      home[b + k] = raw[g + k] + raw[g + 3 + k] * lift;
+      nrm[b + k] = raw[g + 3 + k];
+    }
+    const r = Math.random();
+    const c = r < 0.05 ? [0.16, 0.13, 0.2] : r < 0.07 ? [0.4, 1.0, 0.45] : SAND[(Math.random() * SAND.length) | 0];
+    const j = 0.9 + 0.2 * Math.random();
+    col[b] = Math.min(1, c[0] * j);
+    col[b + 1] = Math.min(1, c[1] * j);
+    col[b + 2] = Math.min(1, c[2] * j);
+    siz[i] = 0.85 + 0.35 * Math.random();
+  }
+  raw.length = 0;
+  // Where each grain's home sits in the grid, and in the castle's box.
+  const gcell = new Int32Array(N), gLoc = new Int32Array(N);
+  for (let i = 0; i < N; i++) {
+    gcell[i] = cellOf(home[3 * i], home[3 * i + 1], home[3 * i + 2]);
+    gLoc[i] = gcell[i] >= 0 ? localOf(gcell[i]) : -1;
+  }
+
+  /* ==================================================================
+     3. PHYSICS
+     Each grain is part of the castle (0), flying (1), resting loose (2)
+     or part of a piece falling as one (3). Castle and resting grains are
+     solid in the grid, and flying grains bounce off them. The ground is
+     at y = 0.
+     ================================================================== */
+  const pos = new Float32Array(home);
+  const vel = new Float32Array(3 * N);
+  const rest = new Float32Array(N);
+  const state = new Uint8Array(N);
+  const seen = new Uint8Array(N);                       // 1 once a grain has been knocked loose
+  const active = new Int32Array(N);                     // the flying grains
+  let nActive = 0, nLoose = 0;
+  let geomDirty = false, supportDirty = false, modelDirty = true;
+  const occ = new Uint16Array(GRID);                    // solid grains: castle and resting
+  const occC = new Uint16Array(GRID);                   // castle grains only
+  const carved = new Uint8Array(GRID);                  // 1 once a cell that held castle grains is empty
+  const chunks = [];                                    // falling pieces: { ids, cx, cy, cz, vx, vy, vz, hx, hy, hz }
+
+  function occAdd(i) {
+    const c = cellOf(pos[3 * i], pos[3 * i + 1], pos[3 * i + 2]);
+    if (c >= 0) occ[c]++;
+  }
+  /* A grain stops being solid, because it is leaving the castle or a resting heap. */
+  function leaveSolid(i) {
+    const c = cellOf(pos[3 * i], pos[3 * i + 1], pos[3 * i + 2]);
+    if (c < 0) return;
+    if (occ[c] > 0) occ[c]--;
+    if (state[i] === 0 && occC[c] > 0) {
+      if (--occC[c] === 0) carved[c] = 1;
+      modelDirty = true;
+      supportDirty = true;
+    }
+  }
+
+  /* Walk out of the solid along one axis. Returns the coordinate to sit at, or NaN. */
+  function exitAlong(ix, iy, iz, ax, sg) {
+    const n = ax === 0 ? NX : ax === 1 ? NY : NZ;
+    const c0 = ax === 0 ? ix : ax === 1 ? iy : iz;
+    const org = ax === 0 ? OX : ax === 1 ? OY : OZ;
+    for (let k = 1; k <= MAXK; k++) {
+      const c = c0 + sg * k;
+      if (ax === 1 && c < 0) return NaN;                // the ground is solid
+      const face = sg > 0 ? org + c * VOX : org + (c + 1) * VOX;
+      if (c < 0 || c >= n) return sg > 0 ? face + R : face - R;   // open air past the grid
+      const idx = ax === 0 ? c + NX * (iy + NY * iz)
+        : ax === 1 ? ix + NX * (c + NY * iz)
+        : ix + NX * (iy + NY * c);
+      if (occ[idx] === 0) return sg > 0 ? face + R : face - R;
+    }
+    return NaN;
+  }
+
+  /* A flying grain that has entered solid is moved to the nearest free face. */
+  function collide(i, grip) {
+    const b = 3 * i;
+    const x = pos[b], y = pos[b + 1], z = pos[b + 2];
+    const ix = Math.floor((x - OX) * INV), iy = Math.floor((y - OY) * INV), iz = Math.floor((z - OZ) * INV);
+    if (ix < 0 || iy < 0 || iz < 0 || ix >= NX || iy >= NY || iz >= NZ) return false;
+    if (occ[ix + NX * (iy + NY * iz)] === 0) return false;
+    let bestD = Infinity, bestAx = -1, bestSg = 0, bestT = 0;
+    for (let ax = 0; ax < 3; ax++) {
+      for (let sg = -1; sg <= 1; sg += 2) {
+        if (ax === 1 && sg < 0) continue;
+        const t = exitAlong(ix, iy, iz, ax, sg);
+        if (t !== t) continue;                          // NaN: no way out this way
+        const d = Math.abs(pos[b + ax] - t) * (ax === 1 ? 0.8 : 1);   // slight preference for up
+        if (d < bestD) { bestD = d; bestAx = ax; bestSg = sg; bestT = t; }
+      }
+    }
+    if (bestAx < 0) {                                   // buried: lift it out of the top
+      pos[b + 1] = OY + NY * VOX;
+      if (vel[b + 1] < 0) vel[b + 1] = 0;
+      return true;
+    }
+    pos[b + bestAx] = bestT;
+    const va = b + bestAx;
+    if (bestSg > 0 ? vel[va] < 0 : vel[va] > 0) vel[va] *= -REST;
+    for (let o = 0; o < 3; o++) if (o !== bestAx) vel[b + o] *= grip;
+    return true;
+  }
+
+  function settle(k, i) {                               // grain comes to rest: it joins the solid
+    state[i] = 2;
+    occAdd(i);
+    nActive--;
+    if (k !== nActive) active[k] = active[nActive];
+  }
+
+  function step(h) {
+    const air = Math.exp(-DRAG * h), grip = Math.exp(-GRIP * h);
+    for (let k = nActive - 1; k >= 0; k--) {
+      const i = active[k], b = 3 * i;
+      vel[b + 1] -= G * h;
+      vel[b] *= air; vel[b + 1] *= air; vel[b + 2] *= air;
+      pos[b] += vel[b] * h; pos[b + 1] += vel[b + 1] * h; pos[b + 2] += vel[b + 2] * h;
+      let touch = false;
+      if (pos[b + 1] < R) {                             // the ground
+        pos[b + 1] = R;
+        if (vel[b + 1] < 0) vel[b + 1] *= -REST;
+        vel[b] *= grip; vel[b + 2] *= grip;
+        touch = true;
+      }
+      if (collide(i, grip)) touch = true;               // castle and resting grains
+      const sp2 = vel[b] * vel[b] + vel[b + 1] * vel[b + 1] + vel[b + 2] * vel[b + 2];
+      rest[i] = touch && sp2 < 0.04 ? rest[i] + h : 0;
+      const lost = Math.abs(pos[b]) > 12 || Math.abs(pos[b + 2]) > 12 || pos[b + 1] > 15;
+      if (rest[i] > 0.15 || lost) settle(k, i);
+    }
+  }
+
+  /* A falling piece moves as one: its grains keep their places around its centre.
+     It breaks up the moment any of its grains reaches the ground or something solid. */
+  function stepChunks(h) {
+    for (let k = chunks.length - 1; k >= 0; k--) {
+      const ch = chunks[k];
+      ch.vy -= G * h;
+      ch.cx += ch.vx * h; ch.cy += ch.vy * h; ch.cz += ch.vz * h;
+      const ids = ch.ids;
+      let hit = false;
+      for (let m = 0; m < ids.length; m++) {
+        const b = 3 * ids[m];
+        const x = ch.cx + (home[b] - ch.hx), y = ch.cy + (home[b + 1] - ch.hy), z = ch.cz + (home[b + 2] - ch.hz);
+        pos[b] = x; pos[b + 1] = y; pos[b + 2] = z;
+        if (!hit) {
+          if (y < R) hit = true;
+          else {
+            const c = cellOf(x, y, z);
+            if (c >= 0 && occ[c] > 0) hit = true;
+          }
+        }
+      }
+      if (hit) breakChunk(k);
+    }
+  }
+
+  /* A falling piece shatters: its grains become loose sand that bounces and spreads. */
+  function breakChunk(k) {
+    const ch = chunks[k];
+    const ids = ch.ids;
+    for (let m = 0; m < ids.length; m++) {
+      const i = ids[m], b = 3 * i;
+      if (pos[b + 1] < R) pos[b + 1] = R;
+      vel[b] = ch.vx + jit(0.8);
+      vel[b + 1] = 0.5 * Math.random();
+      vel[b + 2] = ch.vz + jit(0.8);
+      state[i] = 1;
+      rest[i] = 0;
+      active[nActive++] = i;
+    }
+    chunks[k] = chunks[chunks.length - 1];              // remove it (order does not matter)
+    chunks.pop();
+    geomDirty = true;
+    if (ids.length > 200) shockAt(new THREE.Vector3(ch.cx, Math.max(ch.cy, R), ch.cz));
+  }
+
+  /* Knock loose every grain within `reach` of (cx, cy, cz). */
+  function release(cx, cy, cz, reach, blast, vx, vy, vz, chance) {
+    const r2 = reach * reach;
+    for (let i = 0; i < N; i++) {
+      if (state[i] === 1 || state[i] === 3) continue;   // already flying, or riding a falling piece
+      const b = 3 * i;
+      const dx = pos[b] - cx, dy = pos[b + 1] - cy, dz = pos[b + 2] - cz;
+      const d2 = dx * dx + dy * dy + dz * dz;
+      if (d2 > r2 || (chance < 1 && Math.random() > chance)) continue;
+      const d = Math.sqrt(d2) + 1e-4, f = 1 - d / reach;   // f: 1 at the centre, 0 at the edge
+      let ux = dx / d, uy = dy / d, uz = dz / d;
+      if (blast) {
+        uy += 0.8;                                      // blasts throw grains upward
+        const L = Math.sqrt(ux * ux + uy * uy + uz * uz), sp = 2 + 3 * f;
+        vel[b] = (ux / L) * sp + jit(0.8);
+        vel[b + 1] = (uy / L) * sp + jit(0.8);
+        vel[b + 2] = (uz / L) * sp + jit(0.8);
+      } else {
+        vel[b] = 0.5 * vx + 0.6 * f * ux + jit(0.5);
+        vel[b + 1] = 0.5 * vy + 0.6 * f * uy + 0.2 + jit(0.4);
+        vel[b + 2] = 0.5 * vz + 0.6 * f * uz + jit(0.5);
+      }
+      leaveSolid(i);                                    // it leaves the solid
+      state[i] = 1;
+      rest[i] = 0;
+      active[nActive++] = i;
+      if (!seen[i]) { seen[i] = 1; nLoose++; }
+      geomDirty = true;
+    }
+  }
+
+  function rebuild() {
+    pos.set(home);
+    vel.fill(0); rest.fill(0); state.fill(0); seen.fill(0);
+    nActive = 0; nLoose = 0;
+    chunks.length = 0;
+    occ.fill(0); occC.fill(0); carved.fill(0);
+    for (let i = 0; i < N; i++) {
+      const c = gcell[i];
+      if (c >= 0) { occ[c]++; occC[c]++; }
+    }
+    geomDirty = true; modelDirty = true; supportDirty = false;
+  }
+  rebuild();
+
+  /* ==================================================================
+     4. SUPPORT
+     Castle grains hang on the ground through their neighbours. A cell is
+     held up if a chain of castle cells (touching by a face, an edge or a
+     corner) links it to the ground. Whatever is cut off falls as one piece.
+     ================================================================== */
+  const sup = new Uint8Array(BN);                       // 1 where a castle cell is still held up
+  const comp = new Int32Array(BN);                      // which falling piece an unsupported cell belongs to
+  const queue = new Int32Array(BN);
+  const NB = [];                                        // the 26 neighbour offsets, as x y z triples
+  for (let dz = -1; dz <= 1; dz++) for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+    if (dx || dy || dz) NB.push(dx, dy, dz);
+  }
+
+  function checkSupport() {
+    supportDirty = false;
+    sup.fill(0);
+    comp.fill(-1);
+    let head = 0, tail = 0;
+    // Pass 1: every castle cell reachable from the ground layer.
+    for (let lz = 0; lz < BNZ; lz++) for (let lx = 0; lx < BNX; lx++) {
+      if (occC[gOf(lx, 0, lz)] > 0) {
+        const li = lx + BSLAB * lz;
+        sup[li] = 1; queue[tail++] = li;
+      }
+    }
+    while (head < tail) {
+      const li = queue[head++];
+      const lz = Math.floor(li / BSLAB), rem = li - lz * BSLAB;
+      const ly = Math.floor(rem / BNX), lx = rem - ly * BNX;
+      for (let o = 0; o < NB.length; o += 3) {
+        const x = lx + NB[o], y = ly + NB[o + 1], z = lz + NB[o + 2];
+        if (x < 0 || y < 0 || z < 0 || x >= BNX || y >= BNY || z >= BNZ) continue;
+        const nl = x + BNX * (y + BNY * z);
+        if (!sup[nl] && occC[gOf(x, y, z)] > 0) { sup[nl] = 1; queue[tail++] = nl; }
+      }
+    }
+    // Pass 2: the castle cells left over form pieces, and each piece falls as one.
+    let nComp = 0;
+    for (let lz = 0; lz < BNZ; lz++) for (let ly = 0; ly < BNY; ly++) for (let lx = 0; lx < BNX; lx++) {
+      const li = lx + BNX * (ly + BNY * lz);
+      if (sup[li] || comp[li] >= 0 || occC[gOf(lx, ly, lz)] === 0) continue;
+      comp[li] = nComp;
+      head = 0; tail = 0; queue[tail++] = li;
+      while (head < tail) {
+        const cur = queue[head++];
+        const cz = Math.floor(cur / BSLAB), rem = cur - cz * BSLAB;
+        const cy = Math.floor(rem / BNX), cx = rem - cy * BNX;
+        for (let o = 0; o < NB.length; o += 3) {
+          const x = cx + NB[o], y = cy + NB[o + 1], z = cz + NB[o + 2];
+          if (x < 0 || y < 0 || z < 0 || x >= BNX || y >= BNY || z >= BNZ) continue;
+          const nl = x + BNX * (y + BNY * z);
+          if (!sup[nl] && comp[nl] < 0 && occC[gOf(x, y, z)] > 0) { comp[nl] = nComp; queue[tail++] = nl; }
+        }
+      }
+      nComp++;
+    }
+    if (nComp === 0) return;
+    // Sort the castle grains that hang free into their pieces (counting sort).
+    const first = new Int32Array(nComp + 1);
+    let total = 0;
+    for (let i = 0; i < N; i++) {
+      if (state[i] !== 0) continue;
+      const li = gLoc[i];
+      if (li < 0 || sup[li]) continue;
+      first[comp[li] + 1]++; total++;
+    }
+    for (let c = 0; c < nComp; c++) first[c + 1] += first[c];
+    const order = new Int32Array(total), slot = first.slice(0, nComp);
+    for (let i = 0; i < N; i++) {
+      if (state[i] !== 0) continue;
+      const li = gLoc[i];
+      if (li < 0 || sup[li]) continue;
+      order[slot[comp[li]]++] = i;
+    }
+    for (let c = 0; c < nComp; c++) {
+      const ids = order.subarray(first[c], first[c + 1]);
+      if (ids.length === 0) continue;
+      let hx = 0, hy = 0, hz = 0;
+      for (let m = 0; m < ids.length; m++) {
+        const b = 3 * ids[m];
+        hx += home[b]; hy += home[b + 1]; hz += home[b + 2];
+      }
+      hx /= ids.length; hy /= ids.length; hz /= ids.length;
+      for (let m = 0; m < ids.length; m++) {
+        const i = ids[m];
+        leaveSolid(i);                                  // out of the castle
+        state[i] = 3;
+        if (!seen[i]) { seen[i] = 1; nLoose++; }
+      }
+      chunks.push({ ids, hx, hy, hz, cx: hx, cy: hy, cz: hz, vx: jit(0.05), vy: 0, vz: jit(0.05) });
+    }
+    supportDirty = false;
+    geomDirty = true;
+  }
+
+  /* ==================================================================
+     5. VIEWS. One canvas, two viewports: sand on the left, model on the right.
+     ================================================================== */
+  const stat = document.getElementById('stat');
+  const canvas = document.getElementById('gl');
+  const stage = document.getElementById('stage');
+  const divider = document.getElementById('divider');
+  const labelModel = document.getElementById('labelModel');
+  const rebuildBtn = document.getElementById('rebuild');
+
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+  } catch (err) {
+    stat.textContent = 'WebGL is not available in this browser.';
+    return;
+  }
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.setScissorTest(true);
+
+  const BG = 0x0b0812;
+  const TARGET = new THREE.Vector3(0, 0.55, 0);
+  const START = new THREE.Vector3(1.22, 2.47, 5.44);   // ~5.9 units out, 19 degrees up, 13 degrees round
+  const camL = new THREE.PerspectiveCamera(35, 1, 0.05, 60);
+  const camR = new THREE.PerspectiveCamera(35, 1, 0.05, 60);
+  camL.position.copy(START);
+  camL.lookAt(TARGET);
+
+  const sceneL = new THREE.Scene(), sceneR = new THREE.Scene();
+  for (const s of [sceneL, sceneR]) {
+    s.background = new THREE.Color(BG);
+    s.fog = new THREE.Fog(BG, 6, 16);
+  }
+  const sunDir = new THREE.Vector3(0.45, 0.8, 0.5).normalize();
+  function addLights(scene, shadows) {
+    scene.add(new THREE.HemisphereLight(0x8f7fc4, 0x163018, 0.35));
+    const sun = new THREE.DirectionalLight(0xbfb0e8, 0.95);
+    sun.position.copy(sunDir).multiplyScalar(5);
+    if (shadows) {
+      sun.castShadow = true;
+      sun.shadow.mapSize.set(2048, 2048);
+      const sc = sun.shadow.camera;
+      sc.left = -2.2; sc.right = 2.2; sc.top = 2.2; sc.bottom = -2.2;
+      sc.near = 0.5; sc.far = 14;
+      sc.updateProjectionMatrix();
+      sun.shadow.bias = -0.0005;
+    }
+    scene.add(sun);
+  }
+  addLights(sceneL, false);
+  addLights(sceneR, false);   // no shadow map on either side: on the carved model it speckled the surface
+
+  const groundMat = new THREE.MeshStandardMaterial({ color: 0x120e1b, roughness: 1 });
+  for (const s of [sceneL, sceneR]) {
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), groundMat);
+    ground.rotation.x = -Math.PI / 2;
+    ground.receiveShadow = true;
+    s.add(ground);
+  }
+
+  /* ==================================================================
+     5b. THE MODEL
+     A smooth surface cut from the same grid as the grains. It starts as the
+     castle's shapes. Wherever grains are knocked loose, the surface is carved
+     to match, and it closes up around the new hole.
+     ================================================================== */
+  const FINE = 0.02, FOX = -1.0, FOY = -0.04, FOZ = -1.0;
+  const FNX = 101, FNY = 67, FNZ = 101, FNXY = FNX * FNY, FN = FNX * FNY * FNZ;
+  const fineStatic = new Uint8Array(FN);                // the castle's shapes, on the fine grid
+  const fineToCoarse = new Int32Array(FN);              // the grid cell that holds each fine cell
+  const fineMask = new Uint8Array(FN);                  // 1 where the model is solid right now
+  const cellVert = new Int32Array(FN);
+  const CO = [], EDGES = [];                            // cell corner offsets, and the 12 cell edges
+  for (let c = 0; c < 8; c++) CO.push((c & 1) + ((c >> 1) & 1) * FNX + ((c >> 2) & 1) * FNXY);
+  for (let a = 0; a < 8; a++) for (let k = 0; k < 3; k++) if (!((a >> k) & 1)) EDGES.push([a, a | (1 << k)]);
+  for (const p of prims) {
+    const ix0 = Math.max(0, Math.floor((p.a[0] - FOX) / FINE)), ix1 = Math.min(FNX - 1, Math.ceil((p.a[3] - FOX) / FINE));
+    const iy0 = Math.max(0, Math.floor((p.a[1] - FOY) / FINE)), iy1 = Math.min(FNY - 1, Math.ceil((p.a[4] - FOY) / FINE));
+    const iz0 = Math.max(0, Math.floor((p.a[2] - FOZ) / FINE)), iz1 = Math.min(FNZ - 1, Math.ceil((p.a[5] - FOZ) / FINE));
+    for (let iz = iz0; iz <= iz1; iz++) for (let iy = iy0; iy <= iy1; iy++) for (let ix = ix0; ix <= ix1; ix++) {
+      const x = FOX + (ix + 0.5) * FINE, y = FOY + (iy + 0.5) * FINE, z = FOZ + (iz + 0.5) * FINE;
+      const inside = p.t === 0
+        ? Math.abs(x - p.x) <= p.hx && Math.abs(y - p.y) <= p.hy && Math.abs(z - p.z) <= p.hz
+        : (x - p.x) * (x - p.x) + (z - p.z) * (z - p.z) <= p.r * p.r && y >= p.y0 && y <= p.y1;
+      if (inside) fineStatic[ix + FNX * (iy + FNY * iz)] = 1;
+    }
+  }
+  for (let iz = 0; iz < FNZ; iz++) for (let iy = 0; iy < FNY; iy++) for (let ix = 0; ix < FNX; ix++) {
+    fineToCoarse[ix + FNX * (iy + FNY * iz)] =
+      cellOf(FOX + (ix + 0.5) * FINE, FOY + (iy + 0.5) * FINE, FOZ + (iz + 0.5) * FINE);
+  }
+  const SANDC = [0.27, 0.23, 0.33];                     // the base colour of the stone: dark obsidian, violet-grey
+  // Fel veins: thin seams that wander across the stone, where a smooth field crosses zero.
+  const felVein = (x, y, z) => {
+    const s = Math.sin(6.3 * x + 2.1 * Math.sin(4.9 * y + 1.7 * z)) + Math.sin(5.7 * z + 1.9 * Math.sin(4.3 * x - 0.8 * y))
+      + Math.sin(5.1 * y + 1.3 * Math.sin(6.1 * z));
+    return Math.pow(Math.max(0, 1 - Math.abs(s) * 2.2), 3);
+  };
+  const modelMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, metalness: 0 });
+  // The veins glow: each vertex's value is added to the emissive light in the shader.
+  modelMat.onBeforeCompile = (sh) => {
+    sh.vertexShader = sh.vertexShader
+      .replace('#include <common>', '#include <common>\nattribute float aGlow;\nvarying float vGlow;')
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\nvGlow = aGlow;');
+    sh.fragmentShader = sh.fragmentShader
+      .replace('#include <common>', '#include <common>\nvarying float vGlow;')
+      .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance += vGlow * vec3(0.2, 1.0, 0.3) * 0.9;');
+  };
+  let modelMesh = null;
+
+  function buildModel() {
+    modelDirty = false;
+    for (let f = 0; f < FN; f++) {
+      const c = fineToCoarse[f];
+      fineMask[f] = fineStatic[f] && !(c >= 0 && carved[c]) ? 1 : 0;
+    }
+    // Surface nets: one vertex in every cell that the surface passes through.
+    cellVert.fill(-1);
+    const P = [], VB = [];
+    for (let cz = 0; cz < FNZ - 1; cz++) for (let cy = 0; cy < FNY - 1; cy++) for (let cx = 0; cx < FNX - 1; cx++) {
+      const base = cx + FNX * (cy + FNY * cz);
+      let m = 0;
+      for (let c = 0; c < 8; c++) if (fineMask[base + CO[c]]) m |= 1 << c;
+      if (m === 0 || m === 255) continue;
+      let sx = 0, sy = 0, sz = 0, n = 0;
+      for (let e = 0; e < 12; e++) {
+        const a = EDGES[e][0], b = EDGES[e][1];
+        if (((m >> a) & 1) === ((m >> b) & 1)) continue;   // this edge does not cross the surface
+        sx += ((a & 1) + (b & 1)) * 0.5;
+        sy += (((a >> 1) & 1) + ((b >> 1) & 1)) * 0.5;
+        sz += (((a >> 2) & 1) + ((b >> 2) & 1)) * 0.5;
+        n++;
+      }
+      cellVert[base] = P.length / 3;
+      P.push(FOX + (cx + sx / n) * FINE, FOY + (cy + sy / n) * FINE, FOZ + (cz + sz / n) * FINE);
+      VB.push(base);
+    }
+    // Quads: each grid edge where solid meets air is closed by a quad joining the
+    // four cells around it. The winding follows which side is solid.
+    const I = [];
+    const strides = [1, FNX, FNXY], dims = [FNX, FNY, FNZ];
+    for (let d = 0; d < 3; d++) {
+      const u = (d + 1) % 3, v = (d + 2) % 3;
+      const sD = strides[d], sU = strides[u], sV = strides[v];
+      for (let kd = 0; kd < dims[d] - 1; kd++) for (let ku = 1; ku < dims[u] - 1; ku++) for (let kv = 1; kv < dims[v] - 1; kv++) {
+        const q = kd * sD + ku * sU + kv * sV;
+        const a = fineMask[q], b = fineMask[q + sD];
+        if (a === b) continue;
+        const q0 = cellVert[q - sU - sV], q1 = cellVert[q - sU], q2 = cellVert[q], q3 = cellVert[q - sV];
+        if (q0 < 0 || q1 < 0 || q2 < 0 || q3 < 0) continue;
+        if (a) I.push(q0, q2, q1, q0, q3, q2);
+        else I.push(q0, q1, q2, q0, q2, q3);
+      }
+    }
+    // Normals point out of the solid (down the gradient of the mask); colour gets a little grain.
+    const nv = VB.length;
+    const NRM = new Float32Array(3 * nv), COL = new Float32Array(3 * nv), GLOW = new Float32Array(nv), POS = new Float32Array(P);
+    const at = (ix, iy, iz) => fineMask[
+      Math.min(FNX - 1, Math.max(0, ix)) + FNX * (Math.min(FNY - 1, Math.max(0, iy)) + FNY * Math.min(FNZ - 1, Math.max(0, iz)))];
+    for (let k = 0; k < nv; k++) {
+      const q = VB[k], ix = q % FNX, iy = Math.floor(q / FNX) % FNY, iz = Math.floor(q / FNXY);
+      const gx = at(ix + 2, iy, iz) - at(ix - 2, iy, iz);
+      const gy = at(ix, iy + 2, iz) - at(ix, iy - 2, iz);
+      const gz = at(ix, iy, iz + 2) - at(ix, iy, iz - 2);
+      let nx = -gx, ny = -gy, nz = -gz;
+      const len = Math.sqrt(nx * nx + ny * ny + nz * nz);
+      if (len < 1e-6) { nx = 0; ny = 1; nz = 0; } else { nx /= len; ny /= len; nz /= len; }
+      NRM[3 * k] = nx; NRM[3 * k + 1] = ny; NRM[3 * k + 2] = nz;
+      const hsh = Math.sin(POS[3 * k] * 91.7 + POS[3 * k + 1] * 37.3 + POS[3 * k + 2] * 17.1) * 43758.5453;
+      const j = 0.9 + 0.2 * (hsh - Math.floor(hsh));
+      COL[3 * k] = Math.min(1, SANDC[0] * j);
+      COL[3 * k + 1] = Math.min(1, SANDC[1] * j);
+      COL[3 * k + 2] = Math.min(1, SANDC[2] * j);
+      GLOW[k] = felVein(POS[3 * k], POS[3 * k + 1], POS[3 * k + 2]);
+    }
+    // Where a quad folds at a sharp edge, its winding can come out inside-out. Turn each
+    // triangle to face the way its vertex normals point, so the surface always faces out.
+    for (let t = 0; t < I.length; t += 3) {
+      const a = 3 * I[t], b = 3 * I[t + 1], c = 3 * I[t + 2];
+      const ux = POS[b] - POS[a], uy = POS[b + 1] - POS[a + 1], uz = POS[b + 2] - POS[a + 2];
+      const vx = POS[c] - POS[a], vy = POS[c + 1] - POS[a + 1], vz = POS[c + 2] - POS[a + 2];
+      const fx = uy * vz - uz * vy, fy = uz * vx - ux * vz, fz = ux * vy - uy * vx;
+      const ns_x = NRM[a] + NRM[b] + NRM[c], ns_y = NRM[a + 1] + NRM[b + 1] + NRM[c + 1], ns_z = NRM[a + 2] + NRM[b + 2] + NRM[c + 2];
+      if (fx * ns_x + fy * ns_y + fz * ns_z < 0) { const k = I[t + 1]; I[t + 1] = I[t + 2]; I[t + 2] = k; }
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(P, 3));
+    geo.setAttribute('normal', new THREE.Float32BufferAttribute(NRM, 3));
+    geo.setAttribute('color', new THREE.Float32BufferAttribute(COL, 3));
+    geo.setAttribute('aGlow', new THREE.Float32BufferAttribute(GLOW, 1));
+    geo.setIndex(I);
+    if (!modelMesh) {
+      modelMesh = new THREE.Mesh(geo, modelMat);
+      modelMesh.castShadow = false;
+      modelMesh.receiveShadow = false;
+      modelMesh.frustumCulled = false;
+      sceneR.add(modelMesh);
+    } else {
+      modelMesh.geometry.dispose();
+      modelMesh.geometry = geo;
+    }
+  }
+  buildModel();
+
+  /* The sand, drawn as points. */
+  const uniforms = { uScale: { value: 1 }, uGrain: { value: 0.017 }, uLight: { value: sunDir.clone() } };
+  const VERT = `
+    attribute vec3 aNormal;
+    attribute vec3 aColor;
+    attribute float aSize;
+    uniform float uScale;
+    uniform float uGrain;
+    varying vec3 vNormal;
+    varying vec3 vColor;
+    void main() {
+      vNormal = aNormal;
+      vColor = aColor;
+      vec4 mv = modelViewMatrix * vec4(position, 1.0);
+      gl_Position = projectionMatrix * mv;
+      gl_PointSize = max(1.0, aSize * uGrain * uScale / -mv.z);
+    }`;
+  const FRAG = `
+    uniform vec3 uLight;
+    varying vec3 vNormal;
+    varying vec3 vColor;
+    void main() {
+      vec2 c = gl_PointCoord * 2.0 - 1.0;
+      float r2 = dot(c, c);
+      if (r2 > 1.0) discard;
+      float lambert = max(dot(normalize(vNormal), uLight), 0.0);
+      float bulge = 1.0 - 0.25 * r2;
+      gl_FragColor = vec4(vColor * (0.62 + 0.62 * lambert) * bulge, 1.0);
+    }`;
+  const posAttr = new THREE.BufferAttribute(pos, 3);
+  posAttr.setUsage(THREE.DynamicDrawUsage);
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', posAttr);
+  geo.setAttribute('aNormal', new THREE.BufferAttribute(nrm, 3));
+  geo.setAttribute('aColor', new THREE.BufferAttribute(col, 3));
+  geo.setAttribute('aSize', new THREE.BufferAttribute(siz, 1));
+  const grains = new THREE.Points(geo, new THREE.ShaderMaterial({
+    uniforms: uniforms, vertexShader: VERT, fragmentShader: FRAG
+  }));
+  grains.frustumCulled = false;
+  sceneL.add(grains);
+
+  const ring = new THREE.Mesh(
+    new THREE.RingGeometry(0.112, 0.124, 64),
+    new THREE.MeshBasicMaterial({ color: 0x5dff7a, transparent: true, opacity: 0.9, depthTest: false }));
+  ring.renderOrder = 2;
+  ring.visible = false;
+  sceneL.add(ring);
+  const shock = new THREE.Mesh(
+    new THREE.RingGeometry(0.1, 0.112, 64),
+    new THREE.MeshBasicMaterial({ color: 0x9dff9a, transparent: true, opacity: 0, depthTest: false }));
+  shock.renderOrder = 3;
+  shock.visible = false;
+  sceneL.add(shock);
+  let shockT = 1;
+
+  /* Orbit state for the model (right). The sand camera stays put. */
+  let radius = START.distanceTo(TARGET);
+  let theta = Math.atan2(START.x - TARGET.x, START.z - TARGET.z);
+  let phi = Math.acos((START.y - TARGET.y) / radius);
+  let spin = true;
+  function placeModelCamera() {
+    const s = Math.sin(phi);
+    camR.position.set(
+      TARGET.x + radius * s * Math.sin(theta),
+      TARGET.y + radius * Math.cos(phi),
+      TARGET.z + radius * s * Math.cos(theta));
+    camR.lookAt(TARGET);
+  }
+  placeModelCamera();
+
+  let panelL = { x: 0, y: 0, w: 1, h: 1 }, panelR = { x: 0, y: 0, w: 1, h: 1 }, stageH = 1;
+  function layout() {
+    const w = Math.max(1, stage.clientWidth), h = Math.max(1, stage.clientHeight);
+    const pr = Math.min(window.devicePixelRatio || 1, 2);
+    renderer.setPixelRatio(pr);
+    renderer.setSize(w, h, false);
+    stageH = h;
+    if (w < 720) {                                      // narrow: stack the two views
+      panelL = { x: 0, y: 0, w: w, h: h / 2 };
+      panelR = { x: 0, y: h / 2, w: w, h: h / 2 };
+      Object.assign(divider.style, { left: '0px', top: (h / 2) + 'px', width: w + 'px', height: '1px' });
+      labelModel.style.left = '14px';
+      labelModel.style.top = (h / 2 + 12) + 'px';
+    } else {
+      panelL = { x: 0, y: 0, w: w / 2, h: h };
+      panelR = { x: w / 2, y: 0, w: w / 2, h: h };
+      Object.assign(divider.style, { left: (w / 2) + 'px', top: '0px', width: '1px', height: h + 'px' });
+      labelModel.style.left = (w / 2 + 14) + 'px';
+      labelModel.style.top = '12px';
+    }
+    camL.aspect = panelL.w / panelL.h;
+    camL.updateProjectionMatrix();
+    camL.updateMatrixWorld();
+    camR.aspect = panelR.w / panelR.h;
+    camR.updateProjectionMatrix();
+    // Grain size in device pixels for a world-size grain one unit away.
+    uniforms.uScale.value = (panelL.h * pr) / (2 * Math.tan(THREE.MathUtils.degToRad(camL.fov / 2)));
+  }
+  function drawPanel(p, cam, scene) {
+    const y = stageH - (p.y + p.h);                     // WebGL counts y from the bottom
+    renderer.setViewport(p.x, y, p.w, p.h);
+    renderer.setScissor(p.x, y, p.w, p.h);
+    renderer.render(scene, cam);
+  }
+
+  /* ==================================================================
+     6. POINTER
+     ================================================================== */
+  let pressSide = null, onSand = false, lastX = 0, lastY = 0, pressTravel = 0, pressHit = null;
+  const ndc = new THREE.Vector2();
+  const raycaster = new THREE.Raycaster();
+
+  function local(e) {
+    const r = canvas.getBoundingClientRect();
+    return [e.clientX - r.left, e.clientY - r.top];
+  }
+  function inPanel(p, x, y) { return x >= p.x && x < p.x + p.w && y >= p.y && y < p.y + p.h; }
+  function sideAt(x, y) { return inPanel(panelL, x, y) ? 'sand' : inPanel(panelR, x, y) ? 'model' : null; }
+  function setNdc(p, x, y) {
+    ndc.set(((x - p.x) / p.w) * 2 - 1, 1 - ((y - p.y) / p.h) * 2);
+  }
+  /* March the view ray until it meets grains that are still in place. */
+  function pickSand() {
+    raycaster.setFromCamera(ndc, camL);
+    const o = raycaster.ray.origin, d = raycaster.ray.direction;
+    for (let t = 0.3; t < 9; t += VOX * 0.4) {
+      const x = o.x + d.x * t, y = o.y + d.y * t, z = o.z + d.z * t;
+      const c = cellOf(x, y, z);
+      if (c >= 0 && occ[c] > 0) return new THREE.Vector3(x, y, z);
+    }
+    return null;
+  }
+  function shockAt(p) {
+    shock.position.copy(p);
+    shockT = 0;
+    shock.visible = true;
+  }
+  function orbit(dx, dy) {
+    theta -= dx * 0.008;
+    phi = Math.min(1.5, Math.max(0.2, phi - dy * 0.006));
+    spin = false;
+    placeModelCamera();
+  }
+
+  canvas.addEventListener('pointerdown', (e) => {
+    const [x, y] = local(e);
+    const side = sideAt(x, y);
+    if (!side) return;
+    try { canvas.setPointerCapture(e.pointerId); } catch (err) { /* no active pointer to capture */ }
+    pressSide = side;
+    lastX = e.clientX; lastY = e.clientY;
+    pressTravel = 0; pressHit = null;
+    if (side === 'sand') {
+      setNdc(panelL, x, y);
+      onSand = true;
+      const hit = pickSand();
+      if (hit) { release(hit.x, hit.y, hit.z, 0.24, true, 0, 0, 0, 1); shockAt(hit); }
+    } else {
+      spin = false;
+      setNdc(panelR, x, y);
+      raycaster.setFromCamera(ndc, camR);
+      const hits = raycaster.intersectObject(modelMesh, false);
+      if (hits.length) pressHit = hits[0].point.clone();
+    }
+    e.preventDefault();
+  });
+  canvas.addEventListener('pointermove', (e) => {
+    const [x, y] = local(e);
+    const side = sideAt(x, y);
+    onSand = side === 'sand';
+    if (onSand) setNdc(panelL, x, y);
+    if (pressSide === 'model') {
+      pressTravel += Math.abs(e.clientX - lastX) + Math.abs(e.clientY - lastY);
+      orbit(e.clientX - lastX, e.clientY - lastY);
+    }
+    lastX = e.clientX; lastY = e.clientY;
+    canvas.style.cursor = side === 'sand' ? 'crosshair'
+      : side === 'model' ? (pressSide === 'model' ? 'grabbing' : 'grab')
+      : 'default';
+  });
+  canvas.addEventListener('pointerleave', () => { if (pressSide !== 'sand') onSand = false; });
+  window.addEventListener('pointerup', () => {
+    // A click on the model (not a drag) breaks it where it was clicked.
+    if (pressSide === 'model' && pressHit && pressTravel < 6) {
+      release(pressHit.x, pressHit.y, pressHit.z, 0.24, true, 0, 0, 0, 1);
+      shockAt(pressHit);
+    }
+    pressSide = null; pressHit = null;
+  });
+  window.addEventListener('pointercancel', () => { pressSide = null; pressHit = null; });
+  canvas.addEventListener('wheel', (e) => {
+    const [x, y] = local(e);
+    if (sideAt(x, y) !== 'model') return;
+    e.preventDefault();
+    spin = false;
+    radius = Math.min(9, Math.max(2.2, radius * Math.exp(e.deltaY * 0.0015)));
+    placeModelCamera();
+  }, { passive: false });
+  rebuildBtn.addEventListener('click', () => { rebuild(); shock.visible = false; shockT = 1; });
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'r' || e.key === 'R') rebuild();
+  });
+
+  /* ==================================================================
+     7. FRAME LOOP
+     ================================================================== */
+  let last = performance.now(), acc = 0, prevHit = null, shownKey = '';
+  let lastSupport = 0, lastModel = 0;
+  const cursorVel = new THREE.Vector3();
+  function frame(now) {
+    const dt = Math.min(0.05, Math.max(0, (now - last) / 1000));
+    last = now;
+
+    // Where the pointer sits on the castle, and how fast it moves across it.
+    const hit = onSand ? pickSand() : null;
+    if (hit && prevHit && dt > 0) {
+      cursorVel.set((hit.x - prevHit.x) / dt, (hit.y - prevHit.y) / dt, (hit.z - prevHit.z) / dt);
+      if (cursorVel.length() > 2.5) cursorVel.setLength(2.5);
+    } else {
+      cursorVel.multiplyScalar(0.5);
+    }
+    prevHit = hit;
+    ring.visible = !!hit;
+    if (hit) {
+      ring.position.copy(hit);
+      ring.quaternion.copy(camL.quaternion);
+    }
+
+    // Dragging across the sand sweeps grains loose.
+    if (hit && pressSide === 'sand' && cursorVel.length() > 0.12) {
+      release(hit.x, hit.y, hit.z, 0.12, false, cursorVel.x, cursorVel.y, cursorVel.z, 0.6);
+    }
+
+    // Physics runs on a fixed step, so it behaves the same at any frame rate.
+    acc += dt;
+    while (acc >= SUB) { stepChunks(SUB); step(SUB); acc -= SUB; }
+
+    // Castle parts that lost their support break off, and the model is carved to match.
+    if (supportDirty && now - lastSupport > 80) { lastSupport = now; checkSupport(); }
+    if (modelDirty && now - lastModel > 120) { lastModel = now; buildModel(); }
+
+    if (geomDirty || nActive > 0 || chunks.length > 0) {
+      posAttr.needsUpdate = true;
+      geomDirty = false;
+    }
+
+    if (spin) { theta += 0.12 * dt; placeModelCamera(); }
+    if (shockT < 1) {
+      shockT = Math.min(1, shockT + dt / 0.5);
+      const s = 1 + 2.4 * shockT;
+      shock.scale.set(s, s, s);
+      shock.quaternion.copy(camL.quaternion);
+      shock.material.opacity = 0.9 * (1 - shockT);
+      if (shockT >= 1) shock.visible = false;
+    }
+    const key = nLoose + ':' + chunks.length;
+    if (key !== shownKey) {
+      shownKey = key;
+      stat.textContent = nLoose.toLocaleString() + ' of ' + N.toLocaleString() + ' grains loose'
+        + (chunks.length ? ' · ' + chunks.length + ' falling' : '');
+    }
+
+    drawPanel(panelL, camL, sceneL);
+    drawPanel(panelR, camR, sceneR);
+    requestAnimationFrame(frame);
+  }
+
+  layout();
+  window.addEventListener('resize', layout);
+  if ('ResizeObserver' in window) new ResizeObserver(() => layout()).observe(stage);
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
