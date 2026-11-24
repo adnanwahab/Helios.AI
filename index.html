@@ -190,6 +190,7 @@
         <button class="tab" id="tab-notion" type="button" role="tab" aria-selected="false" aria-controls="view-notion">Plan · Notion</button>
         <button class="tab" id="tab-world-plan" type="button" role="tab" aria-selected="false" aria-controls="view-world-plan">World Plan Simulator</button>
         <button class="tab" id="tab-demo" type="button" role="tab" aria-selected="false" aria-controls="view-demo">100 Shared Goals</button>
+        <button class="tab" id="tab-orbit" type="button" role="tab" aria-selected="false" aria-controls="view-orbit">Acts in Orbit</button>
         <button class="tab" id="tab-flags" type="button" role="tab" aria-selected="false" aria-controls="view-flags">Support Every Country</button>
         <button class="tab" id="tab-unified" type="button" role="tab" aria-selected="false" aria-controls="view-unified">Helios Unified</button>
         <button class="tab" id="tab-lab" type="button" role="tab" aria-selected="false" aria-controls="view-lab">Dynamicland (Local)</button>
@@ -243,6 +244,14 @@
         class="view"
         title="100 Shared Goals"
         src="/embed/goals"
+        loading="lazy"
+      ></iframe>
+
+      <iframe
+        id="view-orbit"
+        class="view"
+        title="HELIOSAI Acts in Orbit"
+        src="/embed/orbit"
         loading="lazy"
       ></iframe>
 
@@ -314,6 +323,7 @@
       notion: document.getElementById('tab-notion'),
       worldPlan: document.getElementById('tab-world-plan'),
       demo: document.getElementById('tab-demo'),
+      orbit: document.getElementById('tab-orbit'),
       flags: document.getElementById('tab-flags'),
       unified: document.getElementById('tab-unified'),
       pensieve: document.getElementById('tab-pensieve'),
@@ -329,6 +339,7 @@
       notion: document.getElementById('view-notion'),
       worldPlan: document.getElementById('view-world-plan'),
       demo: document.getElementById('view-demo'),
+      orbit: document.getElementById('view-orbit'),
       flags: document.getElementById('view-flags'),
       unified: document.getElementById('view-unified'),
       pensieve: document.getElementById('view-pensieve'),
@@ -351,6 +362,7 @@
     tabs.notion.addEventListener('click', () => activate('notion'));
     tabs.worldPlan.addEventListener('click', () => activate('worldPlan'));
     tabs.demo.addEventListener('click', () => activate('demo'));
+    tabs.orbit.addEventListener('click', () => activate('orbit'));
     tabs.flags.addEventListener('click', () => activate('flags'));
     tabs.unified.addEventListener('click', () => activate('unified'));
     tabs.pensieve.addEventListener('click', () => activate('pensieve'));
