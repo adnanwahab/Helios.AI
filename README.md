@@ -57,6 +57,7 @@ Helios AI is a civic tool that reads what everyone in a community says they need
 - `helios_100_frontend_demo.html` — 100 Shared Goals demo, with estimated arrival dates for each goal ([assumptions](docs/arrival-estimates.md))
 - `heliosai_acts_orbit.html` — Acts in Orbit: all 111 HELIOSAI acts in one list, with a draft Universal Basic Income Act at #1, as a three.js solar system and D3 circle-pack, ranked by importance or shuffled (served at `/embed/orbit`)
 - `support_every_country.html` — Support Every Country: all 195 flags (the 193 UN members plus Vatican City and Palestine) waving one at a time under "Support <country>", with a custom message, seconds per flag, region filter, shuffle and a searchable wall of every flag (served at `/flags` and `/embed/flags`; images in `public/flags/`)
+- `long_coil.html` — The Long Coil: technology from 3.3 million BCE wound into a 3D coil, one loop per century, then projected ten years ahead to 2036. Each projected milestone names the plan, roadmap or trend it rests on and a confidence tier; forecasts made in the past are checked against what happened, and a ledger view lists everything as tables. The record of about 500 sourced entries is inlined in the page (served at `/coil` and `/embed/coil`)
 - `helios_notion_preview.html` — the plan as a Notion document, synced through the Notion API ([docs](docs/notion.md))
 - `helios-unified.html` — Helios Unified (Universe · Communal Science Lab · Futures)
 - `communal_science_lab_webgpu (1).html` — the Communal Science Lab (WebGPU)

@@ -40,6 +40,11 @@ const flagsPage = (await readFile(join(root, 'support_every_country.html'), 'utf
   .replaceAll('url(/public/', 'url(./public/');
 if (/["(]\/public\//.test(flagsPage)) throw new Error('Root-relative /public/ path left in support_every_country.html');
 await writeFile(join(out, 'support_every_country.html'), flagsPage);
+
+// The Long Coil carries its record inline; only its icon link is root-relative.
+const coilPage = (await readFile(join(root, 'long_coil.html'), 'utf8')).replaceAll('"/public/', '"./public/');
+if (/["(]\/public\//.test(coilPage)) throw new Error('Root-relative /public/ path left in long_coil.html');
+await writeFile(join(out, 'long_coil.html'), coilPage);
 await writeFile(join(out, 'notion-preview.json'), JSON.stringify(buildPlanDocument(seedCatalog)));
 
 let index = await readFile(join(root, 'index.html'), 'utf8');
@@ -63,6 +68,7 @@ replaceRequired('src="/embed/pocket"', 'src="./happybearlandia_pocket.html"');
 replaceRequired('src="/embed/goals"', 'src="./helios_100_frontend_demo.html"');
 replaceRequired('src="/embed/flags"', 'src="./support_every_country.html"');
 replaceRequired('src="/embed/unified"', 'src="./helios-unified.html"');
+replaceRequired('src="/embed/coil"', 'src="./long_coil.html"');
 replaceRequired('src="/embed/dynamicland"', 'src="./communal_science_lab_webgpu%20(1).html"');
 replaceRequired('src="/embed/mail"', 'src="./helios_mail.html"');
 replaceRequired('src="/proxy/ycr/"', 'src="./pages-ycr.html"');
