@@ -54,3 +54,26 @@ fly checks list -a helios-ai-laws
 For persistence, `HELIOS_PGLITE_DIR=/data/pglite`, `PORT=8080`, and `HOST=0.0.0.0` are safe environment settings. The app also defaults to those values on Fly when no overriding values are supplied.
 
 **Storage warning:** `/data/helios.sqlite` (older SQLite) and `/data/pglite` (PGlite) are different databases. A healthy API does not prove older SQLite records have been migrated. Back up the original volume and perform an explicit migration if existing data must be preserved in the new service.
+
+## Deploy with GitHub Actions (manual, guarded)
+
+The repository has a manual workflow, [Deploy HeliosAI to Fly (manual)](https://github.com/adnanwahab/Helios.AI/actions/workflows/fly-deploy-manual.yml), which uses the existing safe deployment wrapper. It never automatically deploys a PR or a push.
+
+Prerequisite: authorize GitHub to deploy **only** the existing `helios-ai-laws` app. From a trusted computer where `flyctl` is logged in:
+
+```sh
+fly tokens create deploy -a helios-ai-laws -x 720h
+```
+
+Put the resulting token into **GitHub → adnanwahab/Helios.AI → Settings → Secrets and variables → Actions → New repository secret**, named `FLY_API_TOKEN`. Do not commit it, paste it into issues/chats, or place it in the repository. Rotate the token before expiration. Without that secret, the workflow fails before performing any deployment.
+
+Run **Actions → Deploy HeliosAI to Fly (manual) → Run workflow**, selecting `main`. The workflow:
+
+1. Requires `main` and the Fly deploy token.
+2. Reads the running app's actual Fly config and persistent `helios_data` volume. If the expected `helios_data:/data` mount or port 8080 is missing, it refuses to deploy.
+3. Pins the VM to 1024 MB using `scripts/pin-fly-memory.mjs`, preserving the other configuration.
+4. Records the live PGlite health and proposal count before deploying.
+5. Deploys from a clean GitHub checkout using `scripts/deploy-fly-safe.sh`. It does **not** remove/recreate the Fly volume or run database migrations.
+6. Checks the volume still exists, the health endpoint is OK, the proposal count has not decreased, and the latest participant welcome page and optional WebGPU screening UI are served publicly.
+
+The Fly app is a stateful service. Keep this workflow manual unless an explicit change-management decision allows production deployments on each push. A healthy API and unchanged proposal count are useful smoke checks but are **not** a complete database backup or substitute for tested restores.
