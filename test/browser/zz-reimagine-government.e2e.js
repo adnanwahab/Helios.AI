@@ -1,0 +1,25 @@
+import {test,expect} from '@playwright/test';
+test('Reimagine Government is a functional local civic design exercise',async({page})=>{
+ const api=[];page.on('request',r=>{if(r.url().includes('/api/'))api.push(r.url())});
+ await page.goto('/');
+ await expect(page.locator('#reimagine-link')).toHaveAttribute('href','./public/reimagine-government.html');
+ await page.goto('/public/reimagine-government.html');
+ await expect(page.locator('#reimagine-title')).toHaveText('Reimagine a new government.');
+ await expect(page.locator('#charter .draft')).toHaveCount(4);
+ await expect(page.locator('#node-decide')).toHaveText('Advisory public voting');
+ await page.locator('[data-preset="assembly"]').click();
+ await expect(page.locator('#agenda')).toHaveValue('assembly');
+ await expect(page.locator('#node-decide')).toHaveText('Panel recommendation');
+ await page.locator('#run-scenario').click();
+ await expect(page.locator('#scenario-result article')).toHaveCount(4);
+ await expect(page.locator('#scenario-result')).toContainText('minority views');
+ await page.locator('#decision').selectOption('representative');
+ await expect(page.locator('#scenario-result')).toBeHidden();
+ await expect(page.locator('#charter')).toContainText('Recorded representative decision');
+ const download=page.waitForEvent('download');await page.locator('#download-charter').click();
+ expect((await download).suggestedFilename()).toBe('helios-civic-charter-draft.txt');
+ await page.locator('#reset-design').click();await expect(page.locator('#agenda')).toHaveValue('open');
+ await page.setViewportSize({width:390,height:844});
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ expect(api).toEqual([]);
+});

@@ -39,7 +39,7 @@ function show(id,focus=true){
  const end=$('ending');end.hidden=id!=='end';end.replaceChildren();
  if(id==='end'){
  const report=make('div',undefined,'report');report.append(make('h3','Investigation complete · '+found.size+'/3 clues'),make('p','Your fictional advisory position: '+position+'. Nothing was submitted to any real proposal.'),make('p','Continue in Helios to read actual proposals, compare assumptions, and independently choose support, opposition, uncertainty, or no vote.'));
- const actions=make('div',undefined,'actions'),link=make('a','Explore real proposals →','primary');link.href='../index.html';const replay=make('button','Replay the mystery');replay.type='button';replay.addEventListener('click',reset);actions.append(link,replay);report.append(actions);end.append(report);
+ const actions=make('div',undefined,'actions'),link=make('a','Explore real proposals →','primary');link.href='../index.html';const replay=make('button','Replay the mystery');replay.type='button';replay.addEventListener('click',reset);const design=make('a','Reimagine a new government ↗');design.href='./reimagine-government.html';actions.append(link,design,replay);report.append(actions);end.append(report);
  }
  renderEvidence();renderLog();if(focus)$('scene-title').focus({preventScroll:true})
 }

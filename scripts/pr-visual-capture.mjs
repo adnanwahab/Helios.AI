@@ -223,6 +223,21 @@ try {
     await page.locator('nav a[href="#decisions"]').click();
     await page.screenshot({path:join(output,'futures-mobile.png'),animations:'disabled'});
   }
+  await page.goto(base+'/',{waitUntil:'domcontentloaded'});
+  if(await page.locator('#reimagine-link').count()){
+    await page.setViewportSize({width:1440,height:900});
+    await page.goto(base+'/public/reimagine-government.html',{waitUntil:'domcontentloaded'});
+    await page.locator('#charter .draft').first().waitFor({state:'visible'});
+    await page.screenshot({path:join(output,'reimagine-government.png'),animations:'disabled'});
+    await page.locator('[data-preset="assembly"]').click();
+    await page.locator('#run-scenario').click();
+    await page.locator('#scenario-result').waitFor({state:'visible'});
+    await page.locator('#scenario-title').scrollIntoViewIfNeeded();
+    await page.screenshot({path:join(output,'reimagine-scenario.png'),animations:'disabled'});
+    await page.setViewportSize({width:390,height:844});
+    await page.goto(base+'/public/reimagine-government.html',{waitUntil:'domcontentloaded'});
+    await page.screenshot({path:join(output,'reimagine-mobile.png'),animations:'disabled'});
+  }
   console.log('Captured desktop and mobile screenshots from ' + (remote ? 'Netlify deployment' : 'local PR build'));
 } finally {
   await browser?.close().catch(() => {});
