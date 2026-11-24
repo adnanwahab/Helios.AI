@@ -43,3 +43,16 @@ the SQLite database, or the server into the Pages artifact.
 
 For the fully functioning version, use the Fly/Netlify deployment
 described in docs/backend.md.
+
+## How the workflow runs
+
+The workflow has two jobs. **Build GitHub Pages preview** runs
+node scripts/build-pages.mjs, configures Pages and uploads dist-pages
+as the github-pages artifact. **Deploy GitHub Pages** runs after it and
+publishes that artifact with actions/deploy-pages.
+
+Keep the deploy in its own job. When it ran in the build job, it looked
+for the artifact a fraction of a second after the upload and sometimes
+failed with "No artifacts named github-pages were found", even though
+the artifact existed. test/pages-build.test.js checks the two-job layout.
+If a deploy still fails, re-run the failed jobs from that Actions run.
