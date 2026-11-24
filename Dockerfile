@@ -12,6 +12,6 @@ ENV NODE_ENV=production \
     HOST=0.0.0.0
 COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .
-RUN node scripts/build-netlify.mjs
+RUN node scripts/build-netlify.mjs && rm /app/docs/legacy-home.html && rmdir /app/docs
 EXPOSE 8080
 CMD ["node", "scripts/dev-server.js"]

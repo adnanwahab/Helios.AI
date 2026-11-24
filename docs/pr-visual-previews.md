@@ -1,22 +1,22 @@
 # Visual previews for Helios.AI pull requests
 
-Every open or updated PR receives an automatically maintained **HeliosAI visual review** comment:
+Every open, updated or merged PR with a matching capture receives an automatically maintained **HeliosAI visual review** comment:
 
 - A direct link to its Netlify deploy preview.
-- An inline **desktop screenshot** of the built homepage, plus expandable **mobile** and **Mail · Resend** screenshots.
+- An inline **desktop screenshot** of the built homepage, plus expandable **mobile**, citizen synthesis/proposal, government review/feedback, and Mail screenshots when available.
 - The exact PR head commit used for the screenshots and a link to the CI run and downloadable artifacts.
 
 The screenshot and deployment are deliberately separate: the screenshot is generated
 locally from the PR's merged source without production credentials, and the
 deploy URL comes from the commit's Netlify preview status. If Netlify has not
-confirmed deployment, the comment labels the expected preview URL as pending.
+confirmed deployment, the comment labels the expected preview URL as pending. For a merged stacked PR, the publisher may link to a successful parent PR preview only after checking that its head includes the merge. Images are stored under the PR number and exact head SHA to preserve historical captures.
 
 ## How it works
 
 1. **Helios PR Screenshot** (`.github/workflows/pr-visual-capture.yml`) runs on
    `pull_request` events with read-only permissions. It builds the current PR,
    starts an isolated PGlite-backed dev server, and uses Playwright/Chromium
-   to render `desktop.png`, `mobile.png`, and `mail.png`.
+   to render desktop/mobile and the workflow screens available in that build.
 2. The capture workflow always uploads an artifact (including the PR number
    and head SHA, even if rendering fails).
 3. **Helios PR Preview Comment** (`.github/workflows/pr-visual-publish.yml`)
