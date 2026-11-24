@@ -15,6 +15,7 @@ const demos = [
   'helios_hippie_landing.html',
   'helios_fork.html',
   'world_plan_simulator.html',
+  'happybearlandia_pocket.html',
   'helios_100_frontend_demo.html',
   'heliosai_acts_orbit.html',
   'helios-unified.html',

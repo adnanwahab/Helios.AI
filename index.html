@@ -194,6 +194,7 @@
         <button class="tab" id="tab-flags" type="button" role="tab" aria-selected="false" aria-controls="view-flags">Support Every Country</button>
         <button class="tab" id="tab-unified" type="button" role="tab" aria-selected="false" aria-controls="view-unified">Helios Unified</button>
         <button class="tab" id="tab-lab" type="button" role="tab" aria-selected="false" aria-controls="view-lab">Dynamicland (Local)</button>
+        <button class="tab" id="tab-pocket" type="button" role="tab" aria-selected="false" aria-controls="view-pocket">HappyBearLandia Pocket</button>
         <button class="tab" id="tab-pensieve" type="button" role="tab" aria-selected="false" aria-controls="view-pensieve">Digital Pensieve</button>
         <button class="tab" id="tab-mail" type="button" role="tab" aria-selected="false" aria-controls="view-mail">Mail · Resend</button>
         <button class="tab" id="tab-ycr" type="button" role="tab" aria-selected="false" aria-controls="view-ycr">YC Research</button>
@@ -282,6 +283,16 @@
       ></iframe>
 
       <iframe
+        id="view-pocket"
+        class="view"
+        title="HappyBearLandia Pocket"
+        src="/embed/pocket"
+        loading="lazy"
+        allow="fullscreen; autoplay; xr-spatial-tracking; gyroscope; accelerometer; web-share; clipboard-write"
+        allowfullscreen
+      ></iframe>
+
+      <iframe
         id="view-pensieve"
         class="view"
         title="Digital Pensieve"
@@ -326,6 +337,7 @@
       orbit: document.getElementById('tab-orbit'),
       flags: document.getElementById('tab-flags'),
       unified: document.getElementById('tab-unified'),
+      pocket: document.getElementById('tab-pocket'),
       pensieve: document.getElementById('tab-pensieve'),
       mail: document.getElementById('tab-mail'),
       ycr: document.getElementById('tab-ycr'),
@@ -342,6 +354,7 @@
       orbit: document.getElementById('view-orbit'),
       flags: document.getElementById('view-flags'),
       unified: document.getElementById('view-unified'),
+      pocket: document.getElementById('view-pocket'),
       pensieve: document.getElementById('view-pensieve'),
       mail: document.getElementById('view-mail'),
       ycr: document.getElementById('view-ycr'),
@@ -365,6 +378,7 @@
     tabs.orbit.addEventListener('click', () => activate('orbit'));
     tabs.flags.addEventListener('click', () => activate('flags'));
     tabs.unified.addEventListener('click', () => activate('unified'));
+    tabs.pocket.addEventListener('click', () => activate('pocket'));
     tabs.pensieve.addEventListener('click', () => activate('pensieve'));
     tabs.mail.addEventListener('click', () => activate('mail'));
     tabs.ycr.addEventListener('click', () => activate('ycr'));
