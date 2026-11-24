@@ -68,6 +68,16 @@ try {
   await page.screenshot({path: join(output, 'mobile.png'), animations: 'disabled'});
 
   await page.setViewportSize({width: 1440, height: 900});
+  if (await page.locator('#law-tiles').count()) {
+    await page.locator('#law-tiles .law-tile').first().waitFor({state:'visible'});
+    await page.locator('#laws-workbench').scrollIntoViewIfNeeded();
+    await page.screenshot({path: join(output,'law-atlas.png'), animations:'disabled'});
+    await page.locator('#law-search').fill('HGA-011');
+    await page.locator('[data-law="HGA-011"]').click();
+    await page.locator('#law-input-reach').fill('90');
+    await page.screenshot({path: join(output,'law-simulator.png'), animations:'disabled'});
+    await page.locator('#law-search').fill('');
+  }
   if (loop) {
     // Never submit to a real deployment; these screenshots stop at the editable draft.
     await page.locator('#example').click();

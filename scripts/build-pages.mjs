@@ -37,6 +37,8 @@ for (const name of demos) {
   await copyFile(join(root, name), join(out, name));
 }
 await cp(join(root, 'public'), join(out, 'public'), { recursive: true });
+// The public editorial catalog is bundled for offline simulations; no database rows or secrets.
+await writeFile(join(out, 'public', 'law-catalog.json'), JSON.stringify(seedCatalog));
 
 // The Notion screen reads /api/notion/preview on the live app; Pages gets a build-time snapshot.
 const notionPage = (await readFile(join(root, 'helios_notion_preview.html'), 'utf8')).replaceAll('href="/public/', 'href="./public/');
