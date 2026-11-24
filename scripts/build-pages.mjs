@@ -16,6 +16,7 @@ const demos = [
   'helios_fork.html',
   'world_plan_simulator.html',
   'happybearlandia_pocket.html',
+  'eight_billion_map.html',
   'helios_100_frontend_demo.html',
   'heliosai_acts_orbit.html',
   'helios-unified.html',
@@ -23,6 +24,7 @@ const demos = [
   'health_wealth_of_nations.html',
   'heliosai-particle-interface.html',
   'sand_castle.html',
+  'rainbow_brain.html',
   'morphlab.html'
 ];
 for (const name of demos) {
@@ -59,12 +61,14 @@ replaceRequired('src="/embed/fork"', 'src="./helios_fork.html"');
 replaceRequired('src="/embed/notion"', 'src="./helios_notion_preview.html"');
 replaceRequired('src="/embed/world-plan"', 'src="./world_plan_simulator.html"');
 replaceRequired('src="/embed/orbit"', 'src="./heliosai_acts_orbit.html"');
+replaceRequired('src="/embed/pocket"', 'src="./happybearlandia_pocket.html"');
 replaceRequired('src="/embed/goals"', 'src="./helios_100_frontend_demo.html"');
 replaceRequired('src="/embed/flags"', 'src="./support_every_country.html"');
 replaceRequired('src="/embed/unified"', 'src="./helios-unified.html"');
 replaceRequired('src="/embed/dynamicland"', 'src="./communal_science_lab_webgpu%20(1).html"');
 replaceRequired('src="/embed/morphlab"', 'src="./morphlab.html"');
 replaceRequired('src="/embed/mail"', 'src="./helios_mail.html"');
+replaceRequired('src="/embed/rainbow-brain"', 'src="./rainbow_brain.html"');
 replaceRequired('src="/proxy/ycr/"', 'src="./pages-ycr.html"');
 
 // Email signup and shared proposal writes need the Bun backend. Do not

@@ -16,6 +16,7 @@ const pages = [
   'helios_fork.html',
   'world_plan_simulator.html',
   'happybearlandia_pocket.html',
+  'eight_billion_map.html',
   'helios_100_frontend_demo.html',
   'heliosai_acts_orbit.html',
   'support_every_country.html',
@@ -24,8 +25,9 @@ const pages = [
   'health_wealth_of_nations.html',
   'heliosai-particle-interface.html',
   'sand_castle.html',
-  'morphlab.html',
   'communal_science_lab_webgpu (1).html',
+  'rainbow_brain.html',
+  'morphlab.html',
   // Crawlers look for these at the site root.
   'robots.txt',
   'sitemap.xml',
