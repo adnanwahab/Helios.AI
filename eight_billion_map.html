@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8 Billion Thoughts Map</title>
+<style>
+  :root {
+    /* Design plan: one dark map, one blue accent, muted secondary text, hairline borders. */
+    --bg: #0a0c11;
+    --panel: rgba(15, 18, 27, 0.94);
+    --field: #161b28;
+    --line: #262c3d;
+    --ink: #e7e9ef;
+    --muted: #8f98ae;
+    --accent: #6f86ff;
+    --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color-scheme: dark;
+  }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink);
+    font: 13px/1.45 var(--font); overflow: hidden; }
+  #map { position: absolute; inset: 0; }
+  #panel { position: absolute; top: 16px; left: 16px; z-index: 2; box-sizing: border-box;
+    width: min(344px, calc(100vw - 32px)); max-height: calc(100% - 32px); overflow: auto;
+    padding: 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+  h1 { margin: 0 0 4px; font-size: 16px; line-height: 1.25; text-wrap: balance; }
+  p { margin: 0; }
+  .muted, .stat { color: var(--muted); font-size: 12px; }
+  .dim { opacity: 0.65; }
+  .laws { display: flex; gap: 6px; margin-top: 12px; }
+  .laws button { flex: 1; padding: 7px 0; font: inherit; color: var(--ink); cursor: pointer;
+    background: var(--field); border: 1px solid #343b50; border-radius: 6px; }
+  .laws button.on { background: var(--accent); border-color: var(--accent); color: #0a0c11; font-weight: 600; }
+  button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-top: 12px; }
+  select { font: inherit; color: var(--ink); background: var(--field); border: 1px solid #343b50;
+    border-radius: 6px; padding: 4px 6px; }
+  .box { margin-top: 12px; padding: 10px 11px; background: #111521; border: 1px solid #222838;
+    border-radius: 8px; font-variant-numeric: tabular-nums; }
+  .box > div { margin: 3px 0; }
+  .legend { margin-top: 12px; }
+</style>
+<script src="https://unpkg.com/deck.gl@9.4.1/dist.min.js"></script>
+</head>
+<body>
+<div id="map"></div>
+<div id="panel">
+  <h1>Eight billion people, five laws</h1>
+  <p class="muted">Synthetic placeholder model, not polling data. Each person gets one response per law, drawn from 100 thoughts, with a small individual variation.</p>
+  <div class="laws" id="laws"></div>
+  <div class="controls">
+    <label>Dots drawn <select id="sample"></select></label>
+    <label><input type="checkbox" id="cells" checked> Area shading (all 8 billion)</label>
+  </div>
+  <div class="box" id="top"></div>
+  <div class="box" id="budget"></div>
+  <p class="muted legend">Shading: hue is the most common thought in an area, brightness is how strongly it leads, and opacity is population on a log scale. Hover a dot to see that person's five responses.</p>
+</div>
+
+<script id="model">
+// ---- model: pure functions and tables. No DOM. Nothing is stored per person. ----
+const K = 5, T = 100, R = 4;                        // laws, thoughts, cluster profiles
+const NLAT = 180, NLON = 360, NCELL = NLAT * NLON;  // 1-degree cells
+const WORLD = 8e9;
+
+const LAWS = ['Law 1', 'Law 2', 'Law 3', 'Law 4', 'Law 5'];   // rename to the real laws
+const FEELINGS = ['hopeful', 'uneasy', 'indifferent', 'angry', 'relieved',
+                  'skeptical', 'curious', 'worried', 'proud', 'confused'];
+const REASONS = ['it might change my commute', 'prices could move', 'nobody explained it clearly',
+                 'it sounds fair on paper', "it affects my kids' school", 'the vote feels close',
+                 'it has been tried before', 'it feels long overdue', "I haven't read the full text",
+                 'my neighbors seem split'];
+const THOUGHTS = [];                                // 10 x 10 = the pool of 100
+for (const f of FEELINGS) for (const q of REASONS) THOUGHTS.push(`I feel ${f} because ${q}.`);
+
+// Placeholder population centres [lat, lon, weight]. Replace with a real raster (WorldPop or GPWv4).
+const HUBS = [
+  [28.6, 77.2, 32], [19.1, 72.9, 21], [22.6, 88.4, 15], [23.8, 90.4, 22], [24.9, 67.0, 16],
+  [31.5, 74.3, 13], [13.0, 77.6, 13], [13.1, 80.3, 11], [17.4, 78.5, 10], [23.0, 72.6, 8],
+  [31.2, 121.5, 28], [39.9, 116.4, 21], [23.0, 113.5, 30], [29.6, 106.5, 17], [30.7, 104.1, 16],
+  [30.6, 114.3, 11], [39.3, 117.2, 14], [34.3, 108.9, 9], [30.3, 120.2, 10], [32.1, 118.8, 8],
+  [41.8, 123.4, 8], [45.8, 126.6, 6], [35.7, 139.7, 37], [34.7, 135.5, 19], [37.6, 127.0, 26],
+  [25.0, 121.5, 7], [14.6, 121.0, 24], [-6.2, 106.8, 34], [-6.9, 107.6, 8], [-7.3, 112.7, 9],
+  [13.8, 100.5, 11], [10.8, 106.7, 9], [21.0, 105.8, 8], [16.8, 96.2, 5], [27.7, 85.3, 3],
+  [35.7, 51.4, 15], [41.0, 29.0, 16], [33.3, 44.4, 8], [24.7, 46.7, 7], [25.2, 55.3, 4],
+  [15.4, 44.2, 3], [41.3, 69.2, 3], [30.0, 31.2, 21], [33.6, -7.6, 4], [36.8, 3.1, 4],
+  [6.5, 3.4, 17], [12.0, 8.5, 4], [5.3, -4.0, 5], [-4.3, 15.3, 17], [-8.8, 13.2, 9],
+  [15.5, 32.6, 6], [9.0, 38.7, 5], [-1.3, 36.8, 5], [-6.8, 39.3, 7], [-26.2, 28.0, 10],
+  [55.8, 37.6, 13], [50.5, 30.5, 3], [51.5, -0.1, 9], [48.9, 2.4, 11], [52.5, 13.4, 4],
+  [40.4, -3.7, 6], [38.0, 23.7, 3], [40.7, -74.0, 20], [34.1, -118.2, 13], [41.9, -87.6, 9],
+  [29.8, -95.4, 7], [43.7, -79.4, 6], [19.4, -99.1, 22], [4.7, -74.1, 11], [-12.0, -77.0, 11],
+  [-23.5, -46.6, 22], [-22.9, -43.2, 13], [-15.8, -47.9, 4], [-34.6, -58.4, 15], [-33.4, -70.7, 7],
+  [-33.9, 151.2, 5], [-37.8, 145.0, 5]
+];
+const CLUSTERS = [[42, 95], [5, 20], [48, -25], [-12, -62]];   // placeholder regional profiles
+const HUB_SIGMA = 2.5, CLUSTER_SIGMA = 35;                       // degrees
+
+function mix32(x) {
+  x ^= x >>> 16; x = Math.imul(x, 0x7feb352d);
+  x ^= x >>> 15; x = Math.imul(x, 0x846ca68b);
+  x ^= x >>> 16; return x >>> 0;
+}
+// U(j, s): uniform in (0, 1), a pure function of person id j (any integer below 2^53) and stream s.
+function U(j, s) {
+  const lo = j >>> 0, hi = Math.floor(j / 4294967296) >>> 0;
+  return (mix32(mix32(lo ^ Math.imul(s + 1, 0x9e3779b9)) ^ mix32(hi + 0x632be5ab)) + 0.5) / 4294967296;
+}
+function gauss(i, s) {
+  const u1 = U(i, s), u2 = U(i, s + 50);
+  return Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+}
+// Inverse CDF: the first index whose cumulative weight exceeds u.
+function pick(cdf, off, n, u) {
+  let lo = 0, hi = n - 1;
+  while (lo < hi) { const m = (lo + hi) >> 1; if (cdf[off + m] > u) hi = m; else lo = m + 1; }
+  return lo;
+}
+function hsl2rgb(h, s, l) {
+  const a = s * Math.min(l, 1 - l);
+  const f = n => { const k = (n + h * 12) % 12; return 255 * (l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1))); };
+  return [f(0), f(8), f(4)];
+}
+function wrapDeg(d) { d = Math.abs(d) % 360; return d > 180 ? 360 - d : d; }
+
+// 1. Population per cell (placeholder): hub blobs, area-weighted, scaled to 8 billion.
+const popCell = new Float64Array(NCELL);
+let popSum = 0;
+for (let row = 0; row < NLAT; row++) {
+  const lat = row - 89.5;
+  for (let col = 0; col < NLON; col++) {
+    const lon = col - 179.5;
+    let d = 0;
+    for (const [hl, ho, w] of HUBS) {
+      const dy = lat - hl, dx = wrapDeg(lon - ho);
+      d += w * Math.exp(-(dy * dy + dx * dx) / (2 * HUB_SIGMA * HUB_SIGMA));
+    }
+    const v = d * Math.cos(lat * Math.PI / 180);
+    popCell[row * NLON + col] = v; popSum += v;
+  }
+}
+for (let c = 0; c < NCELL; c++) popCell[c] *= WORLD / popSum;
+
+const cdfCell = new Float64Array(NCELL);
+{ let s = 0; for (let c = 0; c < NCELL; c++) { s += popCell[c] / WORLD; cdfCell[c] = s; } cdfCell[NCELL - 1] = 1; }
+
+// 2. Each cell's soft membership in the R cluster profiles.
+const wReg = new Float64Array(NCELL * R), cdfReg = new Float64Array(NCELL * R);
+for (let row = 0; row < NLAT; row++) for (let col = 0; col < NLON; col++) {
+  const c = row * NLON + col, lat = row - 89.5, lon = col - 179.5;
+  let sum = 0;
+  for (let r = 0; r < R; r++) {
+    const dy = lat - CLUSTERS[r][0], dx = wrapDeg(lon - CLUSTERS[r][1]);
+    const v = Math.exp(-(dy * dy + dx * dx) / (2 * CLUSTER_SIGMA * CLUSTER_SIGMA));
+    wReg[c * R + r] = v; sum += v;
+  }
+  let acc = 0;
+  for (let r = 0; r < R; r++) { wReg[c * R + r] /= sum; acc += wReg[c * R + r]; cdfReg[c * R + r] = acc; }
+  cdfReg[c * R + R - 1] = 1;
+}
+
+// 3. Thought distribution per (law, cluster): softmax of a law-level score plus a cluster-level score.
+const PR = new Float64Array(K * R * T), cdfPR = new Float64Array(K * R * T);
+for (let k = 0; k < K; k++) for (let r = 0; r < R; r++) {
+  const off = (k * R + r) * T, sc = new Float64Array(T);
+  let mx = -Infinity;
+  for (let t = 0; t < T; t++) {
+    sc[t] = 0.7 * gauss(k * T + t, 500) + 1.1 * gauss(off + t, 900);
+    if (sc[t] > mx) mx = sc[t];
+  }
+  let z = 0;
+  for (let t = 0; t < T; t++) { sc[t] = Math.exp(sc[t] - mx); z += sc[t]; }
+  let acc = 0;
+  for (let t = 0; t < T; t++) { PR[off + t] = sc[t] / z; acc += PR[off + t]; cdfPR[off + t] = acc; }
+  cdfPR[off + T - 1] = 1;
+}
+
+// 4. Exact expected tallies for all 8 billion, per law, plus the leading thought in each cell.
+const totals = new Float64Array(K * T);
+const domT = new Uint8Array(NCELL * K), domS = new Float32Array(NCELL * K);
+{
+  const mix = new Float64Array(T);
+  for (let c = 0; c < NCELL; c++) {
+    const pc = popCell[c];
+    for (let k = 0; k < K; k++) {
+      mix.fill(0);
+      for (let r = 0; r < R; r++) {
+        const w = wReg[c * R + r], off = (k * R + r) * T;
+        for (let t = 0; t < T; t++) mix[t] += w * PR[off + t];
+      }
+      let best = 0, bv = -1;
+      for (let t = 0; t < T; t++) {
+        totals[k * T + t] += pc * mix[t];
+        if (mix[t] > bv) { bv = mix[t]; best = t; }
+      }
+      domT[c * K + k] = best; domS[c * K + k] = bv;
+    }
+  }
+}
+
+// 5. Shading helpers.
+const popNorm = new Float32Array(NCELL);
+{
+  let hi = 0;
+  for (let c = 0; c < NCELL; c++) if (popCell[c] > hi) hi = popCell[c];
+  const lo = 2, top = Math.log10(hi);                // cells under 100 people stay transparent
+  for (let c = 0; c < NCELL; c++) {
+    popNorm[c] = Math.min(1, Math.max(0, (Math.log10(popCell[c] + 1) - lo) / (top - lo)));
+  }
+}
+const shareMin = new Float64Array(K).fill(Infinity), shareMax = new Float64Array(K).fill(-Infinity);
+for (let c = 0; c < NCELL; c++) if (popNorm[c] > 0) for (let k = 0; k < K; k++) {
+  const v = domS[c * K + k];
+  if (v < shareMin[k]) shareMin[k] = v;
+  if (v > shareMax[k]) shareMax[k] = v;
+}
+const PAL = new Float32Array(T * 3);
+for (let t = 0; t < T; t++) PAL.set(hsl2rgb(((t * 137.508) % 360) / 360, 0.72, 0.56), t * 3);
+const CELL_IDS = [];
+for (let c = 0; c < NCELL; c++) if (popNorm[c] > 0) CELL_IDS.push(c);
+const TABLE_BYTES = [cdfCell, popCell, popNorm, cdfReg, wReg, domT, domS, totals, cdfPR, PR]
+  .reduce((a, x) => a + x.byteLength, 0);
+
+// 6. Per person, computed on demand from U(j, stream). Nothing is stored per person.
+function locate(j) {
+  const c = pick(cdfCell, 0, NCELL, U(j, 1));
+  return { c, r: pick(cdfReg, c * R, R, U(j, 4)), lon: (c % NLON) - 180 + U(j, 2), lat: Math.floor(c / NLON) - 90 + U(j, 3) };
+}
+function thoughtOf(j, k, r) { return pick(cdfPR, (k * R + r) * T, T, U(j, 10 + k)); }
+function variantOf(j, k) { return Math.floor(U(j, 20 + k) * 256); }
+
+function buildSample(N) {
+  const pos = new Float32Array(N * 3), th = new Uint8Array(N * K), vr = new Uint8Array(N * K);
+  for (let j = 0; j < N; j++) {
+    const p = locate(j);
+    pos[3 * j] = p.lon; pos[3 * j + 1] = p.lat;
+    for (let k = 0; k < K; k++) { th[j * K + k] = thoughtOf(j, k, p.r); vr[j * K + k] = variantOf(j, k); }
+  }
+  return { N, pos, th, vr };
+}
+function topThoughts(k, n) {
+  return Array.from({ length: T }, (_, t) => t)
+    .sort((a, b) => totals[k * T + b] - totals[k * T + a]).slice(0, n)
+    .map(t => ({ t, share: totals[k * T + t] / WORLD }));
+}
+</script>
+
+<script id="app">
+// ---- app: deck.gl map and panel ----
+const SAMPLE_SIZES = [100000, 250000, 500000, 1000000, 2000000, 4000000];
+const TIP = { backgroundColor: '#0f1219', color: '#e7e9ef', border: '1px solid #2b3246', borderRadius: '8px',
+  padding: '8px 10px', fontSize: '12px', lineHeight: '1.45', maxWidth: '440px', fontFamily: 'system-ui, sans-serif' };
+const app = { law: 0, N: 1000000, cells: true, sample: null, dotCol: null, ms: 0, deck: null };
+
+const fmt = n => n >= 1e9 ? (n / 1e9).toFixed(2) + ' billion'
+  : n >= 1e6 ? (n / 1e6).toFixed(2) + ' million' : Math.round(n).toLocaleString('en-US');
+const mb = b => (b / 1e6).toFixed(1) + ' MB';
+const fmtTime = min => min < 120 ? Math.round(min) + ' minutes' : (min / 60).toFixed(1) + ' hours';
+
+function cellPoly(c) {
+  const x = (c % NLON) - 180, y = Math.floor(c / NLON) - 90;
+  return [[x, y], [x + 1, y], [x + 1, y + 1], [x, y + 1]];
+}
+function cellFill(c, k) {
+  const i = c * K + k, t = domT[i];
+  const span = (shareMax[k] - shareMin[k]) || 1;
+  const m = 0.45 + 0.55 * Math.min(1, Math.max(0, (domS[i] - shareMin[k]) / span));
+  return [PAL[3 * t] * m, PAL[3 * t + 1] * m, PAL[3 * t + 2] * m, 235 * Math.pow(popNorm[c], 1.4)];
+}
+function dotColours(s, k) {
+  const out = new Uint8Array(s.N * 4);
+  for (let j = 0; j < s.N; j++) {
+    const t = s.th[j * K + k], shade = 0.9 + 0.2 * (s.vr[j * K + k] / 255), o = 4 * j;
+    out[o] = Math.min(255, PAL[3 * t] * shade);
+    out[o + 1] = Math.min(255, PAL[3 * t + 1] * shade);
+    out[o + 2] = Math.min(255, PAL[3 * t + 2] * shade);
+    out[o + 3] = 235;
+  }
+  return out;
+}
+function makeSample(N) {
+  const t0 = performance.now();
+  app.N = N;
+  app.sample = buildSample(N);
+  app.dotCol = dotColours(app.sample, app.law);
+  app.ms = performance.now() - t0;
+}
+function makeLayers() {
+  const layers = [];
+  if (app.cells) layers.push(new deck.SolidPolygonLayer({
+    id: 'cells', data: CELL_IDS, pickable: true, filled: true, stroked: false,
+    coordinateSystem: deck.COORDINATE_SYSTEM.LNGLAT,
+    getPolygon: cellPoly,
+    getFillColor: c => cellFill(c, app.law),
+    updateTriggers: { getFillColor: [app.law] }
+  }));
+  layers.push(new deck.ScatterplotLayer({
+    id: 'people', pickable: true, stroked: false, opacity: app.cells ? 0.5 : 1,
+    coordinateSystem: deck.COORDINATE_SYSTEM.LNGLAT,
+    radiusUnits: 'pixels', getRadius: 1.6, radiusMinPixels: 1,
+    data: { length: app.sample.N, attributes: {
+      getPosition: { value: app.sample.pos, size: 3 },
+      getFillColor: { value: app.dotCol, size: 4, normalized: true }
+    } }
+  }));
+  return layers;
+}
+function refresh() { app.deck.setProps({ layers: makeLayers() }); renderPanel(); }
+function setSample(N) { makeSample(N); refresh(); }
+function setLaw(k) {
+  app.law = k;
+  app.dotCol = dotColours(app.sample, k);
+  markLaw();
+  refresh();
+}
+
+function renderPanel() {
+  const s = app.sample, k = app.law, N = s.N;
+  const top = topThoughts(k, 5);
+  let hits = 0;
+  for (let j = 0; j < N; j++) if (s.th[j * K + k] === top[0].t) hits++;
+  document.getElementById('top').innerHTML =
+    `<div><b>${LAWS[k]}: most common thoughts across all 8 billion</b></div>` +
+    top.map((x, i) => `<div>${i + 1}. ${THOUGHTS[x.t]} <b>${(x.share * 100).toFixed(2)}%</b></div>`).join('') +
+    `<div class="stat">Sample check: the top thought is ${(hits / N * 100).toFixed(2)}% of the ${fmt(N)} dots.</div>`;
+  const cpu = s.pos.byteLength + s.th.byteLength + s.vr.byteLength + app.dotCol.byteLength;
+  const gpu = s.pos.byteLength + app.dotCol.byteLength;
+  const responses = K * N;
+  const minutes = (K * WORLD) / (responses / Math.max(app.ms, 1) * 1000) / 60;
+  document.getElementById('budget').innerHTML = [
+    `<div><b>${fmt(N)} dots</b>, each standing for ${fmt(WORLD / N)} people, with 5 responses each.</div>`,
+    `<div>CPU memory for these dots: ${mb(cpu)}. GPU buffers: ${mb(gpu)}.</div>`,
+    `<div>Shared tables for all 8 billion: ${mb(TABLE_BYTES)}. Nothing is stored per person.</div>`,
+    `<div>Stored naively, 40 billion responses take 40 GB at 1 byte each, or 80 GB with a variation byte.</div>`,
+    `<div>This device made ${fmt(responses)} responses in ${app.ms.toFixed(0)} ms. All 40 billion would take about ${fmtTime(minutes)} on one thread.</div>`
+  ].join('');
+}
+
+function personTip(j) {
+  const p = locate(j);
+  let rows = '';
+  for (let k = 0; k < K; k++) {
+    const t = thoughtOf(j, k, p.r), v = variantOf(j, k);
+    rows += `<div>${LAWS[k]}: ${THOUGHTS[t]} <span class="dim">intensity ${(v / 255).toFixed(2)}</span></div>`;
+  }
+  return { html: `<div><b>Person #${j.toLocaleString('en-US')}</b></div>${rows}`, style: TIP };
+}
+function cellTip(c) {
+  const i = c * K + app.law, lat0 = Math.floor(c / NLON) - 90, lon0 = (c % NLON) - 180;
+  return {
+    html: `<div><b>Lat ${lat0} to ${lat0 + 1}, lon ${lon0} to ${lon0 + 1}</b></div>` +
+      `<div>About ${fmt(popCell[c])} people</div>` +
+      `<div>Most common for ${LAWS[app.law]}: ${THOUGHTS[domT[i]]}</div>` +
+      `<div>${(domS[i] * 100).toFixed(1)}% of people here hold it</div>`,
+    style: TIP
+  };
+}
+function showTip({ index, layer }) {
+  if (!layer || index < 0) return null;
+  if (layer.id === 'people') return personTip(index);
+  if (layer.id === 'cells') return cellTip(CELL_IDS[index]);
+  return null;
+}
+
+makeSample(app.N);
+app.deck = new deck.Deck({
+  parent: document.getElementById('map'),
+  views: [new deck.MapView({ id: 'world' })],
+  initialViewState: { longitude: -42, latitude: 18, zoom: 1.15, minZoom: 0.5, maxZoom: 10 },
+  controller: true,
+  layers: makeLayers(),
+  getTooltip: showTip
+});
+
+const lawBar = document.getElementById('laws');
+LAWS.forEach((name, k) => {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.textContent = name;
+  b.addEventListener('click', () => setLaw(k));
+  lawBar.appendChild(b);
+});
+function markLaw() { [...lawBar.children].forEach((b, i) => b.classList.toggle('on', i === app.law)); }
+markLaw();
+
+const sel = document.getElementById('sample');
+for (const n of SAMPLE_SIZES) {
+  const o = document.createElement('option');
+  o.value = n; o.textContent = n.toLocaleString('en-US'); o.selected = n === app.N;
+  sel.appendChild(o);
+}
+sel.addEventListener('change', () => {
+  const n = Number(sel.value);
+  document.getElementById('budget').textContent = 'Generating dots…';
+  setTimeout(() => setSample(n), 30);
+});
+document.getElementById('cells').addEventListener('change', e => { app.cells = e.target.checked; refresh(); });
+renderPanel();
+</script>
+</body>
+</html>
