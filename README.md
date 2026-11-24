@@ -60,6 +60,8 @@ Helios AI is a civic tool that reads what everyone in a community says they need
 - `helios_notion_preview.html` — the plan as a Notion document, synced through the Notion API ([docs](docs/notion.md))
 - `helios-unified.html` — Helios Unified (Universe · Communal Science Lab · Futures)
 - `communal_science_lab_webgpu (1).html` — the Communal Science Lab (WebGPU)
+- `sunshine_breakfast.html` — Sunshine for Breakfast: a PS1-style Three.js scene where the dialogue moves one line per scroll step, with original characters and dialogue (served at `/embed/sunshine`)
+- `public/eight-billion-five-laws/` — Eight Billion, Five Laws: a deck.gl map of 2.1 million sampled dots, each standing for about 3,815 people, with one simulated response per law (served at `/public/eight-billion-five-laws/`). Laws, thoughts and population are synthetic placeholders, not polling data.
 
 ## Running locally
 

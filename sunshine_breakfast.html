@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Sunshine for Breakfast</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0b0f1c; }
+  #scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; image-rendering: pixelated; }
+  #fade { position: fixed; inset: 0; background: #000; opacity: 0; transition: opacity .36s ease; pointer-events: none; }
+  #fade.on { opacity: 1; }
+  #box {
+    position: fixed; left: 50%; bottom: clamp(14px, 4vh, 36px); transform: translateX(-50%);
+    width: min(920px, 94vw); box-sizing: border-box; padding: 24px 28px 18px;
+    background: linear-gradient(180deg, rgba(22, 28, 50, .94), rgba(9, 12, 24, .96));
+    border: 3px solid #e9e2cc; box-shadow: 0 0 0 3px #0b1020, 0 18px 40px rgba(0, 0, 0, .55);
+    color: #f6f1e4; font-family: Georgia, "Times New Roman", serif; user-select: none;
+  }
+  #name {
+    position: absolute; left: 20px; top: -21px; display: none; padding: 4px 16px 3px;
+    background: #141a2e; border: 3px solid #e9e2cc; box-shadow: 0 0 0 2px #0b1020;
+    color: var(--speaker, #ffd46b); font: italic 700 20px Georgia, "Times New Roman", serif;
+  }
+  #text { min-height: 3.4em; font-size: clamp(17px, 2.2vw, 23px); line-height: 1.5; text-shadow: 2px 2px 0 #000; }
+  #caret {
+    position: absolute; right: 22px; bottom: 12px; width: 0; height: 0; opacity: 0;
+    border-left: 9px solid transparent; border-right: 9px solid transparent; border-top: 11px solid #f6f1e4;
+  }
+  #caret.on { opacity: 1; animation: bob .9s steps(2) infinite; }
+  @keyframes bob { 50% { transform: translateY(4px); } }
+  #help {
+    position: fixed; top: 14px; left: 16px; font: 13px/1.5 system-ui, sans-serif;
+    color: #dfe8ff; opacity: .9; text-shadow: 0 1px 2px #000; pointer-events: none;
+    background: rgba(0, 0, 0, .35); padding: 4px 9px; border-radius: 4px;
+  }
+  #dots { position: fixed; top: 16px; right: 16px; display: flex; gap: 7px; pointer-events: none; }
+  #dots i { width: 8px; height: 8px; border: 1px solid #fff; transform: rotate(45deg); }
+  #dots i.on { background: #ffd46b; border-color: #ffd46b; }
+</style>
+</head>
+<body>
+<canvas id="scene"></canvas>
+<div id="fade" class="on"></div>
+<div id="box">
+  <div id="name"></div>
+  <div id="text"></div>
+  <div id="caret"></div>
+</div>
+<div id="help">Scroll wheel: next line / back &nbsp;·&nbsp; Space and arrow keys also work &nbsp;·&nbsp; M toggles blips</div>
+<div id="dots"></div>
+
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js';
+
+// ---------- settings ----------
+const PIXEL_HEIGHT = 260;   // internal render height: lower = chunkier PS1 look
+const TYPE_SPEED = 42;      // characters per second
+const WHEEL_QUIET_MS = 150; // a wheel or trackpad flick ends after this much silence
+const HALF_PI = Math.PI / 2;
+
+// ---------- script ----------
+// A beat can patch the persistent "world" (set, camera shot, poses, props).
+// Rewinding re-applies the cumulative world, so scroll-up always lands cleanly.
+const SPEAKERS = {
+  juno: { name: 'Juno', color: '#7fe6d2', pitch: 520 },
+  bram: { name: 'Captain Bram', color: '#ffd46b', pitch: 300 },
+  pim:  { name: 'Pim', color: '#ff9a9a', pitch: 760 },
+};
+const RECIPE = 'RECIPE: PANCAKES\n> flour    x2\n> eggs     x3\n> sugar    x1\n> SUNSHINE x1  MISSING';
+
+const SCRIPT = [
+  { who: null, text: 'The galley of the airship Tern, somewhere above the weather. Breakfast is very late.',
+    world: { set: 'galley', shot: 'wide', screen: RECIPE, balloonY: 3.4, sunY: -12, sky: 'dawn', pancakes: 0,
+             poses: { juno: 'idle', bram: 'idle', pim: 'idle' } } },
+  { who: 'juno', text: 'Captain, the pancake machine finally works. It only needs one more ingredient.',
+    world: { shot: 'juno' } },
+  { who: 'bram', text: 'One more? We have flour, eggs, and an entire crate of sugar.',
+    world: { shot: 'bram', poses: { bram: 'point' } } },
+  { who: 'juno', text: 'The screen says we are out of sunshine. One cup, fresh, from somewhere above the clouds.',
+    world: { shot: 'machine', poses: { bram: 'idle' } } },
+  { who: 'pim', text: 'Pim checked the manual. The sunshine is up there, and Pim recommends going to get it.',
+    world: { shot: 'pim' } },
+  { who: 'bram', text: 'Then the whole crew goes up on deck. Everybody move!',
+    world: { shot: 'bram', poses: { bram: 'salute' } } },
+  { who: 'juno', text: 'Whoa. We are above the clouds, and the sky looks like someone turned the blue all the way up.',
+    world: { set: 'deck', shot: 'wide', poses: { bram: 'idle' } } },
+  { who: 'pim', text: 'Altitude: eleven hundred meters. Cloud fluffiness: excellent. Red balloon: spotted.',
+    world: { shot: 'pim' } },
+  { who: 'bram', text: 'There it is, our sunshine in a jar, tied to a red balloon. Juno, grab the basket!',
+    world: { shot: 'balloon', balloonY: 1.85, poses: { juno: 'point' } } },
+  { who: 'juno', text: 'Got it! The jar is warm, like a sunbeam you can hold in your hands.',
+    world: { shot: 'juno', poses: { juno: 'idle' } } },
+  { who: 'pim', text: 'Sunshine added to the recipe. Sunrise in three, two, one...',
+    world: { shot: 'sunrise', sky: 'noon', sunY: 13 }, fx: ['chime'] },
+  { who: 'bram', text: 'Breakfast is served! Best pancakes in the whole sky.',
+    world: { shot: 'wide', poses: { bram: 'cheer', juno: 'cheer', pim: 'wave' } } },
+  { who: null, text: 'Fin. Scroll down to play again, or scroll up to rewind.',
+    world: { set: 'galley', shot: 'wide', screen: 'RECIPE COMPLETE\n> PANCAKES x3  READY', pancakes: 1,
+             poses: { juno: 'idle', bram: 'idle', pim: 'idle' } }, fx: ['confetti', 'chime'] },
+];
+
+const WORLD = [];
+SCRIPT.reduce((acc, beat) => {
+  const next = { ...acc, ...beat.world, poses: { ...acc.poses, ...beat.world.poses } };
+  WORLD.push(next);
+  return next;
+}, {});
+
+// ---------- renderer and camera ----------
+const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('scene'), antialias: false });
+renderer.setPixelRatio(1);
+renderer.setClearColor('#0b0f1c');
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(42, 16 / 9, 0.1, 320);
+
+function resize() {
+  const h = PIXEL_HEIGHT;
+  const w = Math.max(200, Math.round(h * innerWidth / innerHeight));
+  renderer.setSize(w, h, false);          // CSS stretches the low-res canvas; pixelated keeps it chunky
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+addEventListener('resize', resize);
+resize();
+
+// ---------- helpers ----------
+const lerpK = (rate, dt) => 1 - Math.exp(-rate * dt);
+const phong = (color, map = null) => new THREE.MeshPhongMaterial({ color, map, flatShading: true, specular: 0x000000 });
+const basic = (color, extra = {}) => new THREE.MeshBasicMaterial({ color, ...extra });
+function part(geo, mat, parent, x = 0, y = 0, z = 0) {
+  const m = new THREE.Mesh(geo, mat);
+  m.position.set(x, y, z);
+  parent.add(m);
+  return m;
+}
+function plane(w, h, mat, parent, [x, y, z], [rx = 0, ry = 0] = []) {
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat);
+  m.position.set(x, y, z);
+  m.rotation.set(rx, ry, 0);
+  parent.add(m);
+  return m;
+}
+function makeCanvas(w, h, draw) {
+  const c = document.createElement('canvas');
+  c.width = w;
+  c.height = h;
+  draw(c.getContext('2d'), w, h);
+  return c;
+}
+function tex(canvasEl, { repeat = false, smooth = false } = {}) {
+  const t = new THREE.CanvasTexture(canvasEl);
+  t.colorSpace = THREE.SRGBColorSpace;
+  if (!smooth) { t.magFilter = THREE.NearestFilter; t.minFilter = THREE.NearestFilter; t.generateMipmaps = false; }
+  if (repeat) { t.wrapS = THREE.RepeatWrapping; t.wrapT = THREE.RepeatWrapping; }
+  return t;
+}
+
+// ---------- textures (all drawn procedurally) ----------
+function drawPuffs(ctx, w, h, count, size) {
+  for (let i = 0; i < count; i++) {
+    const cx = Math.random() * w, cy = h * (0.3 + Math.random() * 0.45);
+    const r = w * (size * 0.6 + Math.random() * size);
+    for (let k = 0; k < 6; k++) {
+      const x = cx + (Math.random() - 0.5) * r * 3;
+      const y = cy + (Math.random() - 0.5) * r * 0.6;
+      const rr = r * (0.55 + Math.random() * 0.6);
+      for (const dx of [-w, 0, w]) {          // wrap sideways so the texture tiles
+        const g = ctx.createRadialGradient(x + dx, y, 0, x + dx, y, rr);
+        g.addColorStop(0, 'rgba(255,255,255,1)');
+        g.addColorStop(0.55, 'rgba(255,255,255,.85)');
+        g.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(x + dx, y, rr, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }
+}
+const skyWindowTex = tex(makeCanvas(512, 320, (ctx, w, h) => {
+  const g = ctx.createLinearGradient(0, 0, 0, h);
+  g.addColorStop(0, '#2f7fdc');
+  g.addColorStop(1, '#bfe6ff');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, h);
+  drawPuffs(ctx, w, h, 16, 0.07);
+}));
+const puffTex = tex(makeCanvas(256, 128, (ctx, w, h) => drawPuffs(ctx, w, h, 7, 0.12)));
+const seaTex = tex(makeCanvas(256, 256, (ctx, w, h) => drawPuffs(ctx, w, h, 24, 0.16)), { repeat: true });
+seaTex.repeat.set(40, 40);
+const shadowTex = tex(makeCanvas(64, 64, (ctx, w, h) => {
+  const g = ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2);
+  g.addColorStop(0, 'rgba(0,0,0,.5)');
+  g.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, h);
+}), { smooth: true });
+function woodTex(base, rows, repeatX, repeatY) {
+  const t = tex(makeCanvas(128, 128, (ctx, w, h) => {
+    ctx.fillStyle = base;
+    ctx.fillRect(0, 0, w, h);
+    const ph = h / rows;
+    for (let i = 0; i < rows; i++) {
+      const s = (Math.random() - 0.5) * 0.16;
+      ctx.fillStyle = s > 0 ? `rgba(255,240,210,${s})` : `rgba(0,0,0,${-s})`;
+      ctx.fillRect(0, i * ph, w, ph);
+      ctx.fillStyle = 'rgba(0,0,0,.35)';
+      ctx.fillRect(0, i * ph, w, 2);
+    }
+  }), { repeat: true });
+  t.repeat.set(repeatX, repeatY);
+  return t;
+}
+function floralTex() {
+  return tex(makeCanvas(128, 128, (ctx, w, h) => {
+    ctx.fillStyle = '#c63f3b';
+    ctx.fillRect(0, 0, w, h);
+    const petals = ['#ffd166', '#f7a8c4', '#fff4e6'];
+    for (let i = 0; i < 26; i++) {
+      const x = Math.random() * w, y = Math.random() * h, r = 4 + Math.random() * 5;
+      ctx.fillStyle = petals[i % petals.length];
+      for (let p = 0; p < 5; p++) {
+        const a = (p / 5) * Math.PI * 2;
+        ctx.beginPath();
+        ctx.arc(x + Math.cos(a) * r, y + Math.sin(a) * r, r * 0.55, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.fillStyle = '#e09f1f';
+      ctx.beginPath();
+      ctx.arc(x, y, r * 0.4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }));
+}
+const screenCanvas = makeCanvas(256, 160, () => {});
+const screenTex = tex(screenCanvas);
+let shownScreen = null;
+function drawScreen(text) {
+  const ctx = screenCanvas.getContext('2d');
+  ctx.fillStyle = '#06150c';
+  ctx.fillRect(0, 0, 256, 160);
+  ctx.font = 'bold 18px "Courier New", monospace';
+  text.split('\n').forEach((line, i) => {
+    ctx.fillStyle = /MISSING/.test(line) ? '#ffb070' : /READY|COMPLETE/.test(line) ? '#fff28a' : '#7dff9a';
+    ctx.fillText(line, 10, 32 + i * 26);
+  });
+  ctx.fillStyle = 'rgba(0,0,0,.25)';
+  for (let y = 0; y < 160; y += 3) ctx.fillRect(0, y, 256, 1);   // scanlines
+  screenTex.needsUpdate = true;
+}
+
+// ---------- sky, lights ----------
+const SKY = {
+  dawn: { top: new THREE.Color('#4a66bf'), bottom: new THREE.Color('#ffc69a') },
+  noon: { top: new THREE.Color('#1d62d0'), bottom: new THREE.Color('#bfe4ff') },
+};
+const skyMat = new THREE.ShaderMaterial({
+  uniforms: { uTop: { value: SKY.dawn.top.clone() }, uBottom: { value: SKY.dawn.bottom.clone() } },
+  vertexShader: `varying vec3 vDir;
+    void main() { vDir = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+  fragmentShader: `uniform vec3 uTop; uniform vec3 uBottom; varying vec3 vDir;
+    void main() {
+      float t = smoothstep(-0.05, 0.6, vDir.y);
+      gl_FragColor = vec4(mix(uBottom, uTop, t), 1.0);
+      #include <colorspace_fragment>
+    }`,
+  side: THREE.BackSide,
+  depthWrite: false,
+});
+const sky = new THREE.Mesh(new THREE.SphereGeometry(220, 24, 16), skyMat);
+sky.renderOrder = -1;
+scene.add(sky);
+
+const hemi = new THREE.HemisphereLight(0xe6f2ff, 0x7a6650, 3);
+scene.add(hemi);
+const sunLight = new THREE.DirectionalLight(0xfff0d6, 2);
+sunLight.position.set(6, 10, 8);
+scene.add(sunLight);
+
+// ---------- set 1: the galley (interior) ----------
+const galley = new THREE.Group();
+scene.add(galley);
+plane(8, 8, phong(0xffffff, woodTex('#8a5a34', 8, 3, 3)), galley, [0, 0, -1], [-HALF_PI, 0]);  // floor
+plane(8, 8, phong(0xffffff, woodTex('#4b3628', 4, 2, 2)), galley, [0, 3, -1], [HALF_PI, 0]);   // ceiling
+plane(8, 3, phong('#e4d2ad'), galley, [0, 1.5, -3]);                                           // back wall
+plane(8, 3, phong('#d3b78e'), galley, [-4, 1.5, -1], [0, HALF_PI]);                            // left wall
+plane(8, 3, phong('#c9a97f'), galley, [4, 1.5, -1], [0, -HALF_PI]);                            // right wall
+
+// window: a sky with clouds, like the one in the reference screenshot
+plane(2.6, 1.6, basic(0xffffff, { map: skyWindowTex }), galley, [0, 1.8, -2.98]);
+const frameMat = phong('#4a3322');
+part(new THREE.BoxGeometry(2.9, 0.12, 0.08), frameMat, galley, 0, 2.66, -2.96);
+part(new THREE.BoxGeometry(2.9, 0.12, 0.08), frameMat, galley, 0, 0.94, -2.96);
+part(new THREE.BoxGeometry(0.12, 1.84, 0.08), frameMat, galley, -1.39, 1.8, -2.96);
+part(new THREE.BoxGeometry(0.12, 1.84, 0.08), frameMat, galley, 1.39, 1.8, -2.96);
+part(new THREE.BoxGeometry(0.06, 1.6, 0.06), frameMat, galley, 0, 1.8, -2.96);
+
+// counter, pancake machine, output tray and pancakes
+const oak = phong('#7a4f2e');
+part(new THREE.BoxGeometry(3.4, 0.95, 1.2), oak, galley, -2.6, 0.475, -2.3);
+part(new THREE.BoxGeometry(1.3, 1.3, 0.9), phong('#c39a4c'), galley, -2.6, 1.6, -2.4);
+part(new THREE.BoxGeometry(1.2, 0.12, 0.8), phong('#8c6a30'), galley, -2.6, 2.28, -2.4);
+plane(0.8, 0.5, basic(0xffffff, { map: screenTex }), galley, [-2.6, 1.72, -1.94]);
+for (const y of [1.25, 1.95]) part(new THREE.CylinderGeometry(0.1, 0.1, 0.08, 10), phong('#2b2b2b'), galley, -3.15, y, -1.94).rotation.x = HALF_PI;
+part(new THREE.CylinderGeometry(0.07, 0.07, 0.06, 10), phong('#e0403a'), galley, -2.07, 1.25, -1.94).rotation.x = HALF_PI;
+part(new THREE.BoxGeometry(0.9, 0.1, 0.5), phong('#5d5d66'), galley, -2.6, 1.0, -1.65);
+const stack = new THREE.Group();
+stack.position.set(-2.6, 1.05, -1.65);
+galley.add(stack);
+[0, 0.07, 0.14].forEach((y) => part(new THREE.CylinderGeometry(0.24, 0.26, 0.065, 12), phong('#e7b564'), stack, 0, y, 0));
+
+// shelf with jars, and a pendant lamp
+part(new THREE.BoxGeometry(0.5, 0.08, 2.6), oak, galley, -3.75, 2.1, -1.7);
+['#e7a14a', '#8fb39a', '#d86b6b'].forEach((c, i) =>
+  part(new THREE.CylinderGeometry(0.12, 0.12, 0.3, 10), phong(c), galley, -3.75, 2.29, -2.45 + i * 0.75));
+part(new THREE.CylinderGeometry(0.012, 0.012, 0.22, 4), phong('#222222'), galley, 0, 2.89, -1.0);
+part(new THREE.SphereGeometry(0.26, 12, 8), basic('#ffe7b0'), galley, 0, 2.55, -1.0);
+const lamp = new THREE.PointLight(0xffd29a, 7, 0, 2);
+lamp.position.set(0, 2.35, -1.0);
+galley.add(lamp);
+
+// ---------- set 2: the deck above the clouds (exterior) ----------
+const deck = new THREE.Group();
+scene.add(deck);
+const deckFog = new THREE.Fog(0xbfe4ff, 45, 180);
+part(new THREE.BoxGeometry(20, 0.6, 14), phong(0xffffff, woodTex('#9a6a3c', 10, 4, 3)), deck, 0, -0.3, -1);
+const railMat = phong('#5b3a22');
+part(new THREE.BoxGeometry(20, 0.08, 0.08), railMat, deck, 0, 1.0, -8);
+part(new THREE.BoxGeometry(0.08, 0.08, 14), railMat, deck, -10, 1.0, -1);
+part(new THREE.BoxGeometry(0.08, 0.08, 14), railMat, deck, 10, 1.0, -1);
+for (let x = -10; x <= 10; x += 2) part(new THREE.BoxGeometry(0.1, 1.0, 0.1), railMat, deck, x, 0.5, -8);
+part(new THREE.BoxGeometry(0.14, 6, 0.14), railMat, deck, -6, 3, -4);                       // mast
+plane(1.8, 1.0, basic('#d64545', { side: THREE.DoubleSide }), deck, [-5.1, 5.4, -4]);      // flag
+
+// a sea of clouds below the deck
+const sea = new THREE.Mesh(new THREE.PlaneGeometry(600, 600), basic('#c9e4ff'));
+sea.rotation.x = -HALF_PI;
+sea.position.y = -3.5;
+deck.add(sea);
+const seaPuffs = new THREE.Mesh(new THREE.PlaneGeometry(600, 600),
+  basic(0xffffff, { map: seaTex, transparent: true, depthWrite: false }));
+seaPuffs.rotation.x = -HALF_PI;
+seaPuffs.position.y = -3.45;
+deck.add(seaPuffs);
+
+// the sun rises from behind the clouds
+const sun = new THREE.Mesh(new THREE.SphereGeometry(3.2, 16, 12), basic('#ffe27a', { fog: false }));
+sun.position.set(9, -12, -70);
+deck.add(sun);
+const glowTex = tex(makeCanvas(128, 128, (ctx, w, h) => {
+  const g = ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2);
+  g.addColorStop(0, 'rgba(255,246,208,.9)');
+  g.addColorStop(0.35, 'rgba(255,236,170,.35)');
+  g.addColorStop(1, 'rgba(255,236,170,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, h);
+}), { smooth: true });
+const sunGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, transparent: true, depthWrite: false, fog: false }));
+sunGlow.scale.set(18, 18, 1);
+sunGlow.position.copy(sun.position);
+deck.add(sunGlow);
+
+const clouds = Array.from({ length: 9 }, () => {
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: puffTex, transparent: true, depthWrite: false }));
+  s.scale.set(22, 11, 1);
+  s.position.set(-50 + Math.random() * 100, 2 + Math.random() * 11, -40 - Math.random() * 40);
+  s.userData.speed = 0.6 + Math.random() * 0.8;
+  deck.add(s);
+  return s;
+});
+
+// the red balloon with a jar of sunshine in its basket
+const BALLOON = { x: 0.6, z: -0.9 };
+const balloon = new THREE.Group();
+balloon.position.set(BALLOON.x, 3.4, BALLOON.z);
+deck.add(balloon);
+part(new THREE.SphereGeometry(0.62, 14, 10), phong('#e5484d'), balloon).scale.y = 1.15;
+part(new THREE.CylinderGeometry(0.08, 0.12, 0.14, 6), phong('#b4343a'), balloon, 0, -0.78, 0);
+part(new THREE.BoxGeometry(0.6, 0.42, 0.6), phong('#8a5a34'), balloon, 0, -1.55, 0);
+part(new THREE.SphereGeometry(0.17, 10, 8), basic('#ffe27a'), balloon, 0, -1.33, 0);
+part(new THREE.CylinderGeometry(0.014, 0.014, 0.63, 4), phong('#3a2a1e'), balloon, 0, -1.02, 0);
+
+// ---------- characters (boxes and spheres, flat-shaded) ----------
+function rig(root, parts) {
+  return {
+    root, home: new THREE.Vector3(), cur: { lx: 0, lz: 0.06, rx: 0, rz: -0.06 },
+    blinkT: 1 + Math.random() * 3, blinkDur: 0, phase: Math.random() * 6, ...parts,
+  };
+}
+function makeHuman(o) {
+  const root = new THREE.Group();
+  const head = new THREE.Group();
+  head.position.y = 1.95;
+  root.add(head);
+  part(new THREE.BoxGeometry(0.22, 0.9, 0.24), phong(o.legs), root, -0.17, 0.45, 0);
+  part(new THREE.BoxGeometry(0.22, 0.9, 0.24), phong(o.legs), root, 0.17, 0.45, 0);
+  part(new THREE.BoxGeometry(0.7, 0.9, 0.38), phong(o.shirt, o.shirtMap), root, 0, 1.35, 0);
+  part(new THREE.BoxGeometry(0.5, 0.5, 0.48), phong(o.skin), head);
+  part(new THREE.BoxGeometry(0.56, 0.2, 0.52), phong(o.hair), head, 0, 0.3, 0);
+  if (o.longHair) part(new THREE.BoxGeometry(0.56, 0.95, 0.18), phong(o.hair), head, 0, -0.28, -0.26);
+  if (o.beard) part(new THREE.BoxGeometry(0.38, 0.16, 0.12), phong(o.hair), head, 0, -0.2, 0.2);
+  if (o.hat) {
+    part(new THREE.CylinderGeometry(0.4, 0.4, 0.05, 8), phong('#1f3257'), head, 0, 0.42, 0);
+    part(new THREE.CylinderGeometry(0.31, 0.31, 0.07, 8), phong('#e7b84a'), head, 0, 0.5, 0);
+    part(new THREE.CylinderGeometry(0.26, 0.3, 0.3, 8), phong('#1f3257'), head, 0, 0.6, 0);
+  }
+  const eyes = [
+    part(new THREE.BoxGeometry(0.09, 0.12, 0.03), phong('#1d1a22'), head, -0.13, 0.03, 0.25),
+    part(new THREE.BoxGeometry(0.09, 0.12, 0.03), phong('#1d1a22'), head, 0.13, 0.03, 0.25),
+  ];
+  const mouth = part(new THREE.BoxGeometry(0.18, 0.06, 0.03), phong('#7a2e2e'), head, 0, -0.14, 0.25);
+  const armL = new THREE.Group();
+  armL.position.set(0.46, 1.78, 0);
+  root.add(armL);
+  const armR = new THREE.Group();
+  armR.position.set(-0.46, 1.78, 0);
+  root.add(armR);
+  for (const arm of [armL, armR]) {
+    part(new THREE.BoxGeometry(0.22, 0.85, 0.22), phong(o.shirt, o.shirtMap), arm, 0, -0.42, 0);
+    part(new THREE.BoxGeometry(0.2, 0.2, 0.2), phong(o.skin), arm, 0, -0.95, 0);
+  }
+  return rig(root, { head, armL, armR, mouth, eyes, kind: 'human' });
+}
+function makeRobot() {
+  const root = new THREE.Group();
+  const head = new THREE.Group();
+  root.add(head);
+  part(new THREE.SphereGeometry(0.6, 12, 9), phong('#f6c945'), head);
+  part(new THREE.TorusGeometry(0.44, 0.1, 6, 14), phong('#d4483f'), head, 0, -0.42, 0).rotation.x = HALF_PI;
+  part(new THREE.CylinderGeometry(0.03, 0.03, 0.36, 5), phong('#8a7d5a'), head, 0, 0.78, 0);
+  part(new THREE.SphereGeometry(0.08, 8, 6), basic('#ff6b6b'), head, 0, 0.98, 0);
+  const eyes = [];
+  for (const x of [-0.22, 0.22]) {
+    eyes.push(part(new THREE.SphereGeometry(0.14, 10, 8), basic('#ffffff'), head, x, 0.12, 0.47));
+    eyes.push(part(new THREE.SphereGeometry(0.07, 8, 6), basic('#1d1a22'), head, x, 0.12, 0.57));
+  }
+  const mouth = part(new THREE.BoxGeometry(0.24, 0.07, 0.03), phong('#5a2020'), head, 0, -0.2, 0.58);
+  const armL = new THREE.Group();
+  armL.position.set(0.6, 0.1, 0);
+  root.add(armL);
+  const armR = new THREE.Group();
+  armR.position.set(-0.6, 0.1, 0);
+  root.add(armR);
+  for (const arm of [armL, armR]) part(new THREE.CylinderGeometry(0.09, 0.09, 0.5, 6), phong('#f1b92e'), arm, 0, -0.25, 0);
+  return rig(root, { head, armL, armR, mouth, eyes, kind: 'robot' });
+}
+const cast = {
+  juno: makeHuman({ skin: '#f1c6a0', hair: '#2e2019', shirt: '#2d7a72', legs: '#2c2f3f', longHair: true }),
+  bram: makeHuman({ skin: '#e7b68d', hair: '#6b4a2e', shirt: '#c63f3b', shirtMap: floralTex(), legs: '#3b3046', beard: true, hat: true }),
+  pim: makeRobot(),
+};
+const shadowMat = new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false });
+for (const c of Object.values(cast)) {
+  scene.add(c.root);
+  c.shadow = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 1.4), shadowMat);
+  c.shadow.rotation.x = -HALF_PI;
+  c.shadow.position.y = 0.02;
+  scene.add(c.shadow);
+}
+const POSES = {
+  idle:   { lx: 0,   lz: 0.06, rx: 0,     rz: -0.06 },
+  point:  { lx: 0.1, lz: 0.06, rx: -1.45, rz: 0 },
+  salute: { lx: 0,   lz: 0.06, rx: -2.7,  rz: -0.25 },
+  cheer:  { lx: 0,   lz: 2.7,  rx: 0,     rz: -2.7 },
+  wave:   { lx: 0,   lz: 0.06, rx: 0,     rz: -2.5, wave: true },
+};
+
+// ---------- layout: where everyone stands and where the camera looks ----------
+const LAYOUT = {
+  galley: {
+    cast: { juno: [-0.9, 0, -0.5, 0], bram: [1.4, 0, -0.5, -0.25], pim: [0.2, 1.1, 0.5, 0] },
+    shots: {
+      wide: { pos: [0, 2.0, 7.2], look: [0, 1.45, -1.2] },
+      machine: { pos: [-2.4, 2.5, 1.6], look: [-2.6, 1.5, -2.2] },
+    },
+  },
+  deck: {
+    cast: { juno: [-2.0, 0, 0.4, 0.9], bram: [1.6, 0, 0.8, -0.3], pim: [-1.0, 1.1, 0.7, 0] },
+    shots: {
+      wide: { pos: [0, 2.6, 9.5], look: [0, 1.6, -1.0] },
+      sunrise: { pos: [0, 1.8, 6.5], look: [0, 4.0, -60] },
+    },
+  },
+};
+const FOCUS = {   // close-ups that follow a character
+  juno: { off: [0.6, 1.9, 3.3], look: [0, 1.3, 0] },
+  bram: { off: [-0.5, 1.9, 3.3], look: [0, 1.3, 0] },
+  pim:  { off: [0.4, 0.8, 3.4], look: [0, 0.3, 0] },
+};
+
+function placeCast(name) {
+  for (const [key, [x, y, z, yaw]] of Object.entries(LAYOUT[name].cast)) {
+    const c = cast[key];
+    c.home.set(x, y, z);
+    c.root.position.set(x, y, z);
+    c.root.rotation.y = yaw;
+  }
+}
+
+// ---------- world state ----------
+let W = WORLD[0];                 // the target state the scene eases toward
+let currentSet = null, setToken = 0, snapCam = true;
+const props = {
+  balloonY: W.balloonY, sunY: W.sunY, pancakes: 0,
+  skyTop: SKY.dawn.top.clone(), skyBottom: SKY.dawn.bottom.clone(),
+};
+const fadeEl = document.getElementById('fade');
+
+function showSet(name) {
+  const onDeck = name === 'deck';
+  galley.visible = !onDeck;
+  deck.visible = onDeck;
+  sky.visible = onDeck;
+  sunLight.visible = onDeck;
+  hemi.intensity = onDeck ? 2.4 : 3.0;
+  scene.fog = onDeck ? deckFog : null;
+  placeCast(name);
+  snapCam = true;
+}
+function switchSet(name) {
+  const token = ++setToken;
+  const first = currentSet === null;
+  currentSet = name;
+  if (first) {
+    showSet(name);
+    setTimeout(() => fadeEl.classList.remove('on'), 250);
+    return;
+  }
+  fadeEl.classList.add('on');       // fade to black, swap sets, fade back
+  setTimeout(() => {
+    if (token !== setToken) return; // a newer switch took over
+    showSet(name);
+    fadeEl.classList.remove('on');
+  }, 380);
+}
+function applyWorld(w) {
+  W = w;
+  if (w.set !== currentSet) switchSet(w.set);
+}
+
+// ---------- camera ----------
+const camPos = new THREE.Vector3(0, 2.0, 7.2), camLook = new THREE.Vector3(0, 1.45, -1.2);
+const shotPos = new THREE.Vector3(), shotLook = new THREE.Vector3();
+function shotTarget(name) {
+  if (FOCUS[name]) {
+    const r = cast[name].root.position, f = FOCUS[name];
+    shotPos.set(r.x + f.off[0], r.y + f.off[1], r.z + f.off[2]);
+    shotLook.set(r.x + f.look[0], r.y + f.look[1], r.z + f.look[2]);
+  } else if (name === 'balloon') {
+    shotPos.set(BALLOON.x - 1.2, W.balloonY + 1.2, BALLOON.z + 6.0);
+    shotLook.set(BALLOON.x - 1.3, W.balloonY - 0.6, BALLOON.z + 0.4);
+  } else {
+    const shots = LAYOUT[currentSet].shots;
+    const s = shots[name] || shots.wide;
+    shotPos.fromArray(s.pos);
+    shotLook.fromArray(s.look);
+  }
+}
+function updateCamera(dt, t) {
+  shotTarget(W.shot);
+  const k = snapCam ? 1 : lerpK(2.6, dt);
+  snapCam = false;
+  camPos.lerp(shotPos, k);
+  camLook.lerp(shotLook, k);
+  camera.position.set(camPos.x + Math.sin(t * 0.7) * 0.03, camPos.y + Math.sin(t * 1.1) * 0.02, camPos.z);
+  camera.lookAt(camLook);
+}
+
+// ---------- per-frame prop and character animation ----------
+function updateProps(dt, t) {
+  props.balloonY += (W.balloonY - props.balloonY) * lerpK(2.2, dt);
+  props.sunY += (W.sunY - props.sunY) * lerpK(0.8, dt);
+  props.pancakes += (W.pancakes - props.pancakes) * lerpK(5, dt);
+  props.skyTop.lerp(SKY[W.sky].top, lerpK(1.2, dt));
+  props.skyBottom.lerp(SKY[W.sky].bottom, lerpK(1.2, dt));
+
+  balloon.position.set(BALLOON.x, props.balloonY + Math.sin(t * 1.4) * 0.08, BALLOON.z);
+  balloon.rotation.z = Math.sin(t * 0.9) * 0.04;
+  sun.position.y = sunGlow.position.y = props.sunY;
+  sunLight.intensity = THREE.MathUtils.lerp(1.2, 2.2, THREE.MathUtils.clamp((props.sunY + 12) / 25, 0, 1));
+  skyMat.uniforms.uTop.value.copy(props.skyTop);
+  skyMat.uniforms.uBottom.value.copy(props.skyBottom);
+  deckFog.color.copy(props.skyBottom);
+
+  stack.visible = props.pancakes > 0.02;
+  stack.scale.y = Math.max(0.001, props.pancakes);
+  if (W.screen !== shownScreen) { drawScreen(W.screen); shownScreen = W.screen; }
+
+  seaTex.offset.x += dt * 0.004;
+  for (const c of clouds) {
+    c.position.x += c.userData.speed * dt;
+    if (c.position.x > 60) c.position.x = -60;
+  }
+}
+function updateCast(dt, t) {
+  const speaker = typer.who;
+  for (const key of Object.keys(cast)) {
+    const c = cast[key];
+    const pose = POSES[W.poses[key]] || POSES.idle;
+    const k = lerpK(10, dt);
+    c.cur.lx += (pose.lx - c.cur.lx) * k;
+    c.cur.lz += (pose.lz - c.cur.lz) * k;
+    c.cur.rx += (pose.rx - c.cur.rx) * k;
+    c.cur.rz += (pose.rz - c.cur.rz) * k;
+    c.armL.rotation.set(c.cur.lx, 0, c.cur.lz);
+    c.armR.rotation.set(c.cur.rx, 0, c.cur.rz + (pose.wave ? Math.sin(t * 9) * 0.35 : 0));
+    if (c.kind === 'robot') c.root.position.y = c.home.y + Math.sin(t * 2.1 + c.phase) * 0.07;
+
+    let yaw = 0;                       // listeners glance at whoever is talking
+    if (speaker && speaker !== key) {
+      const s = cast[speaker].root.position, p = c.root.position;
+      yaw = THREE.MathUtils.clamp(Math.atan2(s.x - p.x, s.z - p.z) - c.root.rotation.y, -0.9, 0.9);
+    }
+    c.head.rotation.y += (yaw - c.head.rotation.y) * lerpK(5, dt);
+
+    const talking = speaker === key && !typer.done;
+    const mouthTarget = talking ? 0.3 + Math.abs(Math.sin(t * 22 + c.phase)) * 1.2 : 0.7;
+    c.mouth.scale.y += (mouthTarget - c.mouth.scale.y) * lerpK(30, dt);
+
+    c.blinkT -= dt;
+    if (c.blinkT <= 0) { c.blinkDur = 0.12; c.blinkT = 2 + Math.random() * 3; }
+    c.blinkDur -= dt;
+    for (const e of c.eyes) e.scale.y = c.blinkDur > 0 ? 0.12 : 1;
+
+    c.shadow.position.x = c.root.position.x;
+    c.shadow.position.z = c.root.position.z;
+  }
+}
+
+// ---------- one-shot effects, fired only when moving forward onto a beat ----------
+const TRAY = new THREE.Vector3(-2.6, 1.25, -1.65);
+const bitGeo = new THREE.BoxGeometry(0.07, 0.07, 0.02);
+const bits = Array.from({ length: 42 }, () => {
+  const m = new THREE.Mesh(bitGeo, phong('#ffffff'));
+  m.visible = false;
+  scene.add(m);
+  return { m, v: new THREE.Vector3(), life: 0 };
+});
+function burst() {
+  for (const b of bits) {
+    b.m.position.copy(TRAY);
+    b.m.material.color.setHSL(Math.random(), 0.85, 0.62);
+    b.v.set((Math.random() - 0.5) * 3.5, 2.5 + Math.random() * 3.5, 0.5 + Math.random() * 2.5);
+    b.life = 2.2 + Math.random() * 0.8;
+    b.m.visible = true;
+  }
+}
+function updateBits(dt) {
+  for (const b of bits) {
+    if (b.life <= 0) continue;
+    b.life -= dt;
+    b.v.y -= 9.8 * dt;
+    b.m.position.addScaledVector(b.v, dt);
+    b.m.rotation.x += 6 * dt;
+    b.m.rotation.z += 5 * dt;
+    if (b.life <= 0) b.m.visible = false;
+  }
+}
+// ---------- tiny blip sounds (audio starts on the first click or key press) ----------
+let audioCtx = null, soundOn = true;
+function ensureAudio() {
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+  } catch (_) { /* sound is optional */ }
+}
+function blip(freq, dur = 0.05, vol = 0.03) {
+  if (!audioCtx || !soundOn || audioCtx.state !== 'running') return;
+  const t = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = 'square';
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(vol, t);
+  gain.gain.exponentialRampToValueAtTime(0.0005, t + dur);
+  osc.connect(gain).connect(audioCtx.destination);
+  osc.start(t);
+  osc.stop(t + dur + 0.02);
+}
+const FX = {
+  confetti: burst,
+  chime: () => [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => blip(f, 0.12, 0.035), i * 110)),
+};
+
+// ---------- dialog: typewriter, beats, stepping ----------
+const boxEl = document.getElementById('box');
+const nameEl = document.getElementById('name');
+const textEl = document.getElementById('text');
+const caretEl = document.getElementById('caret');
+const dotsEl = document.getElementById('dots');
+SCRIPT.forEach(() => dotsEl.appendChild(document.createElement('i')));
+
+const typer = { full: '', n: 0, wait: 0, done: true, who: null };
+let beat = -1;
+
+function showBeat(i) {
+  const b = SCRIPT[i];
+  Object.assign(typer, { full: b.text, n: 0, wait: 0, done: false, who: b.who });
+  textEl.textContent = '';
+  caretEl.classList.remove('on');
+  nameEl.style.display = b.who ? 'block' : 'none';
+  if (b.who) {
+    nameEl.textContent = SPEAKERS[b.who].name;
+    boxEl.style.setProperty('--speaker', SPEAKERS[b.who].color);
+  }
+  [...dotsEl.children].forEach((d, k) => d.classList.toggle('on', k === i));
+}
+function tickTyper(dt) {
+  if (typer.done) return;
+  if (typer.wait > 0) { typer.wait -= dt; return; }
+  const before = Math.floor(typer.n);
+  typer.n = Math.min(typer.full.length, typer.n + TYPE_SPEED * dt);
+  const now = Math.floor(typer.n);
+  if (now !== before) {
+    textEl.textContent = typer.full.slice(0, now);
+    if (/[.!?,]/.test(typer.full[now - 1] || '')) typer.wait = 0.2;   // a breath after punctuation
+    if (now % 3 === 0) blip(SPEAKERS[typer.who]?.pitch ?? 420, 0.04, 0.025);
+  }
+  if (typer.n >= typer.full.length) finishTyping();
+}
+function finishTyping() {
+  typer.n = typer.full.length;
+  typer.done = true;
+  typer.wait = 0;
+  textEl.textContent = typer.full;
+  caretEl.classList.add('on');
+}
+function goTo(i) {
+  const forward = i > beat;
+  beat = i;
+  showBeat(i);
+  applyWorld(WORLD[i]);
+  if (forward) (SCRIPT[i].fx || []).forEach((name) => FX[name]());
+}
+function step(dir) {
+  if (dir > 0) {
+    if (!typer.done) return finishTyping();          // first press completes the line
+    goTo(beat + 1 < SCRIPT.length ? beat + 1 : 0);   // then advance; the last line loops
+  } else if (beat > 0) {
+    goTo(beat - 1);
+  }
+}
+
+// ---------- input: wheel, keys, touch, click ----------
+let wheelTimer = 0, wheelBusy = false;
+addEventListener('wheel', (e) => {
+  e.preventDefault();
+  clearTimeout(wheelTimer);
+  wheelTimer = setTimeout(() => { wheelBusy = false; }, WHEEL_QUIET_MS);
+  if (wheelBusy || Math.abs(e.deltaY) < 2) return;
+  wheelBusy = true;                                  // one notch or trackpad flick = one step
+  step(Math.sign(e.deltaY));
+}, { passive: false });
+
+const NEXT_KEYS = [' ', 'Enter', 'ArrowDown', 'ArrowRight', 'PageDown'];
+const PREV_KEYS = ['ArrowUp', 'ArrowLeft', 'PageUp', 'Backspace'];
+addEventListener('keydown', (e) => {
+  ensureAudio();
+  if (e.key === 'm' || e.key === 'M') { soundOn = !soundOn; return; }
+  if (e.repeat) return;
+  if (NEXT_KEYS.includes(e.key)) { e.preventDefault(); step(1); }
+  else if (PREV_KEYS.includes(e.key)) { e.preventDefault(); step(-1); }
+});
+addEventListener('pointerdown', ensureAudio);
+addEventListener('click', () => step(1));
+let touchY = null;
+addEventListener('touchstart', (e) => { touchY = e.touches[0].clientY; }, { passive: true });
+addEventListener('touchend', (e) => {
+  if (touchY === null) return;
+  const dy = touchY - e.changedTouches[0].clientY;
+  touchY = null;
+  if (Math.abs(dy) > 40) step(dy > 0 ? 1 : -1);      // swipe up = next line
+}, { passive: true });
+
+// ---------- main loop ----------
+const clock = new THREE.Clock();
+function frame() {
+  const dt = Math.min(clock.getDelta(), 0.05);
+  const t = clock.elapsedTime;
+  tickTyper(dt);
+  updateProps(dt, t);
+  updateCast(dt, t);
+  updateCamera(dt, t);
+  updateBits(dt);
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+goTo(0);
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
