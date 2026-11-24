@@ -29,7 +29,8 @@ const demos = [
   'heliosai-particle-interface.html',
   'sand_castle.html',
   'rainbow_brain.html',
-  'morphlab.html'
+  'morphlab.html',
+  'sunshine_breakfast.html'
 ];
 for (const name of demos) {
   await copyFile(join(root, name), join(out, name));
@@ -83,6 +84,7 @@ replaceRequired('src="/embed/morphlab"', 'src="./morphlab.html"');
 replaceRequired('src="/embed/mail"', 'src="./helios_mail.html"');
 replaceRequired('src="/embed/rainbow-brain"', 'src="./rainbow_brain.html"');
 replaceRequired('src="/embed/consensus"', 'src="./neighborhood_consensus.html"');
+replaceRequired('src="/embed/sunshine"', 'src="./sunshine_breakfast.html"');
 replaceRequired('src="/proxy/ycr/"', 'src="./pages-ycr.html"');
 
 // Email signup and shared proposal writes need the Bun backend. Do not

@@ -206,6 +206,8 @@
         <button class="tab" id="tab-ycr" type="button" role="tab" aria-selected="false" aria-controls="view-ycr">YC Research</button>
         <button class="tab" id="tab-fork" type="button" role="tab" aria-selected="false" aria-controls="view-fork">Fork Helios</button>
         <button class="tab" id="tab-rainbow" type="button" role="tab" aria-selected="false" aria-controls="view-rainbow">Rainbow Brain Realms</button>
+        <button class="tab" id="tab-sunshine" type="button" role="tab" aria-selected="false" aria-controls="view-sunshine">Sunshine for Breakfast</button>
+        <button class="tab" id="tab-eight-billion-five-laws" type="button" role="tab" aria-selected="false" aria-controls="view-eight-billion-five-laws">Eight Billion, Five Laws</button>
       </nav>
       <iframe
         class="signup"
@@ -375,6 +377,22 @@
         allow="gamepad; fullscreen"
         allowfullscreen
       ></iframe>
+
+      <iframe
+        id="view-sunshine"
+        class="view"
+        title="Sunshine for Breakfast"
+        src="/embed/sunshine"
+        loading="lazy"
+      ></iframe>
+
+      <iframe
+        id="view-eight-billion-five-laws"
+        class="view"
+        title="Eight Billion, Five Laws"
+        src="/public/eight-billion-five-laws/index.html"
+        loading="lazy"
+      ></iframe>
     </main>
 
     <footer class="byline">
@@ -405,7 +423,9 @@
       mail: document.getElementById('tab-mail'),
       ycr: document.getElementById('tab-ycr'),
       fork: document.getElementById('tab-fork'),
-      rainbow: document.getElementById('tab-rainbow')
+      rainbow: document.getElementById('tab-rainbow'),
+      sunshine: document.getElementById('tab-sunshine'),
+      eightBillionFiveLaws: document.getElementById('tab-eight-billion-five-laws')
     };
 
     const views = {
@@ -429,7 +449,9 @@
       mail: document.getElementById('view-mail'),
       ycr: document.getElementById('view-ycr'),
       fork: document.getElementById('view-fork'),
-      rainbow: document.getElementById('view-rainbow')
+      rainbow: document.getElementById('view-rainbow'),
+      sunshine: document.getElementById('view-sunshine'),
+      eightBillionFiveLaws: document.getElementById('view-eight-billion-five-laws')
     };
 
     function activate(which) {
@@ -461,6 +483,8 @@
     tabs.ycr.addEventListener('click', () => activate('ycr'));
     tabs.fork.addEventListener('click', () => activate('fork'));
     tabs.rainbow.addEventListener('click', () => activate('rainbow'));
+    tabs.sunshine.addEventListener('click', () => activate('sunshine'));
+    tabs.eightBillionFiveLaws.addEventListener('click', () => activate('eightBillionFiveLaws'));
   </script>
 </body>
 </html>

@@ -180,3 +180,9 @@
   from = "/embed/braindance"
   to = "/helios_braindance.html"
   status = 200
+
+# Sunshine for Breakfast: a Three.js scene shown in the home page tab.
+[[redirects]]
+  from = "/embed/sunshine"
+  to = "/sunshine_breakfast.html"
+  status = 200

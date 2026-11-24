@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eight Billion, Five Laws</title>
+<link rel="icon" href="data:,">
+<style>
+/* A dark frame around one bright map. Blue and orange carry yes and no, gray carries unsure.
+   Four panels float over the map, one in each corner. */
+:root {
+  color-scheme: dark;
+  --page: #0d0d0d;
+  --panel: rgba(26, 26, 25, 0.9);
+  --ink: #f0efec;
+  --ink-2: #c3c2b7;
+  --ink-3: #898781;
+  --series: #3987e5;
+  --no: #d95926;
+  --unsure: #898781;
+  --rule: rgba(255, 255, 255, 0.1);
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body {
+  height: 100%;
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font: 13px/1.5 var(--font);
+  overflow: hidden;
+}
+#map { position: fixed; inset: 0; background: var(--page); }
+.panel {
+  position: fixed;
+  z-index: 2;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 14px 16px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+h1, h2 { margin: 0; text-wrap: balance; }
+h1 { font-size: 18px; font-weight: 650; letter-spacing: -0.01em; }
+h2 { font-size: 13px; font-weight: 650; }
+h2.sub { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--rule); }
+p { margin: 0; }
+.soft { color: var(--ink-2); }
+.muted { color: var(--ink-3); }
+.small { font-size: 11px; }
+.num { font-variant-numeric: tabular-nums; }
+
+#intro { top: 16px; left: 16px; width: 344px; }
+#intro p { margin-top: 6px; color: var(--ink-2); }
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule);
+}
+.stats b { display: block; font-size: 15px; font-weight: 650; }
+.stats span { display: block; color: var(--ink-3); font-size: 11px; line-height: 1.35; }
+
+#laws { top: 16px; right: 16px; width: 330px; }
+.seg { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin-top: 10px; }
+.seg button {
+  font: inherit;
+  font-weight: 600;
+  color: var(--ink-2);
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 7px 0;
+  cursor: pointer;
+}
+.seg button:hover { color: var(--ink); border-color: rgba(255, 255, 255, 0.22); }
+.seg button[aria-pressed="true"] {
+  color: var(--ink);
+  background: rgba(57, 135, 229, 0.18);
+  border-color: var(--series);
+}
+button:focus-visible { outline: 2px solid var(--series); outline-offset: 2px; }
+#lean-line { margin-top: 10px; }
+.key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--ink-2);
+  font-size: 12px;
+}
+.key li { display: flex; align-items: center; gap: 6px; }
+#laws .small { margin-top: 6px; }
+
+#results {
+  left: 16px;
+  bottom: 16px;
+  width: 344px;
+  max-height: min(600px, calc(100vh - 250px));
+  overflow: auto;
+}
+.row {
+  display: grid;
+  grid-template-columns: 118px 1fr 92px;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+#themes .row { grid-template-columns: 150px 1fr 52px; margin-top: 6px; }
+.row .lab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.row .val { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.track { height: 8px; border-radius: 4px; background: rgba(255, 255, 255, 0.06); overflow: hidden; }
+.track i { display: block; height: 100%; min-width: 2px; border-radius: 0 4px 4px 0; }
+.chip { display: inline-block; width: 10px; height: 10px; border-radius: 3px; flex: none; }
+details { margin-top: 12px; }
+summary { cursor: pointer; color: var(--ink-2); }
+#pool-list { margin-top: 8px; max-height: 260px; overflow: auto; }
+#pool-list h3 { margin: 12px 0 4px; font-size: 11px; font-weight: 650; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.06em; }
+#pool-list ul { margin: 0; padding-left: 16px; }
+#pool-list li { color: var(--ink-2); font-size: 12px; margin: 2px 0; }
+.foot { margin-top: 12px; color: var(--ink-3); font-size: 11px; }
+
+#inspector { right: 16px; bottom: 16px; width: 380px; max-height: min(520px, calc(100vh - 250px)); overflow: auto; }
+.hd { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+#inspector #dot-meta { margin-top: 4px; }
+#dot-rows { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 12px; }
+.resp { display: flex; gap: 10px; align-items: flex-start; }
+.resp .chip { margin-top: 6px; }
+.resp-head { color: var(--ink); }
+.vote { color: var(--ink-2); }
+
+#loading { top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--ink-2); }
+#loading.error { color: var(--no); }
+
+/* Desktop-first. On narrow screens the description and inspector step aside so the map stays visible. */
+@media (max-width: 860px) {
+  #intro { left: 12px; right: 12px; top: 12px; width: auto; }
+  #intro p, #intro .stats { display: none; }
+  #laws { left: 12px; right: 12px; top: 72px; width: auto; }
+  #results { left: 12px; right: 12px; bottom: 12px; width: auto; max-height: 40vh; }
+  #inspector { display: none; }
+}
+</style>
+</head>
+<body>
+<div id="map"></div>
+
+<section id="intro" class="panel">
+  <h1>Eight Billion, Five Laws</h1>
+  <p>Every dot stands for about 3,815 people, placed where people live. Each person answers each law once, drawing one thought from a pool of 100.</p>
+  <div class="stats">
+    <div><b>8.0 B</b><span>people</span></div>
+    <div><b>40 B</b><span>responses, one per person per law</span></div>
+    <div><b>2.1 M</b><span>sampled dots</span></div>
+  </div>
+</section>
+
+<nav id="laws" class="panel" aria-label="Laws">
+  <h2>Choose a law</h2>
+  <div id="seg" class="seg"></div>
+  <p id="lean-line" class="soft"></p>
+  <ul class="key" aria-label="Dot colors">
+    <li><span class="chip" style="background: var(--series)"></span>Yes</li>
+    <li><span class="chip" style="background: var(--no)"></span>No</li>
+    <li><span class="chip" style="background: var(--unsure)"></span>Unsure</li>
+  </ul>
+  <p class="muted small">Keys 1 to 5 switch laws. Each dot is colored by the vote its thought leads to.</p>
+</nav>
+
+<section id="results" class="panel">
+  <h2 id="result-title"></h2>
+  <div id="votes"></div>
+  <h2 class="sub">What people are thinking</h2>
+  <div id="themes"></div>
+  <details>
+    <summary>The 100 thoughts</summary>
+    <div id="pool-list"></div>
+  </details>
+  <p class="foot">Placeholder laws and thoughts. These are simulated responses, not polling.</p>
+</section>
+
+<aside id="inspector" class="panel">
+  <div class="hd"><h2 id="dot-title"></h2><span id="dot-pin" class="muted small"></span></div>
+  <p id="dot-meta" class="muted small"></p>
+  <ol id="dot-rows"></ol>
+</aside>
+
+<div id="loading" class="panel" role="status">Placing 8 billion people on the map</div>
+
+<script src="https://cdn.jsdelivr.net/npm/deck.gl@9.4.1/dist.min.js"></script>
+<script src="data/land.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

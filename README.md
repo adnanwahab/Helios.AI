@@ -169,6 +169,8 @@ Helios AI is a civic tool that reads what everyone in a community says they need
 - `helios_braindance.html` — Braindance: Mirrorworld Pensieve. Key events from Nov 2019 to Nov 2033 around a mirror line at 23 Nov 2026: recorded events on a 3D globe above a pensieve surface, scheduled, planned and projected ones on its reflection below, with a weekly calendar grid, a time scrubber and a searchable log of every event. The event records live in the page and `bun test` checks them (served at `/braindance` and `/embed/braindance`; three.js loads from jsDelivr)
 - `helios-unified.html` — Helios Unified (Universe · Communal Science Lab · Futures)
 - `communal_science_lab_webgpu (1).html` — the Communal Science Lab (WebGPU)
+- `sunshine_breakfast.html` — Sunshine for Breakfast: a PS1-style Three.js scene where the dialogue moves one line per scroll step, with original characters and dialogue (served at `/embed/sunshine`)
+- `public/eight-billion-five-laws/` — Eight Billion, Five Laws: a deck.gl map of 2.1 million sampled dots, each standing for about 3,815 people, with one simulated response per law (served at `/public/eight-billion-five-laws/`). Laws, thoughts and population are synthetic placeholders, not polling data.
 
 ## Running locally
 
