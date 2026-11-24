@@ -30,6 +30,7 @@ const pages = [
   'health_wealth_of_nations.html',
   'heliosai-particle-interface.html',
   'sand_castle.html',
+  'sunshine_breakfast.html',
   'communal_science_lab_webgpu (1).html',
   'rainbow_brain.html',
   'morphlab.html',
