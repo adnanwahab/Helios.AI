@@ -22,11 +22,11 @@ function drawCatalog(){
  const query=$('law-search').value.trim().toLowerCase(),cat=$('law-category').value,root=$('law-tiles');root.replaceChildren();
  for(const row of records.values()){
   const law=row.law;if(cat&&law.category!==cat||query&&![law.id,law.title,law.category,law.sourceProposalTitle,law.sharedGoal].some(s=>String(s||'').toLowerCase().includes(query)))continue;
-  const b=el('button',undefined,'law-tile');b.type='button';b.dataset.law=law.id;b.setAttribute('aria-pressed',String(law.id===selected));b.title=law.title;
+  const b=el('button',undefined,'law-tile');b.type='button';b.dataset.law=law.id;b.setAttribute('aria-pressed',String(law.id===selected));b.setAttribute('aria-label',law.id+' '+law.title);b.title=law.title;
   b.append(el('span',law.id.slice(4),'law-tile-number'),el('span',law.title,'law-tile-title'),spark(law));
   const total=row.votes?row.votes.support+row.votes.oppose+row.votes.unsure:null;
   b.append(el('span',total===null?'Votes not loaded':fmt(total)+' advisory votes','law-tile-votes'));
-  b.addEventListener('click',()=>selectLaw(law.id));root.append(b);
+  b.addEventListener('click',()=>{selectLaw(law.id);root.querySelector('[data-law="'+law.id+'"]')?.focus({preventScroll:true})});root.append(b);
  }
  $('law-results').textContent=root.childElementCount+' of '+records.size+' proposals';
  if(!root.childElementCount)root.append(el('p','No matching proposals.','hint'));
@@ -63,6 +63,10 @@ function renderHistory(){
  for(const a of history.amendments.slice().reverse()){
   const card=el('article',undefined,'law-history-card');card.append(el('strong','Proposed update · '+a.status),el('p',a.reason),el('p',a.proposed?.sharedGoal||''),el('small','Implementation: '+(a.proposed?.illustrativeLocalOption||'')),el('small','Safeguards: '+(a.proposed?.risksAndSafeguards||'')));root.append(card)
  }
+}
+function saveDraft(){
+ const law=currentLaw();if(!law)return;
+ const d={versionId:law.versionId};for(const k of ['goal','implementation','safeguards','reason'])d[k]=$('law-update-'+k).value;drafts.set(selected,d)
 }
 function updateDraft(){
  const law=currentLaw();if(!law)return;
@@ -101,10 +105,11 @@ async function loadHistory(){
 }
 function selectLaw(id){
  if(writing||!records.has(id))return;
- if(id!==selected){const law=currentLaw();if(law){const d={versionId:law.versionId};for(const k of ['goal','implementation','safeguards','reason'])d[k]=$('law-update-'+k).value;drafts.set(selected,d)}selected=id;history=null;setDetailStatus('')}
+ if(id!==selected){saveDraft();selected=id;history=null;setDetailStatus('')}
  drawCatalog();drawDetail();if(connected)loadHistory()
 }
-async function loadBoard(){
+async function loadBoard({preserveDraft=true}={}){
+ if(preserveDraft&&connected)saveDraft();
  const result=await request('/api/law-board');
  if(result.storage!=='supabase-postgres'&&!(location.hostname==='localhost'||location.hostname==='127.0.0.1'))throw Error('The Supabase civic database is not connected. Simulators remain available.');
  if(!result.writable||!Array.isArray(result.records)||result.records.length!==100)throw Error('The 100-law shared database is not ready.');
@@ -131,7 +136,7 @@ async function write(action,payload){
   await request('/api/law-board/'+id+'/'+action,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrf,'Idempotency-Key':lastWrite.key},body});
   lastWrite=null;if(action==='update')drafts.delete(id);
   setDetailStatus(action==='vote'?'Advisory position saved.':'Public update proposed; existing wording remains unchanged pending review.');
-  await loadBoard()
+  try{await loadBoard({preserveDraft:action!=='update'})}catch(e){status('Submission saved, but the board refresh failed: '+e.message,true)}
  }catch(e){setDetailStatus('Submission not confirmed: '+e.message+' Refresh if the version changed; retry unchanged to reuse the request key.',true)}
  finally{writing=false;drawDetail({resetDraft:false})}
 }
@@ -153,6 +158,6 @@ $('law-connect').hidden=isStatic;
  const result=await response.json();seed=result.goals;if(!Array.isArray(seed)||seed.length!==100)throw Error('Expected 100 original proposals');
  for(const law of seed){modelFor(law);records.set(law.id,{law,votes:null,myVote:null,updates:0})}
  for(const category of result.categories){const option=el('option',category);option.value=category;$('law-category').append(option)}
- $('law-count').textContent=records.size;drawCatalog();drawDetail();
+ $('law-count').textContent=records.size;drawCatalog();drawDetail();$('law-connect').disabled=false;
  status(isStatic?'Static preview · simulations only, no shared votes.':'Original editorial catalog · connect to load shared Supabase votes and revisions.')
 }catch(e){status('Could not load the bundled law catalog: '+e.message,true)}})();

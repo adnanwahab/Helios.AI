@@ -93,6 +93,9 @@ export async function openStore(db) {
   await db.transaction(async tx => {
     await lock(tx, 'helios-schema');
     for (const sql of SCHEMA) await tx.query(sql);
+    // The Supabase adapter owns a private schema; enable RLS as defense in
+    // depth. The database owner used by the server retains normal access.
+    if(db.kind==='supabase-postgres')for(const table of ['metadata','sessions','laws','versions','amendments','receipts','limits','email_subscribers','email_inbound','constitution_clauses','constitution_contributions','constitution_votes','constitution_comments','law_votes'])await tx.query('ALTER TABLE '+table+' ENABLE ROW LEVEL SECURITY');
     const prior = (await tx.query('SELECT value FROM metadata WHERE key=$1', ['catalog_hash'])).rows[0];
     if (prior && prior.value !== seedHash) fail(500, 'Catalog seed changed. A reviewed migration is required; stored records were not overwritten.');
     if (!prior) {
