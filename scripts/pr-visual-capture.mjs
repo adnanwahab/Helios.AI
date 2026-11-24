@@ -229,6 +229,13 @@ try {
     await page.goto(base+'/public/reimagine-government.html',{waitUntil:'domcontentloaded'});
     await page.locator('#charter .draft').first().waitFor({state:'visible'});
     await page.screenshot({path:join(output,'reimagine-government.png'),animations:'disabled'});
+    if(await page.locator('#budget-open').count()){
+      await page.locator('#budget-open').click();
+      await page.locator('#budget-allocations .budget-allocation').last().waitFor({state:'visible'});
+      await page.locator('#budget-title').scrollIntoViewIfNeeded();
+      await page.screenshot({path:join(output,'reimagine-budget.png'),animations:'disabled'});
+      await page.locator('#budget-open').click();
+    }
     await page.locator('[data-preset="assembly"]').click();
     await page.locator('#run-scenario').click();
     await page.locator('#scenario-result').waitFor({state:'visible'});

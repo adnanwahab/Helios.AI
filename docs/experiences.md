@@ -60,3 +60,5 @@ API: GET `/api/constitution`; POST `/api/constitution/vote`, `/api/constitution/
 ### Reimagine a new government
 
 `public/reimagine-government.html` is a local-only civic design lab, linked from the homepage, Docs, and the mystery ending. Choose how public concerns are heard, reviewed, discussed and reported back; compare trade-offs and trace a fictional bus-stop proposal. The charter is a downloadable thought experiment, not a legal document or binding decision. No personal data or votes are transmitted.
+
+The **Redesign the budget** control opens a fictional $100m annual municipal spending lab. Preview and apply funded transfers between seven departments, compare the baseline and proposed allocations, undo changes, and download the applied draft. Floors and annual unit costs are illustrative assumptions, not actual government appropriations. Each transfer shows potential resource equivalents, sensitivity to unit costs, the donor opportunity cost, and necessary real-world checks. No actual budget, data, or vote is changed.

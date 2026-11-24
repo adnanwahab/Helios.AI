@@ -384,4 +384,4 @@ The Helios dashboard includes **MorphLab · WebGPU** (`/morphlab.html`): type a 
 
 - `public/mystery.html` — The Missing Amendment, a fictional choose-your-own-adventure civic mystery. No real vote or personal information is sent. Available from the homepage and Docs.
 
-- `public/reimagine-government.html` — Reimagine a new government: hypothetical civic architecture, three process presets, editable charter, fictional scenario trace and local draft download. No network writes or actual vote.
+- `public/reimagine-government.html` — Reimagine a new government: hypothetical civic architecture, three process presets, editable charter, fictional scenario trace, balanced budget redesign with illustrative marginal resource equivalents, and local draft downloads. No network writes or actual vote.
