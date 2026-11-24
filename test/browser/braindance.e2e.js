@@ -22,7 +22,10 @@ test('Braindance: playhead, events, logs, calendar and links work without the 3D
  await cal.click({position:{x:box.width*.55,y:box.height*.5}});await expect(page.locator('#rdDate')).not.toHaveText(before);
  const row=rows.nth(12),id=await row.getAttribute('data-id'),title=await rowTitle(row);
  await page.goto('/braindance#'+id);await expect(page.locator('#cTitle')).toHaveText(title);
- await page.setViewportSize({width:390,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ // Phone width: no sideways scrolling once the layout settles after a resize, and on a fresh load.
+ const fits=()=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth);
+ await page.setViewportSize({width:390,height:844});await expect.poll(fits).toBe(true);
+ await page.reload();await expect(page.locator('#log li.ev.on')).toBeVisible();await expect.poll(fits).toBe(true);
  expect(errors).toEqual([]);
 });
 test('home page tab embeds Braindance',async({page})=>{
