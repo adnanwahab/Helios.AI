@@ -57,6 +57,7 @@ Helios AI is a civic tool that reads what everyone in a community says they need
 - `helios_100_frontend_demo.html` — 100 Shared Goals demo, with estimated arrival dates for each goal ([assumptions](docs/arrival-estimates.md))
 - `heliosai_acts_orbit.html` — Acts in Orbit: all 111 HELIOSAI acts in one list, with a draft Universal Basic Income Act at #1, as a three.js solar system and D3 circle-pack, ranked by importance or shuffled (served at `/embed/orbit`)
 - `support_every_country.html` — Support Every Country: all 195 flags (the 193 UN members plus Vatican City and Palestine) waving one at a time under "Support <country>", with a custom message, seconds per flag, region filter, shuffle and a searchable wall of every flag (served at `/flags` and `/embed/flags`; images in `public/flags/`)
+- `neighborhood_consensus.html` — Neighborhood Consensus: a liquid 3D surface of how support for a local proposal spreads across a neighborhood, by blocks from the site and by week, with a cooperation view, a replayable sweep and five linked charts (map, time, turnout, across-blocks, all proposals). Sample ballots for a made-up neighborhood, not real votes; you can paste your own ([docs](docs/neighborhood-consensus.md); served at `/consensus` and `/embed/consensus`)
 - `helios_notion_preview.html` — the plan as a Notion document, synced through the Notion API ([docs](docs/notion.md))
 - `helios-unified.html` — Helios Unified (Universe · Communal Science Lab · Futures)
 - `communal_science_lab_webgpu (1).html` — the Communal Science Lab (WebGPU)

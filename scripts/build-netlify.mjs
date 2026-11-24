@@ -20,6 +20,7 @@ const pages = [
   'helios_100_frontend_demo.html',
   'heliosai_acts_orbit.html',
   'support_every_country.html',
+  'neighborhood_consensus.html',
   'helios-unified.html',
   'helios_notion_preview.html',
   'health_wealth_of_nations.html',
