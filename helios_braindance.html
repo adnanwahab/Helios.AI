@@ -35,7 +35,8 @@ button{cursor:pointer}
 .brand p{margin:2px 0 0;color:var(--ink2);font-size:13px}
 .readout{display:grid;gap:3px;margin-left:auto}
 .readout .date{font:600 26px/1 var(--fd);font-variant-numeric:tabular-nums;white-space:nowrap}
-.readout .rel{color:var(--ink2);font-size:12.5px;white-space:nowrap}
+.readout .rel{color:var(--ink2);font-size:12.5px}
+.readout .rel .mode{white-space:nowrap}
 .mode{display:inline-block;padding:2px 8px;border-radius:999px;border:1px solid var(--line2);color:var(--ink);font-size:12px;margin-right:6px}
 .mode.past{border-color:rgba(207,218,229,.45)}
 .mode.surf{border-color:var(--now);color:#ffd4da}
@@ -63,7 +64,7 @@ button{cursor:pointer}
 .mlabel small{color:var(--ink2);font-family:var(--fm);font-size:11px}
 .glfail{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:var(--ink2);z-index:4}
 /* dock */
-.dock{grid-area:dock;position:relative;border-top:1px solid var(--line);background:var(--deck);padding:10px 16px 10px}
+.dock{grid-area:dock;position:relative;overflow-x:clip;border-top:1px solid var(--line);background:var(--deck);padding:10px 16px 10px}
 .transport{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:36px;padding:6px 12px;border-radius:8px;border:1px solid var(--line2);background:var(--panel);font-size:13px;color:var(--ink)}
 .btn:hover,.tbtn:hover,.chip:hover{border-color:rgba(207,218,229,.45)}
@@ -906,7 +907,7 @@ function draw() {
   if (BD.T !== lastFollowT) { lastFollowT = BD.T; followLog(); }
 }
 let lastFollowT = null;
-const ro = new ResizeObserver(schedule); ro.observe(scrub); ro.observe(calBox);
+const ro = new ResizeObserver(() => { calTip.hidden = true; schedule(); }); ro.observe(scrub); ro.observe(calBox);
 
 /* ---------- start ---------- */
 window.addEventListener('hashchange', () => {
@@ -1256,6 +1257,7 @@ if (renderer) {
   let VW = 1, VH = 1;
   const camOff = new THREE.Vector3();
   function resize() {
+    tip.hidden = true;
     VW = Math.max(1, view.clientWidth); VH = Math.max(1, view.clientHeight);
     renderer.setSize(VW, VH, false);
     const asp = VW / VH;
