@@ -192,3 +192,14 @@
   from = "/grid"
   to = "/grid.html"
   status = 200
+
+# Family lunch ballot — browser-only state, no API calls.
+[[redirects]]
+  from = "/lunch"
+  to = "/lunch.html"
+  status = 200
+
+[[redirects]]
+  from = "/vote-for-lunch"
+  to = "/lunch.html"
+  status = 200

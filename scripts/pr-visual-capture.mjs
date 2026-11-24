@@ -144,6 +144,17 @@ try {
     await page.setViewportSize({width:390,height:844});
     await page.screenshot({path:join(output,'grid-mobile.png'),fullPage:true,animations:'disabled'});
   }
+  await page.goto(base + '/lunch', {waitUntil:'domcontentloaded'});
+  if (await page.locator('#restaurants [data-place="yark"]').count()) {
+    await page.locator('[data-place="yark"]').click();
+    await page.locator('[data-place="phat"]').click();
+    await page.locator('[data-place="yark"]').click();
+    await page.locator('[data-place="yark"]').click();
+    await page.setViewportSize({width:1440,height:900});
+    await page.screenshot({path:join(output,'lunch-desktop.png'),fullPage:true,animations:'disabled'});
+    await page.setViewportSize({width:390,height:844});
+    await page.screenshot({path:join(output,'lunch-mobile.png'),fullPage:true,animations:'disabled'});
+  }
   console.log('Captured desktop and mobile screenshots from ' + (remote ? 'Netlify deployment' : 'local PR build'));
 } finally {
   await browser?.close().catch(() => {});

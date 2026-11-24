@@ -21,6 +21,7 @@ const pages = [
   'eight_billion_map.html',
   'three_editor_merge.html',
   'grid.html',
+  'lunch.html',
   'helios_100_frontend_demo.html',
   'heliosai_acts_orbit.html',
   'support_every_country.html',
