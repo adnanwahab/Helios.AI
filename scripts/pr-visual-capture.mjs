@@ -172,9 +172,9 @@ try {
   }
   // Historical preview backfills may not have the new public page.
   await page.goto(base + '/', {waitUntil:'domcontentloaded'});
-  if (await page.locator('.law-assembly-feature').count()) {
+  if (await page.locator('[aria-labelledby="law-assembly-title"]').count()) {
     await page.setViewportSize({width:1440,height:900});
-    await page.locator('.law-assembly-feature').scrollIntoViewIfNeeded();
+    await page.locator('[aria-labelledby="law-assembly-title"]').scrollIntoViewIfNeeded();
     await page.screenshot({path:join(output,'law-assembly-index.png'),animations:'disabled'});
     await page.goto(base + '/public/helios-law-assembly.html',{waitUntil:'domcontentloaded'});
     for (const id of ['homes','places','water']) {
@@ -187,6 +187,17 @@ try {
     await page.locator('#water .replay').click();
     await page.waitForFunction(()=>document.querySelector('#water .pct')?.textContent==='00% ASSEMBLED');
     await page.screenshot({path:join(output,'law-assembly-mobile.png'),animations:'disabled'});
+  }
+  await page.goto(base + '/lunch', {waitUntil:'domcontentloaded'});
+  if (await page.locator('#restaurants [data-place="yark"]').count()) {
+    await page.locator('[data-place="yark"]').click();
+    await page.locator('[data-place="phat"]').click();
+    await page.locator('[data-place="yark"]').click();
+    await page.locator('[data-place="yark"]').click();
+    await page.setViewportSize({width:1440,height:900});
+    await page.screenshot({path:join(output,'lunch-desktop.png'),fullPage:true,animations:'disabled'});
+    await page.setViewportSize({width:390,height:844});
+    await page.screenshot({path:join(output,'lunch-mobile.png'),fullPage:true,animations:'disabled'});
   }
   // Public futures fullscreen story, when present in this preview.
   await page.goto(base+'/',{waitUntil:'domcontentloaded'});

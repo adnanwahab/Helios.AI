@@ -187,8 +187,25 @@
   to = "/sunshine_breakfast.html"
   status = 200
 
+# Family lunch ballot — browser-only state, no API calls.
+[[redirects]]
+  from = "/lunch"
+  to = "/lunch.html"
+  status = 200
+
+[[redirects]]
+  from = "/vote-for-lunch"
+  to = "/lunch.html"
+  status = 200
+
 # Grid story: fictional civic mystery, with static catalog and no write endpoints.
 [[redirects]]
   from = "/grid"
+  to = "/grid.html"
+  status = 200
+
+# Direct link to the interactive chapter; grid-story.js opens the modal on this path.
+[[redirects]]
+  from = "/story"
   to = "/grid.html"
   status = 200
