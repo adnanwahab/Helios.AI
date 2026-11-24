@@ -22,6 +22,8 @@ function renderDocs(query=''){
 renderDocs();
 $('docs-open').addEventListener('click',()=>{$('docs-drawer').showModal();$('docs-search').focus()});
 $('docs-close').addEventListener('click',()=>$('docs-drawer').close());
+// A focused search input can consume Escape before the native dialog cancel action.
+$('docs-drawer').addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();$('docs-drawer').close()}},true);
 $('docs-drawer').addEventListener('click',e=>{if(e.target===$('docs-drawer')){const b=e.target.getBoundingClientRect();if(e.clientX<b.left||e.clientX>b.right||e.clientY<b.top||e.clientY>b.bottom)e.target.close()}});
 $('docs-drawer').addEventListener('close',()=>$('docs-open').focus());
 $('docs-search').addEventListener('input',()=>renderDocs($('docs-search').value));
