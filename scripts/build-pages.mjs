@@ -16,6 +16,7 @@ const demos = [
   'helios_fork.html',
   'world_plan_simulator.html',
   'helios_100_frontend_demo.html',
+  'heliosai_acts_orbit.html',
   'helios-unified.html',
   'communal_science_lab_webgpu (1).html',
   'health_wealth_of_nations.html',
@@ -54,6 +55,7 @@ replaceRequired('src="/embed/hippie"', 'src="./helios_hippie_landing.html"');
 replaceRequired('src="/embed/fork"', 'src="./helios_fork.html"');
 replaceRequired('src="/embed/notion"', 'src="./helios_notion_preview.html"');
 replaceRequired('src="/embed/world-plan"', 'src="./world_plan_simulator.html"');
+replaceRequired('src="/embed/orbit"', 'src="./heliosai_acts_orbit.html"');
 replaceRequired('src="/embed/goals"', 'src="./helios_100_frontend_demo.html"');
 replaceRequired('src="/embed/flags"', 'src="./support_every_country.html"');
 replaceRequired('src="/embed/unified"', 'src="./helios-unified.html"');

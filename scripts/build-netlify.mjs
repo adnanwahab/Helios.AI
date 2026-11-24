@@ -16,6 +16,7 @@ const pages = [
   'helios_fork.html',
   'world_plan_simulator.html',
   'helios_100_frontend_demo.html',
+  'heliosai_acts_orbit.html',
   'support_every_country.html',
   'helios-unified.html',
   'helios_notion_preview.html',
