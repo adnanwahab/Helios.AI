@@ -59,6 +59,28 @@ test('chapter one is a branching modal with edit, deep linking and local handoff
   await expect(dialog).not.toBeVisible();
 });
 
+test('population chamber is inspectable, deterministic and remains local',async({page})=>{
+ await page.goto('/grid?story=population');
+ const chamber=page.locator('#population-chamber');
+ await expect(chamber).toBeVisible();
+ await expect(page.locator('#pop-status')).toContainText('16,384');
+ await expect(page.locator('#pop-status')).toContainText('8,000,000,000');
+ await page.locator('#pop-id').fill('8000000000');
+ await page.locator('#pop-inspect').click();
+ await expect(page.locator('#pop-judgment')).toContainText('8,000,000,000');
+ const memories=await page.locator('#pop-memories').innerText();
+ await page.locator('#pop-proposal').selectOption('1');
+ await page.locator('#pop-run').click();
+ await expect(page.locator('#pop-memories')).toHaveText(memories);
+ await expect(page.locator('#pop-tallies strong')).toHaveCount(3);
+ await page.setViewportSize({width:390,height:844});
+ expect(await page.locator('#story-modal').evaluate(d=>d.scrollWidth<=d.clientWidth+1)).toBe(true);
+ await page.getByRole('button',{name:/Open the constitution editor/}).click();
+ await expect(page.locator('#constitution')).toBeFocused();
+ await page.locator('#story-open').click();
+ await expect(chamber).toBeVisible();
+});
+
 test('story keybinds choose branches, navigate, edit, and never capture editor typing',async({page})=>{
   await page.goto('/story');
   const modal=page.locator('#story-modal'), heading=page.locator('#story-heading'), choices=page.locator('#story-choices button');
