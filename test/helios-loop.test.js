@@ -8,7 +8,14 @@ test('homepage exposes three citizen screens, four government preview screens an
   expect([...html.matchAll(/<section id="gov-([1234])"/g)].map(x=>x[1])).toEqual(['1','2','3','4']);
   expect(html).toContain('id="mode-government"');
   expect(html).toContain('id="citizen-feedback"');
-  expect(html).not.toMatch(/<iframe|id="tab-|href="\/experiments/);
+  for(const id of ['docs-open','docs-drawer','constitution-title','review-title'])expect(html).toContain('id="'+id+'"');
+  expect(html).toContain('src="./public/constitution-workbench.js"');
+  expect(html).not.toMatch(/<iframe|id="tab-/);
+  expect(html.match(/<footer\b[\s\S]*?<\/footer>/)[0]).toContain('href="./experiments.html" target="_blank" rel="noopener noreferrer"');
+  expect(html).toContain("Docs &amp; Experiments");
+  const archive=source('docs/legacy-home.html');
+  expect(archive).toContain('href="./index.html"');
+  expect(archive).toContain('https://github.com/adnanwahab/Helios.AI/tree/main/docs');
   expect(html).toContain('name="helios-mode" content="live"');
   for(const category of catalog.categories)expect(html).toContain(category);
   const script=html.match(/<script>([\s\S]*?)<\/script>/)[1];

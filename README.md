@@ -152,8 +152,8 @@ Helios AI is a civic tool that reads what everyone in a community says they need
 
 ## What's in this repo
 
-- `index.html` — Helios Loops: citizen (express → synthesize → decide) and government preview (understand → evaluate → respond → measure). Private journal text stays in the page; public proposal submission is explicit; preview positions and government feedback stay local.
-- [Archived experiences](docs/experiences.md) — the former multi-tab dashboard and demo routes, hidden from the new homepage.
+- `index.html` — Three-lane constitution workbench with live typing, deduplicated sample clauses, advisory votes and moderated comments; Helios Loops: citizen (express → synthesize → decide) and government preview (understand → evaluate → respond → measure). Private journal text stays in the page; public proposal submission is explicit; preview positions and government feedback stay local.
+- [Archived experiences](docs/experiences.md) — the former multi-tab dashboard and demo routes, accessible through the top-right **Docs** drawer and footer archive link without cluttering the main workflow.
 - `helios_ai_landing_page.html` — the Helios AI landing page
 - `helios_hippie_landing.html` — HeliosAI hippie-style landing page ("8 billion people, one big circle")
 - `helios_fork.html` — Fork Helios page with GitHub fork button, setup instructions and static preview (`/embed/fork`)
