@@ -145,6 +145,17 @@ try {
       await page.screenshot({path:join(output,'grid-story-mobile.png'),animations:'disabled'});
       await page.locator('#story-close').click();
       await page.setViewportSize({width:1440,height:900});
+      await page.goto(base + '/grid?story=population', {waitUntil:'domcontentloaded'});
+      if (await page.locator('#population-chamber').count()) {
+        await page.locator('#population-chamber').waitFor({state:'visible'});
+        await page.locator('#population-chamber').scrollIntoViewIfNeeded();
+        await page.screenshot({path:join(output,'grid-population-desktop.png'),animations:'disabled'});
+        await page.setViewportSize({width:390,height:844});
+        await page.locator('#population-chamber').scrollIntoViewIfNeeded();
+        await page.screenshot({path:join(output,'grid-population-mobile.png'),animations:'disabled'});
+        await page.locator('#story-close').click();
+        await page.setViewportSize({width:1440,height:900});
+      }
     }
     await page.locator('#generate').click({timeout:15000});
     await page.locator('[data-preset="all"]').click();
