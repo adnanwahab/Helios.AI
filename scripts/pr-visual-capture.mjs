@@ -131,6 +131,14 @@ try {
     await page.screenshot({path: join(output, 'constitution-mobile.png'), fullPage: true, animations: 'disabled'});
     await page.setViewportSize({width:1440,height:900});
   }
+  if (await page.locator('#mystery-link').count()) {
+    await page.goto(base + '/public/mystery.html',{waitUntil:'domcontentloaded'});
+    await page.locator('#scene-title').waitFor({state:'visible'});
+    await page.screenshot({path:join(output,'mystery.png'),animations:'disabled'});
+    for(const next of ['ledger','receipts','import','decision'])await page.locator('[data-next="'+next+'"]').click();
+    await page.screenshot({path:join(output,'mystery-evidence.png'),animations:'disabled'});
+    await page.goto(base + '/', {waitUntil:'domcontentloaded'});
+  }
   const mailTab = page.locator('#tab-mail');
   if (await mailTab.count()) {
     // Never unlock the operator console or enter any credentials.

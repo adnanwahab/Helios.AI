@@ -9,7 +9,7 @@ test('Docs drawer and three-lane workbench stay private in practice; matching is
  await expect(page.locator('#review-title')).toBeVisible();
  await page.locator('#docs-open').click();
  await expect(page.locator('#docs-drawer')).toBeVisible();
- await expect(page.locator('#docs-links a')).toHaveCount(33);
+ await expect(page.locator('#docs-links a')).toHaveCount(34);
  await page.locator('#docs-search').fill('morphlab');
  await expect(page.locator('#docs-links a')).toHaveCount(2);
  await page.keyboard.press('Escape');await expect(page.locator('#docs-drawer')).toBeHidden();
@@ -59,7 +59,7 @@ test('Docs opens a full archive with one toggled iframe and preserves the journa
  await expect(page.locator('iframe')).toHaveCount(0);
  await page.locator('#docs-open').click();
  await expect(page.locator('#docs-drawer')).toHaveAttribute('data-view','tabs');
- await expect(page.locator('#docs-links a')).toHaveCount(33);
+ await expect(page.locator('#docs-links a')).toHaveCount(34);
  await expect(page.locator('#docs-frame')).toHaveCount(0);
  await page.locator('#docs-links a[data-experience="Neighborhood Consensus"]').click();
  await expect(page.locator('#docs-current')).toHaveText('Neighborhood Consensus');
