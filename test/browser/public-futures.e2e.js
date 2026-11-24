@@ -1,0 +1,38 @@
+import {test,expect} from '@playwright/test';
+test('HGA-090 links to the standalone futures experience',async({page,context})=>{
+ await page.goto('/');
+ await expect(page.locator('#law-futures-title')).toHaveText('One city. 100 futures.');
+ await expect(page.locator('#law-tiles .law-tile')).toHaveCount(100);
+ await page.locator('#law-search').fill('HGA-090');
+ await page.locator('[data-law="HGA-090"]').click();
+ const link=page.locator('#law-assembly-selected');
+ await expect(link).toHaveText('Explore 100 possible futures ↗');
+ await expect(link).toHaveAttribute('href','./public/helios-futures.html');
+ const popupPromise=context.waitForEvent('page');await link.click();const popup=await popupPromise;
+ try{await expect(popup.locator('.world')).toHaveCount(100);}finally{await popup.close()}
+ await page.locator('#law-search').fill('HGA-012');await page.locator('[data-law="HGA-012"]').click();
+ await expect(link).toHaveAttribute('href','./public/helios-law-assembly.html#homes');
+ await page.locator('#law-search').fill('HGA-001');await page.locator('[data-law="HGA-001"]').click();
+ await expect(link).toBeHidden();
+});
+test('100 scenarios, assumptions, baseline comparison and reset work on desktop and mobile',async({page})=>{
+ await page.emulateMedia({reducedMotion:'reduce'});
+ const errors=[],writes=[];page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(r.method()!=='GET')writes.push(r.url())});
+ await page.goto('/public/helios-futures.html');
+ await expect(page.locator('.world')).toHaveCount(100);
+ await page.locator('nav a[href="#decisions"]').click();
+ await page.locator('.world').nth(36).click();
+ await expect(page.locator('#selection')).toContainText('Future 37');
+ await page.locator('#housing').fill('90');
+ await page.locator('a[href="#outcomes"]').last().click();
+ const intervention=await page.locator('#metrics').innerText();
+ await page.locator('#baseline').click();
+ await expect(page.locator('#metrics b')).toHaveText(['100','100','100','100']);
+ await page.locator('#future').click();
+ await expect(page.locator('#metrics')).toHaveText(intervention);
+ await page.setViewportSize({width:390,height:844});
+ await page.locator('nav a[href="#decisions"]').click();
+ await page.locator('#reset').click();await expect(page.locator('#selection')).toContainText('Future 01');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ expect(errors).toEqual([]);expect(writes).toEqual([]);
+});

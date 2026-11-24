@@ -33,6 +33,8 @@ export const SCHEMA = [
   'CREATE TABLE IF NOT EXISTS versions(id TEXT PRIMARY KEY, law_id TEXT NOT NULL REFERENCES laws(id), number INTEGER NOT NULL, content TEXT NOT NULL, created_at TEXT NOT NULL, amendment_id TEXT, UNIQUE(law_id, number))',
   "CREATE TABLE IF NOT EXISTS amendments(id TEXT PRIMARY KEY, law_id TEXT NOT NULL REFERENCES laws(id), base_version TEXT NOT NULL REFERENCES versions(id), proposed TEXT NOT NULL, reason TEXT NOT NULL, author TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'proposed', created_at TEXT NOT NULL, accepted_version TEXT REFERENCES versions(id))",
   'CREATE INDEX IF NOT EXISTS amendment_law ON amendments(law_id, created_at)',
+  "CREATE TABLE IF NOT EXISTS law_votes(law_id TEXT NOT NULL REFERENCES laws(id), version_id TEXT NOT NULL REFERENCES versions(id), actor TEXT NOT NULL, position TEXT NOT NULL CHECK(position IN ('support','oppose','unsure')), updated_at TEXT NOT NULL, PRIMARY KEY(law_id,version_id,actor))",
+  'CREATE INDEX IF NOT EXISTS law_vote_version ON law_votes(law_id,version_id,position)',
   'CREATE TABLE IF NOT EXISTS receipts(actor TEXT NOT NULL, key TEXT NOT NULL, request_hash TEXT NOT NULL, response TEXT NOT NULL, PRIMARY KEY(actor, key))',
   'CREATE TABLE IF NOT EXISTS limits(key TEXT PRIMARY KEY, count INTEGER NOT NULL, reset_at BIGINT NOT NULL)',
   `CREATE TABLE IF NOT EXISTS email_subscribers(
@@ -91,6 +93,9 @@ export async function openStore(db) {
   await db.transaction(async tx => {
     await lock(tx, 'helios-schema');
     for (const sql of SCHEMA) await tx.query(sql);
+    // The Supabase adapter owns a private schema; enable RLS as defense in
+    // depth. The database owner used by the server retains normal access.
+    if(db.kind==='supabase-postgres')for(const table of ['metadata','sessions','laws','versions','amendments','receipts','limits','email_subscribers','email_inbound','constitution_clauses','constitution_contributions','constitution_votes','constitution_comments','law_votes'])await tx.query('ALTER TABLE '+table+' ENABLE ROW LEVEL SECURITY');
     const prior = (await tx.query('SELECT value FROM metadata WHERE key=$1', ['catalog_hash'])).rows[0];
     if (prior && prior.value !== seedHash) fail(500, 'Catalog seed changed. A reviewed migration is required; stored records were not overwritten.');
     if (!prior) {
@@ -161,9 +166,54 @@ function createStore(db, catalogHash) {
     return detailIn(q, id);
   }
 
+  // Original editorial IDs only. A revision invalidates its predecessor's
+  // current tally, but never deletes the historical advisory positions.
+  const originalIds=new Set(seedCatalog.goals.map(g=>g.id));
+  async function lawBoard(actor=null) {
+    const [laws,votes,updates,own]=await Promise.all([
+      db.query('SELECT l.*, v.content, v.number FROM laws l JOIN versions v ON v.id=l.current_version ORDER BY l.id'),
+      db.query('SELECT lv.law_id,lv.position,COUNT(*) AS n FROM law_votes lv JOIN laws l ON l.id=lv.law_id AND l.current_version=lv.version_id GROUP BY lv.law_id,lv.position'),
+      db.query("SELECT law_id,COUNT(*) AS n FROM amendments GROUP BY law_id"),
+      db.query('SELECT lv.law_id,lv.position FROM law_votes lv JOIN laws l ON l.id=lv.law_id AND l.current_version=lv.version_id WHERE lv.actor=$1',[actor||''])
+    ]);
+    const result=laws.rows.filter(row=>originalIds.has(row.id)).map(row=>({law:publicLaw(row),votes:{support:0,oppose:0,unsure:0},updates:0,myVote:null}));
+    const map=new Map(result.map(row=>[row.law.id,row]));
+    for(const v of votes.rows)if(map.has(v.law_id))map.get(v.law_id).votes[v.position]=Number(v.n);
+    for(const v of updates.rows)if(map.has(v.law_id))map.get(v.law_id).updates=Number(v.n);
+    for(const v of own.rows)if(map.has(v.law_id))map.get(v.law_id).myVote=v.position;
+    return result;
+  }
+  async function lawVoteIn(q,id,input,actor){
+    if(!originalIds.has(id))fail(404,'Original proposal not found.');
+    if(!input||Array.isArray(input)||typeof input!=='object'||Object.keys(input).some(k=>!['versionId','position'].includes(k))||!['support','oppose','unsure',null].includes(input.position)||typeof input.versionId!=='string')fail(400,'Choose a position and current version.');
+    const row=await currentRow(q,id,{forUpdate:true});
+    if(!row||row.current_version!==input.versionId)fail(409,'The proposal was revised. Reload and review the new wording before voting.');
+    if(input.position===null)await q.query('DELETE FROM law_votes WHERE law_id=$1 AND version_id=$2 AND actor=$3',[id,input.versionId,actor]);
+    else await q.query('INSERT INTO law_votes(law_id,version_id,actor,position,updated_at) VALUES($1,$2,$3,$4,$5) ON CONFLICT(law_id,version_id,actor) DO UPDATE SET position=EXCLUDED.position,updated_at=EXCLUDED.updated_at',[id,input.versionId,actor,input.position,new Date().toISOString()]);
+    return {id,versionId:input.versionId,position:input.position};
+  }
+  async function lawUpdateIn(q,id,input,actor){
+    if(!originalIds.has(id))fail(404,'Original proposal not found.');
+    if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).some(k=>!['versionId','goal','implementation','safeguards','reason','consent'].includes(k))||input.consent!==true)fail(400,'Explicit consent to publish the proposed update is required.');
+    for(const [key,max] of [['goal',4000],['implementation',6000],['safeguards',4000],['reason',3000]])if(typeof input[key]!=='string'||!input[key].trim()||input[key].length>max)fail(400,'Complete '+key+' (maximum '+max+' characters).');
+    const row=await currentRow(q,id,{forUpdate:true});
+    if(!row||row.current_version!==input.versionId)fail(409,'This proposal was revised. Reload before suggesting an update.');
+    const prior=JSON.parse(row.content);
+    const proposal={title:prior.title,category:prior.category,sharedGoal:input.goal.trim(),illustrativeLocalOption:input.implementation.trim(),risksAndSafeguards:input.safeguards.trim(),suggestedMeasures:prior.suggestedMeasures};
+    return amendIn(q,id,{baseVersionId:input.versionId,reason:input.reason,proposal},actor);
+  }
+  async function lawHistory(id){
+    if(!originalIds.has(id))fail(404,'Original proposal not found.');
+    const detail=await detailIn(db,id);
+    const votes=(await db.query('SELECT version_id,position,COUNT(*) AS n FROM law_votes WHERE law_id=$1 GROUP BY version_id,position',[id])).rows;
+    const map=new Map(detail.versions.map(v=>[v.id,{support:0,oppose:0,unsure:0}]));
+    for(const row of votes)if(map.has(row.version_id))map.get(row.version_id)[row.position]=Number(row.n);
+    return {...detail,versions:detail.versions.map(v=>({...v,votes:map.get(v.id)}))};
+  }
   return {
     db,
     catalogHash,
+    lawBoard, lawVoteIn, lawUpdateIn, lawHistory,
     constitution: constitutionStore(db, Problem),
     async catalog() {
       const rows = (await db.query('SELECT l.*, v.content, v.number FROM laws l JOIN versions v ON v.id = l.current_version ORDER BY l.id')).rows;
