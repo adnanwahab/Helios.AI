@@ -125,6 +125,25 @@ try {
   } else {
     console.log('Mail tab is absent in this historical PR; skipping that screenshot.');
   }
+  await page.goto(base + '/grid', {waitUntil:'domcontentloaded'});
+  if (await page.locator('#generate').count()) {
+    if (await page.locator('#story-open').count()) {
+      await page.locator('#story-open').click();
+      await page.locator('#story-modal').waitFor({state:'visible'});
+      await page.screenshot({path:join(output,'grid-story-desktop.png'),animations:'disabled'});
+      await page.setViewportSize({width:390,height:844});
+      await page.screenshot({path:join(output,'grid-story-mobile.png'),animations:'disabled'});
+      await page.locator('#story-close').click();
+      await page.setViewportSize({width:1440,height:900});
+    }
+    await page.locator('#generate').click({timeout:15000});
+    await page.locator('[data-preset="all"]').click();
+    await page.locator('#inspect').click();
+    await page.locator('[data-prompt]').first().click();
+    await page.screenshot({path:join(output,'grid-desktop.png'),fullPage:true,animations:'disabled'});
+    await page.setViewportSize({width:390,height:844});
+    await page.screenshot({path:join(output,'grid-mobile.png'),fullPage:true,animations:'disabled'});
+  }
   console.log('Captured desktop and mobile screenshots from ' + (remote ? 'Netlify deployment' : 'local PR build'));
 } finally {
   await browser?.close().catch(() => {});
