@@ -56,6 +56,17 @@
   to = "/world_plan_simulator.html"
   status = 200
 
+# Vote Radar: simulated daily votes on a radar-style US dot map (sample data).
+[[redirects]]
+  from = "/radar"
+  to = "/vote_radar.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/radar"
+  to = "/vote_radar.html"
+  status = 200
+
 [[redirects]]
   from = "/embed/goals"
   to = "/helios_100_frontend_demo.html"

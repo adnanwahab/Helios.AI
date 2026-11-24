@@ -189,6 +189,7 @@
         <button class="tab" id="tab-hippie" type="button" role="tab" aria-selected="false" aria-controls="view-hippie">HeliosAI · Hippie</button>
         <button class="tab" id="tab-notion" type="button" role="tab" aria-selected="false" aria-controls="view-notion">Plan · Notion</button>
         <button class="tab" id="tab-world-plan" type="button" role="tab" aria-selected="false" aria-controls="view-world-plan">World Plan Simulator</button>
+        <button class="tab" id="tab-radar" type="button" role="tab" aria-selected="false" aria-controls="view-radar">Vote Radar</button>
         <button class="tab" id="tab-demo" type="button" role="tab" aria-selected="false" aria-controls="view-demo">100 Shared Goals</button>
         <button class="tab" id="tab-flags" type="button" role="tab" aria-selected="false" aria-controls="view-flags">Support Every Country</button>
         <button class="tab" id="tab-unified" type="button" role="tab" aria-selected="false" aria-controls="view-unified">Helios Unified</button>
@@ -235,6 +236,14 @@
         class="view"
         title="World Plan Simulator"
         src="/embed/world-plan"
+        loading="lazy"
+      ></iframe>
+
+      <iframe
+        id="view-radar"
+        class="view"
+        title="Vote Radar"
+        src="/embed/radar"
         loading="lazy"
       ></iframe>
 
@@ -313,6 +322,7 @@
       hippie: document.getElementById('tab-hippie'),
       notion: document.getElementById('tab-notion'),
       worldPlan: document.getElementById('tab-world-plan'),
+      radar: document.getElementById('tab-radar'),
       demo: document.getElementById('tab-demo'),
       flags: document.getElementById('tab-flags'),
       unified: document.getElementById('tab-unified'),
@@ -328,6 +338,7 @@
       hippie: document.getElementById('view-hippie'),
       notion: document.getElementById('view-notion'),
       worldPlan: document.getElementById('view-world-plan'),
+      radar: document.getElementById('view-radar'),
       demo: document.getElementById('view-demo'),
       flags: document.getElementById('view-flags'),
       unified: document.getElementById('view-unified'),
@@ -350,6 +361,7 @@
     tabs.hippie.addEventListener('click', () => activate('hippie'));
     tabs.notion.addEventListener('click', () => activate('notion'));
     tabs.worldPlan.addEventListener('click', () => activate('worldPlan'));
+    tabs.radar.addEventListener('click', () => activate('radar'));
     tabs.demo.addEventListener('click', () => activate('demo'));
     tabs.flags.addEventListener('click', () => activate('flags'));
     tabs.unified.addEventListener('click', () => activate('unified'));
