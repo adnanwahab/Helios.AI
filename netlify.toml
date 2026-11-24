@@ -108,3 +108,14 @@
   from = "/eight-billion"
   to = "/eight_billion_map.html"
   status = 200
+
+# Rainbow Brain Realms: one responsive page for TV/console, laptop, tablet and phone.
+[[redirects]]
+  from = "/rainbow-brain"
+  to = "/rainbow_brain.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/rainbow-brain"
+  to = "/rainbow_brain.html"
+  status = 200

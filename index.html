@@ -199,6 +199,7 @@
         <button class="tab" id="tab-mail" type="button" role="tab" aria-selected="false" aria-controls="view-mail">Mail · Resend</button>
         <button class="tab" id="tab-ycr" type="button" role="tab" aria-selected="false" aria-controls="view-ycr">YC Research</button>
         <button class="tab" id="tab-fork" type="button" role="tab" aria-selected="false" aria-controls="view-fork">Fork Helios</button>
+        <button class="tab" id="tab-rainbow" type="button" role="tab" aria-selected="false" aria-controls="view-rainbow">Rainbow Brain Realms</button>
       </nav>
       <iframe
         class="signup"
@@ -318,6 +319,15 @@
         src="/embed/fork"
         loading="lazy"
       ></iframe>
+      <iframe
+        id="view-rainbow"
+        class="view"
+        title="Rainbow Brain Realms"
+        src="/embed/rainbow-brain"
+        loading="lazy"
+        allow="gamepad; fullscreen"
+        allowfullscreen
+      ></iframe>
     </main>
 
     <footer class="byline">
@@ -341,7 +351,8 @@
       pensieve: document.getElementById('tab-pensieve'),
       mail: document.getElementById('tab-mail'),
       ycr: document.getElementById('tab-ycr'),
-      fork: document.getElementById('tab-fork')
+      fork: document.getElementById('tab-fork'),
+      rainbow: document.getElementById('tab-rainbow')
     };
 
     const views = {
@@ -358,7 +369,8 @@
       pensieve: document.getElementById('view-pensieve'),
       mail: document.getElementById('view-mail'),
       ycr: document.getElementById('view-ycr'),
-      fork: document.getElementById('view-fork')
+      fork: document.getElementById('view-fork'),
+      rainbow: document.getElementById('view-rainbow')
     };
 
     function activate(which) {
@@ -383,6 +395,7 @@
     tabs.mail.addEventListener('click', () => activate('mail'));
     tabs.ycr.addEventListener('click', () => activate('ycr'));
     tabs.fork.addEventListener('click', () => activate('fork'));
+    tabs.rainbow.addEventListener('click', () => activate('rainbow'));
   </script>
 </body>
 </html>
