@@ -154,6 +154,24 @@ try {
     await page.setViewportSize({width:390,height:844});
     await page.screenshot({path:join(output,'grid-mobile.png'),fullPage:true,animations:'disabled'});
   }
+  // Historical preview backfills may not have the new public page.
+  await page.goto(base + '/', {waitUntil:'domcontentloaded'});
+  if (await page.locator('.law-assembly-feature').count()) {
+    await page.setViewportSize({width:1440,height:900});
+    await page.locator('.law-assembly-feature').scrollIntoViewIfNeeded();
+    await page.screenshot({path:join(output,'law-assembly-index.png'),animations:'disabled'});
+    await page.goto(base + '/public/helios-law-assembly.html',{waitUntil:'domcontentloaded'});
+    for (const id of ['homes','places','water']) {
+      const scene=page.locator('#'+id);
+      await scene.locator('.finish').click();
+      await page.waitForFunction(id=>document.querySelector('#'+id+' .pct')?.textContent==='100% ASSEMBLED',id);
+      await page.screenshot({path:join(output,'law-assembly-'+id+'.png'),animations:'disabled'});
+    }
+    await page.setViewportSize({width:390,height:844});
+    await page.locator('#water .replay').click();
+    await page.waitForFunction(()=>document.querySelector('#water .pct')?.textContent==='00% ASSEMBLED');
+    await page.screenshot({path:join(output,'law-assembly-mobile.png'),animations:'disabled'});
+  }
   console.log('Captured desktop and mobile screenshots from ' + (remote ? 'Netlify deployment' : 'local PR build'));
 } finally {
   await browser?.close().catch(() => {});
