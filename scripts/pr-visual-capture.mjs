@@ -183,6 +183,17 @@ try {
     await page.waitForFunction(()=>document.querySelector('#water .pct')?.textContent==='00% ASSEMBLED');
     await page.screenshot({path:join(output,'law-assembly-mobile.png'),animations:'disabled'});
   }
+  await page.goto(base + '/lunch', {waitUntil:'domcontentloaded'});
+  if (await page.locator('#restaurants [data-place="yark"]').count()) {
+    await page.locator('[data-place="yark"]').click();
+    await page.locator('[data-place="phat"]').click();
+    await page.locator('[data-place="yark"]').click();
+    await page.locator('[data-place="yark"]').click();
+    await page.setViewportSize({width:1440,height:900});
+    await page.screenshot({path:join(output,'lunch-desktop.png'),fullPage:true,animations:'disabled'});
+    await page.setViewportSize({width:390,height:844});
+    await page.screenshot({path:join(output,'lunch-mobile.png'),fullPage:true,animations:'disabled'});
+  }
   // Public futures fullscreen story, when present in this preview.
   await page.goto(base+'/',{waitUntil:'domcontentloaded'});
   if(await page.locator('#law-futures-title').count()){
