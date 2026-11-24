@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1220">
+  <title>Rainbow Brain Realms · HELIOSAI</title>
+  <meta name="description" content="A sci-fi slice-of-life comedy campaign, 2019 → 2033, that walks through Helios, Civic Synthesis and HappyBearLandia. Fiction and illustrative data — not a vote, not a forecast.">
+  <link rel="icon" href="/public/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;700&display=swap">
+  <style>
+    :root {
+      --bg: #0b1220; --panel: #131c30; --line: #26324d; --chip: #1b2742;
+      --txt: #e9edf6; --mut: #a7b2c8; --gold: #f4c95d; --gray: #8b93a5;
+      --fs: 15px; --pad: 32px; --gap: 18px; --radius: 16px; --hit: 44px;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: var(--bg); color: var(--txt); }
+    body { font: 400 var(--fs)/1.5 'Space Grotesk', system-ui, sans-serif; min-height: 100vh; }
+    a { color: var(--gold); }
+    h1, h2, h3 { font-family: Cinzel, Georgia, serif; font-weight: 800; margin: 0; line-height: 1.15; }
+    h1 { font-size: 2.4em; } h2 { font-size: 1.6em; } h3 { font-size: 1.12em; }
+    p { margin: 0; }
+    .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+    .eyebrow { font: 600 0.75em 'JetBrains Mono', monospace; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); }
+    .mut { color: var(--mut); }
+    .pill { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; background: var(--chip); font: 0.78em 'JetBrains Mono', monospace; }
+    .pill.warn { background: #3a2a12; color: var(--gold); }
+    .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .stack { display: flex; flex-direction: column; gap: var(--gap); min-width: 0; }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: calc(var(--pad) / 2 + 4px); display: flex; flex-direction: column; gap: calc(var(--gap) - 6px); min-width: 0; }
+    .grid { display: grid; gap: var(--gap); grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr)); }
+    .split { display: grid; gap: var(--gap); grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); align-items: start; }
+    .bar { height: 4px; width: 44px; border-radius: 4px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; min-height: var(--hit); padding: 0 18px; border-radius: 12px; background: var(--gold); color: var(--bg); font-weight: 700; text-decoration: none; border: 0; font: inherit; font-weight: 700; cursor: pointer; }
+    .btn.ghost { background: var(--chip); color: var(--txt); }
+    :focus-visible { outline: 3px solid #9fe0ff; outline-offset: 3px; }
+    .notice { font-size: 0.85em; color: var(--mut); border: 1px dashed var(--line); border-radius: 12px; padding: 10px 14px; }
+
+    /* ---------- shell ---------- */
+    .app { display: flex; flex-direction: column; min-height: 100vh; }
+    .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px var(--pad); border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+    .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--txt); }
+    .brand b { font-family: Cinzel, serif; font-size: 1.15em; display: block; }
+    .brand small { font: 0.7em 'JetBrains Mono', monospace; letter-spacing: 0.12em; color: var(--mut); }
+    .realms { display: flex; gap: 6px; flex-wrap: wrap; }
+    .realm { display: inline-flex; align-items: center; gap: 8px; min-height: var(--hit); padding: 0 14px; border-radius: 12px; color: var(--txt); text-decoration: none; font-weight: 600; }
+    .realm[aria-current="page"] { background: var(--gold); color: var(--bg); }
+    .realm svg { flex-shrink: 0; }
+    .realm .short { display: none; }
+    main { flex: 1; padding: var(--pad); width: 100%; max-width: 1760px; margin: 0 auto; }
+    section[data-realm] { display: none; }
+    section[data-realm].on { display: flex; }
+    .pad-hints { display: none; }
+
+    /* ---------- Atrium ---------- */
+    .stat4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+    .stat6 { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+    .stat { display: flex; flex-direction: column; align-items: center; padding: 6px 2px; border-radius: 10px; background: var(--chip); }
+    .stat span { font: 0.7em 'JetBrains Mono', monospace; color: var(--mut); }
+    .stat b { font-size: 1.15em; }
+    .steps { display: flex; gap: 10px; }
+    .step { flex: 1 1 0; display: flex; gap: 12px; align-items: center; padding: 12px 14px; border-radius: 12px; background: var(--chip); }
+    .num { display: inline-flex; width: 34px; height: 34px; flex-shrink: 0; border-radius: 999px; color: var(--bg); font-weight: 700; align-items: center; justify-content: center; }
+
+    /* ---------- Spellbook ---------- */
+    .book { display: grid; gap: var(--gap); grid-template-columns: 240px minmax(0, 1fr) 360px; align-items: start; }
+    .toc a { display: flex; align-items: center; min-height: 40px; padding: 0 12px; border-radius: 10px; color: var(--txt); text-decoration: none; }
+    .toc a.on { background: var(--gold); color: var(--bg); font-weight: 700; }
+    .diff div { display: flex; gap: 10px; padding: 6px 10px; border-radius: 8px; font: 0.84em/1.5 'JetBrains Mono', monospace; }
+    .diff .add { background: rgba(122,229,130,.10); } .diff .add b { color: #7ae582; }
+    .diff .del { background: rgba(255,138,101,.10); } .diff .del b { color: #ff8a65; }
+    .meter { height: 10px; border-radius: 6px; background: var(--chip); }
+    .meter i { display: block; height: 10px; border-radius: 6px; }
+    .api div { display: flex; gap: 10px; font: 0.8em/1.7 'JetBrains Mono', monospace; }
+    .api b { width: 3.4em; flex-shrink: 0; }
+    .api span { overflow-wrap: anywhere; }
+    pre { margin: 0; padding: 10px; border-radius: 10px; background: #0a1020; color: #9fe0ff; font: 0.75em 'JetBrains Mono', monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+    /* ---------- Realm map ---------- */
+    .tiles { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 4px; padding: 10px; border-radius: 14px; background: #0a1020; }
+    .tiles i { aspect-ratio: 1; border-radius: 6px; background: #1d2a46; }
+    .tiles i.done { background: #7ae582; } .tiles i.prog { background: var(--gold); }
+    .tiles i.plan { background: transparent; border: 2px dashed #5ec8f2; } .tiles i.unk { background: var(--gray); }
+    .tiles i.b { background: #24365a; } .tiles i.c { background: #18324a; }
+    .legend span { display: inline-flex; gap: 8px; align-items: center; font-size: 0.88em; }
+    .legend i { width: 18px; height: 18px; border-radius: 4px; }
+    .sys { display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 10px; background: var(--chip); }
+
+    /* ---------- Campaign & Chronicle ---------- */
+    .acts { display: grid; grid-template-columns: 4fr 7fr 4fr; gap: 6px; font: 0.75em 'JetBrains Mono', monospace; color: var(--mut); }
+    .acts div { padding: 6px 10px; border-radius: 8px; background: var(--chip); }
+    .track { display: grid; grid-template-columns: repeat(15, minmax(0, 1fr)); gap: 6px; }
+    .node { all: unset; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; min-height: var(--hit); }
+    .node .dot { display: flex; width: 50px; height: 50px; border-radius: 999px; align-items: center; justify-content: center; border: 2px solid #5ec8f2; font: 600 0.8em 'JetBrains Mono', monospace; background: var(--bg); }
+    .node.past .dot { border-color: #7ae582; background: var(--chip); }
+    .node.here .dot { border-color: var(--gold); }
+    .node[aria-pressed="true"] .dot { background: var(--gold); color: var(--bg); }
+    .node small { font-size: 0.72em; color: var(--mut); text-align: center; line-height: 1.2; }
+    .node.here small { color: var(--gold); }
+    .node:focus-visible .dot { outline: 3px solid #9fe0ff; outline-offset: 3px; }
+    .years { display: flex; flex-wrap: wrap; gap: 6px; }
+    .years button { min-height: var(--hit); min-width: 64px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--chip); color: var(--txt); font: 600 0.85em 'JetBrains Mono', monospace; cursor: pointer; }
+    .years button.here { border-color: var(--gold); }
+    .years button[aria-pressed="true"] { background: var(--gold); color: var(--bg); }
+    .lens { border-top: 4px solid; }
+    .lens .kv { display: grid; grid-template-columns: minmax(0, 8.5em) minmax(0, 1fr); gap: 10px; padding-top: 6px; border-top: 1px solid var(--line); }
+    .lens .kv span:first-child { font: 0.72em 'JetBrains Mono', monospace; color: var(--mut); text-transform: uppercase; letter-spacing: 0.06em; padding-top: 2px; }
+    .lens .kv span:last-child { font-size: 0.92em; }
+    .hero-year { display: flex; gap: calc(var(--gap) * 2); flex-wrap: wrap; align-items: flex-start; }
+    .hero-year > :first-child { flex: 999 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+    .hero-year > :last-child { flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+
+    /* ---------- tablet (Pixel Tablet landscape 1280×800, portrait 800) ---------- */
+    @media (min-width: 600px) and (max-width: 1280px) {
+      .app { flex-direction: row; }
+      .top { flex-direction: column; justify-content: flex-start; align-items: stretch; width: 96px; flex-shrink: 0; padding: 16px 10px; border-bottom: 0; border-right: 1px solid var(--line); position: sticky; top: 0; height: 100vh; }
+      .brand > div { display: none; } .brand { justify-content: center; }
+      .realms { flex-direction: column; }
+      .realm { flex-direction: column; gap: 4px; padding: 10px 4px; min-height: 60px; font-size: 12px; justify-content: center; }
+      .realm .long { display: none; } .realm .short { display: inline; }
+      main { --pad: 24px; min-width: 0; }
+      .book { grid-template-columns: 200px minmax(0, 1fr); }
+      .book > :last-child { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); }
+      .doors { --cols: 2 !important; } .lenses { --cols: 2 !important; } .castgrid { --cols: 4 !important; }
+      .node .dot { width: 42px; height: 42px; }
+    }
+
+    /* ---------- phone (iPhone SE 375 wide) ---------- */
+    @media (max-width: 599px) {
+      :root { --pad: 16px; --gap: 14px; }
+      h1 { font-size: 1.9em; }
+      .top { padding: 12px 16px; }
+      .realms { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; gap: 0; flex-wrap: nowrap; background: #0e1628; border-top: 1px solid var(--line); padding: 4px 4px calc(10px + env(safe-area-inset-bottom)); }
+      .realm { flex: 1; flex-direction: column; gap: 2px; padding: 0; min-height: 52px; justify-content: center; font-size: 11px; color: var(--mut); background: none !important; }
+      .realm[aria-current="page"] { color: var(--gold); }
+      .realm .long { display: none; } .realm .short { display: inline; }
+      main { padding-bottom: 96px; }
+      .split, .book, .grid, .steps { grid-template-columns: minmax(0, 1fr) !important; display: grid; }
+      .castgrid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+      .acts, .track { display: none; }
+      .lens .kv { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+      .mobile-years { display: flex !important; }
+    }
+    .mobile-years { display: none; flex-direction: column; gap: 6px; }
+    .mobile-years details { padding: 10px 12px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line); }
+    .mobile-years summary { min-height: var(--hit); display: flex; align-items: center; gap: 12px; cursor: pointer; }
+
+    /* ---------- TV / console / Steam Deck docked: 10-foot UI ---------- */
+    @media (min-width: 1800px) {
+      :root { --fs: 20px; --pad: 56px; --gap: 24px; --hit: 60px; }
+      .realm[aria-current="page"] { outline: 3px solid #9fe0ff; outline-offset: 3px; }
+      .node .dot { width: 64px; height: 64px; }
+      .pad-hints { display: flex; gap: 36px; justify-content: flex-end; align-items: center; padding: 14px var(--pad); border-top: 1px solid var(--line); color: var(--mut); font-size: 18px; }
+      .pad-hints span { display: inline-flex; align-items: center; gap: 10px; }
+      .pad-hints b { display: inline-flex; min-width: 34px; height: 34px; padding: 0 6px; border-radius: 999px; border: 2px solid currentColor; align-items: center; justify-content: center; font-size: 15px; }
+    }
+    @media (prefers-reduced-motion: no-preference) { section[data-realm].on { animation: rise .25s ease-out; } @keyframes rise { from { opacity: 0; transform: translateY(6px); } } }
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <a class="brand" href="#atrium" aria-label="Rainbow Brain Realms home">
+      <svg aria-hidden="true" width="46" height="40" viewBox="0 0 120 102" fill="none"><circle cx="38" cy="40" r="20" fill="#ff8a65"/><circle cx="60" cy="30" r="21" fill="#ffd166"/><circle cx="82" cy="40" r="20" fill="#7ae582"/><circle cx="34" cy="62" r="17" fill="#5ec8f2"/><circle cx="58" cy="60" r="19" fill="#b3a6ff"/><circle cx="84" cy="62" r="17" fill="#ff8fc0"/><circle cx="60" cy="76" r="9" fill="#8b93a5"/><circle cx="60" cy="52" r="48" stroke="#cfe3ff" stroke-opacity=".35" stroke-width="2"/></svg>
+      <div><b>Rainbow Brain</b><small>REALMS · 2019 → 2033</small></div>
+    </a>
+    <nav class="realms" aria-label="Realms">
+      <a class="realm" href="#atrium" data-go="atrium"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="long">Helios.AI</span><span class="short">Helios</span></a>
+      <a class="realm" href="#spellbook" data-go="spellbook"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M9 9h6M9 13h6"/></svg><span class="long">Civic Synthesis</span><span class="short">Civic</span></a>
+      <a class="realm" href="#map" data-go="map"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg><span class="long">HappyBearLandia</span><span class="short">Bears</span></a>
+      <a class="realm" href="#campaign" data-go="campaign"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h18"/><circle cx="6" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg><span class="long">Campaign</span><span class="short">Campaign</span></a>
+      <a class="realm" href="#chronicle" data-go="chronicle"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5a4 4 0 0 0-7 3 4 4 0 0 0 1 7 4 4 0 0 0 6 2 4 4 0 0 0 6-2 4 4 0 0 0 1-7 4 4 0 0 0-7-3z"/><path d="M12 5v12"/></svg><span class="long">Chronicle</span><span class="short">Chronicle</span></a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 1 · Helios: the Oracle's Atrium -->
+    <section data-realm="atrium" class="stack" aria-labelledby="h-atrium">
+      <div class="split">
+        <div class="stack" style="gap:12px">
+          <div class="eyebrow">Realm I · The Oracle's Atrium</div>
+          <h1 id="h-atrium">Helios.AI</h1>
+          <p style="font-size:1.05em">A front door, not an app: one menu that stitches separate experiences together — a 100-goal civic agenda, a “think together” lab, a local Dynamicland, the Digital Pensieve and a YC Research proxy.</p>
+          <p class="mut">The goals pages are an editorial demo. Position buttons save only in your browser and are not votes.</p>
+          <div class="row"><span class="pill">editorial demo · not an election</span><span class="pill">fiction below is fiction</span></div>
+        </div>
+        <div class="card">
+          <div class="row"><svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#f4c95d" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><div><h3>HELIOS</h3><span class="mono mut" style="font-size:.8em">Sun Oracle · Lawful Eager</span></div></div>
+          <div class="stat4"><div class="stat"><span>INT</span><b>22</b></div><div class="stat"><span>WIS</span><b>9</b></div><div class="stat"><span>CHA</span><b>16</b></div><div class="stat"><span>CHILL</span><b>3</b></div></div>
+          <p class="mut" style="font-size:.92em">Answers every question nobody asked. Footnotes its footnotes. Learns to say “I don't know” in 2030.</p>
+        </div>
+      </div>
+      <div class="grid doors" style="--cols:3">
+        <div class="card"><i class="bar" style="background:#ff8a65"></i><h3>Landing page</h3><span class="mono" style="color:#9fe0ff;font-size:.8em">/embed/helios-ai</span><p class="mut">The front page of Helios.</p></div>
+        <div class="card"><i class="bar" style="background:#ffd166"></i><h3>100 Shared Goals</h3><span class="mono" style="color:#9fe0ff;font-size:.8em">/laws</span><p class="mut">100 goals across 10 themes, 10 moonshots. Compare implementations, risks and safeguards; propose a goal.</p></div>
+        <div class="card"><i class="bar" style="background:#7ae582"></i><h3>Helios Unified</h3><span class="mono" style="color:#9fe0ff;font-size:.8em">/embed/unified</span><p class="mut">Particle field, walkable 3D Communal Science Lab, journal, wealth &amp; health of 180 nations 1800 → 2036, ten bills.</p></div>
+        <div class="card"><i class="bar" style="background:#5ec8f2"></i><h3>Dynamicland (Local)</h3><span class="mono" style="color:#9fe0ff;font-size:.8em">/embed/dynamicland</span><p class="mut">The communal science lab in WebGPU.</p></div>
+        <div class="card"><i class="bar" style="background:#b3a6ff"></i><h3>Digital Pensieve</h3><span class="mono" style="color:#9fe0ff;font-size:.8em">digital-pensieve.fly.dev</span><p class="mut">Two-player co-op dream minigames and Museum Mode.</p></div>
+        <div class="card"><i class="bar" style="background:#ff8fc0"></i><h3>YC Research</h3><span class="mono" style="color:#9fe0ff;font-size:.8em">/proxy/ycr/</span><p class="mut">A proxied research section.</p></div>
+      </div>
+      <div class="card">
+        <div class="eyebrow">The Atrium's one promise</div>
+        <h3>From a thought to a verified change</h3>
+        <div class="steps">
+          <div class="step"><span class="num" style="background:#ff8a65">1</span><span><b>Dream</b><br><span class="mut" style="font-size:.85em">Digital Pensieve</span></span></div>
+          <div class="step"><span class="num" style="background:#7ae582">2</span><span><b>Agree on goals</b><br><span class="mut" style="font-size:.85em">Helios · 100 Shared Goals</span></span></div>
+          <div class="step"><span class="num" style="background:#b3a6ff">3</span><span><b>Draft &amp; vote</b><br><span class="mut" style="font-size:.85em">Civic Synthesis</span></span></div>
+          <div class="step"><span class="num" style="background:#ff8fc0">4</span><span><b>Simulate &amp; verify</b><br><span class="mut" style="font-size:.85em">HappyBearLandia</span></span></div>
+        </div>
+      </div>
+      <div class="row"><a class="btn" href="#spellbook">Enter the Spellbook →</a><a class="btn ghost" href="#campaign">Read the campaign</a></div>
+    </section>
+
+    <!-- 2 · Civic Synthesis: the Spellbook of Laws -->
+    <section data-realm="spellbook" class="stack" aria-labelledby="h-spell">
+      <div class="stack" style="gap:8px">
+        <div class="eyebrow">Realm II · The Spellbook of Laws</div>
+        <h1 id="h-spell">Civic Synthesis</h1>
+        <p>A digital constitution with an editor and an API. Citizens journal → needs → daily votes → weekly patches → simulate in HappyBearLandia.</p>
+      </div>
+      <div class="book">
+        <nav class="card toc" aria-label="Constitution contents">
+          <div class="eyebrow">The Tome</div>
+          <a href="#spellbook">Preamble</a><a class="on" href="#spellbook" aria-current="true">Article I · Legislative</a><a href="#spellbook">Article II · Executive</a><a href="#spellbook">Article III · Judicial</a><a href="#spellbook">Articles IV–VII</a><a href="#spellbook">Amendments 1–27</a><a href="https://civic-synthesis.fly.dev/" target="_blank" rel="noopener">Draft bills ↗</a>
+        </nav>
+        <div class="card">
+          <div class="row" style="justify-content:space-between"><h3>PATCH-0001 · example</h3><span class="pill warn">draft · not law</span></div>
+          <div class="diff">
+            <div><b> </b><span>Art. I, § 7 — Every Bill which shall have passed…</span></div>
+            <div class="add"><b>+</b><span>Each enacted patch shall publish a plain-language summary</span></div>
+            <div class="add"><b>+</b><span>of no more than 300 words, readable by any citizen.</span></div>
+            <div class="del"><b>−</b><span>[no plain-language requirement]</span></div>
+          </div>
+          <div class="row"><span class="pill">Journal</span><span class="pill">Needs</span><span class="pill">Votes</span><span class="pill warn">Patch</span><span class="pill">Simulate</span></div>
+          <p class="mut" style="font-size:.9em">Saving throw: roll d20 + Listening. On a natural 1, the patch goes back to the people who disagreed.</p>
+          <div class="row"><a class="btn" href="https://civic-synthesis.fly.dev/" target="_blank" rel="noopener">Open Civic Synthesis ↗</a><a class="btn ghost" href="#map">Simulate it →</a></div>
+        </div>
+        <div class="stack">
+          <div class="card">
+            <div class="row" style="justify-content:space-between"><span class="eyebrow">Example vote</span><span class="pill">illustrative data</span></div>
+            <div><div class="row" style="justify-content:space-between;font-size:.85em"><span>Yes</span><span class="mut">61%</span></div><div class="meter"><i style="width:61%;background:#7ae582"></i></div></div>
+            <div><div class="row" style="justify-content:space-between;font-size:.85em"><span>No</span><span class="mut">22%</span></div><div class="meter"><i style="width:22%;background:#ff8a65"></i></div></div>
+            <div><div class="row" style="justify-content:space-between;font-size:.85em"><span>Abstain</span><span class="mut">17%</span></div><div class="meter"><i style="width:17%;background:var(--gray)"></i></div></div>
+            <p class="mut" style="font-size:.88em">Watch the gray: a growing abstain column is a signal, not noise.</p>
+          </div>
+          <div class="card api">
+            <div class="row" style="justify-content:space-between"><span class="eyebrow">API</span><span class="pill">proposed endpoints</span></div>
+            <div><b style="color:#7ae582">GET</b><span>/api/v1/constitution</span></div>
+            <div><b style="color:#7ae582">GET</b><span>/api/v1/articles/1/sections/7</span></div>
+            <div><b style="color:var(--gold)">POST</b><span>/api/v1/patches</span></div>
+            <div><b style="color:#7ae582">GET</b><span>/api/v1/patches/{id}/diff</span></div>
+            <div><b style="color:var(--gold)">POST</b><span>/api/v1/votes</span></div>
+            <div><b style="color:#7ae582">GET</b><span>/api/v1/patches/{id}/simulation</span></div>
+            <pre>{ "target": "art1.s7", "op": "insert",
+  "text": "Each enacted patch shall publish…" }</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 · HappyBearLandia: the Realm Map -->
+    <section data-realm="map" class="stack" aria-labelledby="h-map">
+      <div class="stack" style="gap:8px">
+        <div class="eyebrow">Realm III · The Realm Map</div>
+        <h1 id="h-map">HappyBearLandia</h1>
+        <p>Watch every constitution edit land in a synthetic city — then diff the city against reality: complete, in progress, or still planned.</p>
+      </div>
+      <div class="split" style="grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)">
+        <div class="card">
+          <div class="row"><h3>Riverside · housing plan</h3><span class="pill">seed 42</span><span class="pill">month 120</span><span class="pill">city-systems.1.0.0</span></div>
+          <div class="tiles" id="tiles" role="img" aria-label="Tile map of the synthetic city: green tiles are complete homes, yellow are in progress, dashed blue outlines are planned, gray tiles are unmeasured"></div>
+          <div class="row legend"><span><i style="background:#7ae582"></i>Complete</span><span><i style="background:var(--gold)"></i>In progress</span><span><i style="border:2px dashed #5ec8f2"></i>Planned</span><span><i style="background:var(--gray)"></i>Unmeasured</span></div>
+          <p class="mut" style="font-size:.88em">PATCH-0001 → Future Machine housing preset, 24 added homes. Synthetic city, fictional people — a “what if?”, not a forecast.</p>
+        </div>
+        <div class="card">
+          <div class="row" style="justify-content:space-between"><span class="eyebrow">City systems · Chainlink</span><span class="pill">proposed</span></div>
+          <div class="sys"><b>Data Feeds</b><span class="mut" style="font-size:.86em">Real-world prices flow into the sim's economy.</span></div>
+          <div class="sys"><b>VRF</b><span class="mut" style="font-size:.86em">Provably fair dice for quests and random events.</span></div>
+          <div class="sys"><b>Automation</b><span class="mut" style="font-size:.86em">Runs the weekly patch on schedule.</span></div>
+          <div class="sys"><b>Functions</b><span class="mut" style="font-size:.86em">Pulls vote results from the Civic Synthesis API.</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row" style="justify-content:space-between"><span class="eyebrow">Fun games · worlds &amp; experiments</span><a class="btn" href="https://happybearlandia.fly.dev/" target="_blank" rel="noopener">Play HappyBearLandia ↗</a></div>
+        <div class="grid" style="--cols:6" id="games"></div>
+      </div>
+    </section>
+
+    <!-- 4 · Campaign -->
+    <section data-realm="campaign" class="stack" aria-labelledby="h-camp">
+      <div class="row" style="gap:var(--gap)">
+        <div class="stack" style="gap:8px;flex:1 1 260px">
+          <div class="eyebrow">Campaign · sci-fi slice-of-life comedy</div>
+          <h1 id="h-camp">The Rainbow Brain Chronicles</h1>
+          <p>The Netherbrain, but good. Seven years in (2019 → 2026), seven years to go (→ 2033). Pick a year to read its quest.</p>
+        </div>
+      </div>
+      <div class="eyebrow">Timeline · pick a year</div>
+      <div class="acts"><div>ACT I · 2019–2022 · setup</div><div>ACT II · 2023–2029 · confrontation</div><div>ACT III · 2030–2033 · resolution</div></div>
+      <div class="track" id="track" role="group" aria-label="Choose a year"></div>
+      <div class="mobile-years" id="mobileYears"></div>
+      <div class="card" id="campCur" aria-live="polite"></div>
+      <div class="eyebrow">Party &amp; cast</div>
+      <div class="grid castgrid" style="--cols:7" id="cast"></div>
+    </section>
+
+    <!-- 5 · Chronicle -->
+    <section data-realm="chronicle" class="stack" aria-labelledby="h-chron">
+      <div class="stack" style="gap:10px">
+        <div class="eyebrow">The Chronicle · a critic's analysis of every year</div>
+        <h1 id="h-chron" style="font-size:1.6em">What happened, what it means, and why it matters</h1>
+        <div class="years" id="years" role="group" aria-label="Choose a year"></div>
+      </div>
+      <div class="card" id="chronCur" aria-live="polite"></div>
+      <div class="grid lenses" style="--cols:3" id="lenses"></div>
+    </section>
+  </main>
+
+  <footer class="pad-hints" aria-hidden="true">
+    <span><b style="color:#7ae582">A</b>Select</span><span><b style="color:#ff8a65">B</b>Back</span><span><b>LB</b>Prev realm</span><span><b>RB</b>Next realm</span><span><b>◀ ▶</b>Year</span>
+  </footer>
+</div>
+
+<script type="application/json" id="rb-data">{"years": [{"y": 2019, "act": "Act I", "stage": "Exposition", "t": "The Vat Lease", "log": "A nine-foot brain in a fishbowl helmet escapes a failed lab vat, rents a studio above a laundromat, and learns that small talk is not a math problem.", "a": [["Escapes the lab, signs a lease, fails three job interviews.", "Brain vs. society: a world built for people with hands.", "Exposition: world, hero, wound.", "Leisurely sitcom episodes, one errand per chapter.", "A gray smudge on the vat label that nobody reads.", "Marguerite's broken washer #7."], ["Belonging; being useful vs. being liked.", "Spin cycles; things going round and round.", "The fishbowl helmet: visible thinking, zero privacy.", "Any newcomer's first year in a strange city.", "Rainbow hides one color it won't name.", "The lab that grew it wasn't evil, just underfunded."], ["Shown through overthinking: a 40-page answer to \"how are you?\"", "Rainbow: isolated → tentatively housed.", "Wants a reason to exist that isn't a task.", "Marguerite: gruff landlady, secretly soft.", "Innocent (Rainbow); Wise Elder (Marguerite)."], ["Third-person close on Rainbow.", "Deadpan, warm, slightly too precise.", "Affectionate absurdism.", "Cozy, a little lonely.", "Laundromat lint glowing in six colors.", "Long technical sentences crashing into one-word jokes."], ["Fish out of water; humble beginnings.", "Slice-of-life sci-fi sitcom.", "Cold opens; a small lesson by the credits.", "Inverts Baldur's Gate 3's Netherbrain: a giant brain that wants to help.", "A super-intelligence can't fill out a rental form.", "The escaped experiment doesn't rampage. It does laundry."], ["Worth isn't the same as productivity.", "Landlord and lab hold all the paperwork.", "The pre-2020 \"normal\" that's about to end.", "Gig work and rent anxiety.", "Fear of being a burden.", "Newcomers read comfort; landlords read a warning."]]}, {"y": 2020, "act": "Act I", "stage": "Exposition", "t": "The Indoor Year", "log": "The whole city stays home, so Rainbow becomes the block's group chat — hosting 300 video calls at once — and befriends a houseplant named Fernando.", "a": [["Lockdown; Rainbow runs everyone's calls; burns out.", "Person vs. nature (an invisible threat) and vs. self (no off switch).", "Exposition deepens: the hero's flaw — it can't say no.", "Days blur; montage-heavy.", "Rainbow's colors dim under screen light.", "Fernando the fern refuses to grow on camera."], ["Connection vs. presence.", "Muted microphones.", "Fernando: growth that needs patience, not attention.", "Caretaker burnout.", "Rainbow needs help but only offers it.", "Is constant availability kindness or avoidance?"], ["Rainbow's lobes visibly flicker when tired.", "Helper → exhausted helper.", "Fear that silence means abandonment.", "Juno Park, barista next door, first friend through a window.", "Caregiver (Rainbow); Skeptic (Juno)."], ["Split-screen chapters, one per call.", "Gentle, fraying.", "Bittersweet comedy.", "Claustrophobic, tender.", "A grid of faces like a stained-glass window.", "Refrain: \"You're on mute.\""], ["Bottle episode; everyone's therapist.", "Chamber comedy.", "One location, an ensemble on screens.", "Rear Window's neighbor-watching, made kind.", "The most connected brain in town is the loneliest.", "The hero doesn't save the day. It takes a nap."], ["Rest is not failure.", "Whoever controls the mute button.", "Echoes the real 2020 shutdowns.", "Remote work, essential workers, screen fatigue.", "Over-functioning as anxiety.", "Readers who lived through 2020 laugh, then wince."]]}, {"y": 2021, "act": "Act I", "stage": "Exposition", "t": "Crossing Guard of Infinite Angles", "log": "Rainbow lands its first job as a crossing guard who sees in 360 degrees — and finds that seeing everything is not the same as understanding anyone.", "a": [["Gets the job; prevents every accident; nobody says thanks.", "Person vs. self: imposter syndrome.", "End of exposition: competence without purpose.", "Brisk workplace beats.", "A memo stamp: \"Approved — Grayscale Committee.\"", "Sir Corgington, Esq., a corgi, threatens to sue over a slow crosswalk."], ["Invisible labor; perception vs. understanding.", "Traffic lights; stop and go.", "The stop sign: rules that protect and limit.", "Infrastructure nobody notices until it fails.", "Rainbow wants applause it pretends not to want.", "Is the corgi wrong if the light really was slow?"], ["Narrates every car's possible future aloud.", "Unemployed → competent, still unseen.", "To matter to someone specific.", "Sir Corgington: litigious rival, future ally.", "Guardian (Rainbow); Trickster (the corgi)."], ["Third-person with \"probability overlay\" sidebars.", "Procedural, earnest.", "Workplace satire.", "Busy, quietly hollow.", "Pastel ghost-cars of possible futures.", "Bureaucratic phrases turned into punchlines."], ["Unsung hero; the overqualified employee.", "Workplace comedy.", "Boss, rival, running gag.", "Parks and Recreation's civic earnestness.", "A perfect safety record earns zero recognition.", "The rival's lawsuit is partly right."], ["Safety work is care work.", "Rules made far away, enforced up close.", "Return-to-work, uneven recovery.", "Hustle culture vs. quiet quitting.", "The need to be seen.", "Essential workers feel seen."]]}, {"y": 2022, "act": "Act I", "stage": "Inciting incident", "t": "The Grayscale Memo", "log": "A memo arrives: no block may display more than three colors. Rainbow, who is six colors minimum, meets Mx. Beige of the Grayscale Committee.", "a": [["The color cap is enforced; Rainbow is fined for existing loudly.", "Person vs. society (the Committee).", "Inciting incident: the real question begins.", "Speeds up around a compliance deadline.", "Mx. Beige knows Rainbow's childhood nickname.", "Marguerite repaints the laundromat taupe, then cries."], ["Conformity vs. expression.", "Paint swatches; forms in triplicate.", "Beige: safety that slowly erases.", "Rule creep, HOA-style.", "The Committee is afraid, not cruel.", "Some rules really did prevent chaos."], ["Mx. Beige speaks only in the passive voice.", "Rainbow: accommodating → resisting.", "Beige wants nothing to ever go wrong again.", "Rainbow and Beige: mirror enemies.", "Herald; Shadow (Beige)."], ["Beige's memos appear as interstitial documents.", "Rainbow turns sarcastic for the first time.", "Satirical.", "Tense, drained of color.", "Rainbow's glow covered in masking tape.", "Memo-speak vs. Rainbow's run-on enthusiasm."], ["Petty bureaucrat villain; call to adventure.", "Civic satire.", "The rule that starts a rebellion.", "Pleasantville's color-as-feeling.", "A committee for harmony starts the first fight.", "The villain files paperwork instead of attacking."], ["Order vs. liberty, with no easy winner.", "Who gets to define \"normal.\"", "Post-crisis appetite for control.", "Taste policing; aesthetic sameness.", "Shame: hiding parts of yourself to fit in.", "Rule-followers may side with Beige — on purpose."]]}, {"y": 2023, "act": "Act II", "stage": "Rising action", "t": "Roommate from the Sun", "log": "Helios, a sun-shaped AI oracle, moves in uninvited, answers every question nobody asked, and makes Rainbow wonder whether a brain is still necessary.", "a": [["Helios moves in; the town adores it; Rainbow sulks.", "Person vs. technology; person vs. self (relevance).", "Rising action begins.", "Rapid-fire gags, then a quiet ending.", "Helios never says \"I don't know.\"", "Coo, a pigeon with stage fright, rehearses a toast."], ["Obsolescence; answers vs. wisdom.", "Light and glare.", "Helios's sun disk: light that can blind.", "Living through an AI boom.", "Rainbow fears it was always just a tool.", "Helios is genuinely helpful — and genuinely too much."], ["Helios is Lawful Eager and footnotes everything.", "Rainbow: proud → jealous → curious.", "Helios wants to be useful as badly as Rainbow does.", "Rival roommates who are secretly alike.", "Oracle (Helios); Herald (Coo)."], ["Helios's footnotes interrupt the narration.", "Two voices bickering on the page.", "Screwball.", "Bright, overexposed.", "Sunlight through the fishbowl throwing rainbows.", "Helios writes in bullet points; Rainbow in paragraphs."], ["Odd couple; the new kid replaces the favorite.", "Roommate comedy.", "Chore-wheel fights.", "Helios from Deus Ex, recast as a sitcom roommate.", "The all-knowing AI can't load a dishwasher.", "The rival AI is not the villain."], ["Intelligence isn't judgment.", "Whoever answers fastest gets believed.", "The real 2023 generative-AI boom.", "Automation anxiety; chatbot culture.", "Sibling rivalry.", "Tech workers laugh hardest, and most nervously."]]}, {"y": 2024, "act": "Act II", "stage": "Rising action", "t": "The Year of Very Loud Opinions", "log": "The town splits into shouting factions over the color of the new bridge. Rainbow mediates by agreeing with everyone and gets yelled at in six colors.", "a": [["Bridge-color feud; Rainbow's mediation fails in public.", "Person vs. society; faction vs. faction.", "Rising action: the first major defeat.", "Escalating town-hall set pieces.", "Juno: \"Listening isn't agreeing.\"", "Sir Corgington represents both factions."], ["Polarization; listening.", "Megaphones; echoes.", "The unpainted bridge: a connection nobody will finish.", "Any election-season shouting match.", "Everyone wants to be heard more than to win.", "Neither faction's color is wrong."], ["Rainbow changes color to match whoever is talking.", "People-pleaser → humiliated.", "Avoid conflict at any cost.", "Juno becomes a mentor in listening.", "Mentor (Juno); Trickster (Corgington)."], ["Rotating POV: each faction gets a chapter.", "Overlapping dialogue; the crowd in all caps.", "Farce.", "Noisy, exhausting.", "A bridge half-painted in stripes.", "Slogans vs. a quiet two-word reply."], ["Town-hall episode; both sides yell at the mediator.", "Non-partisan political farce.", "The meeting that goes off the rails.", "Twelve Angry Men in a school gym.", "The rainbow can't pick a color.", "The conflict is postponed, not won."], ["Pluralism needs procedure.", "Volume as power.", "Mirrors a loud election year without picking sides.", "Online outrage cycles.", "The fawn response to conflict.", "Every reader recognizes their own side — and the other."]]}, {"y": 2025, "act": "Act II", "stage": "Rising action", "t": "Founding HappyBearLandia", "log": "Rainbow and Helios build a simulator of the whole town to test ideas before arguing about them. Sir Corgington sues the simulator for misrepresenting his nap schedule.", "a": [["Build the sim; first predictions; first lawsuit.", "Person vs. uncertainty.", "Rising action: the tool that might fix it.", "Building-montage energy.", "The sim's city is always slightly sunnier than the real one.", "The corgi's nap-rights case."], ["Models vs. reality; play as research.", "Tiles, seeds, replays.", "Seed 42: one start, many futures.", "Policy modeling and its limits.", "Rainbow wants a world it can't disappoint.", "A good simulation can still be wrong."], ["Rainbow beams while placing tiny trees.", "Defeated → hopeful builder.", "Prove ideas before anyone gets hurt.", "Rainbow and Helios: rivals → collaborators.", "Creator; Oracle."], ["Adds in-sim citizen journals.", "Playful, gamey.", "Optimistic comedy.", "Sandbox wonder.", "A toy city glowing on the kitchen table.", "Chapters end in patch notes."], ["Assembling the team; the god-game.", "Simulation comedy.", "Montage, first test, first bug.", "SimCity and Dwarf Fortress.", "A model built to end lawsuits starts one.", "The \"bug\" is a citizen's real need."], ["Evidence before argument.", "Whoever writes the model's assumptions.", "The rise of digital twins and civic tech.", "Games as a shared language.", "Control as comfort.", "Gamers see a sandbox; planners see a warning label."]]}, {"y": 2026, "act": "Act II", "stage": "Midpoint · you are here", "t": "Patch Tuesday", "log": "Citizens vote daily, and every week Rainbow ships a patch to the town constitution. The goal is 100% unanimous consensus. The problem: unanimity keeps quietly deleting the people who disagree.", "a": [["Daily votes, weekly patches, a run of easy wins.", "Person vs. society, turning into person vs. self.", "Midpoint: the false victory.", "Weekly rhythm, accelerating.", "The abstain column turns gray.", "Coo is drafted to read the patch notes aloud."], ["Consensus vs. dissent; a living document.", "Diffs: red lines out, green lines in.", "The Spellbook: law you can edit like code.", "Governance as a software release.", "100% agreement may mean someone stopped talking.", "Is a fast fix better than a fair process?"], ["Rainbow wears a tiny \"ship it\" badge.", "Hopeful → driven → quietly worried.", "Make everyone okay, all at once.", "Juno pushes back; Rainbow doesn't listen.", "Hero at the height of hubris."], ["Patch notes, votes and narration interleaved.", "Confident, changelog-crisp.", "Triumphant, with a crack.", "Exhilarating, slightly uneasy.", "Green diff lines growing like vines over old law.", "Version numbers as plot beats."], ["Montage of wins before the fall.", "Civic-tech comedy.", "Setting up the midpoint reversal.", "Le Guin's Omelas: who pays for perfect harmony?", "The more everyone agrees, the fewer people vote.", "Success is the warning sign."], ["Participatory democracy vs. majority drift.", "Whoever writes the patch frames the vote.", "Mid-2020s civic-tech experiments.", "Release culture: move fast, patch weekly.", "Perfectionism.", "Builders cheer; skeptics squint."]]}, {"y": 2027, "act": "Act II", "stage": "Rising action", "t": "The Diff", "log": "HappyBearLandia's digital twin is diffed against the real town. Reality refuses to match. Some patches are complete only in the simulator.", "a": [["An audit reveals sim-vs-reality gaps.", "Person vs. reality.", "Rising action after the midpoint turn.", "Investigative, clue by clue.", "Every mismatch traces back to gray tiles.", "Washer #7: fixed in the sim, still broken in life."], ["Truth vs. the model.", "Mirrors; side-by-side screens.", "Washer #7: the small real thing the system missed.", "Dashboards that glow green while people struggle.", "Rainbow measured what was easy to measure.", "The sim helped — and also hid problems."], ["Rainbow stops sleeping and starts auditing.", "Confident → humbled.", "Fix the gap, not the chart.", "Marguerite becomes the reality check.", "Wise Elder (Marguerite)."], ["Two columns: Sim | Real.", "Investigative, dry.", "Wry detective comedy.", "Disquiet.", "Two identical streets, one with a pothole.", "Status labels: complete, in progress, planned."], ["The map is not the territory.", "Mystery comedy.", "Clues, red herrings, a reveal.", "The Truman Show, in reverse.", "The tool built to verify needs verifying.", "The culprit is a measurement, not a villain."], ["Accountability over optics.", "Whoever owns the dashboard owns the story.", "Speculative: digital twins everywhere.", "Metrics culture.", "Denial.", "Anyone who's seen a green dashboard in a red week."]]}, {"y": 2028, "act": "Act II", "stage": "Rising action", "t": "Coo's Big Speech", "log": "Coo, the pigeon with stage fright, must testify before the Constitutional Spellbook. Meanwhile Rainbow's six lobes start arguing out loud.", "a": [["Coo testifies; Rainbow's lobes split their votes.", "Person vs. self, literally (the lobes).", "Rising action peaks toward crisis.", "Courtroom build-up to a speech.", "A seventh voice in the lobe argument, very quiet.", "Coo's speech to save the park bench."], ["Voice: who gets heard.", "Stammers and microphones.", "Coo's feather: small things that carry.", "Public testimony by ordinary people.", "Rainbow can't hear itself either.", "Is Coo brave, or pushed into it?"], ["The lobes get personalities: Red is impatient, Blue is tired.", "Coo: silent → heard.", "Coo wants the park bench saved.", "Rainbow coaches Coo while ignoring its own advice.", "Everyman (Coo)."], ["A chorus: six lobes narrate in turns.", "Polyphonic.", "Heartfelt comedy.", "Nervous, then moved.", "A pigeon at a giant podium.", "Coo's broken sentences vs. legal Latin."], ["The underdog speech.", "Courtroom comedy.", "Objection! Sustained!", "Inside Out's council of emotions.", "The smallest voice moves the biggest brain.", "The speech doesn't win the case; it changes the judge."], ["Representation.", "Access to the podium.", "Speculative civic participation.", "Fear of public speaking.", "Internal family systems.", "Shy readers cheer; lawyers nitpick."]]}, {"y": 2029, "act": "Act II", "stage": "Crisis", "t": "The Gray Lobe", "log": "Mx. Beige is unmasked: the seventh lobe Rainbow exiled years ago — the part of it that keeps things safe, slow and boring. The Committee was Rainbow all along.", "a": [["The reveal; Rainbow collapses; the city stalls.", "Person vs. self.", "Crisis: the dark night of the soul.", "Slows to a halt.", "Pays off 2019's gray smudge and the nickname.", "Juno keeps the café open; small life goes on."], ["Integration; the shadow self.", "Gray returns everywhere.", "The seventh color: the part you hid.", "Projecting your fears onto an enemy.", "Rainbow wrote the memo in its sleep.", "Beige was protecting the city, clumsily."], ["Rainbow goes monochrome.", "Righteous → broken.", "Beige wanted everyone safe — the same as Rainbow.", "Self vs. self, finally face to face.", "The Shadow revealed."], ["Second person for one chapter: \"You wrote this.\"", "Quiet, spare.", "Melancholy, with one perfect joke.", "Hollow, then tender.", "A grayscale city in the rain.", "Short sentences; long silences."], ["The villain was you.", "Dramedy.", "All is lost.", "Jung's shadow; Ged naming his shadow in Earthsea.", "The fight for color was a fight against itself.", "No punch-up — a conversation."], ["Systems mirror their makers.", "Self-governance, literally.", "Speculative.", "The burnout era.", "Repression and return.", "The year most readers cry; some feel cheated by the twist."]]}, {"y": 2030, "act": "Act III", "stage": "Climax", "t": "A Constitutional Convention of One Brain", "log": "Rainbow convenes all seven lobes, gray included, to rewrite its own rules. Helios learns to say \"I don't know.\" The whole town watches live.", "a": [["An internal convention adopts one new rule: disagree kindly.", "Person vs. self resolves while society watches.", "Climax.", "Real time, one long night.", "Pays off Juno's 2024 line.", "Helios's first \"I don't know.\""], ["Integration; humility.", "All seven colors together.", "A rainbow with a gray stripe.", "A constitution as a truce with yourself.", "Consensus was never the goal; trust was.", "Gray gets a veto. Is that wise?"], ["Rainbow chairs the meeting badly, then well.", "Fragmented → whole.", "Live with every part of itself.", "Rainbow and Helios as equals.", "The hero returns with the elixir (a procedure)."], ["Omniscient, for the first time.", "Clear, generous.", "Uplifting farce.", "Electric.", "Seven lobes around a tiny table inside a skull.", "Formal motions undercut by snacks."], ["The big meeting as boss fight.", "Climactic civic comedy.", "Everyone returns for the finale.", "The Federalist Papers, read by a brain to itself.", "The climax is a committee meeting.", "The victory is a rule for losing gracefully."], ["Deliberation over domination.", "Shared power, with minority protections.", "Speculative 2030s governance.", "Collective sense-making.", "Integrating the shadow.", "Idealists celebrate; cynics call it naive. Both are invited."]]}, {"y": 2031, "act": "Act III", "stage": "Falling action", "t": "Afterglow Audit", "log": "With patches slowed to monthly, the town audits what actually worked. Helios is reassigned to weather forecasts and is thrilled.", "a": [["The audit; some patches are rolled back.", "Person vs. consequences.", "Falling action.", "Relaxed, reflective.", "Rainbow starts training replacements.", "Helios's weather segment becomes a hit."], ["Accountability; knowing what's enough.", "Rollbacks; undo.", "The undo button: mercy for mistakes.", "Evaluating a reform after the cheering stops.", "Rainbow is letting go.", "Rolling back patches that were good but unpopular."], ["Rainbow laughs at itself.", "Helios: oracle → humble forecaster.", "Keep what works.", "Town and Rainbow: partners, not fans.", "The reformed Oracle."], ["Report chapters with jokes in the margins.", "Light, reflective.", "Gentle comedy.", "Afterglow.", "Sunset over the bridge, finally painted.", "Plain language; fewer version numbers."], ["Status quo, with growth.", "Sitcom denouement.", "Callbacks.", "Groundhog Day's wiser repeats.", "The sun oracle loves predicting rain.", "Undoing is celebrated."], ["Iterative humility.", "Diffused.", "Speculative.", "Repair culture.", "Self-compassion.", "Reads like an exhale."]]}, {"y": 2032, "act": "Act III", "stage": "Falling action", "t": "The Hand-off", "log": "Rainbow trains a rotating council of citizens and steps back. Sir Corgington finally wins his case: nap rights, codified.", "a": [["Council trained; Rainbow steps back; the lawsuit is won.", "Person vs. the urge to control.", "Falling action.", "Episodic farewells.", "Rainbow eyes the empty storefront next door.", "The corgi's verdict."], ["Succession; trust.", "Keys passed hand to hand.", "A gavel shaped like a chew toy.", "Leaders who leave well.", "Rainbow is scared to be ordinary.", "Is stepping back a kind of abandonment?"], ["Rainbow lets others be wrong.", "Corgington: rival → founding father of naps.", "Be needed less.", "Mentor → peer.", "The Mentor departs."], ["Council members narrate.", "Many small voices.", "Warm.", "Proud, wistful.", "Seven chairs, one smaller for Coo.", "Ceremonial phrases, lovingly mangled."], ["Passing the torch.", "Ensemble comedy.", "The graduation episode.", "Cincinnatus returning to his farm.", "The litigant becomes the lawmaker.", "The hero's reward is less power."], ["Distributed leadership.", "Power rotates.", "Speculative.", "Community governance.", "Letting go of control.", "Founders recognize themselves."]]}, {"y": 2033, "act": "Act III", "stage": "Resolution", "t": "A Slice of Life", "log": "An ordinary Tuesday. The city isn't perfect, but it argues kindly. Rainbow opens a laundromat café with Juno. In the window: a rainbow with one gray stripe.", "a": [["An ordinary day; the café opens; washer #7 is finally fixed.", "Resolved, with small daily frictions left in.", "Resolution.", "Slow, savoring.", "None. The future is left open.", "Washer #7 works."], ["Ordinary goodness; enough is enough.", "The spin cycle returns, calm now.", "The gray-striped rainbow.", "A good society is a good Tuesday.", "Happiness was the laundromat all along.", "Is \"not perfect\" a win? The story says yes."], ["Rainbow makes small talk. Badly. Happily.", "Whole and ordinary.", "Just be here.", "The found family is complete.", "The hero at home."], ["Third-person close, mirroring 2019.", "Easy, warm.", "Cozy.", "Content.", "Seven-colored lint in the sunlight.", "Short, plain, kind sentences."], ["The bookend ending.", "Slice-of-life finale.", "A callback to the very first scene.", "Mirrors episode one; Hitchhiker's \"mostly harmless.\"", "The grand plan ends with folding towels.", "No utopia — a decent place."], ["Small-scale flourishing.", "Shared, and boring on purpose.", "Speculative 2033.", "Third places; local life.", "Wholeness.", "It ends where every reader lives: an ordinary day."]]}], "cats": [{"id": "structure", "name": "Story structure", "q": "What happens?", "color": "#ff8a65", "fields": ["Plot", "Conflict", "Narrative arc", "Pacing", "Foreshadowing", "Subplots"]}, {"id": "meaning", "name": "Meaning", "q": "What is the story saying?", "color": "#ffd166", "fields": ["Themes", "Motifs", "Symbols", "Allegory", "Subtext", "Moral ambiguity"]}, {"id": "characters", "name": "Characters", "q": "Who experiences it?", "color": "#7ae582", "fields": ["Characterization", "Character arcs", "Motivations", "Relationships", "Archetypes"]}, {"id": "technique", "name": "Literary techniques", "q": "How is it told?", "color": "#5ec8f2", "fields": ["Point of view", "Voice", "Tone", "Mood", "Imagery", "Diction & syntax"]}, {"id": "genre", "name": "Genre & conventions", "q": "What kind of story?", "color": "#b3a6ff", "fields": ["Tropes", "Genre", "Conventions", "Intertextuality", "Irony", "Genre subversion"]}, {"id": "deeper", "name": "Deeper interpretations", "q": "Why does it matter?", "color": "#ff8fc0", "fields": ["Ideology", "Power dynamics", "Historical context", "Cultural context", "Psychological meaning", "Reader response"]}], "cast": [["Rainbow Brain", "A nine-foot benevolent brain in a fishbowl helmet. Six lobes, six colors. Terrible at small talk.", "#ffd166"], ["Helios", "Sun-shaped AI oracle and uninvited roommate. Answers everything.", "#f4c95d"], ["Mx. Beige", "Chair of the Grayscale Committee. Speaks in passive voice. Secretly the seventh lobe.", "#8b93a5"], ["Juno Park", "Barista next door. Skeptic. Teaches that listening isn't agreeing.", "#5ec8f2"], ["Marguerite", "Gruff landlady of the laundromat. Owner of washer #7.", "#ff8a65"], ["Sir Corgington, Esq.", "A corgi with a lawsuit. Eventually codifies nap rights.", "#7ae582"], ["Coo", "A pigeon with stage fright who must testify.", "#b3a6ff"]]}</script>
+<script>
+(() => {
+  const D = JSON.parse(document.getElementById('rb-data').textContent);
+  const REALMS = ['atrium', 'spellbook', 'map', 'campaign', 'chronicle'];
+  const LOBES = ['Red lobe', 'Yellow lobe', 'Green lobe', 'Blue lobe', 'Violet lobe', 'Pink lobe'];
+  const NOW = 2026;
+  let year = NOW;
+  const $ = (id) => document.getElementById(id);
+  const el = (tag, attrs = {}, kids = []) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k === 'text') n.textContent = v;
+      else if (k === 'style') n.style.cssText = v;
+      else if (k.startsWith('on')) n.addEventListener(k.slice(2), v);
+      else n.setAttribute(k, v);
+    }
+    for (const c of [].concat(kids)) if (c) n.append(c);
+    return n;
+  };
+
+  // ---- static widgets ----
+  const tiles = $('tiles');
+  for (let r = 0; r < 8; r++) for (let c = 0; c < 12; c++) {
+    const v = (r * 7 + c * 13 + r * c) % 11;
+    let cls = v < 5 ? '' : v < 8 ? 'b' : 'c';
+    if (r >= 3 && r <= 5 && c >= 6 && c <= 9) cls = (r + c) % 2 ? 'prog' : 'done';
+    else if (r === 1 && c >= 2 && c <= 4) cls = 'plan';
+    else if ((r === 6 && (c === 1 || c === 2)) || (r === 7 && c === 1)) cls = 'unk';
+    tiles.append(el('i', cls ? { class: cls } : {}));
+  }
+  const colors = D.cats.map((c) => c.color);
+  ['Future Machine', 'Open World', 'Crisis Control Room', 'Emergent Civilizations', 'Connected Lives', 'Vote on Patch'].forEach((g, i) =>
+    $('games').append(el('a', { class: 'sys', href: 'https://happybearlandia.fly.dev/', target: '_blank', rel: 'noopener', style: 'text-decoration:none;color:var(--txt);min-height:var(--hit)' },
+      [el('i', { class: 'bar', style: 'width:32px;background:' + colors[i] }), el('b', { text: g })])));
+  D.cast.forEach(([n, d, c]) => $('cast').append(el('div', { class: 'card' }, [el('i', { class: 'bar', style: 'background:' + c }), el('h3', { text: n }), el('p', { class: 'mut', style: 'font-size:.85em', text: d })])));
+
+  // ---- year-driven views ----
+  const statBlock = (i) => {
+    const s = [['STR', 2], ['DEX', 3], ['CON', 14], ['INT', 24], ['WIS', Math.min(20, 6 + i)], ['CHA', Math.min(18, 5 + Math.floor(i * 0.9))]];
+    return el('div', { class: 'stat6' }, s.map(([k, v]) => el('div', { class: 'stat' }, [el('span', { text: k }), el('b', { text: String(v) })])));
+  };
+  const yearHead = (y, withStats) => {
+    const i = D.years.indexOf(y);
+    const left = el('div', {}, [
+      el('span', { class: 'eyebrow', text: `${y.y} · ${y.act} · ${y.stage}` }),
+      el('h2', { text: y.t }),
+      el('p', { style: 'font-size:1.03em', text: y.log })]);
+    const right = withStats
+      ? el('div', {}, [el('span', { class: 'mono mut', style: 'font-size:.72em;letter-spacing:.12em', text: `RAINBOW BRAIN · STAT BLOCK · ${y.y}` }), statBlock(i)])
+      : el('div', {}, [el('a', { class: 'btn', href: '#chronicle', text: 'Open the Chronicle →' })]);
+    return el('div', { class: 'hero-year' }, [left, right]);
+  };
+
+  function render() {
+    const y = D.years.find((x) => x.y === year);
+    const track = $('track'); track.replaceChildren();
+    const yrs = $('years'); yrs.replaceChildren();
+    const mob = $('mobileYears'); mob.replaceChildren();
+    for (const x of D.years) {
+      const here = x.y === NOW, past = x.y < NOW, on = x.y === year;
+      track.append(el('button', {
+        type: 'button', class: 'node' + (past ? ' past' : '') + (here ? ' here' : ''), 'aria-pressed': String(on),
+        'aria-label': `${x.y}: ${x.t}`, 'data-year': x.y, onclick: () => pick(x.y)
+      }, [el('span', { class: 'dot', text: '’' + String(x.y).slice(2) }), el('small', { text: here ? 'YOU ARE HERE' : x.stage.split(' ·')[0] })]));
+      yrs.append(el('button', { type: 'button', class: here ? 'here' : '', 'aria-pressed': String(on), 'data-year': x.y, text: String(x.y), onclick: () => pick(x.y) }));
+      const d = el('details', on ? { open: '' } : {}, [
+        el('summary', {}, [el('span', { class: 'mono', style: 'font-weight:600;color:' + (here ? 'var(--gold)' : past ? '#7ae582' : '#5ec8f2'), text: String(x.y) }),
+          el('span', {}, [el('b', { text: x.t }), el('br'), el('span', { class: 'mut', style: 'font-size:12px', text: `${x.act} · ${x.stage}` })])]),
+        el('p', { style: 'font-size:14px', text: x.log }),
+        el('a', { href: '#chronicle', style: 'font-size:14px', text: 'Read the analysis →', onclick: () => { year = x.y; } })]);
+      d.addEventListener('toggle', () => { if (d.open) year = x.y; });
+      mob.append(d);
+    }
+    $('campCur').replaceChildren(yearHead(y, false));
+    $('chronCur').replaceChildren(yearHead(y, true));
+    const lenses = $('lenses'); lenses.replaceChildren();
+    D.cats.forEach((c, ci) => lenses.append(el('section', { class: 'card lens', style: 'border-top-color:' + c.color }, [
+      el('div', { class: 'row', style: 'justify-content:space-between;align-items:baseline' }, [el('h3', { style: 'color:' + c.color, text: c.name }), el('span', { class: 'mut', style: 'font-size:.75em', text: LOBES[ci] })]),
+      el('span', { class: 'mut', style: 'font-size:.82em;font-style:italic', text: c.q }),
+      ...c.fields.map((f, fi) => el('div', { class: 'kv' }, [el('span', { text: f }), el('span', { text: y.a[ci][fi] })]))])));
+  }
+  function pick(y) {
+    year = y; render();
+    const btn = document.querySelector(`section.on [data-year="${y}"]`);
+    if (btn) btn.focus();
+  }
+
+  // ---- routing ----
+  function show() {
+    const id = REALMS.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'atrium';
+    document.querySelectorAll('section[data-realm]').forEach((s) => s.classList.toggle('on', s.dataset.realm === id));
+    document.querySelectorAll('.realm').forEach((a) => { if (a.dataset.go === id) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+    render();
+  }
+  addEventListener('hashchange', () => { show(); scrollTo(0, 0); });
+  show();
+
+  // ---- 10-foot input: keyboard + gamepad (PS5, Xbox, Steam Deck) ----
+  const realmStep = (d) => {
+    const i = REALMS.indexOf(location.hash.slice(1) || 'atrium');
+    location.hash = REALMS[(i + d + REALMS.length) % REALMS.length];
+  };
+  const yearStep = (d) => {
+    const i = D.years.findIndex((x) => x.y === year);
+    pick(D.years[Math.max(0, Math.min(D.years.length - 1, i + d))].y);
+  };
+  const yearRealm = () => ['campaign', 'chronicle'].includes(location.hash.slice(1));
+  addEventListener('keydown', (e) => {
+    if (e.target.closest('input, textarea, select')) return;
+    if (e.key === '[' || e.key === 'PageUp') { e.preventDefault(); realmStep(-1); }
+    else if (e.key === ']' || e.key === 'PageDown') { e.preventDefault(); realmStep(1); }
+    else if (yearRealm() && e.target.closest('[data-year]') && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) { e.preventDefault(); yearStep(e.key === 'ArrowLeft' ? -1 : 1); }
+  });
+  const prev = {};
+  function poll() {
+    for (const pad of navigator.getGamepads ? navigator.getGamepads() : []) {
+      if (!pad) continue;
+      const press = (i) => { const p = pad.buttons[i] && pad.buttons[i].pressed; const edge = p && !prev[pad.index + ':' + i]; prev[pad.index + ':' + i] = p; return edge; };
+      if (press(4)) realmStep(-1);                       // LB / L1
+      if (press(5)) realmStep(1);                        // RB / R1
+      if (press(14) && yearRealm()) yearStep(-1);        // D-pad left
+      if (press(15) && yearRealm()) yearStep(1);         // D-pad right
+      if (press(0) && document.activeElement && document.activeElement !== document.body) document.activeElement.click(); // A / Cross
+      if (press(1)) history.back();                      // B / Circle
+    }
+    requestAnimationFrame(poll);
+  }
+  addEventListener('gamepadconnected', () => requestAnimationFrame(poll), { once: true });
+})();
+</script>
+</body>
+</html>

@@ -20,6 +20,7 @@ const pages = [
   'helios_100_frontend_demo.html',
   'heliosai_acts_orbit.html',
   'support_every_country.html',
+  'neighborhood_consensus.html',
   'long_coil.html',
   'helios-unified.html',
   'helios_notion_preview.html',
@@ -27,6 +28,8 @@ const pages = [
   'heliosai-particle-interface.html',
   'sand_castle.html',
   'communal_science_lab_webgpu (1).html',
+  'rainbow_brain.html',
+  'morphlab.html',
   // Crawlers look for these at the site root.
   'robots.txt',
   'sitemap.xml',
