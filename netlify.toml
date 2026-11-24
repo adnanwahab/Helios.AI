@@ -99,6 +99,11 @@
   to = "/neighborhood_consensus.html"
   status = 200
 
+[[redirects]]
+  from = "/embed/morphlab"
+  to = "/morphlab.html"
+  status = 200
+
 # Email signup iframe (the form posts to /api/email/subscribe, served by the function).
 [[redirects]]
   from = "/signup"

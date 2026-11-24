@@ -195,6 +195,7 @@
         <button class="tab" id="tab-flags" type="button" role="tab" aria-selected="false" aria-controls="view-flags">Support Every Country</button>
         <button class="tab" id="tab-unified" type="button" role="tab" aria-selected="false" aria-controls="view-unified">Helios Unified</button>
         <button class="tab" id="tab-lab" type="button" role="tab" aria-selected="false" aria-controls="view-lab">Dynamicland (Local)</button>
+        <button class="tab" id="tab-morphlab" type="button" role="tab" aria-selected="false" aria-controls="view-morphlab">MorphLab · WebGPU</button>
         <button class="tab" id="tab-pocket" type="button" role="tab" aria-selected="false" aria-controls="view-pocket">HappyBearLandia Pocket</button>
         <button class="tab" id="tab-pensieve" type="button" role="tab" aria-selected="false" aria-controls="view-pensieve">Digital Pensieve</button>
         <button class="tab" id="tab-mail" type="button" role="tab" aria-selected="false" aria-controls="view-mail">Mail · Resend</button>
@@ -302,6 +303,8 @@
         allowfullscreen
       ></iframe>
 
+      <iframe id="view-morphlab" class="view" title="Helios MorphLab — prompt-to-particle 3D studio" src="/embed/morphlab" loading="lazy"></iframe>
+
       <iframe
         id="view-pensieve"
         class="view"
@@ -348,6 +351,7 @@
   <script>
     const tabs = {
       lab: document.getElementById('tab-lab'),
+      morphlab: document.getElementById('tab-morphlab'),
       heliosAi: document.getElementById('tab-helios-ai'),
       hippie: document.getElementById('tab-hippie'),
       notion: document.getElementById('tab-notion'),
@@ -367,6 +371,7 @@
 
     const views = {
       lab: document.getElementById('view-lab'),
+      morphlab: document.getElementById('view-morphlab'),
       heliosAi: document.getElementById('view-helios-ai'),
       hippie: document.getElementById('view-hippie'),
       notion: document.getElementById('view-notion'),
@@ -393,6 +398,7 @@
     }
 
     tabs.lab.addEventListener('click', () => activate('lab'));
+    tabs.morphlab.addEventListener('click', () => activate('morphlab'));
     tabs.heliosAi.addEventListener('click', () => activate('heliosAi'));
     tabs.hippie.addEventListener('click', () => activate('hippie'));
     tabs.notion.addEventListener('click', () => activate('notion'));

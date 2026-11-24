@@ -28,6 +28,7 @@ const pages = [
   'sand_castle.html',
   'communal_science_lab_webgpu (1).html',
   'rainbow_brain.html',
+  'morphlab.html',
   // Crawlers look for these at the site root.
   'robots.txt',
   'sitemap.xml',
