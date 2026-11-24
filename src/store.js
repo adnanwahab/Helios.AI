@@ -67,6 +67,10 @@ export const SCHEMA = [
     fetch_error TEXT,
     created_at TEXT NOT NULL)`,
   'CREATE INDEX IF NOT EXISTS email_inbound_created ON email_inbound(created_at)',
+  // Immediate auto-reply to inbound mail (see src/email.js autoReply).
+  'ALTER TABLE email_inbound ADD COLUMN IF NOT EXISTS auto_reply_status TEXT',
+  'ALTER TABLE email_inbound ADD COLUMN IF NOT EXISTS auto_reply_id TEXT',
+  'ALTER TABLE email_inbound ADD COLUMN IF NOT EXISTS auto_reply_at BIGINT',
 ];
 
 // Transaction-scoped advisory lock: serializes writers that must not race

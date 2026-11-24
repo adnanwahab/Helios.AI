@@ -2,7 +2,7 @@ import {test, expect} from 'bun:test';
 import {createHmac, randomBytes} from 'node:crypto';
 import {createPGliteDatabase} from '../src/db-pglite.js';
 import {createRuntime} from '../src/runtime.js';
-import {buildMessage, classifyReply, clientIP, emailConfig, normalizeEmail, verifyWebhook} from '../src/email.js';
+import {addressOf, buildAutoReply, buildMessage, classifyReply, clientIP, emailConfig, isAutomated, normalizeEmail, verifyWebhook} from '../src/email.js';
 
 const HOUR = 3600000, DAY = 24 * HOUR;
 const secretBytes = randomBytes(24), secret = 'whsec_' + secretBytes.toString('base64');
@@ -220,7 +220,8 @@ test('inbound webhook verifies signatures, stores replies once, reads intent and
     expect(stored[0].from_address).toBe('ada@example.org');
     expect(stored[0].intent).toBe('yes');
     expect(stored[0].subscriber_id).toBe((await s.row('ada@example.org')).id);
-    expect(s.calls.at(-1).url).toBe(`https://api.resend.com/emails/receiving/${JSON.parse(body).data.email_id}`);
+    expect(s.calls.at(-2).url).toBe(`https://api.resend.com/emails/receiving/${JSON.parse(body).data.email_id}`);
+    expect(s.calls.at(-1).url).toBe('https://api.resend.com/emails');
     const fetches = s.calls.length;
     await post(body, headers);
     expect(s.calls.length).toBe(fetches);
@@ -275,4 +276,88 @@ test('the opening line follows the configured delay', () => {
   expect(opening(72)).toStartWith('Three days ago you signed up for Helios.');
   expect(opening(24)).toStartWith('Yesterday you signed up');
   expect(opening(0.01)).toStartWith('Recently you signed up');
+});
+
+const inbound = s => (body, headers = signedHeaders(body, s.now())) => s.app(new Request('http://localhost/api/email/inbound', {method: 'POST', headers, body}));
+const sends = s => s.calls.filter(c => c.url === 'https://api.resend.com/emails');
+
+test('inbound mail gets an immediate threaded auto-reply, once per message', async () => {
+  const s = await setup({respond: url => (url.includes('/emails/receiving/') ? [200, {subject: 'Question about Helios', text: 'Hi, how do I join?', headers: {}, message_id: '<q1@mail.example>'}] : [200, {id: 're_auto'}])});
+  try {
+    const body = received('Ada Lovelace <Ada@Example.org>', {to: ['Helios <hello@heliosai.lol>'], subject: 'Question about Helios'});
+    const headers = signedHeaders(body, s.now());
+    expect((await inbound(s)(body, headers)).status).toBe(200);
+    const [reply] = sends(s);
+    expect(reply.body.to).toEqual(['ada@example.org']);
+    expect(reply.body.subject).toBe('Re: Question about Helios');
+    expect(reply.body.headers).toMatchObject({'Auto-Submitted': 'auto-replied', 'In-Reply-To': '<q1@mail.example>'});
+    expect(reply.init.headers['Idempotency-Key']).toBe(`helios-autoreply-${JSON.parse(body).data.email_id}`);
+    expect(reply.body.text).toContain('your message arrived');
+    const [row] = await s.q('SELECT from_address, auto_reply_status, auto_reply_id FROM email_inbound');
+    expect(row).toEqual({from_address: 'ada@example.org', auto_reply_status: 'sent', auto_reply_id: 're_auto'});
+    await inbound(s)(body, headers);                       // Resend redelivery
+    expect(sends(s)).toHaveLength(1);
+  } finally { await s.close(); }
+});
+
+test('a yes reply is answered with a one-click link to confirm the vote', async () => {
+  const s = await setup({respond: url => (url.includes('/emails/receiving/') ? [200, {subject: 'Re: Yes, no, or edit', text: 'yes', headers: {}}] : [200, {id: 're_auto'}])});
+  try {
+    await inbound(s)(received('ada@example.org'));
+    const [reply] = sends(s);
+    expect(reply.body.text).toContain('we got your "yes"');
+    expect(reply.body.html).toContain('vote=yes');
+    expect(reply.body.subject).toBe('Re: Yes, no, or edit');
+  } finally { await s.close(); }
+});
+
+test('no auto-reply to robots, lists, ourselves, or unsubscribes; at most a few per sender per day', async () => {
+  let headers = {'auto-submitted': 'auto-replied'}, text = 'Out of office';
+  const s = await setup({respond: url => (url.includes('/emails/receiving/') ? [200, {text, headers, authentication: {dmarc: 'pass'}}] : [200, {id: 're_auto'}])});
+  try {
+    await inbound(s)(received('bob@example.org'));
+    headers = {'list-id': '<news.example.org>'}; await inbound(s)(received('news@example.org'));
+    headers = {}; await inbound(s)(received('noreply@example.org'));
+    await inbound(s)(received('Helios <hello@example.org>'));
+    text = 'STOP'; await inbound(s)(received('cy@example.org'));
+    expect(sends(s)).toHaveLength(0);
+    expect((await s.q('SELECT auto_reply_status AS v FROM email_inbound ORDER BY created_at, id')).map(r => r.v).sort())
+      .toEqual(['skipped_automated', 'skipped_automated', 'skipped_automated', 'skipped_self', 'skipped_unsubscribe']);
+    text = 'hello';
+    for (let i = 0; i < 5; i++) await inbound(s)(received('dee@example.org'));
+    expect(sends(s)).toHaveLength(3);
+    expect(await s.count("SELECT COUNT(*) AS n FROM email_inbound WHERE auto_reply_status = 'skipped_rate_limit'")).toBe(2);
+  } finally { await s.close(); }
+});
+
+test('a failed auto-reply asks Resend to redeliver, and the redelivery sends it', async () => {
+  let down = true;
+  const s = await setup({respond: url => (url.includes('/emails/receiving/') ? [200, {text: 'hi', headers: {}}] : down ? [503, {message: 'down'}] : [200, {id: 're_late'}])});
+  try {
+    const body = received('ada@example.org'), headers = signedHeaders(body, s.now());
+    expect((await inbound(s)(body, headers)).status).toBe(502);
+    down = false;
+    expect((await inbound(s)(body, headers)).status).toBe(200);
+    expect((await s.q('SELECT auto_reply_status AS v FROM email_inbound'))[0].v).toBe('sent');
+    expect(await s.count('SELECT COUNT(*) AS n FROM email_inbound')).toBe(1);
+  } finally { await s.close(); }
+});
+
+test('EMAIL_AUTO_REPLY=0 turns the auto-reply off', async () => {
+  const s = await setup({env: {EMAIL_AUTO_REPLY: '0'}, respond: url => (url.includes('/emails/receiving/') ? [200, {text: 'hi', headers: {}}] : [200, {id: 're'}])});
+  try {
+    await inbound(s)(received('ada@example.org'));
+    expect(sends(s)).toHaveLength(0);
+  } finally { await s.close(); }
+});
+
+test('helpers: display-name addresses and automated-mail detection', () => {
+  expect(addressOf('Ada Lovelace <Ada@Example.org>')).toBe('ada@example.org');
+  expect(addressOf('ada@example.org')).toBe('ada@example.org');
+  expect(isAutomated('ada@example.org', {Precedence: 'bulk'})).toBe(true);
+  expect(isAutomated('ada@example.org', {'Auto-Submitted': 'no'})).toBe(false);
+  expect(isAutomated('mailer-daemon@example.org', {})).toBe(true);
+  const message = buildAutoReply({to: 'a@b.co', subject: 'Re: hi', messageId: 'bad\r\nBcc: x', intent: 'reply', goal: null, config: emailConfig({EMAIL_FROM: 'Helios <hello@example.org>'})});
+  expect(message.subject).toBe('Re: hi');
+  expect(message.headers['In-Reply-To']).toBeUndefined();
 });

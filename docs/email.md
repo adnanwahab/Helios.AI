@@ -5,6 +5,17 @@
 3. A Netlify scheduled function (`netlify/functions/email-tick.mjs`, hourly) sends due emails through Resend.
 4. The email shows one shared goal (default `HGA-078`, *Government Responds and Explains*) with **Yes**, **No** and **Edit** links at the bottom. Each opens the goal's source bill on Civic Synthesis (`https://civic-synthesis.fly.dev/votes?bill=HFL-078&vote=yes|no|edit`), where the person confirms their answer. Clicking a link never records a vote by itself, because mail scanners open links too.
 5. Replies to the email reach Resend's receiving address. Resend calls `/api/email/inbound`; Helios checks the signature, stores the reply and reads its first line as yes / no / edit / unsubscribe / reply.
+6. Every inbound email (a reply, or a new message to an address such as hello@heliosai.lol) gets an **automatic reply within seconds**, sent from the same webhook request. A "yes", "no" or "edit" reply gets a one-click link to confirm that vote on Civic Synthesis, because email answers are not counted as votes. Anything else gets "your message arrived; a person reads every email".
+
+### Auto-reply rules
+
+- Threaded as `Re: <subject>` with `In-Reply-To`, and marked `Auto-Submitted: auto-replied` so other auto-responders don't answer it.
+- Never sent to robots or lists: `Auto-Submitted` other than `no`, `Precedence: bulk/junk/list`, `List-Id`, `List-Unsubscribe`, `X-Autoreply`, `Feedback-ID`, noreply / mailer-daemon / postmaster senders, or our own addresses.
+- Not sent for STOP / unsubscribe replies.
+- At most `EMAIL_AUTO_REPLY_PER_DAY` (default 3) per sender per day, which also stops mail loops.
+- If Resend can't send the reply (outage or rate limit), the webhook answers 502 so Resend redelivers it. The redelivery tries again, and the idempotency key `helios-autoreply-<email_id>` stops a double send.
+- The result is stored on each message in `email_inbound.auto_reply_status`: `sent`, `failed`, `disabled`, `not_configured` or `skipped_*`.
+- `EMAIL_AUTO_REPLY=0` turns it off. It also needs `RESEND_API_KEY` and `EMAIL_FROM`, the same as other sending.
 
 | Path | What it does |
 |---|---|
@@ -46,6 +57,8 @@ Until `RESEND_API_KEY` and `EMAIL_FROM` are set, signups are stored and the sche
 | `EMAIL_DELAY_HOURS` | `72` | Time from signup to the email |
 | `PUBLIC_BASE_URL` | `https://helioshtml.com` | Used in unsubscribe links |
 | `CIVIC_SYNTHESIS_URL` | `https://civic-synthesis.fly.dev` | Where Yes / No / Edit lead |
+| `EMAIL_AUTO_REPLY` | on | Set to `0` to stop automatic replies to inbound mail |
+| `EMAIL_AUTO_REPLY_PER_DAY` | `3` | Most automatic replies one sender gets per day |
 
 ## Throughput
 

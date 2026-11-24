@@ -24,6 +24,9 @@ export function emailConfig(env = process.env) {
     goalId: text(env.EMAIL_GOAL_ID) || 'HGA-078',
     delayMs: Number.isFinite(hours) && hours >= 0 ? Math.round(hours * HOUR) : 72 * HOUR,
     apiBase: url(env.RESEND_API_URL, 'https://api.resend.com'),
+    // Immediate "we got it" reply to inbound mail; EMAIL_AUTO_REPLY=0 turns it off.
+    autoReply: !['0', 'false', 'off', 'no'].includes(text(env.EMAIL_AUTO_REPLY).toLowerCase()),
+    autoReplyPerDay: Math.max(1, Math.floor(Number(env.EMAIL_AUTO_REPLY_PER_DAY) || 3)),
   };
 }
 
@@ -32,6 +35,12 @@ export function normalizeEmail(value) {
   const email = value.trim().toLowerCase();
   if (email.length > 254) return null;
   return /^[a-z0-9.!#$%&'*+/=?^_`{|}~-]{1,64}@(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/.test(email) ? email : null;
+}
+
+// "Ada Lovelace <Ada@Example.org>" → "ada@example.org"; plain addresses pass through normalizeEmail.
+export function addressOf(value) {
+  if (typeof value !== 'string') return null;
+  return normalizeEmail(value.match(/<([^<>]+)>\s*$/)?.[1] ?? value);
 }
 
 // Netlify's edge sets x-nf-client-connection-ip and overwrites any value a client sends.
@@ -141,6 +150,65 @@ ${source ? `<div style="margin-top:10px;font-size:13px;color:#6b7690">Based on $
     text,
     headers: {'List-Unsubscribe': `<${unsubscribe}>`, 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click'},
     tags: [{name: 'campaign', value: 'day3'}, ...(goal?.id ? [{name: 'goal', value: tagSafe(goal.id)}] : [])],
+    ...(config.replyTo ? {reply_to: config.replyTo} : {}),
+  };
+}
+
+// Mail that must never get an automatic answer (RFC 3834): other robots, lists, bounces.
+export function isAutomated(address, headers = {}) {
+  const h = Object.fromEntries(Object.entries(headers || {}).map(([k, v]) => [k.toLowerCase(), String(Array.isArray(v) ? v.join(',') : v ?? '').toLowerCase()]));
+  if (/^(no-?reply|do-?not-?reply|mailer-daemon|postmaster|bounces?|notifications?)([+.@-]|$)/.test(address || '')) return true;
+  if (h['auto-submitted'] && h['auto-submitted'] !== 'no') return true;
+  if (/\b(bulk|junk|list|auto_reply)\b/.test(h.precedence || '')) return true;
+  if (/\b(all|oof|autoreply)\b/.test(h['x-auto-response-suppress'] || '')) return true;
+  return ['list-id', 'list-unsubscribe', 'x-autoreply', 'x-autorespond', 'feedback-id'].some(k => k in h);
+}
+
+export function buildAutoReply({to, subject, messageId, intent, goal, config}) {
+  const base = config.publicUrl;
+  const site = base.replace(/^https?:\/\//, '');
+  const cleanSubject = String(subject || '').replace(/[\r\n]+/g, ' ').trim().slice(0, 180);
+  const vote = ['yes', 'no', 'edit'].includes(intent) ? intent : null;
+  const links = voteLinks(goal, config);
+  const title = goal?.title || 'the shared goal';
+  const lines = vote
+    ? [`Thanks, we got your "${vote}" on ${title}.`,
+      '',
+      'Email replies are read by a person but are not counted as votes. To count it, confirm on Civic Synthesis (one click, no account):',
+      links[vote],
+      '',
+      'Changed your mind? Yes: ' + links.yes,
+      'No: ' + links.no,
+      'Edit: ' + links.edit]
+    : ['Thanks for writing to Helios — your message arrived.',
+      '',
+      'A person reads every email. If it needs an answer, we will reply from this address.',
+      '',
+      `While you wait: browse the 100 Helios laws at ${base}/laws, or vote on today\'s idea at ${links.yes.split('?')[0]}.`];
+  const footer = ['', '— Helios', site, '', 'This is an automatic reply. You only get a few a day, however many emails you send.'];
+  const text = [...lines, ...footer].join('\n');
+  const html = `<!doctype html><html lang="en"><body style="margin:0;padding:24px 14px;background:#f4f1ea;font:16px/1.55 Arial,Helvetica,sans-serif;color:#1d2433">
+<div style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:16px;padding:24px 28px">
+<div style="font:700 14px/1.2 Arial,Helvetica,sans-serif;color:#e8743b;letter-spacing:.04em;margin-bottom:14px">☀ HELIOS</div>
+${vote
+    ? `<p style="margin:0 0 12px">Thanks, we got your <strong>${escapeHtml(vote)}</strong> on <strong>${escapeHtml(title)}</strong>.</p>
+<p style="margin:0 0 16px">Email replies are read by a person but are not counted as votes. To count it, confirm on Civic Synthesis (one click, no account):</p>
+<p style="margin:0 0 18px"><a href="${escapeHtml(links[vote])}" style="display:inline-block;padding:12px 24px;border-radius:999px;background:#0b1220;color:#ffffff;font-weight:700;text-decoration:none">Confirm my ${escapeHtml(vote)}</a></p>
+<p style="margin:0;font-size:14px;color:#6b7690">Changed your mind? <a href="${escapeHtml(links.yes)}">Yes</a> · <a href="${escapeHtml(links.no)}">No</a> · <a href="${escapeHtml(links.edit)}">Edit</a></p>`
+    : `<p style="margin:0 0 12px">Thanks for writing to Helios — your message arrived.</p>
+<p style="margin:0 0 12px">A person reads every email. If it needs an answer, we will reply from this address.</p>
+<p style="margin:0">While you wait: <a href="${escapeHtml(base)}/laws">browse the 100 Helios laws</a>, or <a href="${escapeHtml(links.yes.split('?')[0])}">vote on today's idea</a>.</p>`}
+<p style="margin:20px 0 0;font-size:12px;color:#7b8194">This is an automatic reply. You only get a few a day, however many emails you send.</p>
+</div></body></html>`;
+  const thread = typeof messageId === 'string' && /^<[^<>\s]{3,900}>$/.test(messageId) ? {'In-Reply-To': messageId, References: messageId} : {};
+  return {
+    from: config.from,
+    to: [to],
+    subject: cleanSubject ? (/^re:/i.test(cleanSubject) ? cleanSubject : 'Re: ' + cleanSubject) : 'Thanks for writing to Helios',
+    text, html,
+    // Marks this as an automatic reply so well-behaved responders on the other side don't answer it (RFC 3834).
+    headers: {'Auto-Submitted': 'auto-replied', 'X-Auto-Response-Suppress': 'All', ...thread},
+    tags: [{name: 'campaign', value: 'auto-reply'}],
     ...(config.replyTo ? {reply_to: config.replyTo} : {}),
   };
 }
@@ -282,7 +350,7 @@ export function createEmail({store, origins = [], adminToken = null, config = em
   async function fetchInboundContent(emailId) {
     if (!config.apiKey) { await db.query('UPDATE email_inbound SET fetch_error = $1 WHERE id = $2', ['RESEND_API_KEY is not set', emailId]); return; }
     try {
-      const response = await fetchImpl(`${config.apiBase}/emails/receiving/${encodeURIComponent(emailId)}`, {headers: {'Authorization': 'Bearer ' + config.apiKey}, signal: AbortSignal.timeout(8000)});
+      const response = await fetchImpl(`${config.apiBase}/emails/receiving/${encodeURIComponent(emailId)}`, {headers: {'Authorization': 'Bearer ' + config.apiKey}, signal: AbortSignal.timeout(4000)});
       if (!response.ok) throw Error('Resend returned ' + response.status);
       const received = await response.json();
       const text = typeof received.text === 'string' ? received.text.slice(0, 100000) : null;
@@ -294,9 +362,46 @@ export function createEmail({store, origins = [], adminToken = null, config = em
       const authenticated = received.authentication?.dmarc === 'pass' || received.authentication?.dkim === 'pass';
       const row = (await db.query('SELECT subscriber_id FROM email_inbound WHERE id = $1', [emailId])).rows[0];
       if (intent === 'unsubscribe' && authenticated && row?.subscriber_id) await unsubscribeById(row.subscriber_id);
+      return {intent, headers: received.headers || {}, messageId: received.message_id, subject: received.subject};
     } catch (error) {
       await db.query('UPDATE email_inbound SET fetch_error = $1 WHERE id = $2', [String(error?.message || error).slice(0, 200), emailId]);
+      return null;
     }
+  }
+
+  // Answers inbound mail right away. Returns false only when a retry could help
+  // (the webhook then answers 502 and Resend redelivers it; the idempotency key stops a double send).
+  async function autoReply(emailId, {from, to, subject, messageId, content}) {
+    const mark = (status, extra = {}) => db.query('UPDATE email_inbound SET auto_reply_status = $1, auto_reply_id = $2, auto_reply_at = $3 WHERE id = $4',
+      [status, extra.id ?? null, extra.at ?? null, emailId]);
+    if (!config.autoReply) return mark('disabled').then(() => true);
+    if (!config.apiKey || !config.from) return mark('not_configured').then(() => true);
+    const ours = new Set([addressOf(config.from), addressOf(config.replyTo), ...(to || []).map(addressOf)].filter(Boolean));
+    if (!from || ours.has(from)) return mark('skipped_self').then(() => true);
+    if (isAutomated(from, content?.headers)) return mark('skipped_automated').then(() => true);
+    if (content?.intent === 'unsubscribe') return mark('skipped_unsubscribe').then(() => true);
+    try { await store.limit('auto-reply:' + hash(from), config.autoReplyPerDay, DAY); }
+    catch (error) { if (error instanceof Problem && error.status === 429) return mark('skipped_rate_limit').then(() => true); throw error; }
+    let goal = null;
+    if (['yes', 'no', 'edit'].includes(content?.intent)) { try { goal = (await store.detail(config.goalId)).law; } catch {} }
+    let response, data = {};
+    try {
+      response = await fetchImpl(config.apiBase + '/emails', {
+        method: 'POST',
+        headers: {'Authorization': 'Bearer ' + config.apiKey, 'Content-Type': 'application/json', 'Idempotency-Key': `helios-autoreply-${emailId}`},
+        body: JSON.stringify(buildAutoReply({to: from, subject: content?.subject ?? subject, messageId: content?.messageId ?? messageId, intent: content?.intent, goal, config})),
+        signal: AbortSignal.timeout(4000),
+      });
+      data = await response.json().catch(() => ({}));
+    } catch (error) {
+      log.error(`Email: auto-reply failed (${error?.name || 'network'})`);
+      await mark('failed');
+      return false;
+    }
+    if (response.ok && typeof data.id === 'string') { await mark('sent', {id: data.id, at: now()}); return true; }
+    log.error(`Email: auto-reply rejected (${response.status}: ${String(data?.message || '').slice(0, 80)})`);
+    await mark('failed');
+    return !([429].includes(response.status) || response.status >= 500);
   }
 
   async function receive(request) {
@@ -310,7 +415,7 @@ export function createEmail({store, origins = [], adminToken = null, config = em
     if (event?.type !== 'email.received') return json({ignored: true});
     const data = event.data || {};
     if (typeof data.email_id !== 'string' || !data.email_id || data.email_id.length > 100) throw new Problem(400, 'Missing email_id.');
-    const from = normalizeEmail(data.from);
+    const from = addressOf(data.from);
     const subscriber = from ? (await db.query('SELECT id FROM email_subscribers WHERE email_hash = $1', [hash(from)])).rows[0] : null;
     const inserted = await db.query(`INSERT INTO email_inbound(id, webhook_id, from_address, to_addresses, subject, message_id, received_at, subscriber_id, created_at)
       VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) ON CONFLICT(id) DO NOTHING`,
@@ -318,7 +423,14 @@ export function createEmail({store, origins = [], adminToken = null, config = em
       JSON.stringify(Array.isArray(data.to) ? data.to.slice(0, 50) : []), String(data.subject || '').slice(0, 998),
       typeof data.message_id === 'string' ? data.message_id.slice(0, 998) : null, typeof data.created_at === 'string' ? data.created_at : null,
       subscriber?.id || null, iso()]);
-    if (inserted.rowCount === 1) await fetchInboundContent(data.email_id);
+    // A redelivery of a message whose reply failed tries again; anything else already handled is acknowledged.
+    const previous = inserted.rowCount === 1 ? null : (await db.query('SELECT auto_reply_status FROM email_inbound WHERE id = $1', [data.email_id])).rows[0];
+    if (inserted.rowCount === 1 || (previous && (previous.auto_reply_status === null || previous.auto_reply_status === 'failed'))) {
+      const content = await fetchInboundContent(data.email_id);
+      const to = Array.isArray(data.to) ? data.to.slice(0, 50) : [];
+      const replied = await autoReply(data.email_id, {from, to, subject: data.subject, messageId: data.message_id, content});
+      if (!replied) return json({received: true, autoReply: 'retry'}, 502);
+    }
     return json({received: true});
   }
 
