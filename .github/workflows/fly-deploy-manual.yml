@@ -1,0 +1,109 @@
+name: Deploy HeliosAI to Fly (manual)
+
+on:
+  workflow_dispatch:
+
+# Deliberately manual: production uses a persistent Fly volume.
+permissions:
+  contents: read
+
+concurrency:
+  group: helios-ai-laws-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    # Never deploy an arbitrary PR/branch using an app-scoped Fly credential.
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Require Fly deploy token
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          if [ -z "$FLY_API_TOKEN" ]; then
+            echo "::error::Add the app-scoped FLY_API_TOKEN under GitHub Settings -> Secrets and variables -> Actions. No deploy was attempted."
+            exit 1
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Inspect and preserve existing Fly app configuration
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          test -f Dockerfile && test -f .dockerignore && test -f netlify.toml
+          flyctl auth whoami
+          flyctl volumes list -a helios-ai-laws | tee "$RUNNER_TEMP/helios-fly-volumes-before.txt"
+          if ! grep -q 'helios_data' "$RUNNER_TEMP/helios-fly-volumes-before.txt"; then
+            echo "::error::Expected existing persistent helios_data volume; refusing to deploy."
+            exit 1
+          fi
+          flyctl config save -a helios-ai-laws
+          test -f fly.toml
+          if grep -Eq '^[[:space:]]*image[[:space:]]*=' fly.toml; then
+            echo "::error::Saved Fly configuration pins an image; review it without changing the live app."
+            exit 1
+          fi
+          # Fails closed unless app, 8080 service and helios_data:/data mount match.
+          node scripts/pin-fly-memory.mjs fly.toml
+
+      - name: Record live PGlite health before deployment
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --max-time 30 https://helios-ai-laws.fly.dev/api/health > "$RUNNER_TEMP/helios-health-before.json"
+          node -e 'const fs=require("fs");const h=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));if(h.status!=="ok"||h.storage!=="pglite"||h.runtime!=="fly-machine"||h.seedCount!==100)process.exit(1);console.log("Healthy baseline; proposalCount="+h.proposalCount)' "$RUNNER_TEMP/helios-health-before.json"
+
+      - name: Deploy latest main with existing config and volume
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          # Existing safe wrapper invokes 'fly'; Fly's official action installs flyctl.
+          if ! command -v fly >/dev/null 2>&1; then
+            mkdir -p "$RUNNER_TEMP/fly-bin"
+            ln -s "$(command -v flyctl)" "$RUNNER_TEMP/fly-bin/fly"
+            export PATH="$RUNNER_TEMP/fly-bin:$PATH"
+          fi
+          bash scripts/deploy-fly-safe.sh
+
+      - name: Verify production health, persistent proposals and opt-in UI
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          flyctl volumes list -a helios-ai-laws | tee "$RUNNER_TEMP/helios-fly-volumes-after.txt"
+          grep -q 'helios_data' "$RUNNER_TEMP/helios-fly-volumes-after.txt"
+          for attempt in $(seq 1 12); do
+            if curl --fail --silent --show-error --max-time 15 https://helios-ai-laws.fly.dev/api/health > "$RUNNER_TEMP/helios-health-after.json"; then
+              if node -e '
+                const fs=require("fs");
+                const before=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));
+                const after=JSON.parse(fs.readFileSync(process.argv[2],"utf8"));
+                if(after.status!=="ok"||after.storage!=="pglite"||after.runtime!=="fly-machine"||after.seedCount!==100)process.exit(1);
+                if(after.proposalCount<before.proposalCount)process.exit(2);
+                console.log("Fly health OK, proposalCount before="+before.proposalCount+", after="+after.proposalCount);
+              ' "$RUNNER_TEMP/helios-health-before.json" "$RUNNER_TEMP/helios-health-after.json"; then
+                if curl --fail --silent --show-error --max-time 15 https://helios-ai-laws.fly.dev/heliosai-particle-interface.html -o "$RUNNER_TEMP/helios-particle-live.html" &&
+                   curl --fail --silent --show-error --max-time 15 https://helios-ai-laws.fly.dev/welcome.html -o "$RUNNER_TEMP/helios-welcome-live.html" &&
+                   grep -Fq 'id="local-guard-opt-in"' "$RUNNER_TEMP/helios-particle-live.html" &&
+                   grep -Fq 'Start here' "$RUNNER_TEMP/helios-welcome-live.html"; then
+                  echo "VERIFIED: latest Fly UI, welcome page, healthy database, and original volume."
+                  exit 0
+                fi
+              fi
+            fi
+            sleep 5
+          done
+          echo "::error::Fly deployment verification failed; inspect Fly logs and the existing volume."
+          exit 1

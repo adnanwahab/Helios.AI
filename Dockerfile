@@ -1,15 +1,17 @@
+# Build dependencies from Helios' lockfile, including PGlite (a devDependency).
+FROM oven/bun:1.4.2 AS dependencies
+WORKDIR /app
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
+
+# Match the Node 22 runtime used in existing Fly releases.
 FROM node:22-bookworm-slim
 WORKDIR /app
-
-COPY package.json bun.lock ./
-RUN npm install --include=dev
-
-COPY . .
-
 ENV NODE_ENV=production \
     PORT=8080 \
     HOST=0.0.0.0
-
+COPY --from=dependencies /app/node_modules ./node_modules
+COPY . .
+RUN node scripts/build-netlify.mjs
 EXPOSE 8080
-
-CMD ["sh", "-c", "node scripts/build-netlify.mjs && node scripts/dev-server.js"]
+CMD ["node", "scripts/dev-server.js"]

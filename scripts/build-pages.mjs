@@ -1,6 +1,8 @@
 // Build a fork-safe, static GitHub Pages preview without exposing the Bun backend.
 import { copyFile, cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { buildPlanDocument } from '../src/notion.js';
+import seedCatalog from '../data/catalog.json' with { type: 'json' };
 
 const root = process.cwd();
 const out = join(root, 'dist-pages');
@@ -9,17 +11,47 @@ await mkdir(out, { recursive: true });
 
 const demos = [
   'helios_ai_landing_page.html',
+  'helios_mail.html',
   'helios_hippie_landing.html',
+  'helios_fork.html',
+  'helios_braindance.html',
+  'world_plan_simulator.html',
+  'vote_radar.html',
+  'happybearlandia_pocket.html',
+  'eight_billion_map.html',
+  'three_editor_merge.html',
   'helios_100_frontend_demo.html',
+  'heliosai_acts_orbit.html',
   'helios-unified.html',
+  'neighborhood_consensus.html',
   'communal_science_lab_webgpu (1).html',
   'health_wealth_of_nations.html',
-  'heliosai-particle-interface.html'
+  'heliosai-particle-interface.html',
+  'sand_castle.html',
+  'rainbow_brain.html',
+  'morphlab.html'
 ];
 for (const name of demos) {
   await copyFile(join(root, name), join(out, name));
 }
 await cp(join(root, 'public'), join(out, 'public'), { recursive: true });
+
+// The Notion screen reads /api/notion/preview on the live app; Pages gets a build-time snapshot.
+const notionPage = (await readFile(join(root, 'helios_notion_preview.html'), 'utf8')).replaceAll('href="/public/', 'href="./public/');
+await writeFile(join(out, 'helios_notion_preview.html'), notionPage);
+
+// The flags page loads its images from /public/flags/; Pages serves the site under a subpath.
+const flagsPage = (await readFile(join(root, 'support_every_country.html'), 'utf8'))
+  .replaceAll('"/public/', '"./public/')
+  .replaceAll('url(/public/', 'url(./public/');
+if (/["(]\/public\//.test(flagsPage)) throw new Error('Root-relative /public/ path left in support_every_country.html');
+await writeFile(join(out, 'support_every_country.html'), flagsPage);
+
+// The Long Coil carries its record inline; only its icon link is root-relative.
+const coilPage = (await readFile(join(root, 'long_coil.html'), 'utf8')).replaceAll('"/public/', '"./public/');
+if (/["(]\/public\//.test(coilPage)) throw new Error('Root-relative /public/ path left in long_coil.html');
+await writeFile(join(out, 'long_coil.html'), coilPage);
+await writeFile(join(out, 'notion-preview.json'), JSON.stringify(buildPlanDocument(seedCatalog)));
 
 let index = await readFile(join(root, 'index.html'), 'utf8');
 function replaceRequired(from, to) {
@@ -31,11 +63,26 @@ function replaceRequired(from, to) {
 // work in the original repo and in forks regardless of repository name.
 index = index.replaceAll('href="/public/', 'href="./public/');
 index = index.replaceAll('src="/public/', 'src="./public/');
+replaceRequired('href="/welcome"', 'href="./welcome.html"');
 replaceRequired('src="/embed/helios-ai"', 'src="./helios_ai_landing_page.html"');
 replaceRequired('src="/embed/hippie"', 'src="./helios_hippie_landing.html"');
+replaceRequired('src="/embed/fork"', 'src="./helios_fork.html"');
+replaceRequired('src="/embed/braindance"', 'src="./helios_braindance.html"');
+replaceRequired('src="/embed/notion"', 'src="./helios_notion_preview.html"');
+replaceRequired('src="/embed/world-plan"', 'src="./world_plan_simulator.html"');
+replaceRequired('src="/embed/radar"', 'src="./vote_radar.html"');
+replaceRequired('src="/embed/orbit"', 'src="./heliosai_acts_orbit.html"');
+replaceRequired('src="/embed/pocket"', 'src="./happybearlandia_pocket.html"');
+replaceRequired('src="/embed/merge"', 'src="./three_editor_merge.html"');
 replaceRequired('src="/embed/goals"', 'src="./helios_100_frontend_demo.html"');
+replaceRequired('src="/embed/flags"', 'src="./support_every_country.html"');
 replaceRequired('src="/embed/unified"', 'src="./helios-unified.html"');
+replaceRequired('src="/embed/coil"', 'src="./long_coil.html"');
 replaceRequired('src="/embed/dynamicland"', 'src="./communal_science_lab_webgpu%20(1).html"');
+replaceRequired('src="/embed/morphlab"', 'src="./morphlab.html"');
+replaceRequired('src="/embed/mail"', 'src="./helios_mail.html"');
+replaceRequired('src="/embed/rainbow-brain"', 'src="./rainbow_brain.html"');
+replaceRequired('src="/embed/consensus"', 'src="./neighborhood_consensus.html"');
 replaceRequired('src="/proxy/ycr/"', 'src="./pages-ycr.html"');
 
 // Email signup and shared proposal writes need the Bun backend. Do not
@@ -50,12 +97,17 @@ index = index.replace('</style>', [
   '  @media (max-width:900px) { .pages-live-link { width:100%; } }',
   '</style>'
 ].join('\n'));
-index = index.replace('Helios.AI · Merged index', 'Helios.AI · Static preview');
+index = index.replace('<h1 class="title">', '<h1 class="title">Static preview · ');
 
 if (index.includes('src="/embed/') || index.includes('src="/proxy/') || index.includes('src="/signup')) {
   throw new Error('Server-only iframe route remains in Pages index');
 }
 await writeFile(join(out, 'index.html'), index);
+// All welcome links remain under a fork's GitHub Pages base path.
+const welcome = (await readFile(join(root, 'welcome.html'), 'utf8'))
+  .replaceAll('href="/laws"', 'href="./helios_100_frontend_demo.html"')
+  .replaceAll('href="/"', 'href="./index.html"');
+await writeFile(join(out, 'welcome.html'), welcome);
 
 // The server normally fetches and rewrites this third-party page. GitHub
 // Pages cannot proxy it and the remote site may disallow iframe embedding.

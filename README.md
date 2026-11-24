@@ -1,21 +1,8 @@
 # Helios.AI
 
-just a demo of what the API can do that the client does not want
+**First-time participants:** [Start here](https://helios-ai-laws.fly.dev/welcome) to explore editorial draft goals, private demo notes, and optional public proposals/amendments. These are not government ballots.
 
-
-IF its a reasonably possible or easy to grant requsest and you describd pretty much exaxtly what you want we can get you anything we dont really care.
-
-I'm so bored i'm starting to lose my mind. oh wait i never did. they misdiagnosed me with schizophrophrneia. i dont know whats going to happen
-
-the system is so big that if any individual disagrees, they usually ignored.
-until now?
-
-- changelog 
-- can you add a screen to helios that has a notion document of the preview - pls use notion api and all sorts of stuff
-
-pls fork helios! We need your opinions today!
-
-if you vote for it, you might get free pizza ;)
+**Maintainers:** [Data safety and launch checklist](docs/data-safety-and-launch.md) covers Fly volume snapshots, isolated persistence tests, and careful participant onboarding. The production Fly volume must never be replaced to run tests.
 
 Helios merges everyone's jorunal ammendment to a consitution.
 
@@ -168,7 +155,18 @@ Helios AI is a civic tool that reads what everyone in a community says they need
 - `index.html` — merged entry page with tabs that switch between the embedded pages
 - `helios_ai_landing_page.html` — the Helios AI landing page
 - `helios_hippie_landing.html` — HeliosAI hippie-style landing page ("8 billion people, one big circle")
-- `helios_100_frontend_demo.html` — 100 Shared Goals demo
+- `helios_fork.html` — Fork Helios page with GitHub fork button, setup instructions and static preview (`/embed/fork`)
+- `world_plan_simulator.html` — World Plan Simulator: a synthetic year of daily journal pages from 8.2 billion people, turned into needs, a plan and a regional vote (served at `/embed/world-plan`)
+- `vote_radar.html` — Vote Radar: a radar-style dot map of the US where a 24-hour sweep lights up simulated daily votes state by state, with a day per ballot, a live feed, callouts for needs, consensus and dissent, and running totals. Sample data, not an official ballot (served at `/radar` and `/embed/radar`)
+- `eight_billion_map.html` — Eight billion people, five laws: a deck.gl map that gives each person one response per law, with area shading and a sample of individual dots (served at `/eight-billion`). Laws, population and thoughts are synthetic placeholders, not polling data.
+- `three_editor_merge.html` — Three-editor merge: two journals on the sides, the constitution merged from them in the middle with duplicates removed, and an infinite scroll over 8 billion sample journals generated in the browser (served at `/merge` and `/embed/merge`; [S3 layout](docs/journal-merge-s3.md))
+- `helios_100_frontend_demo.html` — 100 Shared Goals demo, with estimated arrival dates for each goal ([assumptions](docs/arrival-estimates.md))
+- `heliosai_acts_orbit.html` — Acts in Orbit: all 111 HELIOSAI acts in one list, with a draft Universal Basic Income Act at #1, as a three.js solar system and D3 circle-pack, ranked by importance or shuffled (served at `/embed/orbit`)
+- `support_every_country.html` — Support Every Country: all 195 flags (the 193 UN members plus Vatican City and Palestine) waving one at a time under "Support <country>", with a custom message, seconds per flag, region filter, shuffle and a searchable wall of every flag (served at `/flags` and `/embed/flags`; images in `public/flags/`)
+- `neighborhood_consensus.html` — Neighborhood Consensus: a liquid 3D surface of how support for a local proposal spreads across a neighborhood, by blocks from the site and by week, with a cooperation view, a replayable sweep and five linked charts (map, time, turnout, across-blocks, all proposals). Sample ballots for a made-up neighborhood, not real votes; you can paste your own ([docs](docs/neighborhood-consensus.md); served at `/consensus` and `/embed/consensus`)
+- `long_coil.html` — The Long Coil: technology from 3.3 million BCE wound into a 3D coil, one loop per century, then projected ten years ahead to 2036. Each projected milestone names the plan, roadmap or trend it rests on and a confidence tier; forecasts made in the past are checked against what happened, and a ledger view lists everything as tables. The record of about 500 sourced entries is inlined in the page (served at `/coil` and `/embed/coil`)
+- `helios_notion_preview.html` — the plan as a Notion document, synced through the Notion API ([docs](docs/notion.md))
+- `helios_braindance.html` — Braindance: Mirrorworld Pensieve. Key events from Nov 2019 to Nov 2033 around a mirror line at 23 Nov 2026: recorded events on a 3D globe above a pensieve surface, scheduled, planned and projected ones on its reflection below, with a weekly calendar grid, a time scrubber and a searchable log of every event. The event records live in the page and `bun test` checks them (served at `/braindance` and `/embed/braindance`; three.js loads from jsDelivr)
 - `helios-unified.html` — Helios Unified (Universe · Communal Science Lab · Futures)
 - `communal_science_lab_webgpu (1).html` — the Communal Science Lab (WebGPU)
 
@@ -377,3 +375,6 @@ see everyone elses vote using deckgl map
 # happy bear landia has 2 responsiblities
 1. visualize constitution of each country / city
 2. simulate how edits to that document would affect simulation behavior
+## MorphLab · WebGPU particle studio
+
+The Helios dashboard includes **MorphLab · WebGPU** (`/morphlab.html`): type a prompt and morph a glowing particle cloud into a procedural 3D sculpture, or drag in an uncompressed GLB model. OpenAI-powered shape recipes use a server-side, explicitly enabled API and fall back to local presets when unconfigured. See [MorphLab setup and security](docs/morphlab.md).

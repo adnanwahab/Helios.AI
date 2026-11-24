@@ -172,7 +172,7 @@ const cleanSource = value => {
   try { const url = new URL(String(value)); return /^https?:$/.test(url.protocol) ? url.origin.slice(0, 200) : null; } catch { return null; }
 };
 
-export function createEmail({store, origins = [], config = emailConfig(), fetch: fetchImpl = globalThis.fetch, now = () => Date.now(), log = console, sendGapMs = 150} = {}) {
+export function createEmail({store, origins = [], adminToken = null, config = emailConfig(), fetch: fetchImpl = globalThis.fetch, now = () => Date.now(), log = console, sendGapMs = 150} = {}) {
   if (!store?.db) throw Error('Store required');
   const db = store.db;
   const iso = () => new Date(now()).toISOString();
@@ -371,6 +371,50 @@ export function createEmail({store, origins = [], config = emailConfig(), fetch:
     return page('Unsubscribe from Helios?', `<p>We’ll stop any email to ${escapeHtml(row.email)} and delete the address.</p><form method="post" action="${escapeHtml(action)}"><button type="submit">Unsubscribe</button></form>`);
   }
 
+  // Private operator mailbox: intentionally not available to anonymous visitors.
+  // The maintainer token is provided in a request header, never embedded in HTML.
+  function authorizeMailbox(request) {
+    const given = request.headers.get('authorization');
+    if (!adminToken) throw new Problem(503, 'Mail administration is not configured.');
+    const expected = 'Bearer ' + adminToken;
+    const a = Buffer.from(given || ''), b = Buffer.from(expected);
+    if (a.length !== b.length || !timingSafeEqual(a, b)) throw new Problem(403, 'Maintainer authorization required.');
+  }
+
+  async function mailbox(request, url) {
+    authorizeMailbox(request);
+    if (request.method === 'GET') {
+      const limit = Math.min(100, Math.max(1, Number(url.searchParams.get('limit')) || 30));
+      const rows = (await db.query(`SELECT id, from_address, to_addresses, subject, text, intent, received_at, created_at, fetch_error
+        FROM email_inbound ORDER BY created_at DESC LIMIT $1`, [limit])).rows;
+      return json({messages: rows, sendingConfigured: !!(config.apiKey && config.from), receivingConfigured: !!config.webhookSecret});
+    }
+    if (request.method !== 'POST') return json({error: 'Method not allowed'}, 405, {Allow: 'GET, POST'});
+    if (![url.origin, ...origins].includes(request.headers.get('origin'))) throw new Problem(403, 'A same-origin request is required.');
+    if (!request.headers.get('content-type')?.toLowerCase().startsWith('application/json')) throw new Problem(415, 'Use application/json.');
+    const raw = await readBody(request, 12000);
+    let data;
+    try { data = JSON.parse(raw); } catch { throw new Problem(400, 'Invalid JSON.'); }
+    const to = normalizeEmail(data?.to);
+    const subject = typeof data?.subject === 'string' ? data.subject.trim() : '';
+    const body = typeof data?.text === 'string' ? data.text.trim() : '';
+    if (!to || !subject || subject.length > 200 || !body || body.length > 10000) throw new Problem(400, 'Provide a valid recipient, subject and message.');
+    if (!config.apiKey || !config.from) throw new Problem(503, 'Resend sending is not configured.');
+    await store.limit('mail-admin-send', 30, HOUR);
+    let upstream;
+    try {
+      upstream = await fetchImpl(config.apiBase + '/emails', {
+        method: 'POST',
+        headers: {'Authorization': 'Bearer ' + config.apiKey, 'Content-Type': 'application/json'},
+        body: JSON.stringify({from: config.from, to: [to], subject, text: body, ...(config.replyTo ? {reply_to: config.replyTo} : {})}),
+        signal: AbortSignal.timeout(15000),
+      });
+    } catch { throw new Problem(502, 'Resend could not be reached.'); }
+    const result = await upstream.json().catch(() => ({}));
+    if (!upstream.ok || !result.id) throw new Problem(502, 'Resend rejected the message (' + upstream.status + ').');
+    return json({sent: true, id: result.id}, 201);
+  }
+
   // Returns null for paths this module does not own, so the caller can route them.
   async function handle(request, ip = 'local') {
     const url = new URL(request.url), path = url.pathname, method = request.method;
@@ -379,6 +423,7 @@ export function createEmail({store, origins = [], config = emailConfig(), fetch:
       if (path === '/api/email/subscribe') return only(['POST']) ?? await signup(request, url, ip);
       if (path === '/email/unsubscribe') return only(['GET', 'HEAD', 'POST']) ?? await unsubscribe(request, url);
       if (path === '/api/email/inbound') return only(['POST']) ?? await receive(request);
+      if (path === '/api/email/mailbox') return await mailbox(request, url);
       return null;
     } catch (error) {
       if (error instanceof Problem) return json({error: error.message}, error.status);

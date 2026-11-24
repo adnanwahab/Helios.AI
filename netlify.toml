@@ -26,6 +26,86 @@
   status = 200
 
 [[redirects]]
+  from = "/welcome"
+  to = "/welcome.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/notion"
+  to = "/helios_notion_preview.html"
+  status = 200
+
+[[redirects]]
+  from = "/notion"
+  to = "/helios_notion_preview.html"
+  status = 200
+
+# Support Every Country: all 195 flags waving, one at a time, with "Support <country>".
+[[redirects]]
+  from = "/flags"
+  to = "/support_every_country.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/flags"
+  to = "/support_every_country.html"
+  status = 200
+
+# HappyBearLandia Pocket: touch-first swipe feed of every HappyBearLandia world.
+[[redirects]]
+  from = "/pocket"
+  to = "/happybearlandia_pocket.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/pocket"
+  to = "/happybearlandia_pocket.html"
+  status = 200
+
+# The Long Coil: technology from 3.3 million BCE, one loop per century, projected to 2036.
+[[redirects]]
+  from = "/coil"
+  to = "/long_coil.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/coil"
+  to = "/long_coil.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/world-plan"
+  to = "/world_plan_simulator.html"
+  status = 200
+
+# Vote Radar: simulated daily votes on a radar-style US dot map (sample data).
+[[redirects]]
+  from = "/radar"
+  to = "/vote_radar.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/radar"
+  to = "/vote_radar.html"
+  status = 200
+
+# Three-editor merge: two journals in, one constitution out, over 8 billion sample journals.
+[[redirects]]
+  from = "/merge"
+  to = "/three_editor_merge.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/merge"
+  to = "/three_editor_merge.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/orbit"
+  to = "/heliosai_acts_orbit.html"
+  status = 200
+
+[[redirects]]
   from = "/embed/goals"
   to = "/helios_100_frontend_demo.html"
   status = 200
@@ -40,13 +120,63 @@
   to = "/communal_science_lab_webgpu%20(1).html"
   status = 200
 
+# Neighborhood Consensus: how support for a local proposal spreads across a neighborhood.
+# Sample ballots for a made-up neighborhood, not real votes.
+[[redirects]]
+  from = "/consensus"
+  to = "/neighborhood_consensus.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/consensus"
+  to = "/neighborhood_consensus.html"
+  status = 200
+
 [[redirects]]
   from = "/embed/morphlab"
-  to = "/morphlab-offline-demo.html"
+  to = "/morphlab.html"
   status = 200
 
 # Email signup iframe (the form posts to /api/email/subscribe, served by the function).
 [[redirects]]
   from = "/signup"
   to = "/public/signup.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/mail"
+  to = "/helios_mail.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/fork"
+  to = "/helios_fork.html"
+  status = 200
+
+# Eight billion people, five laws: a deck.gl map with synthetic placeholder data.
+[[redirects]]
+  from = "/eight-billion"
+  to = "/eight_billion_map.html"
+  status = 200
+
+# Rainbow Brain Realms: one responsive page for TV/console, laptop, tablet and phone.
+[[redirects]]
+  from = "/rainbow-brain"
+  to = "/rainbow_brain.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/rainbow-brain"
+  to = "/rainbow_brain.html"
+  status = 200
+
+# Braindance: key events of the last seven years and the next seven, as a 3D mirrorworld.
+[[redirects]]
+  from = "/braindance"
+  to = "/helios_braindance.html"
+  status = 200
+
+[[redirects]]
+  from = "/embed/braindance"
+  to = "/helios_braindance.html"
   status = 200

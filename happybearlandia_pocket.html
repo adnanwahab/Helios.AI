@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1424">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>HappyBearLandia Pocket · Helios</title>
+<meta name="description" content="Swipe through every HappyBearLandia world, simulation and tool — built for phones and tablets.">
+<link rel="icon" href="/public/favicon.ico">
+<style>
+:root{
+  --bg:#0b1424; --bg2:#111f35; --card:#15263f; --line:#2b4466; --ink:#f2f6ff; --mute:#9fb3cf;
+  --honey:#ffc94d; --mint:#7ef0c4; --berry:#ff6f91; --sky:#6cc4ff; --grape:#b18cff;
+  --safe-t:env(safe-area-inset-top,0px); --safe-b:env(safe-area-inset-bottom,0px);
+  --tab-h:64px; --top-h:56px; --r:20px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overscroll-behavior:none}
+button,a{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+a{text-decoration:none}
+:focus-visible{outline:3px solid var(--honey);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---------- app chrome ---------- */
+#app{position:fixed;inset:0;display:grid;grid-template-rows:calc(var(--top-h) + var(--safe-t)) 1fr calc(var(--tab-h) + var(--safe-b))}
+header.top{padding:var(--safe-t) 14px 0;display:flex;align-items:center;gap:10px;background:linear-gradient(#0b1424f2,#0b1424d9);backdrop-filter:blur(12px);z-index:5;border-bottom:1px solid #ffffff10}
+.brand{display:flex;align-items:center;gap:8px;font-weight:800;letter-spacing:-.02em;white-space:nowrap}
+.brand .bear{font-size:26px;display:inline-block;animation:bob 3s ease-in-out infinite}
+.brand small{display:block;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--honey)}
+.brand b{display:block;font-size:16px;line-height:1}
+@keyframes bob{50%{transform:translateY(-3px) rotate(-6deg)}}
+.top .spacer{flex:1}
+.pill{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border-radius:999px;background:#ffffff12;border:1px solid #ffffff1a;font-size:14px;font-weight:600}
+.pill:active{transform:scale(.96)}
+main{position:relative;overflow:hidden}
+.view{position:absolute;inset:0;display:none}
+.view.on{display:block}
+
+nav.tabs{display:flex;justify-content:space-around;align-items:stretch;padding:0 6px var(--safe-b);background:#0b1424f5;backdrop-filter:blur(12px);border-top:1px solid #ffffff14;z-index:5}
+nav.tabs button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;font-weight:700;color:var(--mute);letter-spacing:.02em;position:relative}
+nav.tabs button .ic{font-size:22px;transition:transform .2s}
+nav.tabs button[aria-selected=true]{color:var(--ink)}
+nav.tabs button[aria-selected=true] .ic{transform:translateY(-2px) scale(1.12)}
+nav.tabs button[aria-selected=true]::after{content:"";position:absolute;top:0;width:28px;height:3px;border-radius:0 0 3px 3px;background:var(--honey)}
+.badge{position:absolute;top:8px;margin-left:26px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--berry);color:#fff;font-size:11px;line-height:18px;text-align:center}
+.badge:empty{display:none}
+
+/* ---------- feed ---------- */
+#feed{display:none}
+#feed.on{display:grid;grid-template-columns:1fr}
+.reel{height:100%;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none;overscroll-behavior:contain}
+.reel::-webkit-scrollbar{display:none}
+.slide{position:relative;height:100%;scroll-snap-align:start;scroll-snap-stop:always;padding:10px 10px 12px;display:flex}
+.frame{position:relative;flex:1;border-radius:var(--r);overflow:hidden;background:var(--card);border:1px solid #ffffff14;box-shadow:0 20px 50px -20px #000}
+.frame .art{position:absolute;inset:0;display:grid;place-items:center;font-size:96px;background:var(--grad);transition:opacity .5s}
+.frame .art span{filter:drop-shadow(0 10px 24px #0008);animation:float 5s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-10px) scale(1.04)}}
+.frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:transparent;opacity:0;transition:opacity .6s}
+.frame.loaded iframe{opacity:1}
+.frame.loaded .art{opacity:0}
+.loading{position:absolute;left:50%;top:58%;transform:translateX(-50%);font-size:13px;font-weight:600;color:#fffc;padding:6px 12px;border-radius:999px;background:#0007;white-space:nowrap}
+.frame.loaded .loading{display:none}
+/* the shield lets swipes scroll the reel instead of being eaten by a 3D canvas */
+.shield{position:absolute;inset:0;z-index:2}
+.frame.playing .shield{display:none}
+.scrim{position:absolute;left:0;right:0;bottom:0;height:62%;z-index:3;pointer-events:none;background:linear-gradient(transparent,#060c18e6 70%)}
+.frame.playing .scrim,.frame.playing .caption,.frame.playing .rail{opacity:0;pointer-events:none}
+.caption{position:absolute;left:16px;right:84px;bottom:16px;z-index:4;transition:opacity .25s}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.chip{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:999px;background:#ffffff1f;border:1px solid #ffffff24}
+.chip.cat{background:var(--accent);color:#0b1424;border:0}
+.caption h2{margin:0 0 6px;font-size:clamp(22px,6vw,34px);line-height:1.05;letter-spacing:-.03em}
+.caption p{margin:0 0 14px;color:#d7e2f3;font-size:15px;max-width:52ch}
+.play{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 22px;border-radius:999px;background:var(--honey);color:#1d1400;font-weight:800;font-size:16px;box-shadow:0 8px 24px -6px #ffc94d99}
+.play:active{transform:scale(.96)}
+.rail{position:absolute;right:10px;bottom:18px;z-index:4;display:flex;flex-direction:column;gap:12px;transition:opacity .25s}
+.rail button,.rail a{width:54px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:700;color:#e8efff}
+.rail .orb{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-size:21px;background:#ffffff1f;border:1px solid #ffffff2a;backdrop-filter:blur(8px)}
+.rail button:active .orb,.rail a:active .orb{transform:scale(.9)}
+.rail .saved .orb{background:var(--berry);border-color:var(--berry)}
+.rail .saved .orb{animation:pop .35s}
+@keyframes pop{40%{transform:scale(1.25)}}
+.done{position:absolute;top:12px;right:12px;z-index:6;display:none;min-height:44px;padding:0 16px;border-radius:999px;background:#0b1424e6;border:1px solid #ffffff33;font-weight:800;font-size:14px;align-items:center;gap:6px}
+.frame.playing .done{display:inline-flex}
+.counter{position:absolute;top:12px;left:12px;z-index:4;font:700 12px ui-monospace,monospace;padding:6px 10px;border-radius:999px;background:#0008;transition:opacity .25s}
+.frame.playing .counter{opacity:0}
+.hint{position:absolute;left:50%;top:70px;transform:translateX(-50%);z-index:7;pointer-events:none;font-weight:700;font-size:14px;padding:10px 16px;border-radius:999px;background:#000a;animation:hint 2.4s ease-in-out 3;white-space:nowrap}
+@keyframes hint{0%,100%{transform:translate(-50%,0);opacity:.95}50%{transform:translate(-50%,-14px);opacity:1}}
+
+/* tablet / desktop split view */
+.side{display:none}
+@media (min-width:900px){
+  #feed.on{grid-template-columns:340px 1fr}
+  .side{display:flex;flex-direction:column;border-right:1px solid #ffffff12;overflow:hidden;background:var(--bg2)}
+  .side .filters{padding:12px}
+  .side ol{list-style:none;margin:0;padding:0 8px 12px;overflow-y:auto;flex:1}
+  .side li button{width:100%;display:flex;gap:12px;align-items:center;text-align:left;padding:10px;border-radius:14px;min-height:60px}
+  .side li button:hover{background:#ffffff0d}
+  .side li button[aria-current=true]{background:#ffffff17;box-shadow:inset 3px 0 0 var(--honey)}
+  .side .mini{width:44px;height:44px;flex:none;border-radius:12px;display:grid;place-items:center;font-size:22px;background:var(--grad)}
+  .side b{display:block;font-size:14px}
+  .side small{color:var(--mute);font-size:12px}
+  .slide{padding:16px 20px}
+  .caption{left:28px;bottom:28px}
+}
+
+/* ---------- explore (dashboard) ---------- */
+.scroll{height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px 28px}
+.wrap{max-width:1180px;margin:0 auto}
+.hello{margin:4px 0 16px}
+.hello h1{margin:0;font-size:clamp(28px,7vw,44px);letter-spacing:-.04em;line-height:1}
+.hello h1 em{font-style:normal;background:linear-gradient(90deg,var(--honey),var(--berry),var(--grape));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hello p{color:var(--mute);margin:8px 0 0}
+.search{display:flex;align-items:center;gap:8px;margin:0 0 14px;padding:0 14px;min-height:50px;border-radius:16px;background:#ffffff0f;border:1px solid #ffffff1a}
+.search input{flex:1;min-width:0;background:none;border:0;color:inherit;font:inherit;font-size:16px;outline:none}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.stat{padding:14px 12px;border-radius:18px;background:var(--card);border:1px solid #ffffff12;position:relative;overflow:hidden}
+.stat b{display:block;font-size:clamp(24px,6vw,34px);letter-spacing:-.03em;line-height:1}
+.stat small{color:var(--mute);font-size:12px;font-weight:600}
+.stat::after{content:"";position:absolute;right:-18px;top:-18px;width:60px;height:60px;border-radius:50%;background:var(--c);opacity:.25}
+@media (max-width:520px){.stats{grid-template-columns:repeat(2,1fr)}}
+.bar{display:flex;height:12px;border-radius:999px;overflow:hidden;margin:-4px 0 6px;background:#ffffff10}
+.bar i{display:block;height:100%;transition:flex .5s}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--mute);margin-bottom:18px}
+.legend span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px;background:var(--c)}
+.hero{position:relative;display:block;border-radius:24px;overflow:hidden;min-height:210px;padding:20px;margin-bottom:18px;background:radial-gradient(120% 120% at 100% 0%,#ff6f9155,transparent 50%),radial-gradient(120% 120% at 0% 100%,#6cc4ff55,transparent 55%),#16294a;border:1px solid #ffffff1a}
+.hero .kick{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--honey)}
+.hero h2{margin:6px 0 6px;font-size:clamp(24px,6vw,36px);letter-spacing:-.03em;line-height:1.05;max-width:16ch}
+.hero p{margin:0 0 16px;color:#d6e2f6;max-width:44ch}
+.hero .actions{display:flex;flex-wrap:wrap;gap:10px}
+.hero .ghost{display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border-radius:999px;border:1px solid #ffffff40;font-weight:700}
+.hero .futures{position:absolute;right:16px;top:16px;display:flex;gap:6px;opacity:.9}
+.hero .futures div{width:46px;height:120px;border-radius:12px;background:linear-gradient(to top,var(--c) var(--h),#ffffff12 var(--h));}
+@media (max-width:520px){.hero .futures{display:none}}
+.seg{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;scrollbar-width:none;margin:0 -16px;padding-left:16px;padding-right:16px}
+.seg::-webkit-scrollbar{display:none}
+.seg button{flex:none;min-height:40px;padding:0 16px;border-radius:999px;background:#ffffff0f;border:1px solid #ffffff1a;font-weight:700;font-size:14px;white-space:nowrap}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+h3.sec{margin:8px 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:var(--mute)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,160px),1fr));gap:12px}
+@media (min-width:700px){.grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}}
+.tile{position:relative;display:flex;flex-direction:column;justify-content:flex-end;min-height:170px;padding:12px;border-radius:20px;overflow:hidden;text-align:left;background:var(--grad);border:1px solid #ffffff18;transition:transform .15s}
+.tile:active{transform:scale(.97)}
+.tile .emo{position:absolute;top:10px;left:12px;font-size:38px;filter:drop-shadow(0 6px 14px #0006)}
+.tile .fav{position:absolute;top:10px;right:10px;font-size:14px}
+.tile::before{content:"";position:absolute;inset:40% 0 0;background:linear-gradient(transparent,#060c18d9)}
+.tile b,.tile small{position:relative}
+.tile b{font-size:16px;line-height:1.15;letter-spacing:-.01em}
+.tile small{color:#d2def0;font-size:12px;margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.quick{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:20px 0 6px}
+.quick a{display:flex;align-items:center;gap:10px;min-height:56px;padding:0 14px;border-radius:16px;background:var(--card);border:1px solid #ffffff12;font-weight:700;font-size:14px}
+.quick a span{font-size:20px}
+.empty{padding:40px 20px;text-align:center;color:var(--mute)}
+.empty .big{font-size:60px}
+footer.note{margin-top:22px;color:var(--mute);font-size:12px;text-align:center}
+
+/* toast */
+#toast{position:fixed;left:50%;bottom:calc(var(--tab-h) + var(--safe-b) + 16px);transform:translate(-50%,20px);opacity:0;z-index:20;padding:10px 16px;border-radius:999px;background:var(--ink);color:var(--bg);font-weight:700;font-size:14px;transition:.25s;pointer-events:none}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="top">
+    <a class="brand" href="/" aria-label="HappyBearLandia home"><span class="bear" aria-hidden="true">🐻</span><span><small>Pocket</small><b>HappyBearLandia</b></span></a>
+    <span class="spacer"></span>
+    <button class="pill" id="shuffle" aria-label="Jump to a random world">🎲 <span>Surprise me</span></button>
+  </header>
+
+  <main>
+    <section id="feed" class="view on" aria-label="Swipe feed">
+      <aside class="side" aria-label="All experiences">
+        <div class="filters"><div class="seg" id="side-seg" role="toolbar" aria-label="Filter by category"></div></div>
+        <ol id="side-list"></ol>
+      </aside>
+      <div class="reel" id="reel" tabindex="-1"></div>
+    </section>
+
+    <section id="explore" class="view" aria-label="Explore dashboard">
+      <div class="scroll"><div class="wrap">
+        <div class="hello"><h1>Pick a <em>world</em> to play.</h1><p id="hello-sub">Every HappyBearLandia simulation, game and tool in one pocket.</p></div>
+        <label class="search"><span aria-hidden="true">🔎</span><span class="sr">Search experiences</span><input id="q" type="search" placeholder="Search storms, cities, bears…" autocomplete="off"></label>
+        <div class="stats" id="stats"></div>
+        <div class="bar" id="bar" aria-hidden="true"></div>
+        <div class="legend" id="legend"></div>
+        <a class="hero" id="hero" href="#/feed/future-machine">
+          <div class="futures" aria-hidden="true"><div style="--c:#6cc4ff;--h:48%"></div><div style="--c:#ff6f91;--h:78%"></div></div>
+          <div class="kick">Featured · 60-second demo</div>
+          <h2>One City, Two Futures</h2>
+          <p>Same city, same seed, ten modeled years — with and without a housing plan. Watch them diverge side by side.</p>
+          <div class="actions"><span class="play">▶ Play in feed</span><span class="ghost" data-open="/world/future-machine.html?demo=1">Open full screen ↗</span></div>
+        </a>
+        <div class="seg" id="seg" role="toolbar" aria-label="Filter by category"></div>
+        <h3 class="sec" id="grid-title">All experiences</h3>
+        <div class="grid" id="grid"></div>
+        <div class="quick">
+          <a href="/world"><span>🌆</span>Open World</a>
+          <a href="/vote-on-patch"><span>🗳️</span>Vote on next patch</a>
+          <a href="/tools/simulation-health"><span>🩺</span>Simulation health</a>
+          <a href="/github"><span>🐙</span>GitHub builds</a>
+          <a href="/routes"><span>🧭</span>All routes</a>
+          <a href="/#simulation-faq"><span>❓</span>Simulation FAQ</a>
+        </div>
+        <footer class="note">Worlds are reproducible, fictional or synthetic scenarios — not predictions.</footer>
+      </div></div>
+    </section>
+
+    <section id="saved" class="view" aria-label="Saved experiences">
+      <div class="scroll"><div class="wrap">
+        <div class="hello"><h1>Your <em>den</em>.</h1><p>Worlds you hearted. Saved on this device.</p></div>
+        <div class="grid" id="saved-grid"></div>
+      </div></div>
+    </section>
+  </main>
+
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button role="tab" data-view="feed" aria-selected="true"><span class="ic" aria-hidden="true">📺</span>Feed</button>
+    <button role="tab" data-view="explore" aria-selected="false"><span class="ic" aria-hidden="true">🧭</span>Explore</button>
+    <button role="tab" data-view="saved" aria-selected="false"><span class="ic" aria-hidden="true">❤️</span>Saved<span class="badge" id="saved-count"></span></button>
+  </nav>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<!-- Snapshot of happybearlandia world/universe/registry.js; refresh by re-copying tools/pocket/index.html from that repo. -->
+<script type="application/json" id="fallback-registry">{"base":"https://happybearlandia.fly.dev/","experiences":[{"id":"social-bear","category":"games","title":"The Social Bear","description":"Meet six fictional adults, share authored conversations and play a separate bar night.","route":"/world/bar","preview":"/world/bar","evidence":"fictional","role":"social game"},{"id":"future-machine","category":"worlds","title":"One City, Two Futures","description":"Compare matched monthly City futures and inspect recorded housing outcomes.","route":"/world/future-machine.html","preview":"/world/future-machine.html?renderer=canvas2d","evidence":"synthetic","role":"paired comparison"},{"id":"houston-map","category":"worlds","title":"Houston Neighborhood Map","description":"Explore sourced OpenStreetMap footprints with illustrative elevations.","route":"/tools/houston-map","preview":"/tools/houston-map","evidence":"mixed","role":"map experience"},{"category":"worlds","title":"World","description":"Explore the streamed city, its residents, policy tools and saved experiments.","route":"/world","preview":"/world?embed=1&demo=1&quality=LOW","id":"world","evidence":"synthetic","role":"authoritative stage"},{"category":"worlds","title":"Flower: Breeze & Petals 3D","description":"Explore a 3D world of breeze and petals.","route":"/tools/flower","preview":"/tools/flower","id":"flower","evidence":"fictional","role":"experience"},{"category":"living","title":"1,000 Inner Lives","route":"/tools/inner-lives","preview":"/tools/inner-lives","id":"inner-lives","description":"Explore 1,000 Inner Lives.","evidence":"synthetic","role":"experience"},{"category":"games","title":"AI Seinfeld 3D Simulator","description":"Explore an interactive 3D sitcom simulator.","route":"/tools/ai-seinfeld","preview":"/tools/ai-seinfeld","id":"ai-seinfeld","evidence":"fictional","role":"experience"},{"category":"science","title":"Security Viz Lab","description":"Explore six WebGPU security visualization prototypes.","route":"/tools/security-viz-lab","preview":"/tools/security-viz-lab","id":"security-viz-lab","evidence":"synthetic","role":"experience"},{"category":"living","title":"Worldline","description":"Run possible futures and explore outcomes under different assumptions.","route":"/tools/worldline","preview":"/tools/worldline","id":"worldline","evidence":"synthetic","role":"future navigation"},{"category":"living","title":"Living City","description":"Inspect people, households, work calendars, needs and simulated behavior.","route":"/world?living=1","preview":"/world?living=1","id":"living-city","evidence":"synthetic","role":"population simulation"},{"category":"science","title":"Particle simulations","description":"Explore parallel particle motion and interactions.","route":"/tools/webgpu/particle-simulations.html","preview":"/tools/webgpu/particle-simulations.html","id":"particles","evidence":"synthetic","role":"experience"},{"category":"games","title":"Everybody Act Normal","description":"A multiplayer house party: blend in, complete secret missions, and spot your friends.","route":"/world/party/act-normal","preview":"/world/party/act-normal","id":"act-normal","evidence":"fictional","role":"experience"},{"category":"worlds","title":"Constitution City","description":"Compile clauses and compare synchronized baseline and amended worlds.","route":"/visualize-constitution","preview":"/visualize-constitution","id":"constitution-city","evidence":"synthetic","role":"experience"},{"category":"games","title":"Game","description":"Enter the existing interactive physics playground.","route":"/game","preview":"/game","id":"game","evidence":"fictional","role":"experience"},{"category":"worlds","title":"3D Quote Carousel","description":"Explore quotes in an interactive spiral and cylinder.","route":"/tools/quote-carousel","preview":"/tools/quote-carousel","id":"quote-carousel","evidence":"fictional","role":"experience"},{"category":"living","title":"FlowMap","description":"Explore Gulf Coast supply-chain disruptions and rerouting.","route":"/tools/flowmap","preview":"/tools/flowmap","id":"flowmap","evidence":"synthetic","role":"experience"},{"category":"living","title":"House Simulator","description":"Enter a saved city household, inspect its needs and change its home.","route":"/world/house","preview":"/world/house","id":"house","evidence":"synthetic","role":"experience"},{"category":"living","title":"AgentGraph","description":"Observe and debug AI agent organizations.","route":"/tools/agentgraph","preview":"/tools/agentgraph","id":"agentgraph","evidence":"synthetic","role":"experience"},{"category":"worlds","title":"Lumen","description":"Inspect 3D models with a zero-install GPU model viewer.","route":"/tools/lumen/","preview":"/tools/lumen/","id":"lumen","evidence":"synthetic","role":"experience"},{"category":"science","title":"Molecular docking","description":"Score synthetic ligand poses against an illustrative receptor.","route":"/tools/webgpu/molecular-docking.html","preview":"/tools/webgpu/molecular-docking.html","id":"molecular-docking","evidence":"synthetic","role":"experience"},{"category":"science","title":"Astronomy / signal search","description":"Find a synthetic periodic signal hidden in noise.","route":"/tools/webgpu/astronomy-signal-search.html","preview":"/tools/webgpu/astronomy-signal-search.html","id":"astronomy","evidence":"synthetic","role":"experience"},{"category":"science","title":"RiskUniverse · 100,000 financial futures","description":"Reproducible WebGPU portfolio Monte Carlo with tail-risk attribution, sensitivity, and numerical reference checks.","route":"/tools/riskuniverse/","preview":"/tools/riskuniverse/","id":"riskuniverse","evidence":"synthetic","role":"experience"},{"category":"science","title":"Epidemic ensembles","description":"Compare many independent outbreak simulations under different assumptions.","route":"/tools/webgpu/epidemic-ensembles.html","preview":"/tools/webgpu/epidemic-ensembles.html","id":"epidemics","evidence":"synthetic","role":"experience"},{"category":"science","title":"Evolutionary algorithms","description":"Evaluate a population of candidate solutions and evolve toward better fitness.","route":"/tools/webgpu/evolutionary-algorithms.html","preview":"/tools/webgpu/evolutionary-algorithms.html","id":"evolution","evidence":"synthetic","role":"experience"},{"category":"science","title":"Climate ensembles","description":"Compare independently parameterized energy-balance model futures.","route":"/tools/webgpu/climate-ensembles.html","preview":"/tools/webgpu/climate-ensembles.html","id":"climate","evidence":"synthetic","role":"experience"},{"category":"science","title":"Monte Carlo simulations","description":"Independent seeded experiments estimate π and reveal convergence.","route":"/tools/webgpu/monte-carlo.html","preview":"/tools/webgpu/monte-carlo.html","id":"monte-carlo","evidence":"synthetic","role":"experience"},{"category":"tools","title":"Experiments","description":"Follow the idea → futures → human impact → fork → share workflow.","route":"/reality-compiler","preview":"/reality-compiler","id":"experiments","evidence":"synthetic","role":"experience"},{"category":"tools","title":"Dear Congress bridge","description":"Load the source plan into HBL and inspect its supported city mechanisms.","route":"/world/constitution-city.html","preview":"/world/constitution-city.html","id":"dear-congress","evidence":"synthetic","role":"experience"},{"category":"tools","title":"World Line Talk","route":"/tools/world-line-talk","preview":"/tools/world-line-talk","id":"world-line-talk","description":"Explore World Line Talk.","evidence":"fictional","role":"experience"},{"category":"tools","title":"Decision Studio","description":"Frame a decision, compare alternatives and enter recorded construction futures.","route":"/world/decision.html","preview":"/world/decision.html","id":"decision","evidence":"synthetic","role":"experience"},{"category":"tools","title":"Business simulator","description":"Launch a business and follow its actual operating ledger over time.","route":"/business-simulator","preview":"/business-simulator","id":"business","evidence":"synthetic","role":"experience"},{"category":"games","title":"Houston Bar Atlas","description":"Browse OSM-tagged Houston-area bars, then play a clearly fictional interior scene anchored to sourced building geometry when available.","route":"/world/bars/","preview":"/world/bars/","id":"houston-bars","evidence":"mixed","role":"playable venue atlas"},{"category":"tools","title":"Optimization","description":"Open Decision Studio’s “Explain, fork & optimize” tools for bounded searches.","route":"/world/decision.html#advanced","preview":"/world/decision.html#advanced","id":"optimization","evidence":"synthetic","role":"experience"}]}</script>
+
+<script type="module">
+const CATS = {
+  worlds:  {label:'3D Worlds',          emoji:'🌆', c:'#6cc4ff', grad:'linear-gradient(140deg,#1d4f8a,#0f2748 60%,#3a2a6b)'},
+  living:  {label:'Living Simulations', emoji:'🧬', c:'#7ef0c4', grad:'linear-gradient(140deg,#0f6b5a,#123a3f 60%,#24415f)'},
+  science: {label:'GPU Science',        emoji:'⚛️', c:'#b18cff', grad:'linear-gradient(140deg,#4a2a8f,#1e1b4b 60%,#0f3b5e)'},
+  games:   {label:'Games',              emoji:'🎮', c:'#ff6f91', grad:'linear-gradient(140deg,#8f2a4f,#3b1636 60%,#5a3a12)'},
+  tools:   {label:'Tools',              emoji:'🛠️', c:'#ffc94d', grad:'linear-gradient(140deg,#7a5a12,#3a2a0e 60%,#26314f)'},
+};
+// Per-experience flavor; anything missing falls back to its category emoji.
+const EMOJI = {'social-bear':'🐻','future-machine':'🔮','houston-map':'🗺️',world:'🏙️',flower:'🌸','inner-lives':'💭','ai-seinfeld':'🎭','security-viz-lab':'🛡️',worldline:'🧵','living-city':'🏘️',storm:'🌪️',game:'🎵',house:'🏠',business:'💼','constitution-city':'📜',experiments:'🧪'};
+const EVIDENCE = {synthetic:'Synthetic data', fictional:'Fictional', mixed:'Real + illustrative', observed:'Observed data'};
+
+let EXPERIENCES = [], BASE = '';
+// Helios copy: worlds live on HappyBearLandia. Use its live catalog when it allows
+// cross-origin module loads, else the snapshot baked in at copy time.
+const snap = JSON.parse(document.getElementById('fallback-registry').textContent || 'null');
+BASE = snap?.base || 'https://happybearlandia.fly.dev/';
+try {
+  ({EXPERIENCES} = await import(new URL('/world/universe/registry.js', BASE).href));
+} catch {
+  EXPERIENCES = snap?.experiences || [];
+}
+const url = path => BASE ? new URL(path, BASE).href : path;
+document.querySelectorAll('a[href^="/"]').forEach(a => { if (BASE) a.href = url(a.getAttribute('href')); });
+
+const items = EXPERIENCES.filter(x => CATS[x.category]);
+const byId = Object.fromEntries(items.map(x => [x.id, x]));
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ---------- storage (best effort) ---------- */
+const store = {
+  get(k, d){ try { return JSON.parse(localStorage.getItem('hbl-pocket:'+k)) ?? d; } catch { return d; } },
+  set(k, v){ try { localStorage.setItem('hbl-pocket:'+k, JSON.stringify(v)); } catch {} },
+};
+let saved = new Set(store.get('saved', []));
+let seen = new Set(store.get('seen', []));
+const toast = msg => { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 1600); };
+
+/* ---------- feed ---------- */
+let filter = 'all', order = items, active = 0;
+const reel = $('#reel');
+
+function slideHTML(x, i, n){
+  const cat = CATS[x.category];
+  return `<article class="slide" data-id="${esc(x.id)}" aria-roledescription="slide" aria-label="${i+1} of ${n}: ${esc(x.title)}">
+    <div class="frame" style="--grad:${cat.grad};--accent:${cat.c}">
+      <div class="art" aria-hidden="true"><span>${EMOJI[x.id] || cat.emoji}</span></div>
+      <span class="loading">Warming up live preview…</span>
+      <div class="shield"></div>
+      <div class="scrim"></div>
+      <span class="counter">${String(i+1).padStart(2,'0')} / ${n}</span>
+      <button class="done" data-act="done">✕ Done playing</button>
+      <div class="caption">
+        <div class="chips"><span class="chip cat">${cat.label}</span>${x.evidence ? `<span class="chip">${esc(EVIDENCE[x.evidence] || x.evidence)}</span>` : ''}</div>
+        <h2>${esc(x.title)}</h2>
+        <p>${esc(x.description)}</p>
+        <button class="play" data-act="play">▶ Play here</button>
+      </div>
+      <div class="rail">
+        <button data-act="save" class="${saved.has(x.id)?'saved':''}" aria-pressed="${saved.has(x.id)}"><span class="orb">${saved.has(x.id)?'❤️':'🤍'}</span>Save</button>
+        <a href="${esc(url(x.route))}" target="_top"><span class="orb">↗</span>Open</a>
+        <button data-act="share"><span class="orb">📤</span>Share</button>
+        <button data-act="full"><span class="orb">⛶</span>Full</button>
+      </div>
+    </div>
+  </article>`;
+}
+
+function renderFeed(){
+  order = filter === 'all' ? items : items.filter(x => x.category === filter);
+  reel.innerHTML = order.map((x,i) => slideHTML(x,i,order.length)).join('');
+  if (!store.get('hinted', false) && order.length > 1) {
+    reel.insertAdjacentHTML('beforeend','<div class="hint" aria-hidden="true">👆 Swipe up for the next world</div>');
+    store.set('hinted', true);
+  }
+  renderSide();
+  observe();
+}
+
+// Only the active slide and its neighbours hold a live iframe: keeps phones cool.
+function hydrate(idx){
+  [...reel.querySelectorAll('.slide')].forEach((s,i) => {
+    const frame = s.querySelector('.frame');
+    const near = Math.abs(i - idx) <= 1;
+    let ifr = frame.querySelector('iframe');
+    if (near && !ifr) {
+      const x = byId[s.dataset.id];
+      ifr = document.createElement('iframe');
+      ifr.title = `${x.title} live preview`;
+      ifr.allow = 'fullscreen; autoplay; xr-spatial-tracking; gyroscope; accelerometer';
+      ifr.allowFullscreen = true;
+      ifr.tabIndex = -1;
+      ifr.addEventListener('load', () => frame.classList.add('loaded'), {once:true});
+      ifr.src = url(x.preview || x.route);
+      frame.prepend(ifr);
+      clearTimeout(frame._t);
+      frame._t = setTimeout(() => { if (!frame.classList.contains('loaded')) frame.querySelector('.loading').textContent = 'Taking a while — tap Open ↗ for the full page'; }, 15000);
+    } else if (!near && ifr) {
+      ifr.remove(); frame.classList.remove('loaded','playing');
+    }
+  });
+}
+
+let io;
+function observe(){
+  io?.disconnect();
+  io = new IntersectionObserver(entries => {
+    for (const e of entries) if (e.isIntersecting && e.intersectionRatio > .6) {
+      const i = [...reel.children].indexOf(e.target);
+      if (i < 0) continue;
+      active = i; hydrate(i);
+      const id = e.target.dataset.id;
+      seen.add(id); store.set('seen',[...seen]);
+      history.replaceState(null,'',`#/feed/${id}`);
+      markSide(id); stats();
+      reel.querySelectorAll('.frame.playing').forEach(f => { if (!e.target.contains(f)) f.classList.remove('playing'); });
+    }
+  }, {root:reel, threshold:[.6]});
+  reel.querySelectorAll('.slide').forEach(s => io.observe(s));
+}
+
+function goTo(id, smooth = true){
+  if (!order.some(x => x.id === id)) { filter = 'all'; segs(); renderFeed(); }
+  show('feed');
+  const el = reel.querySelector(`.slide[data-id="${CSS.escape(id)}"]`);
+  el?.scrollIntoView({behavior: smooth && !matchMedia('(prefers-reduced-motion:reduce)').matches ? 'smooth' : 'auto'});
+}
+
+function toggleSave(id, btn){
+  saved.has(id) ? saved.delete(id) : saved.add(id);
+  store.set('saved',[...saved]);
+  const on = saved.has(id);
+  document.querySelectorAll(`.slide[data-id="${CSS.escape(id)}"] [data-act=save]`).forEach(b => {
+    b.classList.toggle('saved',on); b.setAttribute('aria-pressed',on); b.querySelector('.orb').textContent = on ? '❤️' : '🤍';
+  });
+  toast(on ? 'Saved to your den 🐻' : 'Removed from saved');
+  stats(); renderGrid(); renderSaved();
+}
+
+reel.addEventListener('click', async e => {
+  const btn = e.target.closest('[data-act]'); if (!btn) return;
+  const slide = btn.closest('.slide'), frame = slide.querySelector('.frame'), x = byId[slide.dataset.id];
+  switch (btn.dataset.act) {
+    case 'play': hydrate(active); frame.classList.add('playing'); frame.querySelector('iframe')?.focus(); break;
+    case 'done': frame.classList.remove('playing'); reel.focus(); break;
+    case 'save': toggleSave(x.id); break;
+    case 'share': {
+      const link = new URL(url(x.route), location.href).href;
+      try { if (navigator.share) await navigator.share({title:x.title, text:x.description, url:link}); else { await navigator.clipboard.writeText(link); toast('Link copied 📋'); } } catch {}
+      break;
+    }
+    case 'full': {
+      frame.classList.add('playing');
+      try { await frame.requestFullscreen?.() ?? frame.webkitRequestFullscreen?.(); } catch { window.open(url(x.route),'_top'); }
+      break;
+    }
+  }
+});
+// Double-tap the art/shield to heart it, TikTok style.
+let lastTap = 0;
+reel.addEventListener('pointerup', e => {
+  if (!e.target.classList.contains('shield')) return;
+  const now = Date.now();
+  if (now - lastTap < 300) { const id = e.target.closest('.slide').dataset.id; if (!saved.has(id)) toggleSave(id); }
+  lastTap = now;
+});
+
+/* ---------- side list (tablet) ---------- */
+function renderSide(){
+  $('#side-list').innerHTML = order.map(x => { const c = CATS[x.category]; return `<li><button data-id="${esc(x.id)}"><span class="mini" style="--grad:${c.grad}">${EMOJI[x.id]||c.emoji}</span><span><b>${esc(x.title)}</b><small>${c.label}${seen.has(x.id)?' · seen':''}</small></span></button></li>`; }).join('');
+}
+function markSide(id){ document.querySelectorAll('#side-list button').forEach(b => { const on = b.dataset.id === id; b.setAttribute('aria-current', on); if (on) b.scrollIntoView({block:'nearest'}); }); }
+$('#side-list').addEventListener('click', e => { const b = e.target.closest('button[data-id]'); if (b) goTo(b.dataset.id); });
+
+/* ---------- explore ---------- */
+let query = '';
+function segs(){
+  const counts = {}; items.forEach(x => counts[x.category] = (counts[x.category]||0)+1);
+  const html = [['all','✨ All',items.length], ...Object.entries(CATS).filter(([k]) => counts[k]).map(([k,c]) => [k,`${c.emoji} ${c.label}`,counts[k]])]
+    .map(([k,l,n]) => `<button data-cat="${k}" aria-pressed="${filter===k}">${l} <small style="opacity:.6">${n}</small></button>`).join('');
+  $('#seg').innerHTML = html; $('#side-seg').innerHTML = html;
+}
+function onSeg(e){ const b = e.target.closest('[data-cat]'); if (!b) return; filter = b.dataset.cat; segs(); renderGrid(); renderFeed(); reel.scrollTop = 0; }
+$('#seg').addEventListener('click', onSeg); $('#side-seg').addEventListener('click', onSeg);
+
+const tile = x => { const c = CATS[x.category]; return `<button class="tile" data-id="${esc(x.id)}" style="--grad:${c.grad}"><span class="emo" aria-hidden="true">${EMOJI[x.id]||c.emoji}</span>${saved.has(x.id)?'<span class="fav">❤️</span>':''}<b>${esc(x.title)}</b><small>${esc(x.description)}</small></button>`; };
+function renderGrid(){
+  const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+  const list = items.filter(x => (filter==='all'||x.category===filter) && terms.every(t => `${x.title} ${x.description} ${x.category} ${x.id}`.toLowerCase().includes(t)));
+  $('#grid-title').textContent = `${filter==='all'?'All experiences':CATS[filter].label}${query?` matching “${query}”`:''} · ${list.length}`;
+  $('#grid').innerHTML = list.length ? list.map(tile).join('') : `<div class="empty"><div class="big">🐾</div>No worlds match that. Try “city” or “storm”.</div>`;
+}
+function stats(){
+  const counts = {}; items.forEach(x => counts[x.category] = (counts[x.category]||0)+1);
+  const pct = items.length ? Math.round(100*[...seen].filter(id => byId[id]).length/items.length) : 0;
+  $('#stats').innerHTML = [
+    [items.length,'Experiences','#6cc4ff'],
+    [Object.keys(counts).length,'Categories','#b18cff'],
+    [pct+'%','Explored by you','#7ef0c4'],
+    [saved.size,'Saved','#ff6f91'],
+  ].map(([b,s,c]) => `<div class="stat" style="--c:${c}"><b>${b}</b><small>${s}</small></div>`).join('');
+  $('#bar').innerHTML = Object.entries(CATS).filter(([k]) => counts[k]).map(([k,c]) => `<i style="flex:${counts[k]};background:${c.c}"></i>`).join('');
+  $('#legend').innerHTML = Object.entries(CATS).filter(([k]) => counts[k]).map(([k,c]) => `<span style="--c:${c.c}">${c.label} ${counts[k]}</span>`).join('');
+  $('#saved-count').textContent = saved.size || '';
+}
+$('#grid').addEventListener('click', e => { const b = e.target.closest('.tile'); if (b) goTo(b.dataset.id, false); });
+$('#q').addEventListener('input', e => { query = e.target.value.trim(); renderGrid(); });
+$('#hero').addEventListener('click', e => {
+  const open = e.target.closest('[data-open]');
+  e.preventDefault();
+  if (open) window.open(url(open.dataset.open),'_top'); else if (byId['future-machine']) goTo('future-machine', false);
+});
+
+/* ---------- saved ---------- */
+function renderSaved(){
+  const list = items.filter(x => saved.has(x.id));
+  $('#saved-grid').innerHTML = list.length ? list.map(tile).join('') : `<div class="empty" style="grid-column:1/-1"><div class="big">🍯</div>Nothing saved yet.<br>Tap 🤍 or double-tap a preview in the feed.</div>`;
+}
+$('#saved-grid').addEventListener('click', e => { const b = e.target.closest('.tile'); if (b) goTo(b.dataset.id, false); });
+
+/* ---------- tabs / routing ---------- */
+function show(view){
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === view));
+  document.querySelectorAll('nav.tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.view === view));
+  if (view !== 'feed') { reel.querySelectorAll('.frame.playing').forEach(f => f.classList.remove('playing')); history.replaceState(null,'',`#/${view}`); }
+  else hydrate(active);
+}
+document.querySelector('nav.tabs').addEventListener('click', e => { const b = e.target.closest('[data-view]'); if (b) show(b.dataset.view); });
+$('#shuffle').addEventListener('click', () => {
+  const pool = items.filter(x => !seen.has(x.id)); const pick = (pool.length ? pool : items)[Math.floor(Math.random()*(pool.length||items.length))];
+  if (pick) { goTo(pick.id, false); toast(`${EMOJI[pick.id]||CATS[pick.category].emoji} ${pick.title}`); }
+});
+addEventListener('keydown', e => {
+  if (!$('#feed').classList.contains('on') || e.target.matches('input')) return;
+  if (e.key === 'Escape') reel.querySelectorAll('.frame.playing').forEach(f => f.classList.remove('playing'));
+  if (reel.querySelector('.frame.playing')) return;
+  const step = {ArrowDown:1,j:1,PageDown:1,ArrowUp:-1,k:-1,PageUp:-1}[e.key];
+  if (step) { e.preventDefault(); const n = Math.max(0, Math.min(order.length-1, active+step)); reel.children[n]?.scrollIntoView({behavior:'smooth'}); }
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); reel.children[active]?.querySelector('[data-act=play]')?.click(); }
+});
+document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement) reel.querySelectorAll('.frame.playing').forEach(f => f.classList.remove('playing')); });
+
+/* ---------- boot ---------- */
+segs(); stats(); renderGrid(); renderSaved(); renderFeed();
+if (!items.length) reel.innerHTML = `<div class="empty"><div class="big">🐻</div>Couldn't load the world catalog. <a href="${url('/')}" style="color:var(--honey)">Go home</a></div>`;
+$('#hello-sub').textContent = `${items.length} simulations, games and tools — swipe them in the Feed or pick one here.`;
+const m = location.hash.match(/^#\/(feed|explore|saved)(?:\/(.+))?/);
+if (m?.[2] && byId[m[2]]) goTo(decodeURIComponent(m[2]), false); else if (m) show(m[1]);
+</script>
+</body>
+</html>

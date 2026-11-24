@@ -5,19 +5,19 @@
 import {createServer} from 'node:http';
 import {readFile, stat} from 'node:fs/promises';
 import {extname, join, resolve, sep} from 'node:path';
-import {createPGliteDatabase} from '../src/db-pglite.js';
+import {createPGliteDatabase, pgliteDataDir} from '../src/db-pglite.js';
 import {createRuntime} from '../src/runtime.js';
 
 const root = process.cwd();
 const dist = resolve(root, 'dist');
-const types = {'.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.svg': 'image/svg+xml', '.ico': 'image/x-icon'};
+const types = {'.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.ico': 'image/x-icon'};
 
 const toml = await readFile(join(root, 'netlify.toml'), 'utf8');
 const redirects = new Map([...toml.matchAll(/\[\[redirects\]\]\s*from\s*=\s*"([^"]+)"\s*to\s*=\s*"([^"]+)"/g)].map(m => [m[1], decodeURI(m[2])]));
 const isApi = path => path.startsWith('/api/') || path === '/email/unsubscribe' || path === '/proxy/ycr' || path.startsWith('/proxy/ycr/');
 
-const db = process.env.SUPABASE_DB_URL ? undefined : await createPGliteDatabase(process.env.HELIOS_PGLITE_DIR || '.data/pglite');
-const runtime = await createRuntime({db, secure: process.env.HELIOS_INSECURE_COOKIES === '1' ? false : undefined});
+const db = process.env.SUPABASE_DB_URL ? undefined : await createPGliteDatabase(pgliteDataDir());
+const runtime = await createRuntime({db, secure: false});
 
 async function serveStatic(path, res, method) {
   let target = path === '/' ? '/index.html' : redirects.get(path) ?? path;
@@ -31,7 +31,7 @@ async function serveStatic(path, res, method) {
 }
 
 const server = createServer(async (req, res) => {
-  const url = new URL(req.url, 'http://localhost');
+  const url = new URL(req.url, `http://${req.headers.host || 'localhost:3000'}`);
   if (!isApi(url.pathname) && !(await serveStatic(url.pathname, res, req.method))) {
     if (!isApi(url.pathname) && !['GET', 'HEAD'].includes(req.method)) { res.writeHead(405); return res.end(); }
     res.writeHead(404, {'Content-Type': 'application/json'});
@@ -54,7 +54,10 @@ const server = createServer(async (req, res) => {
   res.end(Buffer.from(await response.arrayBuffer()));
 });
 
-const port = Number(process.env.PORT || 3000), host = process.env.HOST || '127.0.0.1';
+// On Fly, the service checks 0.0.0.0:8080; local development stays on 127.0.0.1:3000.
+const onFly = Boolean(process.env.FLY_APP_NAME);
+const port = Number(process.env.PORT || (onFly ? 8080 : 3000));
+const host = process.env.HOST || (onFly ? '0.0.0.0' : '127.0.0.1');
 server.listen(port, host, () => console.log(`Helios.AI dev server on http://${host}:${port}`));
 const stop = () => { server.close(); runtime.store.close(); process.exit(0); };
 process.on('SIGTERM', stop);

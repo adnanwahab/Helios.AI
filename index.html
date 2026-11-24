@@ -10,7 +10,26 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/public/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/public/apple-touch-icon.png">
   <link rel="manifest" href="/public/site.webmanifest">
-  <title>Helios.AI — Merged Experiences</title>
+  <title>Please vote. Eight billion people can't all be wrong. Actually, never mind.</title>
+  <meta name="description" content="Explore 100 draft shared goals, save private notes in your browser, or propose public amendments for review. This is not an official ballot.">
+  <link rel="canonical" href="https://helioshtml.com/">
+  <!-- Link previews: iMessage, SMS, Slack, Discord, Facebook, LinkedIn, X -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Helios.AI">
+  <meta property="og:title" content="Please vote. Eight billion people can't all be wrong. Actually, never mind.">
+  <meta property="og:description" content="Explore 100 draft shared goals, save private notes in your browser, or propose public amendments for review. This is not an official ballot.">
+  <meta property="og:url" content="https://helioshtml.com/">
+  <meta property="og:image" content="https://helioshtml.com/public/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="A journal wish, &ldquo;Please build a bridge from New York to France,&rdquo; becomes the Transatlantic Connection Initiative.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Please vote. Eight billion people can't all be wrong. Actually, never mind.">
+  <meta name="twitter:description" content="Explore 100 draft shared goals, save private notes in your browser, or propose public amendments for review. This is not an official ballot.">
+  <meta name="twitter:image" content="https://helioshtml.com/public/og.png">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebSite","name":"Helios.AI","url":"https://helioshtml.com/","description":"Explore draft goals and suggest amendments for public review. This is not an official ballot."}
+  </script>
   <style>
     :root {
       --bg: #0b1220;
@@ -45,11 +64,18 @@
     }
 
     .title {
+      margin: 0;
       font-size: 14px;
       font-weight: 700;
       letter-spacing: .02em;
-      white-space: nowrap;
+      white-space: normal;
+      line-height: 1.3;
+      flex-shrink: 0;
+      max-width: 250px;
     }
+
+    .welcome-start { color:#09221c; background:var(--active); border-radius:999px; padding:10px 15px; font-size:13px; font-weight:800; white-space:nowrap; text-decoration:none; }
+    .welcome-start:focus-visible { outline:3px solid #ffdfa0; outline-offset:3px; }
 
     .tabs {
       display: flex;
@@ -113,6 +139,10 @@
     }
 
     .byline a { text-decoration: none; display: inline-flex; }
+    .byline { flex-wrap: wrap; gap: 12px 24px; }
+    .byline .contact-link { color: var(--active); font-size: 14px; font-weight: 700; letter-spacing: 0; align-items: center; }
+    .byline .contact-link:hover { text-decoration: underline; }
+    .byline .contact-link:focus-visible { outline: 2px solid var(--active); outline-offset: 3px; border-radius: 4px; }
 
     .byline span {
       display: inline-block;
@@ -152,16 +182,30 @@
 <body>
   <div class="app">
     <header class="topbar">
-      <div class="title">Helios.AI · Merged index</div>
+      <h1 class="title">Please vote. Eight billion people can't all be wrong. Actually, never mind.</h1>
+      <a class="welcome-start" href="/welcome" aria-label="New here? Read the HeliosAI participation guide">New here? Start here</a>
       <nav class="tabs" aria-label="Choose page">
         <button class="tab" id="tab-helios-ai" type="button" role="tab" aria-selected="true" aria-controls="view-helios-ai">HELIOS AI Landing Page</button>
         <button class="tab" id="tab-hippie" type="button" role="tab" aria-selected="false" aria-controls="view-hippie">HeliosAI · Hippie</button>
+        <button class="tab" id="tab-notion" type="button" role="tab" aria-selected="false" aria-controls="view-notion">Plan · Notion</button>
+        <button class="tab" id="tab-world-plan" type="button" role="tab" aria-selected="false" aria-controls="view-world-plan">World Plan Simulator</button>
+        <button class="tab" id="tab-radar" type="button" role="tab" aria-selected="false" aria-controls="view-radar">Vote Radar</button>
+        <button class="tab" id="tab-consensus" type="button" role="tab" aria-selected="false" aria-controls="view-consensus">Neighborhood Consensus</button>
+        <button class="tab" id="tab-merge" type="button" role="tab" aria-selected="false" aria-controls="view-merge">Three-Editor Merge</button>
         <button class="tab" id="tab-demo" type="button" role="tab" aria-selected="false" aria-controls="view-demo">100 Shared Goals</button>
+        <button class="tab" id="tab-orbit" type="button" role="tab" aria-selected="false" aria-controls="view-orbit">Acts in Orbit</button>
+        <button class="tab" id="tab-flags" type="button" role="tab" aria-selected="false" aria-controls="view-flags">Support Every Country</button>
         <button class="tab" id="tab-unified" type="button" role="tab" aria-selected="false" aria-controls="view-unified">Helios Unified</button>
+        <button class="tab" id="tab-coil" type="button" role="tab" aria-selected="false" aria-controls="view-coil">The Long Coil</button>
         <button class="tab" id="tab-lab" type="button" role="tab" aria-selected="false" aria-controls="view-lab">Dynamicland (Local)</button>
-        <button class="tab" id="tab-morphlab" type="button" role="tab" aria-selected="false" aria-controls="view-morphlab">MorphLab Offline</button>
+        <button class="tab" id="tab-morphlab" type="button" role="tab" aria-selected="false" aria-controls="view-morphlab">MorphLab · WebGPU</button>
+        <button class="tab" id="tab-pocket" type="button" role="tab" aria-selected="false" aria-controls="view-pocket">HappyBearLandia Pocket</button>
         <button class="tab" id="tab-pensieve" type="button" role="tab" aria-selected="false" aria-controls="view-pensieve">Digital Pensieve</button>
+        <button class="tab" id="tab-braindance" type="button" role="tab" aria-selected="false" aria-controls="view-braindance">Braindance</button>
+        <button class="tab" id="tab-mail" type="button" role="tab" aria-selected="false" aria-controls="view-mail">Mail · Resend</button>
         <button class="tab" id="tab-ycr" type="button" role="tab" aria-selected="false" aria-controls="view-ycr">YC Research</button>
+        <button class="tab" id="tab-fork" type="button" role="tab" aria-selected="false" aria-controls="view-fork">Fork Helios</button>
+        <button class="tab" id="tab-rainbow" type="button" role="tab" aria-selected="false" aria-controls="view-rainbow">Rainbow Brain Realms</button>
       </nav>
       <iframe
         class="signup"
@@ -188,6 +232,46 @@
       ></iframe>
 
       <iframe
+        id="view-notion"
+        class="view"
+        title="Helios plan as a Notion document"
+        src="/embed/notion"
+        loading="lazy"
+      ></iframe>
+
+      <iframe
+        id="view-world-plan"
+        class="view"
+        title="World Plan Simulator"
+        src="/embed/world-plan"
+        loading="lazy"
+      ></iframe>
+
+      <iframe
+        id="view-radar"
+        class="view"
+        title="Vote Radar"
+        src="/embed/radar"
+        loading="lazy"
+      ></iframe>
+
+      <iframe
+        id="view-consensus"
+        class="view"
+        title="Neighborhood Consensus: how support for a local proposal spreads across a neighborhood"
+        src="/embed/consensus"
+        loading="lazy"
+      ></iframe>
+
+      <iframe
+        id="view-merge"
+        class="view"
+        title="Three-Editor Merge"
+        src="/embed/merge"
+        loading="lazy"
+      ></iframe>
+
+      <iframe
         id="view-demo"
         class="view"
         title="100 Shared Goals"
@@ -196,10 +280,36 @@
       ></iframe>
 
       <iframe
+        id="view-orbit"
+        class="view"
+        title="HELIOSAI Acts in Orbit"
+        src="/embed/orbit"
+        loading="lazy"
+      ></iframe>
+
+      <iframe
+        id="view-flags"
+        class="view"
+        title="Support Every Country"
+        src="/embed/flags"
+        loading="lazy"
+        allow="fullscreen"
+        allowfullscreen
+      ></iframe>
+
+      <iframe
         id="view-unified"
         class="view"
         title="Helios Unified"
         src="/embed/unified"
+        loading="lazy"
+      ></iframe>
+
+      <iframe
+        id="view-coil"
+        class="view"
+        title="The Long Coil"
+        src="/embed/coil"
         loading="lazy"
       ></iframe>
 
@@ -212,13 +322,16 @@
       ></iframe>
 
       <iframe
-        id="view-morphlab"
+        id="view-pocket"
         class="view"
-        title="MorphLab Offline Demo"
-        src="/embed/morphlab"
+        title="HappyBearLandia Pocket"
+        src="/embed/pocket"
         loading="lazy"
+        allow="fullscreen; autoplay; xr-spatial-tracking; gyroscope; accelerometer; web-share; clipboard-write"
+        allowfullscreen
       ></iframe>
 
+      <iframe id="view-morphlab" class="view" title="Helios MorphLab — prompt-to-particle 3D studio" src="/embed/morphlab" loading="lazy"></iframe>
       <iframe
         id="view-pensieve"
         class="view"
@@ -230,15 +343,42 @@
       ></iframe>
 
       <iframe
+        id="view-braindance"
+        class="view"
+        title="Braindance: Mirrorworld Pensieve, key events 2019 to 2033"
+        src="/embed/braindance"
+        loading="lazy"
+      ></iframe>
+
+      <iframe id="view-mail" class="view" title="Helios Mail · Resend inbox and compose" src="/embed/mail" loading="lazy"></iframe>
+
+      <iframe
         id="view-ycr"
         class="view"
         title="YC Research"
         src="/proxy/ycr/"
         loading="lazy"
       ></iframe>
+      <iframe
+        id="view-fork"
+        class="view"
+        title="Fork Helios"
+        src="/embed/fork"
+        loading="lazy"
+      ></iframe>
+      <iframe
+        id="view-rainbow"
+        class="view"
+        title="Rainbow Brain Realms"
+        src="/embed/rainbow-brain"
+        loading="lazy"
+        allow="gamepad; fullscreen"
+        allowfullscreen
+      ></iframe>
     </main>
 
     <footer class="byline">
+      <a class="contact-link" href="mailto:hello@heliosai.lol" aria-label="Email HeliosAI at hello@heliosai.lol">✉ Email HeliosAI</a>
       <a href="https://happybearlandia.fly.dev/" target="_blank" rel="noopener" aria-label="by happybear"><span style="--i:0">b</span><span style="--i:1">y</span><span style="--i:2"> </span><span style="--i:3">h</span><span style="--i:4">a</span><span style="--i:5">p</span><span style="--i:6">p</span><span style="--i:7">y</span><span style="--i:8">b</span><span style="--i:9">e</span><span style="--i:10">a</span><span style="--i:11">r</span></a>
     </footer>
   </div>
@@ -249,10 +389,23 @@
       morphlab: document.getElementById('tab-morphlab'),
       heliosAi: document.getElementById('tab-helios-ai'),
       hippie: document.getElementById('tab-hippie'),
+      notion: document.getElementById('tab-notion'),
+      worldPlan: document.getElementById('tab-world-plan'),
+      radar: document.getElementById('tab-radar'),
+      consensus: document.getElementById('tab-consensus'),
+      merge: document.getElementById('tab-merge'),
       demo: document.getElementById('tab-demo'),
+      orbit: document.getElementById('tab-orbit'),
+      flags: document.getElementById('tab-flags'),
       unified: document.getElementById('tab-unified'),
+      coil: document.getElementById('tab-coil'),
+      pocket: document.getElementById('tab-pocket'),
       pensieve: document.getElementById('tab-pensieve'),
-      ycr: document.getElementById('tab-ycr')
+      braindance: document.getElementById('tab-braindance'),
+      mail: document.getElementById('tab-mail'),
+      ycr: document.getElementById('tab-ycr'),
+      fork: document.getElementById('tab-fork'),
+      rainbow: document.getElementById('tab-rainbow')
     };
 
     const views = {
@@ -260,10 +413,23 @@
       morphlab: document.getElementById('view-morphlab'),
       heliosAi: document.getElementById('view-helios-ai'),
       hippie: document.getElementById('view-hippie'),
+      notion: document.getElementById('view-notion'),
+      worldPlan: document.getElementById('view-world-plan'),
+      radar: document.getElementById('view-radar'),
+      consensus: document.getElementById('view-consensus'),
+      merge: document.getElementById('view-merge'),
       demo: document.getElementById('view-demo'),
+      orbit: document.getElementById('view-orbit'),
+      flags: document.getElementById('view-flags'),
       unified: document.getElementById('view-unified'),
+      coil: document.getElementById('view-coil'),
+      pocket: document.getElementById('view-pocket'),
       pensieve: document.getElementById('view-pensieve'),
-      ycr: document.getElementById('view-ycr')
+      braindance: document.getElementById('view-braindance'),
+      mail: document.getElementById('view-mail'),
+      ycr: document.getElementById('view-ycr'),
+      fork: document.getElementById('view-fork'),
+      rainbow: document.getElementById('view-rainbow')
     };
 
     function activate(which) {
@@ -278,10 +444,23 @@
     tabs.morphlab.addEventListener('click', () => activate('morphlab'));
     tabs.heliosAi.addEventListener('click', () => activate('heliosAi'));
     tabs.hippie.addEventListener('click', () => activate('hippie'));
+    tabs.notion.addEventListener('click', () => activate('notion'));
+    tabs.worldPlan.addEventListener('click', () => activate('worldPlan'));
+    tabs.radar.addEventListener('click', () => activate('radar'));
+    tabs.consensus.addEventListener('click', () => activate('consensus'));
+    tabs.merge.addEventListener('click', () => activate('merge'));
     tabs.demo.addEventListener('click', () => activate('demo'));
+    tabs.orbit.addEventListener('click', () => activate('orbit'));
+    tabs.flags.addEventListener('click', () => activate('flags'));
     tabs.unified.addEventListener('click', () => activate('unified'));
+    tabs.coil.addEventListener('click', () => activate('coil'));
+    tabs.pocket.addEventListener('click', () => activate('pocket'));
     tabs.pensieve.addEventListener('click', () => activate('pensieve'));
+    tabs.braindance.addEventListener('click', () => activate('braindance'));
+    tabs.mail.addEventListener('click', () => activate('mail'));
     tabs.ycr.addEventListener('click', () => activate('ycr'));
+    tabs.fork.addEventListener('click', () => activate('fork'));
+    tabs.rainbow.addEventListener('click', () => activate('rainbow'));
   </script>
 </body>
 </html>

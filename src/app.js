@@ -17,7 +17,7 @@ const rewriteYcrText = text => text
   .replace(/(["'`])\/api\//g, `$1${YCR_PROXY_PREFIX}/api/`)
   .replace(/https?:\/\/(?:www\.)?(?:ycr\.org|openresearchlab\.org)\//gi, `${YCR_PROXY_PREFIX}/`);
 
-export function createApp({store, email, origins = [], adminToken = null, secure = true} = {}) {
+export function createApp({store, email, notion = null, morphlab = null, origins = [], adminToken = null, secure = true, health = {storage: 'unknown', runtime: 'unknown'}} = {}) {
   if (!store) throw Error('Store required');
   const response = (data, status = 200, extra = {}) => Response.json(data, {status, headers: {'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', ...extra}});
 
@@ -49,9 +49,51 @@ export function createApp({store, email, origins = [], adminToken = null, secure
     const method = request.method, path = url.pathname;
     const cookie = request.headers.get('cookie')?.split(';').map(x => x.trim()).find(x => x.startsWith('helios_session='))?.slice(15);
 
+    // A separate, opt-in paid capability. The prompt is sent only after a
+    // same-origin, CSRF-protected request and durable per-IP/session limits.
+    if (path === '/api/morphlab/config') {
+      if (method !== 'GET') return response({error: 'Use GET'}, 405);
+      return response(morphlab?.config() ?? {enabled: false, model: null});
+    }
+    if (path === '/api/morphlab/shape') {
+      if (method !== 'POST') return response({error: 'Use POST'}, 405);
+      if (!morphlab?.enabled) throw new Problem(503, 'AI shapes are not enabled on this Helios server.');
+      if (![url.origin, ...origins].includes(request.headers.get('origin'))) throw new Problem(403, 'A same-origin request is required.');
+      if (!request.headers.get('content-type')?.toLowerCase().startsWith('application/json')) throw new Problem(415, 'Use application/json.');
+      if (Number(request.headers.get('content-length') || 0) > 2048) throw new Problem(413, 'Prompt is too large.');
+      const session = await store.authenticate(cookie);
+      if (!session || !equal(request.headers.get('x-csrf-token'), session.csrf)) throw new Problem(403, 'Reload to establish a valid session.');
+      const chunks = []; let bytes = 0;
+      const reader = request.body?.getReader();
+      if (reader) while (true) {
+        const {done, value} = await reader.read();
+        if (done) break;
+        bytes += value.length;
+        if (bytes > 2048) { await reader.cancel(); throw new Problem(413, 'Prompt is too large.'); }
+        chunks.push(value);
+      }
+      let input;
+      try { input = JSON.parse(Buffer.concat(chunks).toString('utf8')); }
+      catch { throw new Problem(400, 'Invalid JSON.'); }
+      if (!input || Array.isArray(input) || typeof input !== 'object'
+        || Object.keys(input).length !== 1 || typeof input.prompt !== 'string'
+        || input.prompt.trim().length < 2 || input.prompt.length > 500) {
+        throw new Problem(400, 'Prompt must be 2–500 characters.');
+      }
+      await store.limit('morphlab:ip:' + hash(remoteIP), 12, 3600000);
+      await store.limit('morphlab:session:' + session.id, 8, 3600000);
+      try {
+        return response({shape: await morphlab.generate(input.prompt.trim()), source: 'openai', model: morphlab.model});
+      } catch (error) {
+        if (error.code === 'MORPHLAB_BUSY') throw new Problem(429, 'MorphLab is busy. Try again shortly.');
+        console.error('MorphLab generation failed:', error?.name || 'Error');
+        throw new Problem(502, 'OpenAI could not generate that shape right now.');
+      }
+    }
+
     if (method === 'GET' && path === '/api/health') {
       const {goals} = await store.catalog();
-      return response({status: 'ok', storage: 'supabase-postgres', runtime: 'netlify-functions', schemaVersion: 1, seedCount: 100, proposalCount: goals.length, catalogHash: store.catalogHash});
+      return response({status: 'ok', storage: health.storage, runtime: health.runtime, schemaVersion: 1, seedCount: 100, proposalCount: goals.length, catalogHash: store.catalogHash});
     }
     if (method === 'GET' && path === '/api/session') {
       if (!(await store.authenticate(cookie))) await store.limit('session-issue:' + hash(remoteIP), 120, 3600000);
@@ -60,6 +102,18 @@ export function createApp({store, email, origins = [], adminToken = null, secure
         session.raw ? {'Set-Cookie': `helios_session=${session.raw}; HttpOnly; SameSite=Lax; Path=/api; Max-Age=7776000${secure ? '; Secure' : ''}`} : {});
     }
     if (method === 'GET' && ['/api/catalog', '/api/laws'].includes(path)) return response(await store.catalog());
+    if (path === '/api/notion/preview' && method === 'GET') {
+      if (!notion) throw new Problem(503, 'Notion preview is not configured.');
+      return response(await notion.preview({fresh: url.searchParams.get('fresh') === '1'}));
+    }
+    // Publishing writes to the maintainer's Notion workspace, so it takes the admin token, not a browser session.
+    if (path === '/api/notion/publish' && method === 'POST') {
+      if (!adminToken) throw new Problem(503, 'Maintainer review is not configured.');
+      if (!equal(request.headers.get('authorization'), 'Bearer ' + adminToken)) throw new Problem(403, 'Maintainer authorization is required to publish to Notion.');
+      if (!notion) throw new Problem(503, 'Notion is not configured.');
+      try { return response(await notion.publish(), 201); }
+      catch (error) { if (error.status === 503) throw new Problem(503, error.message); throw new Problem(502, 'Notion rejected the page: ' + (error.message || 'unknown error')); }
+    }
     const match = path.match(/^\/api\/laws\/([A-Z0-9-]+)(?:\/(amendments)(?:\/([A-Z0-9a-f-]+)\/(accept))?)?$/i);
     if (method === 'GET' && match && !match[2]) return response(await store.detail(match[1]));
     if (method !== 'POST') return response({error: 'Not found'}, 404);
