@@ -26,6 +26,7 @@ const pages = [
   'heliosai-particle-interface.html',
   'sand_castle.html',
   'communal_science_lab_webgpu (1).html',
+  'rainbow_brain.html',
   // Crawlers look for these at the site root.
   'robots.txt',
   'sitemap.xml',
