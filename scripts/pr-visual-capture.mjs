@@ -98,6 +98,24 @@ try {
     await page.locator('#citizen-feedback').waitFor({state:'visible'});
     await page.screenshot({path: join(output, 'citizen-feedback.png'), fullPage: true, animations: 'disabled'});
   }
+  if (await page.locator('#docs-open').count()) {
+    await page.goto(base + '/', {waitUntil:'domcontentloaded'});
+    await page.locator('#constitution-list .clause-card').first().waitFor({state:'visible'});
+    await page.locator('#journal').fill('Our bus stops need accessible shade. Everyone should have a comfortable commute.');
+    await page.locator('#review-match').click();
+    // Only local practice controls; no connection or public writes.
+    await page.locator('[data-clause-vote="support"]').click();
+    await page.locator('#clause-comment').fill('Example: prioritize stops with the highest heat exposure.');
+    await page.locator('#post-comment').click();
+    await page.screenshot({path: join(output, 'constitution-workbench.png'), fullPage: true, animations: 'disabled'});
+    await page.locator('#docs-open').click();
+    await page.locator('#docs-drawer').waitFor({state:'visible'});
+    await page.screenshot({path: join(output, 'docs-drawer.png'), animations: 'disabled'});
+    await page.locator('#docs-close').click();
+    await page.setViewportSize({width:390,height:844});
+    await page.screenshot({path: join(output, 'constitution-mobile.png'), fullPage: true, animations: 'disabled'});
+    await page.setViewportSize({width:1440,height:900});
+  }
   const mailTab = page.locator('#tab-mail');
   if (await mailTab.count()) {
     // Never unlock the operator console or enter any credentials.

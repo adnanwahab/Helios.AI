@@ -3,7 +3,7 @@
 Every open, updated or merged PR with a matching capture receives an automatically maintained **HeliosAI visual review** comment:
 
 - A direct link to its Netlify deploy preview.
-- An inline **desktop screenshot** of the built homepage, plus expandable **mobile**, citizen synthesis/proposal, government review/feedback, and Mail screenshots when available.
+- An inline **desktop screenshot** of the built homepage, plus expandable **mobile**, citizen synthesis/proposal, government review/feedback, constitution workbench, Docs drawer, and Mail screenshots when available.
 - The exact PR head commit used for the screenshots and a link to the CI run and downloadable artifacts.
 
 The screenshot and deployment are deliberately separate: the screenshot is generated

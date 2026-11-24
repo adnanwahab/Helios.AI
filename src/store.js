@@ -1,4 +1,5 @@
 import {createHash, randomBytes, randomUUID} from 'node:crypto';
+import {CONSTITUTION_SCHEMA,constitutionStore} from './constitution.js';
 import seedCatalog from '../data/catalog.json' with {type: 'json'};
 
 export const hash = value => createHash('sha256').update(value).digest('hex');
@@ -25,6 +26,7 @@ export function proposalContent(input, base = {}) {
 
 // Timestamps are epoch milliseconds in BIGINT columns. Statements run one at a time on Postgres.
 export const SCHEMA = [
+  ...CONSTITUTION_SCHEMA,
   'CREATE TABLE IF NOT EXISTS metadata(key TEXT PRIMARY KEY, value TEXT NOT NULL)',
   'CREATE TABLE IF NOT EXISTS sessions(id TEXT PRIMARY KEY, csrf TEXT NOT NULL, expires BIGINT NOT NULL)',
   'CREATE TABLE IF NOT EXISTS laws(id TEXT PRIMARY KEY, current_version TEXT NOT NULL, author TEXT, created_at TEXT NOT NULL)',
@@ -162,6 +164,7 @@ function createStore(db, catalogHash) {
   return {
     db,
     catalogHash,
+    constitution: constitutionStore(db, Problem),
     async catalog() {
       const rows = (await db.query('SELECT l.*, v.content, v.number FROM laws l JOIN versions v ON v.id = l.current_version ORDER BY l.id')).rows;
       return {...seedCatalog, goals: rows.map(publicLaw)};

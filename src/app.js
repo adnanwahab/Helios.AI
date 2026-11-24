@@ -101,6 +101,14 @@ export function createApp({store, email, notion = null, morphlab = null, origins
       return response({csrfToken: session.csrf, expiresAt: new Date(session.expires).toISOString(), identity: 'Pseudonymous browser session; not verified civic identity'}, 200,
         session.raw ? {'Set-Cookie': `helios_session=${session.raw}; HttpOnly; SameSite=Lax; Path=/api; Max-Age=7776000${secure ? '; Secure' : ''}`} : {});
     }
+    if (method === 'GET' && path === '/api/constitution') {
+      const session = await store.authenticate(cookie);
+      return response(await store.constitution.board(session?.id));
+    }
+    if (method === 'GET' && path === '/api/constitution/moderation') {
+      if (!adminToken || !equal(request.headers.get('authorization'), 'Bearer ' + adminToken)) throw new Problem(403, 'Maintainer authorization required.');
+      return response(await store.constitution.moderationQueue());
+    }
     if (method === 'GET' && ['/api/catalog', '/api/laws'].includes(path)) return response(await store.catalog());
     if (path === '/api/notion/preview' && method === 'GET') {
       if (!notion) throw new Problem(503, 'Notion preview is not configured.');
@@ -137,6 +145,14 @@ export function createApp({store, email, notion = null, morphlab = null, origins
     let body;
     try { body = JSON.parse(Buffer.concat(chunks).toString('utf8')); } catch { throw new Problem(400, 'Invalid JSON.'); }
 
+    const constitutionAction = {'/api/constitution/vote':'vote','/api/constitution/contribute':'contribute','/api/constitution/comment':'comment','/api/constitution/moderate':'moderate'}[path];
+    if (constitutionAction) {
+      if (constitutionAction === 'moderate' && (!adminToken || !equal(request.headers.get('authorization'), 'Bearer ' + adminToken))) throw new Problem(403, 'Maintainer authorization required.');
+      const key = request.headers.get('idempotency-key');
+      if (!key || !/^[a-zA-Z0-9-]{16,80}$/.test(key)) throw new Problem(400, 'A unique Idempotency-Key is required.');
+      const result = await store.idempotent(session.id, key, hash(path + JSON.stringify(body)), q => store.constitution[constitutionAction](q, body, session.id));
+      return response(result, 201);
+    }
     if (path === '/api/laws' || (match?.[2] && !match[3])) {
       const key = request.headers.get('idempotency-key');
       if (!key || !/^[a-zA-Z0-9-]{16,80}$/.test(key)) throw new Problem(400, 'A unique Idempotency-Key is required.');

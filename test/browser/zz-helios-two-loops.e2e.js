@@ -32,7 +32,7 @@ test('citizen finds an existing public record locally and previews a complete go
  await page.locator('#related-list button').first().click();
  await expect(page.locator('#heading-3')).toHaveText('Contribute to a shared proposal.');
  await expect(page.locator('#proposal-form')).toBeHidden();
- await page.getByRole('button',{name:'Support',exact:true}).click();
+ await page.locator('#decision-panel').getByRole('button',{name:'Support',exact:true}).click();
  await expect(page.locator('#position-status')).toContainText('Nothing was transmitted');
  await expect(page.locator('#amend-link')).toHaveAttribute('href','/laws?goal='+fixture.id);
  await page.locator('#handoff-government').click();

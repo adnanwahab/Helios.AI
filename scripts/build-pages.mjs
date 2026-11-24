@@ -30,7 +30,8 @@ const demos = [
   'sand_castle.html',
   'rainbow_brain.html',
   'morphlab.html',
-  'sunshine_breakfast.html'
+  'sunshine_breakfast.html',
+  'morphlab-offline-demo.html'
 ];
 for (const name of demos) {
   await copyFile(join(root, name), join(out, name));
