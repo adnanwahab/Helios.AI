@@ -172,6 +172,22 @@ try {
     await page.waitForFunction(()=>document.querySelector('#water .pct')?.textContent==='00% ASSEMBLED');
     await page.screenshot({path:join(output,'law-assembly-mobile.png'),animations:'disabled'});
   }
+  // Public futures fullscreen story, when present in this preview.
+  await page.goto(base+'/',{waitUntil:'domcontentloaded'});
+  if(await page.locator('#law-futures-title').count()){
+    await page.setViewportSize({width:1440,height:900});
+    await page.goto(base+'/public/helios-futures.html',{waitUntil:'domcontentloaded'});
+    await page.locator('.world').last().waitFor({state:'attached'});
+    for(const [id,name] of [['city','city'],['decisions','branches'],['outcomes','street']]){
+      if(id==='outcomes')await page.locator('.world').nth(36).click();
+      await page.locator('nav a[href="#'+id+'"]').click();
+      await page.waitForFunction(id=>Math.abs(document.getElementById(id).getBoundingClientRect().top-56)<4,id);
+      await page.screenshot({path:join(output,'futures-'+name+'.png'),animations:'disabled'});
+    }
+    await page.setViewportSize({width:390,height:844});
+    await page.locator('nav a[href="#decisions"]').click();
+    await page.screenshot({path:join(output,'futures-mobile.png'),animations:'disabled'});
+  }
   console.log('Captured desktop and mobile screenshots from ' + (remote ? 'Netlify deployment' : 'local PR build'));
 } finally {
   await browser?.close().catch(() => {});
