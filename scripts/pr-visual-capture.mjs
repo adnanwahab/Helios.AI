@@ -68,6 +68,16 @@ try {
   await page.screenshot({path: join(output, 'mobile.png'), animations: 'disabled'});
 
   await page.setViewportSize({width: 1440, height: 900});
+  if (await page.locator('#law-tiles').count()) {
+    await page.locator('#law-tiles .law-tile').first().waitFor({state:'visible'});
+    await page.locator('#laws-workbench').scrollIntoViewIfNeeded();
+    await page.screenshot({path: join(output,'law-atlas.png'), animations:'disabled'});
+    await page.locator('#law-search').fill('HGA-011');
+    await page.locator('[data-law="HGA-011"]').click();
+    await page.locator('#law-input-reach').fill('90');
+    await page.screenshot({path: join(output,'law-simulator.png'), animations:'disabled'});
+    await page.locator('#law-search').fill('');
+  }
   if (loop) {
     // Never submit to a real deployment; these screenshots stop at the editable draft.
     await page.locator('#example').click();
@@ -129,6 +139,70 @@ try {
     await page.screenshot({path: join(output, 'mail.png'), animations: 'disabled'});
   } else {
     console.log('Mail tab is absent in this historical PR; skipping that screenshot.');
+  }
+  await page.goto(base + '/grid', {waitUntil:'domcontentloaded'});
+  if (await page.locator('#generate').count()) {
+    if (await page.locator('#story-open').count()) {
+      await page.locator('#story-open').click();
+      await page.locator('#story-modal').waitFor({state:'visible'});
+      await page.screenshot({path:join(output,'grid-story-desktop.png'),animations:'disabled'});
+      await page.setViewportSize({width:390,height:844});
+      await page.screenshot({path:join(output,'grid-story-mobile.png'),animations:'disabled'});
+      await page.locator('#story-close').click();
+      await page.setViewportSize({width:1440,height:900});
+      await page.goto(base + '/grid?story=population', {waitUntil:'domcontentloaded'});
+      if (await page.locator('#population-chamber').count()) {
+        await page.locator('#population-chamber').waitFor({state:'visible'});
+        await page.locator('#population-chamber').scrollIntoViewIfNeeded();
+        await page.screenshot({path:join(output,'grid-population-desktop.png'),animations:'disabled'});
+        await page.setViewportSize({width:390,height:844});
+        await page.locator('#population-chamber').scrollIntoViewIfNeeded();
+        await page.screenshot({path:join(output,'grid-population-mobile.png'),animations:'disabled'});
+        await page.locator('#story-close').click();
+        await page.setViewportSize({width:1440,height:900});
+      }
+    }
+    await page.locator('#generate').click({timeout:15000});
+    await page.locator('[data-preset="all"]').click();
+    await page.locator('#inspect').click();
+    await page.locator('[data-prompt]').first().click();
+    await page.screenshot({path:join(output,'grid-desktop.png'),fullPage:true,animations:'disabled'});
+    await page.setViewportSize({width:390,height:844});
+    await page.screenshot({path:join(output,'grid-mobile.png'),fullPage:true,animations:'disabled'});
+  }
+  // Historical preview backfills may not have the new public page.
+  await page.goto(base + '/', {waitUntil:'domcontentloaded'});
+  if (await page.locator('.law-assembly-feature').count()) {
+    await page.setViewportSize({width:1440,height:900});
+    await page.locator('.law-assembly-feature').scrollIntoViewIfNeeded();
+    await page.screenshot({path:join(output,'law-assembly-index.png'),animations:'disabled'});
+    await page.goto(base + '/public/helios-law-assembly.html',{waitUntil:'domcontentloaded'});
+    for (const id of ['homes','places','water']) {
+      const scene=page.locator('#'+id);
+      await scene.locator('.finish').click();
+      await page.waitForFunction(id=>document.querySelector('#'+id+' .pct')?.textContent==='100% ASSEMBLED',id);
+      await page.screenshot({path:join(output,'law-assembly-'+id+'.png'),animations:'disabled'});
+    }
+    await page.setViewportSize({width:390,height:844});
+    await page.locator('#water .replay').click();
+    await page.waitForFunction(()=>document.querySelector('#water .pct')?.textContent==='00% ASSEMBLED');
+    await page.screenshot({path:join(output,'law-assembly-mobile.png'),animations:'disabled'});
+  }
+  // Public futures fullscreen story, when present in this preview.
+  await page.goto(base+'/',{waitUntil:'domcontentloaded'});
+  if(await page.locator('#law-futures-title').count()){
+    await page.setViewportSize({width:1440,height:900});
+    await page.goto(base+'/public/helios-futures.html',{waitUntil:'domcontentloaded'});
+    await page.locator('.world').last().waitFor({state:'attached'});
+    for(const [id,name] of [['city','city'],['decisions','branches'],['outcomes','street']]){
+      if(id==='outcomes')await page.locator('.world').nth(36).click();
+      await page.locator('nav a[href="#'+id+'"]').click();
+      await page.waitForFunction(id=>Math.abs(document.getElementById(id).getBoundingClientRect().top-56)<4,id);
+      await page.screenshot({path:join(output,'futures-'+name+'.png'),animations:'disabled'});
+    }
+    await page.setViewportSize({width:390,height:844});
+    await page.locator('nav a[href="#decisions"]').click();
+    await page.screenshot({path:join(output,'futures-mobile.png'),animations:'disabled'});
   }
   console.log('Captured desktop and mobile screenshots from ' + (remote ? 'Netlify deployment' : 'local PR build'));
 } finally {

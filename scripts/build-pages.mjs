@@ -20,6 +20,7 @@ const demos = [
   'happybearlandia_pocket.html',
   'eight_billion_map.html',
   'three_editor_merge.html',
+  'grid.html',
   'helios_100_frontend_demo.html',
   'heliosai_acts_orbit.html',
   'helios-unified.html',
@@ -37,6 +38,8 @@ for (const name of demos) {
   await copyFile(join(root, name), join(out, name));
 }
 await cp(join(root, 'public'), join(out, 'public'), { recursive: true });
+// The public editorial catalog is bundled for offline simulations; no database rows or secrets.
+await writeFile(join(out, 'public', 'law-catalog.json'), JSON.stringify(seedCatalog));
 
 // The Notion screen reads /api/notion/preview on the live app; Pages gets a build-time snapshot.
 const notionPage = (await readFile(join(root, 'helios_notion_preview.html'), 'utf8')).replaceAll('href="/public/', 'href="./public/');
@@ -54,6 +57,7 @@ const coilPage = (await readFile(join(root, 'long_coil.html'), 'utf8')).replaceA
 if (/["(]\/public\//.test(coilPage)) throw new Error('Root-relative /public/ path left in long_coil.html');
 await writeFile(join(out, 'long_coil.html'), coilPage);
 await writeFile(join(out, 'notion-preview.json'), JSON.stringify(buildPlanDocument(seedCatalog)));
+await writeFile(join(out, 'grid-catalog.json'), JSON.stringify({goals: seedCatalog.goals}));
 
 // Preserve the unlisted historical dashboard for direct links only.
 let index = await readFile(join(root, 'docs', 'legacy-home.html'), 'utf8');
