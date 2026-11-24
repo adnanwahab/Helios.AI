@@ -116,7 +116,9 @@ await writeFile(join(out, 'experiments.html'), index);
 const loop = await readFile(join(root, 'index.html'), 'utf8');
 const mode = '<meta name="helios-mode" content="live">';
 if (!loop.includes(mode)) throw new Error('Helios Loop mode marker missing');
-await writeFile(join(out, 'index.html'), loop.replace(mode, '<meta name="helios-mode" content="static">'));
+const stageLinks=html=>html.replace(/href="\.\/(story|demo|visualize|chat)"/g,(_,stage)=>'href="./grid.html?stage='+stage+'"');
+await writeFile(join(out, 'index.html'), stageLinks(loop.replace(mode, '<meta name="helios-mode" content="static">')));
+await writeFile(join(out, 'grid.html'), stageLinks((await readFile(join(root,'grid.html'),'utf8')).replace('data-static="false"','data-static="true"')));
 // All welcome links remain under a fork's GitHub Pages base path.
 const welcome = (await readFile(join(root, 'welcome.html'), 'utf8'))
   .replaceAll('href="/laws"', 'href="./helios_100_frontend_demo.html"')

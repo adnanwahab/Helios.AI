@@ -383,3 +383,7 @@ see everyone elses vote using deckgl map
 The Helios dashboard includes **MorphLab · WebGPU** (`/morphlab.html`): type a prompt and morph a glowing particle cloud into a procedural 3D sculpture, or drag in an uncompressed GLB model. OpenAI-powered shape recipes use a server-side, explicitly enabled API and fall back to local presets when unconfigured. See [MorphLab setup and security](docs/morphlab.md).
 
 - `public/mystery.html` — The Missing Amendment, a fictional choose-your-own-adventure civic mystery. No real vote or personal information is sent. Available from the homepage and Docs.
+
+### Four primary demo routes
+
+`/story` → `/demo` → `/visualize` → `/chat` share a single in-memory workspace. `/grid` remains the complete overview. The story is a fictional Netherbrain/Rainbow Brain mystery; the demo maps the editable constitution to the original 100 proposals; the city compares a schematic baseline and editable implementation scenario; chat includes scripted characters and explicit opt-in moderated constitution discussion. Static Pages uses `grid.html?stage=…` and disables shared writes. No raw journal/editor text is sent automatically.

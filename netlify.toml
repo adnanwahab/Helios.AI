@@ -209,3 +209,24 @@
   from = "/story"
   to = "/grid.html"
   status = 200
+
+# Focused routes reuse the same journey workspace and preserve local state during in-app navigation.
+[[redirects]]
+  from = "/demo"
+  to = "/grid.html"
+  status = 200
+
+[[redirects]]
+  from = "/visualize"
+  to = "/grid.html"
+  status = 200
+
+[[redirects]]
+  from = "/city"
+  to = "/grid.html"
+  status = 200
+
+[[redirects]]
+  from = "/chat"
+  to = "/grid.html"
+  status = 200

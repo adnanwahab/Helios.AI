@@ -223,6 +223,26 @@ try {
     await page.locator('nav a[href="#decisions"]').click();
     await page.screenshot({path:join(output,'futures-mobile.png'),animations:'disabled'});
   }
+  await page.goto(base+'/grid',{waitUntil:'domcontentloaded'});
+  if(await page.locator('#journey-nav').count()){
+    await page.setViewportSize({width:1440,height:900});
+    await page.locator('#journey-nav [data-stage="story"]').click();
+    await page.locator('#story-modal').waitFor({state:'visible'});
+    await page.screenshot({path:join(output,'journey-story.png'),animations:'disabled'});
+    await page.locator('#story-close').click();
+    await page.locator('#journey-nav [data-stage="demo"]').click();
+    await page.locator('#generate').click();
+    await page.screenshot({path:join(output,'journey-demo.png'),animations:'disabled'});
+    await page.locator('#search').fill('HGA-011');
+    await page.locator('#bills summary').click();
+    await page.locator('[data-city-law="HGA-011"]').click();
+    await page.screenshot({path:join(output,'journey-city.png'),animations:'disabled'});
+    await page.locator('#journey-nav [data-stage="chat"]').click();
+    await page.locator('[data-prompt="What did the engineer miss?"]').click();
+    await page.screenshot({path:join(output,'journey-chat.png'),animations:'disabled'});
+    await page.setViewportSize({width:390,height:844});
+    await page.screenshot({path:join(output,'journey-mobile.png'),animations:'disabled'});
+  }
   console.log('Captured desktop and mobile screenshots from ' + (remote ? 'Netlify deployment' : 'local PR build'));
 } finally {
   await browser?.close().catch(() => {});
