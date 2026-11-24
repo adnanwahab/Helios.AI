@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 test('homepage exposes the assembly demo and matching proposal chapter links',async({page,context})=>{
  await page.goto('/');
- const feature=page.locator('.law-assembly-feature');
+ const feature=page.locator('[aria-labelledby="law-assembly-title"]');
  await expect(feature.getByRole('heading')).toHaveText('Built from the ground up.');
  await expect(feature.locator('.law-assembly-links a')).toHaveCount(3);
  const selected=page.locator('#law-assembly-selected');
