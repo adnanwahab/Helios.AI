@@ -231,3 +231,9 @@
   from = "/story"
   to = "/grid.html"
   status = 200
+
+# Linked constitution workbench; query parameters retain the selected record.
+[[redirects]]
+  from = "/constitution"
+  to = "/public/government-ide.html"
+  status = 200

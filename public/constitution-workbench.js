@@ -165,6 +165,7 @@ function drawReview(){
  const row=current();if(!row)return;selected=row.id;
  $('clause-topic').textContent=row.topic+' · '+shortId(row.id);
  $('clause-text').textContent=row.text;
+ const ideLink=$('government-ide-link');if(ideLink){ideLink.href=row.source==='practice'?'/constitution':'/constitution?community='+encodeURIComponent(row.id);ideLink.textContent=row.source==='practice'?'Open workspace (practice clause is not transferable) ↗':'Open linked constitution workspace ↗';}
  const c=shown(row);
  $('clause-synthetic').textContent=row.source==='synthetic'?'Synthetic: '+syntheticLabel(c)+' · '+fmt(row.synthetic.mentions)+' distinct sample participants'+(c.mine?' · incl. your practice vote':'')+'.':row.source==='practice'?'Your own clause, on this device only.':'No synthetic votes for this community clause.';
  const real=$('clause-real');real.replaceChildren(create('strong',connected?'Shared advisory votes (accounts + guests)':'Practice'),create('span',connected?(liveTotal(row.live)?liveLabel(row.live)+' · '+fmt(row.live.contributors)+' opted-in contributions':'No shared votes yet on this clause. Yours would be the first.'):'Your position is saved on this device only.'));
