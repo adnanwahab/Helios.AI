@@ -75,3 +75,7 @@ Fresh read-only probes after [PR #75](https://github.com/adnanwahab/HeliosHTML/p
 The Netlify project response identified that deployment as the currently published site. Its source is **older than the PR #75 merge commit** `792993a8fa9509e33e7af3b09993ff2f3815cfae`. The merge therefore does not establish that the launch changes or improved error handling are running on the canonical domain. This check did not determine why the older deployment remained published.
 
 **Item 19 remains blocked.** Verify the intended production release and authoritative backend before changing database configuration, then repeat health and staging recovery checks. A successful Fly health read still does not prove production backup/restore readiness. This addendum records observations only; no deployment, configuration, credential or participant-data changes were performed.
+
+## Follow-up observation — November 25, 2026, 3:29 p.m. Chicago
+
+At **21:29:43 UTC**, a fresh read-only canonical health probe again returned **HTTP 502**, reporting the missing `SUPABASE_DB_URL` and including stack frames. Netlify still identified deployment `6b045bf3586967f4843f46bc` and source `fcd1aacb09a27b53dfc95834500f050fd19cc000` as the published production release. The deploy's `locked` value was `null`; that alone does not explain why the older release is published. The license and production gates remain open after main's research/account merge and the separate branch-protection setup. Inspect publication history and confirm the intended release/store before making a configuration change.

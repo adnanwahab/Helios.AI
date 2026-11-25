@@ -5,7 +5,10 @@ const output = new URL('../docs/launch/STATUS.md',import.meta.url);
 const data = JSON.parse(await readFile(source,'utf8'));
 const labels = {done:'Done',in_progress:'In progress',ready:'Ready to run',blocked:'Blocked',pending:'Not started'};
 const done = data.tasks.filter(task=>task.status==='done').length;
-const lines = ['# Helios launch status','',`**${done} / ${data.tasks.length} tasks complete.** Target: December 1, 2026, subject to readiness.`,`Snapshot: ${data.updatedAt}. User-facing dates use ${data.timezone}.`,'','[Dashboard preview](https://deploy-preview-75--heliosailol.netlify.app/launch) · [Launch PR](https://github.com/adnanwahab/HeliosHTML/pull/75)','','This file is generated from `public/launch-checklist.json`. A prepared plan does not count as an executed task. Work in this PR is available in its preview; it reaches production after review and merge.',''];
+const prNumber = data.sourcePR.match(/^https:\/\/github\.com\/adnanwahab\/HeliosHTML\/pull\/(\d+)$/)?.[1];
+if (!prNumber) throw new Error('The launch ledger must identify its current GitHub pull request.');
+const dashboardURL = `https://deploy-preview-${prNumber}--heliosailol.netlify.app/launch`;
+const lines = ['# Helios launch status','',`**${done} / ${data.tasks.length} tasks complete.** Target: December 1, 2026, subject to readiness.`,`Snapshot: ${data.updatedAt}. User-facing dates use ${data.timezone}.`,'',`[Dashboard preview](${dashboardURL}) · [Launch PR](${data.sourcePR})`,'','This file is generated from `public/launch-checklist.json`. A prepared plan does not count as an executed task. Work in this PR is available in its preview; production deployment and readiness are tracked separately.',''];
 for (const phase of data.phases) {
   lines.push(`## ${phase.title} — ${phase.dates}`,'');
   for (const task of data.tasks.filter(task=>task.phase===phase.id)) {

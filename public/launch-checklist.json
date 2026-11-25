@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "Helios",
-  "updatedAt": "2026-11-25T21:12:10Z",
+  "updatedAt": "2026-11-25T21:31:28Z",
   "launchTarget": "2026-12-01",
   "timezone": "America/Chicago",
   "sourcePR": "https://github.com/adnanwahab/HeliosHTML/pull/108",
@@ -189,9 +189,9 @@
       "id": "L09",
       "phase": "contributing",
       "title": "Require automated tests, screenshots and deployment previews for relevant PRs.",
-      "status": "in_progress",
+      "status": "done",
       "owner": "Maintainer / reviewer",
-      "summary": "CI, desktop/mobile capture, preview deployment, a PR evidence check and review template are implemented. Stale catalog and archive test expectations are repaired in this PR.",
+      "summary": "Automated unit/browser tests, desktop/mobile capture, container persistence smoke, Netlify deployment previews and current-head PR evidence are now required checks on main. All five delivery checks passed on the preceding launch head; every new head must satisfy them again.",
       "evidence": [
         {
           "label": "PR evidence workflow",
@@ -204,19 +204,27 @@
         {
           "label": "PR checks",
           "url": "https://github.com/adnanwahab/HeliosHTML/pull/108/checks"
+        },
+        {
+          "label": "Verified protection and required checks",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/branch-protection.md"
         }
       ],
-      "nextAction": "Verify the current PR head and require the successful check contexts in branch protection.",
-      "completedAt": null
+      "nextAction": null,
+      "completedAt": "2026-11-25T21:23:07Z"
     },
     {
       "id": "L10",
       "phase": "contributing",
       "title": "Establish human review and branch protection.",
-      "status": "blocked",
+      "status": "done",
       "owner": "Repository owner",
-      "summary": "The independent-review policy is written and the main protection form was prepared with one approval, stale-review dismissal, latest-push approval, up-to-date tests, screenshots, container smoke, Netlify preview, resolved conversations and no admin bypass. GitHub stopped saving at its re-authentication screen.",
+      "summary": "Main branch protection was saved and reopened to verify one required approval, stale-review dismissal, latest-push approval, an up-to-date branch, all five required checks, resolved conversations and no administrator bypass. Public GitHub metadata independently confirms protection for everyone. The policy requires independent human review.",
       "evidence": [
+        {
+          "label": "Saved branch-protection receipt",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/branch-protection.md"
+        },
         {
           "label": "Human review policy",
           "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/.github/REVIEW_POLICY.md"
@@ -226,8 +234,8 @@
           "url": "https://github.com/adnanwahab/HeliosHTML/settings/branches"
         }
       ],
-      "nextAction": "The repository owner must complete GitHub’s passkey/security-key or password re-authentication in the prepared settings tab; then verify the saved rule. Protection is not yet enabled.",
-      "completedAt": null
+      "nextAction": null,
+      "completedAt": "2026-11-25T21:23:07Z"
     },
     {
       "id": "L11",
@@ -379,7 +387,7 @@
       "title": "Verify production reliability, privacy and data persistence.",
       "status": "blocked",
       "owner": "Operations maintainer",
-      "summary": "Fresh post-merge checks at 3:09 p.m. Chicago on November 25 still found canonical API health 502. Netlify is publishing an older November 23 source, not the new merge. Fly health and isolated persistence checks pass, but canonical readiness and production recovery remain unverified.",
+      "summary": "Fresh checks at 3:29 p.m. Chicago on November 25 still found canonical API health 502. Netlify is publishing an older November 23 source, not the new merges. Fly health and isolated persistence checks pass, but canonical readiness and production recovery remain unverified.",
       "evidence": [
         {
           "label": "Production audit and recovery gates",

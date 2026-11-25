@@ -1,11 +1,11 @@
 # Helios launch status
 
-**12 / 22 tasks complete.** Target: December 1, 2026, subject to readiness.
-Snapshot: 2026-11-25T21:12:10Z. User-facing dates use America/Chicago.
+**14 / 22 tasks complete.** Target: December 1, 2026, subject to readiness.
+Snapshot: 2026-11-25T21:31:28Z. User-facing dates use America/Chicago.
 
-[Dashboard preview](https://deploy-preview-75--heliosailol.netlify.app/launch) · [Launch PR](https://github.com/adnanwahab/HeliosHTML/pull/75)
+[Dashboard preview](https://deploy-preview-108--heliosailol.netlify.app/launch) · [Launch PR](https://github.com/adnanwahab/HeliosHTML/pull/108)
 
-This file is generated from `public/launch-checklist.json`. A prepared plan does not count as an executed task. Work in this PR is available in its preview; it reaches production after review and merge.
+This file is generated from `public/launch-checklist.json`. A prepared plan does not count as an executed task. Work in this PR is available in its preview; production deployment and readiness are tracked separately.
 
 ## Establish the foundation — November 25–26
 
@@ -44,15 +44,13 @@ This file is generated from `public/launch-checklist.json`. A prepared plan does
   21 of the 30 launch issues have the good first issue label; larger infrastructure, modeling and rights-review tasks remain separate.
   Evidence: [Beginner-friendly issues](https://github.com/adnanwahab/HeliosHTML/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
 
-- [ ] **L09: Require automated tests, screenshots and deployment previews for relevant PRs.** — In progress
-  CI, desktop/mobile capture, preview deployment, a PR evidence check and review template are implemented. Stale catalog and archive test expectations are repaired in this PR.
-  Next: Verify the current PR head and require the successful check contexts in branch protection.
-  Evidence: [PR evidence workflow](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/.github/workflows/pr-evidence.yml) · [Review policy](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/.github/REVIEW_POLICY.md) · [PR checks](https://github.com/adnanwahab/HeliosHTML/pull/108/checks).
+- [x] **L09: Require automated tests, screenshots and deployment previews for relevant PRs.** — Done
+  Automated unit/browser tests, desktop/mobile capture, container persistence smoke, Netlify deployment previews and current-head PR evidence are now required checks on main. All five delivery checks passed on the preceding launch head; every new head must satisfy them again.
+  Evidence: [PR evidence workflow](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/.github/workflows/pr-evidence.yml) · [Review policy](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/.github/REVIEW_POLICY.md) · [PR checks](https://github.com/adnanwahab/HeliosHTML/pull/108/checks) · [Verified protection and required checks](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/branch-protection.md).
 
-- [ ] **L10: Establish human review and branch protection.** — Blocked
-  The independent-review policy is written and the main protection form was prepared with one approval, stale-review dismissal, latest-push approval, up-to-date tests, screenshots, container smoke, Netlify preview, resolved conversations and no admin bypass. GitHub stopped saving at its re-authentication screen.
-  Next: The repository owner must complete GitHub’s passkey/security-key or password re-authentication in the prepared settings tab; then verify the saved rule. Protection is not yet enabled.
-  Evidence: [Human review policy](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/.github/REVIEW_POLICY.md) · [Branch settings](https://github.com/adnanwahab/HeliosHTML/settings/branches).
+- [x] **L10: Establish human review and branch protection.** — Done
+  Main branch protection was saved and reopened to verify one required approval, stale-review dismissal, latest-push approval, an up-to-date branch, all five required checks, resolved conversations and no administrator bypass. Public GitHub metadata independently confirms protection for everyone. The policy requires independent human review.
+  Evidence: [Saved branch-protection receipt](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/branch-protection.md) · [Human review policy](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/.github/REVIEW_POLICY.md) · [Branch settings](https://github.com/adnanwahab/HeliosHTML/settings/branches).
 
 ## Create a community — November 27–28
 
@@ -97,7 +95,7 @@ This file is generated from `public/launch-checklist.json`. A prepared plan does
 ## Public launch — December 1 target
 
 - [ ] **L19: Verify production reliability, privacy and data persistence.** — Blocked
-  Fresh post-merge checks at 3:09 p.m. Chicago on November 25 still found canonical API health 502. Netlify is publishing an older November 23 source, not the new merge. Fly health and isolated persistence checks pass, but canonical readiness and production recovery remain unverified.
+  Fresh checks at 3:29 p.m. Chicago on November 25 still found canonical API health 502. Netlify is publishing an older November 23 source, not the new merges. Fly health and isolated persistence checks pass, but canonical readiness and production recovery remain unverified.
   Next: Verify the deployed version and intended authoritative store, repair production API configuration, and complete an isolated privacy, persistence and backup-restore drill.
   Evidence: [Production audit and recovery gates](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/production-readiness.md) · [Data safety runbook](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/data-safety-and-launch.md).
 
