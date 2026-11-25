@@ -12,6 +12,8 @@
     "test:browser": "playwright test",
     "launch:status": "node scripts/launch-status.mjs",
     "launch:sync": "node scripts/launch-status.mjs --write",
+    "votes:world": "bun run scripts/world-vote-lab/cli.ts",
+    "votes:world:demo": "bun run scripts/world-vote-lab/cli.ts --proposal-file scripts/world-vote-lab/examples/childcare.txt --interval 2 --batch-size 200000000",
     "security:registry": "bun scripts/security-registry.js",
     "test:security": "bun test scripts/security-registry.test.js"
   },

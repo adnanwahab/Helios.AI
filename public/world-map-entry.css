@@ -1,0 +1,9 @@
+.world-map-entry{margin:0 0 28px;padding:20px;border:1px solid var(--line,#35504b);border-radius:14px;background:var(--panel,#182625);scroll-margin-top:16px}
+.world-map-entry-heading{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:10px}
+.world-map-entry-heading .eyebrow{margin-bottom:4px}.world-map-entry-heading h2{margin:0;font-size:24px;letter-spacing:-.03em}
+.world-map-entry-heading a{display:inline-flex;align-items:center;text-decoration:none;font-size:14px}
+.world-map-entry>p{color:var(--muted,#a9bdb6);font-size:14px;max-width:850px;margin-bottom:12px}
+.world-map-entry details{margin:0}.world-map-entry summary{font-size:16px;padding:10px 0;min-height:44px}
+.world-map-entry iframe{display:block;width:100%;height:1000px;border:0;background:#101a1a;border-radius:8px;margin-top:12px}
+.world-map-entry>p.world-map-entry-note{font-size:12px;margin:10px 0 0}
+@media(max-width:700px){.world-map-entry{padding:14px}.world-map-entry-heading{gap:10px}.world-map-entry-heading h2{font-size:22px}.world-map-entry iframe{height:1600px}}

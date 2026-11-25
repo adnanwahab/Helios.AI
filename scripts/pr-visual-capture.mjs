@@ -53,6 +53,15 @@ try {
     viewport: {width: 1440, height: 900}, deviceScaleFactor: 1,
     reducedMotion: 'reduce',
   });
+  // Capture the new workspace first so its artifacts survive unrelated legacy failures.
+  const workspaceResponse=await page.goto(base+'/constitution?law=HGA-012&clause=implementation',{waitUntil:'domcontentloaded'});
+  if(workspaceResponse?.ok()&&await page.locator('#explorer-title').count()){
+    await page.locator('[data-section="HGA-012:implementation"]').waitFor({state:'visible'});
+    await page.screenshot({path:join(output,'government-ide-desktop.png'),fullPage:true,animations:'disabled'});
+    await page.setViewportSize({width:390,height:844});
+    await page.screenshot({path:join(output,'government-ide-mobile.png'),fullPage:true,animations:'disabled'});
+    await page.setViewportSize({width:1440,height:900});
+  }
   await page.goto(base + '/', {waitUntil: 'domcontentloaded', timeout: 45000});
   const loop = await page.locator('#journal-form').count() > 0;
   if (loop) await page.locator('#journal').waitFor({timeout: 20000});
@@ -66,6 +75,16 @@ try {
   await page.setViewportSize({width: 390, height: 844});
   await page.waitForTimeout(700);
   await page.screenshot({path: join(output, 'mobile.png'), animations: 'disabled'});
+
+  if (await page.locator('#world-map-feature').count()) {
+    await page.setViewportSize({width: 1440, height: 1000});
+    await page.goto(base + '/world-map?climate=70&cost=45&city=30&nature=60&coast=40', {waitUntil: 'domcontentloaded'});
+    await page.locator('#world-hex-suitability[data-ready="true"]').waitFor({timeout: 20000});
+    await page.screenshot({path: join(output, 'world-map-desktop.png'), fullPage: true, animations: 'disabled'});
+    await page.setViewportSize({width: 390, height: 844});
+    await page.screenshot({path: join(output, 'world-map-mobile.png'), fullPage: true, animations: 'disabled'});
+    await page.goto(base + '/', {waitUntil: 'domcontentloaded'});
+  }
 
   if(await page.locator('#pr-compose-open').count()){
     await page.goto(base+'/?compose=pr',{waitUntil:'domcontentloaded'});
