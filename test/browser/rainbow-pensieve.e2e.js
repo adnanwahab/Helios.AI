@@ -21,6 +21,8 @@ test('homepage launches the native rainbow Pensieve and a full mission completes
   await story.screenshot({path: testInfo.outputPath('rainbow-pensieve-desktop.png'),fullPage:true,animations:'disabled'});
 });
 test('spell undo preserves explicit sharing, sources and local-only notes', async ({page}, testInfo) => {
+  // The mobile full-page capture follows a long interaction sequence on CI.
+  test.setTimeout(60000);
   await page.setViewportSize({width:390,height:844});
   await page.goto('/public/rainbow-pensieve.html');
   await expect(page.locator('#shared-count')).toHaveText('6 shared memories');
