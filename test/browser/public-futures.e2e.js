@@ -2,7 +2,8 @@ import {test,expect} from '@playwright/test';
 test('HGA-090 links to the standalone futures experience',async({page,context})=>{
  await page.goto('/law-atlas.html');
  await expect(page.locator('#law-futures-title')).toHaveText('One city. 100 futures.');
- await expect(page.locator('#law-tiles .law-tile')).toHaveCount(100);
+ await expect(page.locator('#law-tiles .law-tile[data-law^="HGA-"]')).toHaveCount(100);
+ await expect(page.locator('#law-tiles [data-law="DRAFT-CANNABIS"]')).toContainText('Voting not open');
  await page.locator('#law-search').fill('HGA-090');
  await page.locator('[data-law="HGA-090"]').click();
  const link=page.locator('#law-assembly-selected');

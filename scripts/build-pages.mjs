@@ -11,6 +11,7 @@ await mkdir(out, { recursive: true });
 
 const demos = [
   'contribute.html',
+  'launch-dashboard.html',
   'helios_ai_landing_page.html',
   'helios_mail.html',
   'helios_hippie_landing.html',

@@ -10,6 +10,7 @@ const out = join(root, 'dist');
 const pages = [
   'index.html',
   'contribute.html',
+  'launch-dashboard.html',
   'law-atlas.html',
   'welcome.html',
   'helios_mail.html',

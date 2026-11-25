@@ -12,3 +12,4 @@ dist/
 # fly config save downloads deployment settings; keep local copies out of Git.
 /fly.toml
 /fly.toml.before-memory-pin.*.bak
+dist-pages/

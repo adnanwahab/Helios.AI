@@ -271,6 +271,23 @@ try {
     await page.locator('#scene-title').scrollIntoViewIfNeeded();
     await page.screenshot({path:join(output,'rainbow-pensieve-mobile.png'),animations:'disabled'});
   }
+  // The launch dashboard is a public, source-controlled evidence view. Older
+  // preview backfills may not contain it; no data is submitted by this capture.
+  await page.goto(base + '/launch', {waitUntil:'domcontentloaded'});
+  if (await page.locator('[data-launch-progress]').count()) {
+    await page.locator('[data-launch-task]').last().waitFor({state:'visible'});
+    await page.setViewportSize({width:1440,height:1000});
+    await page.screenshot({path:join(output,'launch-dashboard-desktop.png'),fullPage:true,animations:'disabled'});
+    await page.setViewportSize({width:390,height:844});
+    await page.screenshot({path:join(output,'launch-dashboard-mobile.png'),fullPage:true,animations:'disabled'});
+  }
+  await page.goto(base + '/contribute', {waitUntil:'domcontentloaded'});
+  if (await page.locator('#paths').count()) {
+    await page.setViewportSize({width:1440,height:1000});
+    await page.screenshot({path:join(output,'contribute-desktop.png'),fullPage:true,animations:'disabled'});
+    await page.setViewportSize({width:390,height:844});
+    await page.screenshot({path:join(output,'contribute-mobile.png'),fullPage:true,animations:'disabled'});
+  }
   console.log('Captured desktop and mobile screenshots from ' + (remote ? 'Netlify deployment' : 'local PR build'));
 } finally {
   await browser?.close().catch(() => {});

@@ -5,7 +5,8 @@ test('archived law atlas exposes the assembly demo and matching proposal chapter
  await expect(feature.getByRole('heading')).toHaveText('Built from the ground up.');
  await expect(feature.locator('.law-assembly-links a')).toHaveCount(3);
  const selected=page.locator('#law-assembly-selected');
- await expect(page.locator('#law-tiles .law-tile')).toHaveCount(100);
+ await expect(page.locator('#law-tiles .law-tile[data-law^="HGA-"]')).toHaveCount(100);
+ await expect(page.locator('#law-tiles [data-law="DRAFT-CANNABIS"]')).toContainText('Voting not open');
  await expect(selected).toBeHidden();
  for(const [id,chapter] of [['HGA-012','homes'],['HGA-051','places'],['HGA-091','water']]){
    await page.locator('#law-search').fill(id);

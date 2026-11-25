@@ -1,28 +1,42 @@
 # Contributing to Helios AI
 
-Welcome. Helios is a voluntary civic research workshop, not an official government. We want helpful contributions from people with and without programming experience.
+Helios welcomes useful contributions from people with and without programming experience. Start with a small problem you understand, explain the evidence, and leave the work easier for the next person to review.
 
-## Choose your first task
+## Your first contribution without a terminal
 
-1. Visit [the contribution hub](https://helioshtml.com/contribute) and [open issues](https://github.com/adnanwahab/HeliosHTML/issues). Read the [launch roadmap](docs/contributor-launch.md).
-2. Pick a small task, especially one labeled `good first issue`, and comment with your intended approach. Coordinate with maintainers before overlapping work. For new work, open an issue or use the homepage proposal form.
-3. Non-code contributions can be a source-backed research brief, a policy revision, a design mockup, a bug report, a documentation correction, or a model critique. Link to sources and identify uncertainty.
-4. For code, use a branch, keep the diff focused, and open a pull request against `main`. Include the issue, why the change helps, how to verify it, and known limitations.
-5. Respond to feedback and revise. A maintainer reviews before merging; reviews are not a guarantee of acceptance.
+1. Open the [contribution hub preview](https://deploy-preview-75--heliosailol.netlify.app/contribute) and choose research, design, testing, documentation, or code. After the launch PR is deployed, the same route is `/contribute` on the main site.
+2. Pick a [good first issue](https://github.com/adnanwahab/HeliosHTML/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22). Read its acceptance criteria and existing comments. Add a short comment describing what you plan to do so others can coordinate.
+3. Put your work in a comment or attachment when that fits the task: a source table, a sketch, a screenshot with reproduction steps, or suggested wording is welcome. Keep private participant information out of public GitHub records.
+4. To propose a new idea, use **Propose a change** on the homepage. Review the public text and follow the GitHub option to its file editor. A GitHub account is needed to submit there; a Helios account and local development setup are not required. The Netlify preview does not send to the private production inbox.
+5. Request review on the linked issue or PR. A maintainer should acknowledge it within 24 hours, give a concrete next step, and credit the accepted contribution using your preferred public name if you opt in.
+
+A good first contribution is complete when it meets the issue's acceptance criteria and a human reviewer accepts it or explains the remaining work. An automated response, a simulated vote, or merely opening a PR is not a merge or approval.
+
+### Choose an output you can finish
+
+| Contribution | A reviewable output |
+| --- | --- |
+| Research | One claim, primary sources, publication dates, jurisdiction, and uncertainty. |
+| Policy revision | Exact draft/revision, a strong objection, proposed wording, and remaining trade-offs. |
+| Design | One screen or flow, intended user action, accessibility considerations, and a visual. |
+| Testing | Exact route, browser/device, steps, expected behavior, actual behavior, and redacted screenshot. |
+| Documentation | A specific correction or a setup walkthrough with observed results. |
+| Code | Focused diff, relevant tests, exact preview route, and an explanation of the resulting behavior. |
 
 ## Local development
 
-Install Node.js 22+ and Bun 1.3+ (CI uses 1.4.2). Use a local clone; after licensing terms are clarified, fork or branch according to the repository's contribution rules. Use only code and assets you have the right to submit.
+Install Git, Node.js 22+, and Bun 1.3+ (CI requests Bun 1.4.2). Use only code and assets you have the right to submit.
 
 ```sh
 git clone https://github.com/adnanwahab/HeliosHTML.git
 cd HeliosHTML
 bun install --frozen-lockfile
 bun run dev
-# http://127.0.0.1:3000/contribute
 ```
 
-Leave `SUPABASE_DB_URL` unset for local PGlite. Never copy production credentials or real participant records. Keep changes and testing isolated from production; see [data safety](docs/data-safety-and-launch.md).
+Open `http://127.0.0.1:3000/`. To review the launch dashboard before merge, switch to `feat/contributor-launch` and open `/launch`. The setup target is five minutes after prerequisites are installed; download time varies.
+
+In a fresh shell, leave `SUPABASE_DB_URL` unset to use local PGlite in `.data/pglite`. Do not copy production credentials or participant records. Check the [data-safety guide](docs/data-safety-and-launch.md) before a persistence, migration, or deployment change.
 
 ```sh
 bun --no-env-file test
@@ -31,20 +45,36 @@ bunx playwright install chromium
 CI=1 bun run test:browser
 ```
 
-On CI the browser suite installs Chromium and uses isolated temporary storage. For a static GitHub Pages build use `node scripts/build-pages.mjs`.
+The browser suite uses its own temporary database and port 3101. CI installs Chromium and Linux dependencies; a local machine may need Playwright's supported system dependencies. For a static GitHub Pages build, use `node scripts/build-pages.mjs`.
 
 ## Review and acceptance
 
-- Prefer small, independently reviewable PRs. Coordinate schema changes or shared files in the issue.
-- State assumptions, evidence and limitations. Synthetic votes must remain visibly separate from actual participant responses. Do not promise government action or consensus.
-- Preserve keyboard access, readable contrast, mobile layouts and accessible descriptions.
-- Add relevant tests. Include exact preview route and status tied to the current commit plus desktop/mobile screenshots or the capture artifact for UI changes. Follow [AGENTS.md](AGENTS.md) and the [visual-review guide](docs/pr-visual-previews.md).
-- Never bypass required review or checks. Maintainers should keep human judgment in the loop, particularly for data, security and policy changes.
-- Do not post private journals, personal identifiers, secrets or unpublished participant data. Public GitHub issues and PRs are public.
-- Disclose material AI-generated content and verify sources, code and claims. Do not submit automated votes or impersonate participants.
+Open a focused PR against `main`, link the issue, and explain the problem, change, verification, and limitations. Describe any material AI assistance and verify its output. Human review remains the decision point.
 
-## License and attribution
+For changes that affect users:
 
-Licensing and third-party asset provenance require maintainer review before an open-source release. Public visibility is not a grant of redistribution rights. Submit only work you have permission to contribute, and identify third-party material and its terms. Do not assume a project-wide license until the maintainer publishes one.
+- Put **Deploy links** at the top of the PR. Link the exact changed route first, then the preview homepage and deployment/check details.
+- State whether the deployment succeeded for the current head SHA. A previous successful preview is not evidence for a new commit.
+- Include desktop and mobile screenshots or a link to the visual capture artifact. Explain what the screenshots demonstrate.
+- Include meaningful tests for changed behavior. A simple wording correction can use focused inspection; a storage or authorization change needs tests for its actual risks.
+- Preserve keyboard access, readable contrast, mobile layouts, and accessible status explanations.
 
-We aim to acknowledge accepted contributions in release notes, with opt-in public attribution. Follow our [code of conduct](CODE_OF_CONDUCT.md). The [roadmap](docs/contributor-launch.md) describes proposed roles, milestones and launch gates, not promises of employment or authority.
+For every change, follow [AGENTS.md](AGENTS.md) and the [visual-review guide](docs/pr-visual-previews.md). Do not bypass required review, branch protection, or checks. Report failing checks honestly. Production deploys are a separate operator action and must preserve existing storage.
+
+### Research and simulation review
+
+Name the exact proposal revision, source, model version, population, seed, and assumptions when relevant. Distinguish editorial drafts, synthetic responses, browser practice, and actual participant contributions. State unresolved objections; a high simulated support score is not a representative poll or real consent. Do not execute arbitrary code supplied in an issue or model output.
+
+### Feedback and disagreement
+
+A useful review identifies the relevant acceptance criterion, explains an observed problem, and suggests a verifiable next step. Authors may ask for the evidence, propose an alternative, or request a second reviewer. Conflicted reviewers should recuse themselves. The [governance guide](GOVERNANCE.md) covers decisions and appeals; the [code of conduct](CODE_OF_CONDUCT.md) covers behavior and sensitive reporting.
+
+## License, privacy, and attribution
+
+The project-wide license is pending the [rights audit](docs/launch/license-audit.md). MIT is a candidate for original code, not a license grant for the entire repository. Identify the source and terms of third-party material and submit only work you have permission to contribute.
+
+Never post private journals, secret keys, contact lists, unpublished participant data, or unredacted personal details in public issues, PRs, screenshots, or recordings. Use fictitious examples for walkthroughs. Accepted contributors may opt into public credit; declining credit does not affect review.
+
+## How to take on more responsibility
+
+See [GOVERNANCE.md](GOVERNANCE.md) for contributor, reviewer, area maintainer, release maintainer, and moderation roles. Additional responsibility follows demonstrated work, consent, and a documented human decision; contribution counts do not grant access automatically. See the [operations kit](docs/launch/community-operations.md) for onboarding and the 24-hour response process.
