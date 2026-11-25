@@ -56,8 +56,10 @@ const server = createServer(async (req, res) => {
 
 // On Fly, the service checks 0.0.0.0:8080; local development stays on 127.0.0.1:3000.
 const onFly = Boolean(process.env.FLY_APP_NAME);
-const port = Number(process.env.PORT || (onFly ? 8080 : 3000));
-const host = process.env.HOST || (onFly ? '0.0.0.0' : '127.0.0.1');
+const cliValue = flag => {const index = process.argv.indexOf(flag); return index >= 0 ? process.argv[index + 1] : undefined;};
+const port = Number(cliValue('--port') || process.env.PORT || (onFly ? 8080 : 3000));
+const host = cliValue('--host') || process.env.HOST || (onFly ? '0.0.0.0' : '127.0.0.1');
+if (!Number.isInteger(port) || port < 1 || port > 65535) throw Error('Invalid development server port.');
 server.listen(port, host, () => console.log(`Helios.AI dev server on http://${host}:${port}`));
 const stop = () => { server.close(); runtime.store.close(); process.exit(0); };
 process.on('SIGTERM', stop);

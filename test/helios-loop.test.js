@@ -10,8 +10,12 @@ test('homepage exposes three citizen screens, four government preview screens an
   expect(html).toContain('id="citizen-feedback"');
   for(const id of ['docs-open','docs-drawer','constitution-title','review-title'])expect(html).toContain('id="'+id+'"');
   expect(html).toContain('src="./public/constitution-workbench.js"');
-  expect(html).toContain('id="laws-workbench"');
-  expect(html).toContain('src="./public/law-board.js"');
+  expect(html).not.toContain('id="laws-workbench"');
+  expect(html).not.toContain('id="law-assembly-title"');
+  expect(html).not.toContain('id="law-futures-title"');
+  expect(source('law-atlas.html')).toContain('id="laws-workbench"');
+  expect(html).not.toContain('src="./public/law-board.js"');
+  expect(source('law-atlas.html')).toContain('src="./public/law-board.js"');
   expect(html).not.toMatch(/<iframe|id="tab-/);
   expect(html.match(/<footer\b[\s\S]*?<\/footer>/)[0]).toContain('href="./experiments.html" target="_blank" rel="noopener noreferrer"');
   expect(html).toContain("Docs &amp; Experiments");

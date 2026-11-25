@@ -4,11 +4,13 @@ import {createEmail, emailConfig} from './email.js';
 import {createApp} from './app.js';
 import {createNotionService, notionConfig} from './notion.js';
 import {createMorphLabService} from './morphlab.js';
+import {createContentModerator} from './content-moderation.js';
+import {createAccountService} from './account.js';
 
 // Wires store, email and the request router together. Netlify functions call
 // getRuntime(); tests and the local dev server pass their own database.
 export async function createRuntime(options = {}) {
-  const {db, env = process.env, origins, adminToken, secure, notionFetch, morphlabFetch, morphlab: morphlabOverride, ...emailOptions} = options;
+  const {db, env = process.env, origins, adminToken, secure, notionFetch, moderationFetch, morphlabFetch, accountFetch, morphlab: morphlabOverride, ...emailOptions} = options;
   const database = db ?? createDatabase(env);
   const store = await openStore(database);
   // Identify the actual adapter, not an assumed production database.
@@ -25,9 +27,12 @@ export async function createRuntime(options = {}) {
     email,
     notion,
     morphlab,
+    account: createAccountService({fetchImpl: accountFetch ?? fetch}),
+    moderator: createContentModerator({env,fetchImpl:moderationFetch ?? fetch}),
     health,
     origins: originList,
     adminToken: 'adminToken' in options ? adminToken : (env.HELIOS_ADMIN_TOKEN || null),
+    researchWorkerToken: env.HELIOS_RESEARCH_WORKER_TOKEN || null,
     secure: secure ?? env.HELIOS_INSECURE_COOKIES !== '1',
   });
   return {app, store, email, notion, db: database};

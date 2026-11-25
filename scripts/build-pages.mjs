@@ -1,6 +1,7 @@
 // Build a fork-safe, static GitHub Pages preview without exposing the Bun backend.
 import { copyFile, cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import {buildAccount} from './build-account.mjs';
 import { buildPlanDocument } from '../src/notion.js';
 import seedCatalog from '../data/catalog.json' with { type: 'json' };
 
@@ -10,6 +11,9 @@ await rm(out, { recursive: true, force: true });
 await mkdir(out, { recursive: true });
 
 const demos = [
+  'research.html',
+  'contribute.html',
+  'launch-dashboard.html',
   'helios_ai_landing_page.html',
   'helios_mail.html',
   'helios_hippie_landing.html',
@@ -39,6 +43,7 @@ for (const name of demos) {
   await copyFile(join(root, name), join(out, name));
 }
 await cp(join(root, 'public'), join(out, 'public'), { recursive: true });
+await buildAccount(root, out);
 // The public editorial catalog is bundled for offline simulations; no database rows or secrets.
 await writeFile(join(out, 'public', 'law-catalog.json'), JSON.stringify(seedCatalog));
 
@@ -117,6 +122,12 @@ const loop = await readFile(join(root, 'index.html'), 'utf8');
 const mode = '<meta name="helios-mode" content="live">';
 if (!loop.includes(mode)) throw new Error('Helios Loop mode marker missing');
 await writeFile(join(out, 'index.html'), loop.replace(mode, '<meta name="helios-mode" content="static">'));
+const atlas = await readFile(join(root, 'law-atlas.html'), 'utf8');
+if (!atlas.includes(mode)) throw new Error('Law atlas mode marker missing');
+await writeFile(join(out, 'law-atlas.html'), atlas.replace(mode, '<meta name="helios-mode" content="static">'));
+const research = await readFile(join(root, 'research.html'), 'utf8');
+if (!research.includes(mode)) throw new Error('Research mode marker missing');
+await writeFile(join(out, 'research.html'), research.replace(mode, '<meta name="helios-mode" content="static">'));
 // All welcome links remain under a fork's GitHub Pages base path.
 const welcome = (await readFile(join(root, 'welcome.html'), 'utf8'))
   .replaceAll('href="/laws"', 'href="./helios_100_frontend_demo.html"')

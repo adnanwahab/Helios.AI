@@ -1,0 +1,23 @@
+#pr-compose{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:18px;width:min(660px,calc(100% - 24px));max-height:calc(100dvh - 24px);padding:clamp(16px,3vw,26px);overflow:auto;box-shadow:0 24px 80px #0007}
+#pr-compose::backdrop{background:#070e0cd9}
+.pr-compose-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.pr-compose-head h2{font-size:clamp(23px,4vw,31px);line-height:1.15;letter-spacing:-.04em;margin:0}
+#pr-compose-close{min-width:44px;padding:8px;font-size:23px;line-height:1}
+.pr-flow{display:flex;flex-wrap:wrap;gap:7px;margin:16px 0 20px;font-size:11px;color:var(--accent)}
+.pr-flow span{border:1px solid var(--line);border-radius:999px;padding:5px 9px}
+#pr-compose .field{margin-bottom:14px}
+#pr-compose textarea{min-height:110px}
+#pr-compose .actions{margin:10px 0}
+#pr-compose .actions a{text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+#pr-compose a[aria-disabled=true]{pointer-events:none;opacity:.45}
+#pr-compose .pr-path{font-size:12px;color:var(--muted);overflow-wrap:anywhere;margin:8px 0}
+#pr-payload{font:12px/1.5 ui-monospace,monospace}
+#pr-tracking{border-top:1px solid var(--line);padding-top:14px;margin:18px 0}
+#pr-tracking summary{font-weight:700}
+#pr-tracking button{font-size:12px;padding:7px 12px;min-height:40px}
+#pr-history article{border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:8px;overflow-wrap:anywhere}
+#pr-history article p{margin:4px 0;font-size:12px;color:var(--muted)}
+#pr-history article strong{display:block;font-size:14px}
+.pr-links{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:12px}
+#pr-compose .receipt button{display:block;margin-top:12px}
+@media(max-width:600px){#pr-compose .actions>*{flex:1 1 120px;text-align:center;font-size:13px;padding-inline:8px}#pr-compose-open{font-size:12px;padding-inline:9px}}
