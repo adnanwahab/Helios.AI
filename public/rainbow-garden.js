@@ -24,7 +24,7 @@ async function mount3D(){
   box(scene,47,.03,2,0,.01,6,pathMat);box(scene,2,.03,20,-6,.02,2,pathMat);
   box(scene,2,.03,20,12,.02,2,pathMat);
   // Stylized public-facing architectural diorama, not a site or security model.
-  const house=new THREE.Group();scene.add(house);house.position.set(-8,0,-8);
+  const house=new THREE.Group();scene.add(house);house.position.set(-8,0,-12.2);
   box(house,17,4.7,5.2,0,2.35,0,white);box(house,17.5,.35,5.6,0,4.9,0,trim);
   box(house,16.3,.3,4.8,0,5.22,0,roof);
   for(const side of [-1,1]){box(house,5.8,2.5,4.4,side*11.3,1.25,0,white);box(house,6.1,.25,4.7,side*11.3,2.6,0,trim);for(let j=0;j<4;j++)box(house,.55,1.02,.12,side*11.3+(j-1.5)*1.25,1.25,2.24,glass)}
@@ -45,10 +45,17 @@ async function mount3D(){
   cylinder(fountain,2.1,2.2,.32,0,.17,0,trim);cylinder(fountain,1.88,1.88,.08,0,.35,0,mat('#83cce5',.25));cylinder(fountain,.3,.65,.8,0,.75,0,white);ball(fountain,0,1.22,0,.45,.35,.45,gold);
   const water=mat('#b6e7f3',.3);for(let i=0;i<12;i++){const a=i*Math.PI/6;ball(fountain,Math.cos(a)*.74,1.1,Math.sin(a)*.74,.09,.19,.09,water)}
   const flowerMats=['#f5a8bd','#f5dc9a','#bcaef3','#a9d7b3'].map(c=>mat(c));
-  for(let i=0;i<48;i++){const x=13+(i%8)*.85,z=1+Math.floor(i/8)*.75;box(scene,.07,.36,.07,x,.18,z,leaf2);ball(scene,x,.44,z,.16,.13,.16,flowerMats[i%4])}
-  const lab=new THREE.Group();lab.position.set(8,0,11);scene.add(lab);
+  for(let i=0;i<48;i++){const x=13+(i%8)*.85,z=-4+Math.floor(i/8)*.75;box(scene,.07,.36,.07,x,.18,z,leaf2);ball(scene,x,.44,z,.16,.13,.16,flowerMats[i%4])}
+  const lab=new THREE.Group();lab.position.set(7.2,0,6.5);scene.add(lab);
   for(const x of [-2,2])for(const z of [-1.4,1.4])box(lab,.18,2.4,.18,x,1.2,z,trim);
   box(lab,4.7,.25,3.4,0,2.5,0,mat('#e5a7c5'));box(lab,4.4,.2,3.0,0,.1,0,white);box(lab,2.6,.16,1,0,1.1,0,gold);
+  box(scene,5,.09,3.6,7.2,.04,6.5,pathMat);
+  const futureGarden=new THREE.Group();futureGarden.position.set(14.3,0,-2);scene.add(futureGarden);
+  for(let i=0;i<3;i++){box(futureGarden,1.35,.42,2.3,(i-1)*1.65,.25,0,bark);box(futureGarden,1.16,.12,2.1,(i-1)*1.65,.49,0,mat('#645843'));for(let j=0;j<5;j++)ball(futureGarden,(i-1)*1.65,.68,-.82+j*.41,.25,.24,.25,flowerMats[(i+j)%4])}
+  const shuttle=new THREE.Group();scene.add(shuttle);
+  box(shuttle,2.8,1.25,1.35,0,.94,0,mat('#e9c2ed'));box(shuttle,2.55,.6,1.37,0,1.2,0,glass);box(shuttle,.8,.12,1.38,-.95,1.58,0,trim);
+  for(const x of [-.95,.95])for(const z of [-.69,.69]){const wheel=cylinder(shuttle,.28,.28,.17,x,.31,z,facePlaceholder());wheel.rotation.x=Math.PI/2}
+  function facePlaceholder(){return mat('#3e3950')}
   const portal=new THREE.Group();portal.position.set(21,0,-3);scene.add(portal);
   const portalRing=shape(portal,new THREE.TorusGeometry(1.4,.16,12,40),new THREE.MeshStandardMaterial({color:'#dfb6ff',emissive:'#ae69ee',emissiveIntensity:.8}),0,1.6,0);
   const brain=new THREE.Group();scene.add(brain);const lobes=new THREE.Group();brain.add(lobes);
@@ -76,13 +83,13 @@ async function mount3D(){
     const points=new THREE.Points(geometry,new THREE.PointsMaterial({color:b.color,size:.13,transparent:true,opacity:.9,depthWrite:false,blending:THREE.AdditiveBlending}));points.frustumCulled=false;scene.add(points);trailModels.push(points);
   });
   const excerpt=new THREE.Points(new THREE.BufferGeometry().setAttribute('position',new THREE.BufferAttribute(new Float32Array(24*3),3)),new THREE.PointsMaterial({color:'#f7d4ff',size:.14,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));excerpt.frustumCulled=false;scene.add(excerpt);
-  const wx=x=>(x-410)/18,wz=y=>(y-355)/6.5;
+  const wx=x=>(x-410)/18,wz=y=>(y-355)/10+2;
   const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();
   renderer.domElement.setAttribute('aria-label','3D garden: select a bear or click the lawn to move the rainbow brain');
   renderer.domElement.addEventListener('click',e=>{
     const b=renderer.domElement.getBoundingClientRect();pointer.set((e.clientX-b.left)/b.width*2-1,-(e.clientY-b.top)/b.height*2+1);ray.setFromCamera(pointer,camera);
     const hit=ray.intersectObjects(pickables,false)[0];if(hit){let p=hit.object;while(p&&p.userData.bearId===undefined)p=p.parent;if(p){api.selectBear(p.userData.bearId);return}}
-    const point=ray.intersectObject(ground)[0];if(point)api.moveBrain(point.point.x*18+410,point.point.z*6.5+355);
+    const point=ray.intersectObject(ground)[0];if(point)api.moveBrain(point.point.x*18+410,(point.point.z-2)*10+355);
   });
   viewport.append(renderer.domElement);viewport.hidden=false;document.getElementById('garden-map').classList.add('mini');
   const orbit=document.getElementById('garden-orbit'),zoom=document.getElementById('garden-zoom');
@@ -103,6 +110,8 @@ async function mount3D(){
     });
     excerpt.visible=s.hasExcerpt;if(s.hasExcerpt)updateTrail(excerpt,brain.position.x,brain.position.y-.7,brain.position.z,-18,1,5,t,.4);
     portalRing.material.emissiveIntensity=s.portal?.08:.8;lab.visible=s.month>0&&s.future==='lab';lab.scale.setScalar(Math.max(.1,s.month/12));
+    futureGarden.visible=s.month>0&&s.future==='garden';futureGarden.scale.setScalar(Math.max(.1,s.month/12));
+    shuttle.visible=s.month>0&&s.future==='shuttle';shuttle.position.set(Math.sin(t*.45)*7,.01,4.6);shuttle.rotation.y=Math.cos(t*.45)>0?0:Math.PI;shuttle.scale.setScalar(Math.max(.1,s.month/12));
     renderer.render(scene,camera);frameId=requestAnimationFrame(frame)
   }frame();
   renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();cancelAnimationFrame(frameId);observer.disconnect();viewport.hidden=true;document.getElementById('garden-map').classList.remove('mini');orbit.disabled=zoom.disabled=true;status.textContent='3D context unavailable; the garden map remains fully playable.'},{once:true});
