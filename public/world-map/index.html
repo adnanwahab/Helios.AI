@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101a1a">
+  <meta name="description" content="Explore an illustrative world hexagon map with adjustable preferences and explanations for each region.">
+  <title>World suitability map · Helios</title>
+  <script>
+    // Resolve both Netlify's clean route and a GitHub Pages repository subpath.
+    const mapBase = document.createElement('base');
+    const directMapPath = location.pathname.match(/^(.*\/public\/world-map)(?:\/|$)/);
+    mapBase.href = directMapPath ? directMapPath[1] + '/' : location.pathname.replace(/\/world-map\/?$/, '') + '/public/world-map/';
+    document.head.appendChild(mapBase);
+  </script>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./world-map.css">
+  <script defer src="./vendor/d3-7.9.0.min.js"></script>
+  <script type="module" src="./world-map.js"></script>
+</head>
+<body>
+  <div class="wrap" id="world-hex-suitability">
+    <header class="site-header">
+      <a class="brand" href="../../#world-map-feature" target="_top">HELIOS <span>/ WORLD MAP</span></a>
+      <nav aria-label="Related experiences"><a href="../consensus-world.html">Consensus World</a><a class="full-page-link" href="./index.html" target="_top">Open full map</a></nav>
+    </header>
+    <main>
+      <div class="page-heading">
+        <p class="eyebrow">Illustrative suitability · real geography</p>
+        <h1>Your world, weighted.</h1>
+        <p class="lede">Explore how places match your priorities. Move the sliders, select a hexagon, and read what shapes its result.</p>
+      </div>
+      <section class="load-status" id="load-status" aria-live="polite">
+        <p id="load-message">Preparing the world map…</p>
+        <button id="retry" type="button" hidden>Try loading again</button>
+      </section>
+      <div id="map-content" hidden>
+        <section class="map-region" aria-label="World suitability map">
+          <div class="map-stage">
+            <svg class="world-map" id="world-map" role="img" aria-labelledby="map-title map-description">
+              <title id="map-title">World hexagon suitability map</title>
+              <desc id="map-description">Land-centered geographic hexagons colored by a weighted preference score. Select a hexagon by clicking or tapping it, or use the location selector below. Sliders recalculate the score.</desc>
+            </svg>
+          </div>
+          <div class="map-caption">
+            <div class="legend" aria-label="Modeled fit from zero to one hundred">
+              <span class="legend-low">Lower fit</span><span class="legend-scale" aria-hidden="true"></span><span class="legend-high">Higher fit</span><span class="legend-units muted">0–100</span>
+            </div>
+            <span class="cell-count muted"></span>
+          </div>
+        </section>
+
+        <section class="preferences" aria-labelledby="preferences-heading">
+          <div class="section-heading"><h2 id="preferences-heading">What matters to you?</h2><p class="muted">Importance: 0 = ignore · 100 = prioritize</p></div>
+          <div class="weight-controls"></div>
+          <p class="empty-state" role="status" hidden>All preferences are off. Move at least one slider to compare places.</p>
+        </section>
+
+        <section class="selected-region" aria-labelledby="selected-heading">
+          <div class="selection-controls">
+            <label for="world-hex-choice">Inspect a hexagon <span class="selection-sort muted">· ordered by modeled fit</span></label>
+            <select id="world-hex-choice" aria-describedby="choice-help"></select>
+            <p class="small muted" id="choice-help">Click the map or use this selector with your keyboard. Your selection and preferences are kept in this page’s URL.</p>
+          </div>
+          <div class="selected-head">
+            <div><p class="eyebrow">Selected hexagon</p><h2 id="selected-heading"></h2><p class="selected-coordinate small muted"></p></div>
+            <div class="selected-score"><strong class="score-number"></strong><span class="score-unit"> / 100 modeled fit</span></div>
+          </div>
+          <p class="paragraph" aria-live="polite" aria-atomic="true"></p>
+          <div class="breakdown" aria-label="Selected hexagon criterion scores and influence"></div>
+        </section>
+
+        <details class="model-note">
+          <summary>How the model works &amp; data sources</summary>
+          <p>Each slider sets a criterion’s importance. The overall score is the weighted average of five 0–100 criterion scores; zero excludes a criterion. Colors use the same fixed scale as you adjust preferences. This is an illustrative model, not a verified quality-of-life ranking or probability.</p>
+          <p><strong>Real geography:</strong> H3 resolution-2 cells, published country boundaries, and Natural Earth city points and coastlines. City and coast scores use approximate straight-line distance from each cell’s center. City proximity does not measure transport, jobs, or services.</p>
+          <p><strong>Illustrative layers:</strong> mild climate uses latitude alone, peaking around 32° north or south. Living costs and nature access use independent synthetic patterns to demonstrate the interface. These are not observed prices, vegetation, protected areas, or climate data.</p>
+          <p>The cells cover broad regions, averaging about 86,800 km² globally. H3 cells vary in area and the global grid includes pentagons. A country label identifies the cell’s center; a cell can cross a border or coastline. Land-center sampling omits some islands and coastal fragments. Antarctica has no suitability scores.</p>
+          <div class="source-links">
+            <a href="https://h3geo.org/docs/core-library/overview/" target="_blank" rel="noopener noreferrer">H3 grid</a>
+            <a href="https://www.naturalearthdata.com/downloads/50m-cultural-vectors/50m-populated-places/" target="_blank" rel="noopener noreferrer">Natural Earth cities</a>
+            <a href="https://www.naturalearthdata.com/downloads/110m-physical-vectors/" target="_blank" rel="noopener noreferrer">Natural Earth coastlines</a>
+            <a href="https://github.com/d3-maps/atlas" target="_blank" rel="noopener noreferrer">World boundaries</a>
+          </div>
+        </details>
+      </div>
+      <noscript><p class="load-status">This interactive map needs JavaScript to calculate suitability and respond to your preferences.</p></noscript>
+    </main>
+    <footer><span>Private exploration in your browser. No account or data submission.</span><a href="../../#world-map-feature" target="_top">Back to Helios</a></footer>
+  </div>
+</body>
+</html>
