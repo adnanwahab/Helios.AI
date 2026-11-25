@@ -16,4 +16,4 @@ export function childcareBudget(input={}){
  const annualParentCost=annualCaregiverPayments-annualPublicCost;
  return {assumptions,coveredHoursPerFamily,parentPerHour,governmentPerHour,caregiverPerHour:rate,savingsPerFamily,annualPublicCost,annualParentCost,annualCaregiverPayments};
 }
-export function featureFirst(records){return [...records].sort((a,b)=>Number(b.law.id==='HGA-031')-Number(a.law.id==='HGA-031'))}
+export function featureFirst(records){const rank=id=>id==='DRAFT-CANNABIS'?0:id==='HGA-031'?1:2;return [...records].sort((a,b)=>rank(a.law.id)-rank(b.law.id))}

@@ -17,7 +17,7 @@ test('zero/full subsidy, participation, use, hours, invalid inputs and cap',()=>
  expect(m.annualParentCost+m.annualPublicCost).toBeCloseTo(m.annualCaregiverPayments);
 });
 test('first law presentation does not renumber or mutate existing records',()=>{
- const list=[{law:{id:'HGA-001'}},{law:{id:'HGA-031'}},{law:{id:'HGA-032'}}];
- expect(featureFirst(list).map(r=>r.law.id)).toEqual(['HGA-031','HGA-001','HGA-032']);
+ const list=[{law:{id:'HGA-001'}},{law:{id:'HGA-031'}},{law:{id:'HGA-032'}},{law:{id:'DRAFT-CANNABIS'}}];
+ expect(featureFirst(list).map(r=>r.law.id)).toEqual(['DRAFT-CANNABIS','HGA-031','HGA-001','HGA-032']);
  expect(list[0].law.id).toBe('HGA-001');
 });
