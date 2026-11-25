@@ -1,4 +1,5 @@
 import {modelFor,simulate,defaults} from './law-simulator.js';
+import {readCivicRoute,updateCivicRoute,scrollToCivicRoute} from './civic-route.js';
 const $=id=>document.getElementById(id),el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n};
 const isStatic=document.querySelector('meta[name="helios-mode"]').content==='static';
 const fmt=x=>Number(x).toLocaleString(undefined,{maximumFractionDigits:1});
@@ -109,11 +110,13 @@ async function loadHistory(){
  try{const data=await request('/api/law-board/'+encodeURIComponent(id));if(ticket!==loadingDetail||id!==selected)return;history=data;renderHistory()}
  catch(e){if(ticket===loadingDetail)setDetailStatus('Could not load revision history: '+e.message,true)}
 }
-function selectLaw(id){
+function selectLaw(id,{navigate=true}={}){
  if(writing||!records.has(id))return;
  if(id!==selected){saveDraft();selected=id;history=null;setDetailStatus('')}
+ if(navigate)updateCivicRoute({law:id,anchor:'law-title'});
  drawCatalog();drawDetail();if(connected)loadHistory()
 }
+window.addEventListener('popstate',()=>{const id=readCivicRoute().law||'HGA-001';if(records.has(id)){ $('law-search').value='';$('law-category').value='';selectLaw(id,{navigate:false});scrollToCivicRoute('law-title','laws-workbench')}});
 async function loadBoard({preserveDraft=true}={}){
  if(preserveDraft&&connected)saveDraft();
  const result=await request('/api/law-board');
@@ -164,6 +167,6 @@ $('law-connect').hidden=isStatic;
  const result=await response.json();seed=result.goals;if(!Array.isArray(seed)||seed.length!==100)throw Error('Expected 100 original proposals');
  for(const law of seed){modelFor(law);records.set(law.id,{law,votes:null,myVote:null,updates:0})}
  for(const category of result.categories){const option=el('option',category);option.value=category;$('law-category').append(option)}
- $('law-count').textContent=records.size;drawCatalog();drawDetail();$('law-connect').disabled=false;
+ $('law-count').textContent=records.size;const routed=readCivicRoute().law;if(records.has(routed))selected=routed;drawCatalog();drawDetail();$('law-connect').disabled=false;scrollToCivicRoute('law-title','laws-workbench');
  status(isStatic?'Static preview · simulations only, no shared votes.':'Original editorial catalog · connect to load shared Supabase votes and revisions.')
 }catch(e){status('Could not load the bundled law catalog: '+e.message,true)}})();

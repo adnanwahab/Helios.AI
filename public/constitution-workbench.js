@@ -1,4 +1,5 @@
 import {normalizeClause,sampleBoard} from './constitution-model.js';
+import {readCivicRoute,updateCivicRoute,civicUrl,validClause,scrollToCivicRoute} from './civic-route.js';
 const $=id=>document.getElementById(id);
 const isStatic=document.querySelector('meta[name="helios-mode"]').content==='static'||/^deploy-preview-\d+--heliosailol\.netlify\.app$/.test(location.hostname);
 const create=(tag,text,cls)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e};
@@ -102,7 +103,31 @@ docs.addEventListener('close',()=>{
  $('docs-open').focus();
 });
 $('docs-search').addEventListener('input',()=>renderDocs($('docs-search').value));
-let board=sampleBoard(),connected=false,selected='S-001',busy=false,refreshing=false,csrf=null,lastWrite=null,related=null;
+let board=sampleBoard(),connected=false,selected=readCivicRoute().clause||'S-001',busy=false,refreshing=false,connecting=false,csrf=null,lastWrite=null,related=null;
+let practiceMode=isStatic||readCivicRoute().practice,connectionEpoch=0;
+const commentDrafts=new Map();
+const unavailable=()=>!connected&&!practiceMode;
+const blocked=()=>busy||unavailable();
+function setSelected(id){
+ if(id!==selected){
+   if(selected)commentDrafts.set(selected,$('clause-comment').value);
+   $('clause-comment').value=commentDrafts.get(id)||'';$('comment-consent').checked=false;$('comment-auto-consent').checked=false;message('comment-status','');message('clause-status','');
+ }
+ selected=id;
+}
+function updateLiveLink(){
+ const route=readCivicRoute(),a=$('board-live-link').querySelector('a');
+ a.href=civicUrl('https://helios-ai-laws.fly.dev/',{clause:route.clause,law:route.law,anchor:route.anchor||'review-title',practice:false}).href;
+ $('board-live-link').hidden=!(isStatic||unavailable()&&!connecting&&location.hostname!=='helios-ai-laws.fly.dev');
+}
+function applyRequestedClause(){
+ const id=readCivicRoute().clause;
+ if(id&&rows().some(row=>row.id===id))setSelected(id);
+ else if(!rows().some(row=>row.id===selected))setSelected(rows()[0]?.id);
+}
+function requestedUnavailable(){const id=readCivicRoute().clause;return id&&!rows().some(row=>row.id===id)}
+function selectedBoardPath(){const id=readCivicRoute().clause;return '/api/constitution'+(id?.startsWith('C-')?'?clause='+encodeURIComponent(id):'')}
+
 const practiceVotes=new Map(),practiceComments=new Map(),practiceClauses=new Map();
 function rows(){return connected?board.clauses:[...board.clauses,...practiceClauses.values()]}
 function current(){return rows().find(x=>x.id===selected)||rows()[0]}
@@ -120,29 +145,30 @@ function drawList(){
  }
  if(!root.childElementCount)root.append(create('p','No clauses match your filter.','hint'));
 }
-function choose(id){
+function choose(id,{navigate=true}={}){
  if(busy||!rows().some(r=>r.id===id))return;
- if(id!==selected){if($('clause-comment').value.trim()&&!confirm('Switch clauses and clear your unsent comment?'))return;$('clause-comment').value='';$('comment-consent').checked=false;$('comment-auto-consent').checked=false;message('comment-status','');message('clause-status','')}
- selected=id;drawList();drawReview();
+ const changed=id!==selected;setSelected(id);
+ if(navigate)updateCivicRoute({clause:validClause(id)?id:null,...(changed?{law:null}:{}),anchor:'review-title'});
+ drawList();drawReview(navigate?'user':'history');updateLiveLink();
 }
-function drawReview(){
+function drawReview(navigation='sync'){
  const row=current();if(!row)return;selected=row.id;
  $('clause-topic').textContent=row.topic+' · '+row.id.slice(0,18)+(row.id.length>18?'…':'');
  $('clause-text').textContent=row.text;
- document.dispatchEvent(new CustomEvent('helios:clause-selected',{detail:{id:row.id,topic:row.topic,text:row.text,source:row.source}}));
+ document.dispatchEvent(new CustomEvent('helios:clause-selected',{detail:{id:row.id,topic:row.topic,text:row.text,source:row.source,navigation}}));
  $('clause-synthetic').textContent=row.source==='synthetic'?'Synthetic: '+syntheticLabel(row.synthetic)+' · '+fmt(row.synthetic.mentions)+' distinct sample participants.':'No synthetic votes for this community clause.';
- const real=$('clause-real');real.replaceChildren(create('strong',connected?'Shared advisory votes (browser sessions)':'Practice only · no shared votes loaded'),create('span',connected?liveLabel(row.live)+' · '+fmt(row.live.contributors)+' opted-in contributions':'Your choices here are not sent or counted publicly.'));
+ const real=$('clause-real');real.replaceChildren(create('strong',connected?'Shared advisory votes (browser sessions)':practiceMode?'Practice only · no shared votes loaded':connecting?'Loading shared review…':'Shared database unavailable'),create('span',connected?liveLabel(row.live)+' · '+fmt(row.live.contributors)+' opted-in contributions':practiceMode?'Your choices here are not sent or counted publicly.':'No votes or comments will be saved until the connection is restored.'));
  const position=connected?row.myVote:practiceVotes.get(row.id);
- for(const b of document.querySelectorAll('[data-clause-vote]')){b.setAttribute('aria-pressed',String(position===b.dataset.clauseVote));b.disabled=busy}
- $('clear-vote').disabled=busy;
+ for(const b of document.querySelectorAll('[data-clause-vote]')){b.setAttribute('aria-pressed',String(position===b.dataset.clauseVote));b.disabled=blocked()}
+ $('clear-vote').disabled=blocked();
  const comments=$('clause-comments');comments.replaceChildren();
- const data=connected?row.comments:(practiceComments.get(row.id)||[]);
- if(!data.length)comments.append(create('p',connected?'No visible comments yet.':'No practice comments yet.','hint'));
+ const data=connected?row.comments:practiceMode?(practiceComments.get(row.id)||[]):[];
+ if(!data.length)comments.append(create('p',connected?'No visible comments yet.':practiceMode?'No practice comments yet.':'Comments unavailable until connected.','hint'));
  for(const item of data){const card=create('div',item.text,'comment-card');card.append(create('small',item.status==='pending'?'Your comment · pending moderation':item.status==='practice'?'Practice · not public':'Approved public comment'));comments.append(card)}
- $('review-mode').textContent=connected?'Shared':'Practice';$('comment-consent-wrap').hidden=!connected;$('contribution-consent-wrap').hidden=!connected;$('comment-auto-consent-wrap').hidden=!connected;$('clause-auto-consent-wrap').hidden=!connected;
- $('post-comment').textContent=connected?'Submit comment for review':'Add practice comment';
- $('contribute-clause').textContent=connected?'Submit public clause':'Add to practice draft';
- $('post-comment').disabled=busy;$('contribute-clause').disabled=busy;
+ $('review-mode').textContent=connected?'Shared':practiceMode?'Practice':connecting?'Connecting':'Unavailable';$('comment-consent-wrap').hidden=!connected;$('contribution-consent-wrap').hidden=!connected;$('comment-auto-consent-wrap').hidden=!connected;$('clause-auto-consent-wrap').hidden=!connected;
+ $('post-comment').textContent=practiceMode?'Add practice comment':'Submit comment for review';
+ $('contribute-clause').textContent=practiceMode?'Add to practice draft':'Submit public clause';
+ $('post-comment').disabled=blocked();$('contribute-clause').disabled=blocked();
 }
 function drawPending(){
  const node=$('pending-clauses');node.replaceChildren();node.hidden=!board.pending?.length;
@@ -150,26 +176,60 @@ function drawPending(){
 }
 function draw(){
  const s=board.synthetic;$('synthetic-people').textContent=fmt(s.participants);$('synthetic-clauses').textContent=fmt(s.clauses);$('synthetic-duplicates').textContent=fmt(s.rawMentions-s.uniqueMentions);
- $('board-mode').textContent=connected?'Shared + sample':'Synthetic sample';$('board-connect').hidden=connected||isStatic;$('board-refresh').hidden=!connected;
- if(!rows().some(r=>r.id===selected))selected=rows()[0]?.id;
+ $('board-mode').textContent=connected?'Shared + sample':practiceMode?'Synthetic sample':connecting?'Connecting':'Unavailable';$('board-connect').hidden=connected||isStatic;$('board-connect').disabled=connecting||busy;$('board-connect').textContent=connecting?'Connecting…':practiceMode?'Join shared review':'Retry shared review';$('board-practice').hidden=isStatic||practiceMode||connecting;$('board-practice').disabled=busy;$('board-refresh').hidden=!connected;
+ if(!rows().some(r=>r.id===selected))setSelected(rows()[0]?.id);updateLiveLink();
  drawList();drawReview();drawPending();updateDedupe();
 }
 async function request(path,options={}){
  const r=await fetch(path,{credentials:'same-origin',cache:'no-store',signal:AbortSignal.timeout(15000),...options});
  const data=await r.json().catch(()=>null);if(!r.ok||!data)throw Error(data?.error||'HTTP '+r.status);return data;
 }
+async function connect({restoreScroll=false}={}){
+ if(isStatic||connected||connecting||busy||practiceMode)return;
+ const epoch=++connectionEpoch;connecting=true;draw();message('board-status','Loading shared constitution from the database…');
+ try{
+   const next=await request(selectedBoardPath());
+   if(epoch!==connectionEpoch||practiceMode)return;
+   if(!Array.isArray(next.clauses)||!next.synthetic)throw Error('Invalid board response');
+   board=next;connected=true;applyRequestedClause();
+   message('board-status',requestedUnavailable()?'The requested clause is not publicly available. Showing the shared board.':'Shared review is live. Advisory positions save to the database; comments and new clauses await moderation.');
+ }catch(e){if(epoch!==connectionEpoch)return;connected=false;message('board-status','Shared database unavailable: '+e.message+' · nothing was saved. Retry, or explicitly choose private practice.',true)}
+ finally{if(epoch===connectionEpoch){connecting=false;draw();updatePulse();if(restoreScroll)scrollToCivicRoute('review-title','constitution-title')}}
+}
 async function refresh(){
- if(!connected||refreshing||busy)return;refreshing=true;$('board-refresh').disabled=true;
- try{const next=await request('/api/constitution');if(!Array.isArray(next.clauses)||!next.synthetic)throw Error('Invalid board response');board=next;draw();message('board-status','Shared board updated. Counts are advisory browser-session totals, separate from the synthetic corpus.')}
- catch(e){message('board-status','Could not refresh: '+e.message,true)}
+ if(!connected||refreshing||busy)return;const epoch=connectionEpoch;refreshing=true;$('board-refresh').disabled=true;
+ try{
+   const next=await request(selectedBoardPath());
+   if(epoch!==connectionEpoch||practiceMode)return;
+   if(!Array.isArray(next.clauses)||!next.synthetic)throw Error('Invalid board response');
+   board=next;applyRequestedClause();draw();message('board-status',requestedUnavailable()?'The requested clause is not publicly available. Showing the shared board.':'Shared board updated. Counts are advisory browser-session totals, separate from the synthetic corpus.')
+ }catch(e){if(epoch===connectionEpoch){connected=false;draw();message('board-status','Could not refresh the shared database: '+e.message+' · writes are disabled until you reconnect.',true)}}
  finally{refreshing=false;$('board-refresh').disabled=false}
 }
-$('board-connect').addEventListener('click',async()=>{
- if(isStatic||connected||busy)return;$('board-connect').disabled=true;message('board-status','Connecting to the shared board…');
- try{const session=await request('/api/session');if(typeof session.csrfToken!=='string')throw Error('No session token');const next=await request('/api/constitution');if(!Array.isArray(next.clauses)||!next.synthetic)throw Error('Invalid board response');csrf=session.csrfToken;board=next;connected=true;$('board-live-link').hidden=true;draw();message('board-status','Connected. Practice activity was not uploaded. Votes are public advisory counts; comments and new clauses await review.')}
- catch(e){message('board-status','Connection unavailable: '+e.message+' · practice remains available.',true);$('board-live-link').hidden=false}
- finally{$('board-connect').disabled=false}
-});
+function enterPractice({navigate=true}={}){
+ ++connectionEpoch;connected=false;connecting=false;practiceMode=true;board=sampleBoard();
+ if(navigate)updateCivicRoute({practice:true});
+ applyRequestedClause();draw();updatePulse();
+ message('board-status',isStatic?'Preview practice · no shared review writes. Use the live app to save votes and comments.':'Private practice · votes and comments stay in this page only. Join shared review to save new activity.');
+}
+function leavePractice({navigate=true}={}){
+ if(isStatic||busy)return;
+ practiceMode=false;
+ if(navigate)updateCivicRoute({practice:false});
+ connect({restoreScroll:true});
+}
+$('board-connect').addEventListener('click',()=>leavePractice());
+$('board-practice').addEventListener('click',()=>{if(!busy)enterPractice()});
+function restoreClauseRoute(){
+ if(busy)return;
+ const route=readCivicRoute(),shouldPractice=isStatic||route.practice;
+ if(shouldPractice!==practiceMode){if(shouldPractice)enterPractice({navigate:false});else leavePractice({navigate:false})}
+ const id=route.clause||'S-001';
+ if(rows().some(row=>row.id===id))choose(id,{navigate:false});
+ else if(connected&&route.clause)refresh();
+ scrollToCivicRoute('review-title','constitution-title');updateLiveLink();
+}
+window.addEventListener('popstate',restoreClauseRoute);
 $('board-refresh').addEventListener('click',refresh);
 setInterval(()=>{if(connected&&!document.hidden)refresh()},20000);
 // Offer the optional fast safety check without changing the existing public consent.
@@ -188,23 +248,23 @@ async function write(action,data,statusId,onSuccess){
  try{
    const session=await request('/api/session');csrf=session.csrfToken;
    result=await request('/api/constitution/'+action,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrf,'Idempotency-Key':lastWrite.key},body});
-   lastWrite=null;onSuccess(result);message(statusId,action==='vote'?'Position recorded.':result.status==='approved'&&result.moderation==='unflagged'?'Safety check passed; published for discussion.':result.status==='pending'?'Saved · pending moderation.':action==='comment'?'Comment saved.':'Contribution grouped with the existing clause.');
+   lastWrite=null;onSuccess(result);message(statusId,action==='vote'?'Position recorded in the database.':result.status==='approved'&&result.moderation==='unflagged'?'Safety check passed; published for discussion.':result.status==='pending'?'Saved to database · pending moderation.':action==='comment'?'Comment saved.':'Contribution grouped with the existing clause.');
  }catch(e){message(statusId,'Submission not confirmed: '+e.message+' · retry unchanged to reuse the request key.',true)}
- finally{busy=false;drawReview();if(result)await refresh()}
+ finally{busy=false;drawReview();if(result)await refresh();const id=readCivicRoute().clause;if(id&&id!==selected)restoreClauseRoute()}
 }
 for(const b of document.querySelectorAll('[data-clause-vote]'))b.addEventListener('click',()=>{
- const row=current(),position=b.dataset.clauseVote;if(!row||busy)return;
+ const row=current(),position=b.dataset.clauseVote;if(!row||blocked())return;
  if(connected)write('vote',{clauseId:row.id,position},'clause-status',()=>{});
  else{practiceVotes.set(row.id,position);drawReview();message('clause-status','Practice position saved in this page only.')}
 });
 $('clear-vote').addEventListener('click',()=>{
- const row=current();if(!row||busy)return;
+ const row=current();if(!row||blocked())return;
  if(connected)write('vote',{clauseId:row.id,position:null},'clause-status',()=>{});
  else{practiceVotes.delete(row.id);drawReview();message('clause-status','Practice position cleared.')}
 });
 $('post-comment').addEventListener('click',()=>{
- const row=current(),text=$('clause-comment').value.trim();if(!row||busy||!text)return message('comment-status','Write a comment first.',true);
- if(connected){if(!$('comment-consent').checked)return message('comment-status','Confirm the exact public comment before submitting.',true);write('comment',{clauseId:row.id,text,consent:true,...($('comment-auto-consent').checked?{autoModerationConsent:true}:{})},'comment-status',()=>{$('clause-comment').value='';$('comment-consent').checked=false;$('comment-auto-consent').checked=false})}
+ const row=current(),text=$('clause-comment').value.trim();if(blocked())return;if(!row||!text)return message('comment-status','Write a comment first.',true);
+ if(connected){if(!$('comment-consent').checked)return message('comment-status','Confirm the exact public comment before submitting.',true);write('comment',{clauseId:row.id,text,consent:true,...($('comment-auto-consent').checked?{autoModerationConsent:true}:{})},'comment-status',()=>{$('clause-comment').value='';commentDrafts.delete(row.id);$('comment-consent').checked=false;$('comment-auto-consent').checked=false})}
  else{const list=practiceComments.get(row.id)||[];list.unshift({text,status:'practice'});practiceComments.set(row.id,list.slice(0,8));$('clause-comment').value='';drawReview();message('comment-status','Practice comment added. Nothing was sent.')}
 });
 $('clause-comment').addEventListener('input',()=>{$('comment-consent').checked=false;$('comment-auto-consent').checked=false});
@@ -220,7 +280,7 @@ $('use-concern').addEventListener('click',()=>{
  $('new-clause').value=first.slice(0,280);$('contribution-consent').checked=false;$('clause-auto-consent').checked=false;updateDedupe();$('new-clause').focus();
 });
 $('contribute-clause').addEventListener('click',()=>{
- const text=$('new-clause').value.trim();if(!text||busy)return message('contribution-status','Write a short clause first.',true);
+ const text=$('new-clause').value.trim();if(blocked())return;if(!text)return message('contribution-status','Write a short clause first.',true);
  if(connected){if(!$('contribution-consent').checked)return message('contribution-status','Confirm the exact public wording before submitting.',true);write('contribute',{text,consent:true,...($('clause-auto-consent').checked?{autoModerationConsent:true}:{})},'contribution-status',()=>{$('new-clause').value='';$('contribution-consent').checked=false;$('clause-auto-consent').checked=false})}
  else{const hit=rows().find(r=>normalizeClause(r.text)===normalizeClause(text));if(hit){choose(hit.id);message('contribution-status','Matched existing wording. No duplicate clause added.')}
  else{const id='P-'+crypto.randomUUID();practiceClauses.set(id,{id,topic:'Your practice contribution',text,source:'practice',synthetic:{mentions:0,support:0,oppose:0,unsure:0},live:emptyTally(),comments:[]});choose(id);message('contribution-status','Added to your practice draft only.')}
@@ -241,4 +301,4 @@ $('journal').addEventListener('input',updatePulse);
 $('example').addEventListener('click',updatePulse);
 $('restart').addEventListener('click',updatePulse);
 $('review-match').addEventListener('click',()=>{if(related){choose(related.id);$('review-title').scrollIntoView({block:'nearest'})}});
-draw();message('board-status',isStatic?'Static practice · no network writes or public tallies.':'Practice mode · connect to load shared counts and cast advisory votes.');updatePulse();
+if(practiceMode){enterPractice({navigate:false});scrollToCivicRoute('review-title','constitution-title')}else{connect({restoreScroll:true})}
