@@ -31,3 +31,31 @@ test('GitHub handoff needs consent, sends no message or credentials in URL and d
  await expect(page.locator('#pr-payload')).toHaveValue(/Example review text/);
  expect(writes).toBe(0);
 });
+
+test('Netlify preview uses GitHub without touching the private session or inbox',async({page})=>{
+ const privateRequests=[];
+ page.on('request',r=>{if(/\/api\/(?:session|contributions)(?:$|[/?])/.test(r.url()))privateRequests.push(r.url())});
+ await page.route('**/?compose=pr',async route=>{
+  const response=await route.fetch();
+  const html=await response.text();
+  await route.fulfill({response,body:html.replace('<meta name="helios-contribution-mode" content="live">','<meta name="helios-contribution-mode" content="preview">')});
+ });
+ await page.goto('/?compose=pr');
+ // Other homepage features may use /api/session; track composer requests from here.
+ privateRequests.length=0;
+ await expect(page.locator('#pr-inbox-notice')).toContainText('deployment preview');
+ await page.locator('#pr-title').fill('Preview contribution');
+ await page.locator('#pr-message').fill('Test GitHub handoff without production writes.');
+ await page.locator('#pr-compose-form button[type=submit]').click();
+ await expect(page.locator('#pr-destination')).toHaveValue('github');
+ await expect(page.locator('#pr-destination option[value=team]')).toBeDisabled();
+ await expect(page.locator('#pr-send')).toBeHidden();
+ await expect(page.locator('#pr-github')).not.toHaveAttribute('href',/.+/);
+ await page.locator('#pr-consent').check();
+ await expect(page.locator('#pr-github')).toHaveAttribute('href',/github.com\/adnanwahab\/HeliosHTML\/new\/main\/data\/contributions\?filename=[a-f0-9-]+\.json$/);
+ await page.locator('#pr-tracking summary').click();
+ await expect(page.locator('#pr-history-status')).toContainText('Private inbox progress is not available');
+ await expect(page.locator('#pr-refresh')).toBeHidden();
+ await expect(page.locator('#pr-status')).not.toContainText('Not confirmed');
+ expect(privateRequests.filter(url=>url.includes('/api/contributions'))).toEqual([]);
+});

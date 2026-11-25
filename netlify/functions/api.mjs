@@ -8,7 +8,7 @@ export default async (request, context) => {
   // Preview code must not mutate or read the production contribution inbox.
   // Production may use the existing configured database or the allowlisted Fly gateway.
   const path=new URL(request.url).pathname;
-  if((path==='/api/contributions'||path.startsWith('/api/contributions/'))&&(context?.deploy?.context||process.env.CONTEXT)!=='production')return Response.json({error:'The contribution inbox is available on the deployed production app, not this preview. Use the GitHub option.'},{status:503,headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});
+  if((path==='/api/contributions'||path.startsWith('/api/contributions/'))&&(context?.deploy?.context||process.env.CONTEXT)!=='production')return Response.json({error:'The contribution inbox is available on the deployed production app, not this preview. Use the GitHub option.',code:'PREVIEW_INBOX_DISABLED'},{status:403,headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});
   if (!configuredDatabase()) return forwardCivic(request,context);
   try {
     const {app} = await getRuntime();
