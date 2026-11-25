@@ -129,6 +129,7 @@ function drawReview(){
  const row=current();if(!row)return;selected=row.id;
  $('clause-topic').textContent=row.topic+' · '+row.id.slice(0,18)+(row.id.length>18?'…':'');
  $('clause-text').textContent=row.text;
+ document.dispatchEvent(new CustomEvent('helios:clause-selected',{detail:{id:row.id,topic:row.topic,text:row.text,source:row.source}}));
  $('clause-synthetic').textContent=row.source==='synthetic'?'Synthetic: '+syntheticLabel(row.synthetic)+' · '+fmt(row.synthetic.mentions)+' distinct sample participants.':'No synthetic votes for this community clause.';
  const real=$('clause-real');real.replaceChildren(create('strong',connected?'Shared advisory votes (browser sessions)':'Practice only · no shared votes loaded'),create('span',connected?liveLabel(row.live)+' · '+fmt(row.live.contributors)+' opted-in contributions':'Your choices here are not sent or counted publicly.'));
  const position=connected?row.myVote:practiceVotes.get(row.id);
