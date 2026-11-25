@@ -7,9 +7,9 @@ test('homepage keeps civic workflow and opens the 100-proposal workshop on deman
   await expect(page.locator('#communal-science-lab')).toBeVisible();
   await expect(page.locator('#research-workshop-panel')).toBeHidden();
   await page.locator('[data-research-feature="HGA-051"]').click();
-  await expect(page.locator('#law-count')).toHaveText('100');
+  await expect(page.locator('#law-count')).toHaveText('101');
   await expect(page.locator('#law-id')).toContainText('HGA-051');
-  await expect(page.locator('#law-tiles .law-tile')).toHaveCount(100);
+  await expect(page.locator('#law-tiles .law-tile')).toHaveCount(101);
   await expect(page.locator('#law-chart')).toBeVisible();
   await page.locator('#law-input-effect').fill('40');
   await expect(page.locator('#law-value-effect')).toHaveText('40%');
