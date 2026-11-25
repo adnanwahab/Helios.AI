@@ -4,9 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b1018">
+  <meta name="helios-mode" content="live">
   <meta name="description" content="Supervise collaborative research, connect proposed laws to future keyframes, and design possible worlds together.">
   <title>Research playground · Helios AI</title>
   <link rel="icon" href="./public/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./public/account.css">
+<script type="module" src="./public/account.js"></script>
   <link rel="stylesheet" href="./public/research.css">
   <script type="module" src="./public/research.js"></script>
 </head>
@@ -16,6 +19,7 @@
   <a class="brand" href="./"><span class="brand-mark" aria-hidden="true">✳</span> HELIOS <span class="brand-light">/ RESEARCH</span></a>
   <nav aria-label="Research sections"><a href="#coordinator" aria-current="page">Coordinator</a><a href="#keyframes">Future keyframes</a><a href="./">Civic workshop</a></nav>
   <span class="mode-label" id="room-mode">Browser draft</span>
+  <button class="helios-account-trigger" type="button" id="account-open" data-open-login>Sign in</button>
 </header>
 <main>
   <section class="hero" aria-labelledby="research-title">
@@ -84,7 +88,7 @@
       </form>
     </div>
     <div class="collaboration-layout">
-      <section class="panel contribution-panel" aria-labelledby="contribute-title"><div class="panel-heading"><h3 id="contribute-title">Build on each other’s thinking</h3><span class="pill" id="contribution-target">1,000-person design goal</span></div><p class="muted">Add evidence, a concern, or an alternative future to the selected keyframe.</p><form id="contribution-form"><label for="contribution-text">Your contribution</label><textarea id="contribution-text" maxlength="4000" rows="3" placeholder="What should this future make room for?" required></textarea><button class="button secondary" type="submit" id="post-contribution">Add contribution</button><span class="field-help" id="contribution-help">Shared rooms count actual contributing browser sessions.</span></form></section>
+      <section class="panel contribution-panel" aria-labelledby="contribute-title"><div class="panel-heading"><h3 id="contribute-title">Build on each other’s thinking</h3><span class="pill" id="contribution-target">1,000-person design goal</span></div><p class="muted">Add evidence, a concern, or an alternative future to the selected keyframe.</p><form id="contribution-form"><label for="contribution-text">Your contribution</label><textarea id="contribution-text" maxlength="4000" rows="3" placeholder="What should this future make room for?" required></textarea><button class="button secondary" type="submit" id="post-contribution">Add contribution</button><span class="field-help" id="contribution-help">Shared rooms count actual contributing accounts and guest sessions.</span></form></section>
       <section class="panel activity-panel" aria-labelledby="activity-title"><div class="panel-heading"><h3 id="activity-title">Room activity</h3><span class="subtle-text">Latest 50 updates</span></div><ol id="activity-list" class="activity-list"></ol></section>
     </div>
   </section>

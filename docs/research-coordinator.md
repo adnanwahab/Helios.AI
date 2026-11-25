@@ -5,9 +5,9 @@ can plan **100â€“1,000 research assignments**, with a configurable limit of **1â
 active worker leases**. Creating a plan does not start an agent process or call a
 paid AI provider. Worker execution is an optional, separate integration.
 
-The default collaborator target is 1,000. Actual contributors are distinct browser
-sessions that saved a room, frame, supervision edit, or note. They are not verified
-people or an online-presence count. Connected workers are distinct worker IDs
+The default collaborator target is 1,000. Actual contributors are distinct guest
+browser sessions or signed-in accounts that saved a room, frame, supervision edit,
+or note. They are not verified people or an online-presence count. Connected workers are distinct worker IDs
 holding unexpired task leases. These counts start at one contributor and zero
 workers when a shared room is created.
 
@@ -19,8 +19,8 @@ All new tables use the existing private-schema/RLS convention. Browser mutations
 require a session, same-origin request, CSRF token, bounded JSON, rate limits, and
 an `Idempotency-Key`. The same key with a different payload returns `409`.
 
-The creator's browser session supervises the pipeline. Anyone with the room link
-can read the room; a participant with a browser session can propose keyframe edits
+The creator's guest browser session or signed-in account supervises the pipeline.
+Anyone with the room link can read the room; a participant with a browser session can propose keyframe edits
 and notes. Do not put private source material in a shared room. Changing a
 supervision field or keyframe requires its current revision. Stale writes return
 `409` without overwriting another participant's saved work.
@@ -29,6 +29,12 @@ When the preview does not have a configured research database, the UI uses a
 clearly labeled browser draft and JSON export. That mode does not share
 updates across devices. Connecting the optional isolated preview database is a
 deployment configuration step, not something the browser can do.
+
+Login is optional. The `open_login` control lets an existing account sign in for
+future saved activity when the backend supports account persistence. Guest-owned
+rooms and earlier browser votes remain separate; signing in does not transfer
+them. See [optional login](optional-login.md) for account capabilities, provider
+readiness, and the cross-device saving contract.
 
 ## Optional isolated preview database
 

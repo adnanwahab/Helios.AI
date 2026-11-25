@@ -26,6 +26,7 @@ let activeStorageKey = storageKey;
 let browserStorageAvailable = true;
 let historyCursor = null;
 let historyFrame = null;
+let accountRevision = 0, accountKey = 'guest||false', accountRefreshPending = false;
 const safeParse = value => { try { return JSON.parse(value); } catch { return null; } };
 const roleFor = id => RESEARCH_ROLES.find(r => r.id === id) || RESEARCH_ROLES[0];
 const displayState = value => ({planned: 'Planned', queued: 'Queued', running: 'Working', needs_review: 'Needs review', review: 'Needs review', approved: 'Reviewed', rejected: 'Changes requested', failed: 'Failed', paused: 'Paused'}[value] || String(value || 'Planned').replaceAll('_', ' '));
@@ -99,12 +100,18 @@ async function ensureSession() {
 
 async function api(path, body) {
   const write = body !== undefined;
+  const revision = accountRevision;
   if (write) await ensureSession();
+  const accountHeaders = await window.HeliosAccount?.fetchHeaders('research') || {};
+  if (write && revision !== accountRevision) throw new Error('Your account changed. Review the action and try again.');
+  const requestRevision = accountRevision;
   const payload = write ? JSON.stringify(body) : null;
   const fingerprint = path + ':' + (payload || '');
   if (write && !retryKeys.has(fingerprint)) retryKeys.set(fingerprint, crypto.randomUUID());
   const response = await fetch(path, {method: write ? 'POST' : 'GET', cache: 'no-store', credentials: 'same-origin',
-    ...(write ? {headers: {'Content-Type': 'application/json', 'X-CSRF-Token': csrf, 'Idempotency-Key': retryKeys.get(fingerprint)}, body: payload} : {})});
+    headers: {...accountHeaders, ...(write ? {'Content-Type': 'application/json', 'X-CSRF-Token': csrf, 'Idempotency-Key': retryKeys.get(fingerprint)} : {})},
+    ...(write ? {body: payload} : {})});
+  if (requestRevision !== accountRevision) throw new Error('Your account changed while the request was in progress. Refresh the room to check its saved state.');
   const data = await response.json().catch(() => ({error: 'The research service returned an unexpected response.'}));
   if (!response.ok) {
     const error = new Error(data.error || 'The request could not be saved.');
@@ -127,8 +134,24 @@ async function action(fn) {
       $('reload-room').hidden = false;
     } else status(`${error.message || 'The connection failed.'} Your draft has been kept in this browser.`, 'error');
     persistDraft();
-  } finally { busy = false; document.body.removeAttribute('aria-busy'); renderControls(); }
+  } finally { busy = false; document.body.removeAttribute('aria-busy'); renderControls(); if (accountRefreshPending) refreshAccountRoom(); }
 }
+
+async function refreshAccountRoom() {
+  if (!shared) return;
+  if (busy) { accountRefreshPending = true; return; }
+  accountRefreshPending = false;
+  try { applySnapshot(await api(roomPath())); status('Account view refreshed. Existing browser-owned rooms and unsaved drafts stay separate.'); }
+  catch (error) { status(error.message + ' Your draft is preserved.', 'error'); $('reload-room').hidden = false; }
+}
+window.addEventListener('helios:auth-changed', event => {
+  const state = event.detail || {}, key = [state.status, state.user?.id || '', state.persistence?.research === true].join('|');
+  if (key === accountKey) return;
+  accountKey = key; accountRevision++; csrf = null; retryKeys.clear();
+  if (!shared) return;
+  persistDraft(); sharedReady = false; snapshot.room.canSupervise = false;
+  renderControls(); refreshAccountRoom();
+});
 
 function applySnapshot(next, cleared = []) {
   if (!cleared.includes('frame')) rememberFrame();

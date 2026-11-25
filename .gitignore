@@ -8,6 +8,7 @@ node_modules/
 test-results/
 playwright-report/
 dist/
+dist-pages/
 .netlify/
 # fly config save downloads deployment settings; keep local copies out of Git.
 /fly.toml

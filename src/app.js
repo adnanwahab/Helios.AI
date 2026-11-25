@@ -1,6 +1,7 @@
 import {Problem, hash} from './store.js';
 import {timingSafeEqual} from 'node:crypto';
 import {createResearchApi} from './research-api.js';
+import {AccountError, createAccountService} from './account.js';
 
 // Static files, redirects and embed routes are served by Netlify's CDN (netlify.toml).
 // This module only handles the dynamic paths: /api/*, the email endpoints and the YCR proxy.
@@ -18,7 +19,7 @@ const rewriteYcrText = text => text
   .replace(/(["'`])\/api\//g, `$1${YCR_PROXY_PREFIX}/api/`)
   .replace(/https?:\/\/(?:www\.)?(?:ycr\.org|openresearchlab\.org)\//gi, `${YCR_PROXY_PREFIX}/`);
 
-export function createApp({store, email, notion = null, morphlab = null, moderator = null, origins = [], adminToken = null, researchWorkerToken = null, secure = true, health = {storage: 'unknown', runtime: 'unknown'}} = {}) {
+export function createApp({store, email, notion = null, morphlab = null, moderator = null, account = createAccountService(), origins = [], adminToken = null, researchWorkerToken = null, secure = true, health = {storage: 'unknown', runtime: 'unknown'}} = {}) {
   if (!store) throw Error('Store required');
   const response = (data, status = 200, extra = {}) => Response.json(data, {status, headers: {'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', ...extra}});
   const research = createResearchApi({store, health, workerToken: researchWorkerToken, Problem, hash, response});
@@ -50,7 +51,22 @@ export function createApp({store, email, notion = null, morphlab = null, moderat
   async function api(request, url, remoteIP) {
     const method = request.method, path = url.pathname;
     const cookie = request.headers.get('cookie')?.split(';').map(x => x.trim()).find(x => x.startsWith('helios_session='))?.slice(15);
-    const researchResponse = await research.readOrWorker(request, url, cookie);
+    const accountRoute = path.match(/^\/api\/(research\/)?account\/(config|me)$/);
+    let accountContext;
+    if (accountRoute) {
+      if (method !== 'GET') return response({error: 'Use GET'}, 405);
+      const writable = health.storage === 'supabase-postgres' || (health.storage === 'pglite' && health.runtime === 'node-server');
+      const scope = accountRoute[1] ? 'research' : 'civic';
+      accountContext = {...health, scope, votes: writable && scope === 'civic', research: writable && scope === 'research'};
+      // Public capability discovery must remain available to a logged-out or
+      // expired session; it does not authenticate or read anyone's saved data.
+      if (accountRoute[2] === 'config') return response(account.config(accountContext));
+    }
+    // Account proof never changes the browser session/CSRF or claims its past
+    // guest activity. New signed-in writes use a stable, server-verified actor.
+    const identity = await account.identify(request);
+    if (accountRoute) return response(account.me(identity, accountContext));
+    const researchResponse = await research.readOrWorker(request, url, cookie, identity.actorId);
     if (researchResponse) return researchResponse;
 
     // A separate, opt-in paid capability. The prompt is sent only after a
@@ -102,12 +118,12 @@ export function createApp({store, email, notion = null, morphlab = null, moderat
     if (method === 'GET' && (path === '/api/session' || path === '/api/research/session')) {
       if (!(await store.authenticate(cookie))) await store.limit((path === '/api/research/session' ? 'research-session-issue:' : 'session-issue:') + hash(remoteIP), path === '/api/research/session' ? 2000 : 120, 3600000);
       const session = await store.session(cookie);
-      return response({csrfToken: session.csrf, expiresAt: new Date(session.expires).toISOString(), identity: 'Pseudonymous browser session; not verified civic identity'}, 200,
+      return response({csrfToken: session.csrf, expiresAt: new Date(session.expires).toISOString(), signedIn: identity.signedIn, identity: identity.signedIn ? 'Signed-in account; earlier guest activity stays separate' : 'Pseudonymous browser session; not verified civic identity'}, 200,
         session.raw ? {'Set-Cookie': `helios_session=${session.raw}; HttpOnly; SameSite=Lax; Path=/api; Max-Age=7776000${secure ? '; Secure' : ''}`} : {});
     }
     if (method === 'GET' && path === '/api/constitution') {
       const session = await store.authenticate(cookie);
-      return response(await store.constitution.board(session?.id));
+      return response(await store.constitution.board(identity.actorId ?? session?.id));
     }
     if (method === 'GET' && path === '/api/constitution/moderation') {
       if (!adminToken || !equal(request.headers.get('authorization'), 'Bearer ' + adminToken)) throw new Problem(403, 'Maintainer authorization required.');
@@ -120,7 +136,7 @@ export function createApp({store, email, notion = null, morphlab = null, moderat
     const lawBoardPath=path.match(/^\/api\/law-board\/(HGA-\d{3})(?:\/(vote|update))?$/);
     if(method==='GET'&&path==='/api/law-board'){
       const session=await store.authenticate(cookie);
-      return response({storage:health.storage,writable:lawBoardWritable,records:await store.lawBoard(session?.id)});
+      return response({storage:health.storage,writable:lawBoardWritable,records:await store.lawBoard(identity.actorId ?? session?.id)});
     }
     if(method==='GET'&&lawBoardPath&&!lawBoardPath[2])return response(await store.lawHistory(lawBoardPath[1]));
     if(method==='POST'&&lawBoardPath?.[2]&&!lawBoardWritable)throw new Problem(503,'Shared law votes and updates require the configured Supabase database.');
@@ -145,10 +161,12 @@ export function createApp({store, email, notion = null, morphlab = null, moderat
     if (!request.headers.get('content-type')?.toLowerCase().startsWith('application/json')) throw new Problem(415, 'Use application/json.');
     const session = await store.authenticate(cookie);
     if (!session || !equal(request.headers.get('x-csrf-token'), session.csrf)) throw new Problem(403, 'Reload the page to establish a valid session.');
+    const actor = identity.actorId ?? session.id;
     const researchWritePath = path.startsWith('/api/research/');
     await store.limit((researchWritePath ? 'research-session:' : 'session:') + session.id, researchWritePath ? 40 : 20, 60000);
     await store.limit((researchWritePath ? 'research-ip:' : 'ip:') + hash(remoteIP), researchWritePath ? 12000 : 120, 3600000);
     if (path === '/api/research/rooms') await store.limit('research-create:' + session.id, 10, 3600000);
+    if (identity.actorId) await store.limit('account:' + identity.actorId, 60, 60000);
     if (Number(request.headers.get('content-length') || 0) > 32768) throw new Problem(413, 'Submission is too large.');
     const reader = request.body?.getReader();
     let size = 0; const chunks = [];
@@ -162,21 +180,24 @@ export function createApp({store, email, notion = null, morphlab = null, moderat
     let body;
     try { body = JSON.parse(Buffer.concat(chunks).toString('utf8')); } catch { throw new Problem(400, 'Invalid JSON.'); }
 
-    const researchWrite = await research.write(path, body, session, request.headers.get('idempotency-key'));
+    const researchWrite = await research.write(path, body, session, request.headers.get('idempotency-key'), actor);
     if (researchWrite) return researchWrite;
+    // A browser can switch accounts without changing its CSRF session. Bind
+    // retry receipts to the verified actor to prevent cross-account replays.
+    const writeHash = hash((identity.actorId ? identity.actorId + '\n' : '') + path + JSON.stringify(body));
 
     if (lawBoardPath?.[2]) {
       const key=request.headers.get('idempotency-key');
       if(!key||!/^[a-zA-Z0-9-]{16,80}$/.test(key))throw new Problem(400,'A unique Idempotency-Key is required.');
       const fn=lawBoardPath[2]==='vote'?store.lawVoteIn:store.lawUpdateIn;
-      return response(await store.idempotent(session.id,key,hash(path+JSON.stringify(body)),q=>fn(q,lawBoardPath[1],body,session.id)),201);
+      return response(await store.idempotent(session.id,key,writeHash,q=>fn(q,lawBoardPath[1],body,actor)),201);
     }
     const constitutionAction = {'/api/constitution/vote':'vote','/api/constitution/contribute':'contribute','/api/constitution/comment':'comment','/api/constitution/moderate':'moderate'}[path];
     if (constitutionAction) {
       if (constitutionAction === 'moderate' && (!adminToken || !equal(request.headers.get('authorization'), 'Bearer ' + adminToken))) throw new Problem(403, 'Maintainer authorization required.');
       const key = request.headers.get('idempotency-key');
       if (!key || !/^[a-zA-Z0-9-]{16,80}$/.test(key)) throw new Problem(400, 'A unique Idempotency-Key is required.');
-      const result = await store.idempotent(session.id, key, hash(path + JSON.stringify(body)), q => store.constitution[constitutionAction](q, body, session.id));
+      const result = await store.idempotent(session.id, key, writeHash, q => store.constitution[constitutionAction](q, body, actor));
       if (moderator?.enabled && body.autoModerationConsent===true && result.status==='pending' &&
           (constitutionAction==='comment'||(constitutionAction==='contribute'&&!result.deduplicated))) {
         // The submission has already committed. Provider failure must not lose it.
@@ -192,8 +213,8 @@ export function createApp({store, email, notion = null, morphlab = null, moderat
     if (path === '/api/laws' || (match?.[2] && !match[3])) {
       const key = request.headers.get('idempotency-key');
       if (!key || !/^[a-zA-Z0-9-]{16,80}$/.test(key)) throw new Problem(400, 'A unique Idempotency-Key is required.');
-      const result = await store.idempotent(session.id, key, hash(path + JSON.stringify(body)),
-        q => (path === '/api/laws' ? store.createIn(q, body, session.id) : store.amendIn(q, match[1], body, session.id)));
+      const result = await store.idempotent(session.id, key, writeHash,
+        q => (path === '/api/laws' ? store.createIn(q, body, actor) : store.amendIn(q, match[1], body, actor)));
       return response(result, 201);
     }
     if (match?.[4]) {
@@ -213,7 +234,7 @@ export function createApp({store, email, notion = null, morphlab = null, moderat
       if (path.startsWith('/api/')) return await api(request, url, remoteIP);
       return response({error: 'Not found'}, 404);
     } catch (error) {
-      if (error instanceof Problem) return response({error: error.message}, error.status);
+      if (error instanceof Problem || error instanceof AccountError) return response({error: error.message}, error.status);
       console.error('Request failed:', error?.name || 'Error');
       return response({error: 'The request could not be completed.'}, 500);
     }

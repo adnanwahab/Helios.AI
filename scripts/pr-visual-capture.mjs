@@ -263,6 +263,18 @@ try {
     await page.screenshot({path:join(output,'research-mobile.png'),animations:'disabled'});
     await page.locator('#keyframes').scrollIntoViewIfNeeded();
     await page.screenshot({path:join(output,'keyframe-mobile.png'),animations:'disabled'});
+    // The optional account panel is public UI. Never enter credentials or send
+    // login email during visual capture; guests can dismiss it and keep working.
+    if (await page.locator('[data-open-login]').count()) {
+      await page.setViewportSize({width:1440,height:1000});
+      await page.goto(base + '/research?open_login=1#coordinator', {waitUntil:'domcontentloaded'});
+      await page.locator('#helios-account-dialog').waitFor({state:'visible'});
+      await page.waitForFunction(() => !document.getElementById('helios-account-status')?.textContent.includes('Checking'));
+      await page.screenshot({path:join(output,'optional-login-desktop.png'),animations:'disabled'});
+      await page.setViewportSize({width:390,height:844});
+      await page.screenshot({path:join(output,'optional-login-mobile.png'),animations:'disabled'});
+      await page.locator('#helios-account-guest').click();
+    }
   }
   console.log('Captured desktop and mobile screenshots from ' + (remote ? 'Netlify deployment' : 'local PR build'));
 } finally {

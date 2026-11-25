@@ -12,7 +12,7 @@ const roomPath = /^\/api\/research\/rooms\/([A-Za-z0-9_-]{1,100})(?:\/(brief|pla
 export function createResearchApi({store, health, workerToken, Problem, hash, response}) {
   const writable = () => health.storage === 'supabase-postgres' || (health.storage === 'pglite' && health.runtime === 'node-server');
   const enabled = () => writable() && typeof workerToken === 'string' && workerToken.length >= 32;
-  async function readOrWorker(request, url, cookie) {
+  async function readOrWorker(request, url, cookie, accountActor = null) {
     const path = url.pathname, method = request.method;
     if (!path.startsWith('/api/research/')) return null;
     if (path === '/api/research/session') return null;
@@ -45,24 +45,24 @@ export function createResearchApi({store, health, workerToken, Problem, hash, re
     if (method === 'GET' && match?.[2] === 'tasks' && match[3]) return response(await store.research.taskDetail(match[1], match[3]));
     if (method === 'GET' && match && !match[2]) {
       const session = await store.authenticate(cookie);
-      return response(await store.research.snapshot(match[1], session?.id));
+      return response(await store.research.snapshot(match[1], accountActor ?? session?.id));
     }
     if (method !== 'POST') return response({error: 'Research route not found'}, 404);
     if (!writable()) throw new Problem(503, 'Shared research writes require the configured Supabase database.');
     return null;
   }
-  async function write(path, body, session, key) {
+  async function write(path, body, session, key, actor = session.id) {
     if (!path.startsWith('/api/research/')) return null;
     if (!key || !/^[a-zA-Z0-9-]{16,80}$/.test(key)) throw new Problem(400, 'A unique Idempotency-Key is required.');
     const match = path.match(roomPath);
     let mutate;
-    if (path === '/api/research/rooms') mutate = q => store.research.createIn(q, body, session.id);
-    else if (match?.[2] && ((match[2] === 'tasks' && match[3]) || (match[2] === 'frames') || (!['tasks', 'frames'].includes(match[2]) && !match[3]))) mutate = q => store.research.writeIn(q, match[1], match[2], match[3], body, session.id);
+    if (path === '/api/research/rooms') mutate = q => store.research.createIn(q, body, actor);
+    else if (match?.[2] && ((match[2] === 'tasks' && match[3]) || (match[2] === 'frames') || (!['tasks', 'frames'].includes(match[2]) && !match[3]))) mutate = q => store.research.writeIn(q, match[1], match[2], match[3], body, actor);
     else throw new Problem(404, 'Research operation not found.');
     // Store a small receipt, then re-read the committed shared snapshot. A retry
     // performs no second mutation and can include newer collaborators' changes.
-    const receipt = await store.idempotent(session.id, key, hash(path + JSON.stringify(body)), mutate);
-    return response(await store.research.snapshot(receipt.roomId, session.id), 201);
+    const receipt = await store.idempotent(session.id, key, hash((actor !== session.id ? actor + '\n' : '') + path + JSON.stringify(body)), mutate);
+    return response(await store.research.snapshot(receipt.roomId, actor), 201);
   }
   return {readOrWorker, write};
 }

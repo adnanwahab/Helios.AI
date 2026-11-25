@@ -16,10 +16,12 @@
     "node": ">=22"
   },
   "dependencies": {
+    "@supabase/supabase-js": "2.119.2",
     "pg": "^8.23.1"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.17",
-    "@playwright/test": "1.63.0"
+    "@playwright/test": "1.63.0",
+    "esbuild": "0.28.2"
   }
 }
