@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f7f8fc">
+<title>HeliosAI — Constitution workspace</title>
+<link rel="icon" href="/public/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/public/government-ide.css">
+</head>
+<body>
+<header class="top"><a class="brand" href="/"><span aria-hidden="true">☀</span> HeliosAI <small>Government IDE</small></a><nav aria-label="Workspace"><a aria-current="page" href="/constitution">Constitution</a><a href="#simulation">Simulation</a><a href="/law-atlas.html">Law atlas</a><a href="/">Citizen workshop</a></nav><button id="connect" type="button" disabled>Connect shared data</button></header>
+<main>
+<div class="intro"><div><p class="kicker">HELIOS / CIVIC WORKSPACE</p><h1>One constitution. Four connected views.</h1><p class="muted">Explore, propose changes, review and test possible outcomes in one place.</p></div><span class="mode" id="mode">Loading catalog…</span></div>
+<p class="status" id="connection-status" role="status">Editorial proposals and community clauses are separate records. Neither is enacted law.</p>
+<section class="db-strip" aria-label="Database status"><div><strong>Database status</strong><button class="secondary" id="db-recheck" type="button">Recheck</button></div><div><span>Storage</span><strong id="db-storage">Checking…</strong></div><div><span>Write mode</span><strong id="db-write">Checking…</strong></div><div><span>Last database action</span><strong id="db-last" role="status">None this visit</strong></div><p id="db-reason" class="small"></p></section>
+<div class="workspace" id="workspace" inert>
+<aside class="panel explorer" aria-labelledby="explorer-title">
+  <div class="panel-heading"><span class="number">1</span><div><h2 id="explorer-title">Constitution explorer</h2><p>Find a law or clause.</p></div></div>
+  <label class="sr-only" for="search">Find a clause</label><input type="search" id="search" placeholder="Search laws or clauses…" autocomplete="off">
+  <div class="tabs" role="group" aria-label="Dataset"><button id="show-laws" aria-pressed="true">100 proposals</button><button id="show-community" aria-pressed="false">Community</button></div>
+  <label class="sr-only" for="category">Policy area</label><select id="category"><option value="">All policy areas</option></select>
+  <p id="results" class="small" aria-live="polite"></p><div id="tree" class="tree" aria-label="Search results"></div>
+  <a class="subtle" href="/law-atlas.html">Full law atlas ↗</a>
+</aside>
+<section class="panel editor" aria-labelledby="editor-title">
+  <div class="panel-heading"><span class="number">2</span><div class="grow"><p id="record-id" class="kicker">CONSTITUTION</p><h2 id="editor-title">Loading proposals…</h2></div><span id="revision" class="pill">Draft</span></div>
+  <p id="record-summary" class="muted"></p>
+  <div class="tabs editor-tabs" id="sections" aria-label="Law sections"></div>
+  <div id="revision-warning" class="notice" hidden><span id="revision-message"></span> <button id="current-version" class="secondary" type="button">Open current revision</button></div>
+  <div class="editor-box"><div class="spread"><h3 id="clause-title">Selected wording</h3><span class="pill accent">Linked selection</span></div><p id="published-text" class="published"></p>
+    <div id="edit-tools"><button id="edit-toggle" class="secondary" type="button" aria-expanded="false">Propose an edit</button>
+    <form id="edit-form" hidden><label for="edit-text">Proposed wording</label><textarea id="edit-text" rows="5" required maxlength="6000"></textarea><label for="edit-reason">Why change it?</label><textarea id="edit-reason" rows="2" required maxlength="3000"></textarea>
+    <label class="check"><input id="edit-consent" type="checkbox"> I consent to publishing this exact proposed update, without personal information.</label>
+    <div class="actions"><button class="primary" type="submit" id="save-edit">Submit for review</button><button type="button" class="secondary" id="cancel-edit">Close editor</button></div><p class="small">Proposals do not overwrite approved wording or inherit prior votes.</p></form></div>
+    <p id="editor-status" class="small" role="status"></p>
+  </div>
+  <div class="spread editor-footer"><button type="button" class="secondary" id="previous">← Previous</button><span id="selection-count" class="small"></span><button type="button" class="secondary" id="next">Next →</button></div>
+  <div class="share"><a id="permalink" href="/constitution">Link to selection</a><button id="copy-link" class="secondary" type="button">Copy link</button></div>
+</section>
+<aside class="panel discussion" aria-labelledby="discussion-title">
+  <div class="panel-heading"><span class="number">3</span><div><h2 id="discussion-title">Discussion &amp; decision</h2><p>Review this exact record.</p></div></div>
+  <div class="tabs" role="group" aria-label="Review view"><button id="discussion-tab" aria-pressed="true">Discussion</button><button id="history-tab" aria-pressed="false">History</button></div>
+  <p id="review-scope" class="small"></p><div id="discussion-list" class="discussion-list"></div>
+  <form id="comment-form" hidden><label for="comment-text">Comment on community clause</label><textarea id="comment-text" rows="3" maxlength="2000" required placeholder="Share a constructive comment…"></textarea><label class="check"><input id="comment-consent" type="checkbox"> I consent to publishing this exact comment.</label><button type="submit" class="primary" id="post-comment">Submit comment</button></form>
+  <div class="decision"><h3 id="vote-title">Advisory position</h3><p id="vote-scope" class="small"></p><div class="votes"><button type="button" data-vote="support">Support</button><button type="button" data-vote="unsure">Unsure</button><button type="button" data-vote="oppose">Oppose</button></div><div id="vote-meter" class="meter" aria-hidden="true"></div><p id="vote-tally" class="small"></p><button type="button" id="clear-vote" class="text-button">Clear my position</button><p id="review-status" class="small" role="status"></p></div>
+</aside>
+<section class="panel simulation" id="simulation" aria-labelledby="simulation-title">
+  <div class="panel-heading"><span class="number">4</span><div class="grow"><h2 id="simulation-title">HappyBearLandia · impact lab</h2><p id="simulation-note">Explore the selected proposal's illustrative scenario.</p></div><a href="https://happybearlandia.fly.dev/world" target="_blank" rel="noopener noreferrer" class="secondary link-button">Open city simulator ↗</a></div>
+  <div id="sim-law" class="sim-grid">
+   <div class="controls"><label for="years">Time horizon <output id="years-value"></output></label><input type="range" id="years" min="1" max="30" value="5"><label for="reach">Reach <output id="reach-value"></output></label><input type="range" id="reach" min="0" max="100" value="60"><label for="capacity">Capacity <output id="capacity-value"></output></label><input type="range" id="capacity" min="0" max="100" value="70"><label for="effect">Assumed effect <output id="effect-value"></output></label><input type="range" id="effect" min="-50" max="50" value="20"><label for="lag">Implementation lag <output id="lag-value"></output></label><input type="range" id="lag" min="0.5" max="15" step="0.5" value="3"><button class="primary" id="run-sim" type="button">Run scenario</button></div>
+   <div class="visual"><div class="visual-head"><strong>Baseline vs. intervention</strong><span class="pill">Illustrative model</span></div><svg id="chart" viewBox="0 0 560 220" role="img" aria-label="Illustrative scenario chart"></svg><div class="legend"><span><i></i> Intervention</span><span><i></i> Baseline</span><span><i></i> Sensitivity band</span></div><p class="small" id="model-description"></p></div>
+   <div class="outcomes"><h3>Scenario outcomes</h3><p id="metric" class="small"></p><div class="metric"><span>Scenario index</span><strong id="outcome">—</strong></div><div class="metric"><span>Change vs. baseline</span><strong id="delta">—</strong></div><div class="metric"><span>Effective adoption</span><strong id="adoption">—</strong></div><a id="assembly-link" hidden target="_blank" rel="noopener noreferrer" class="subtle">Explore 3D assembly ↗</a><p class="small">Normalized assumptions, not forecasts or measured city outcomes. Edits do not automatically recalibrate the model.</p></div>
+  </div>
+  <div id="sim-community" hidden><p class="muted">Community clauses do not yet have calibrated simulations. Explore related proposals for a separate, explicitly labeled model.</p><div id="related-laws" class="actions"></div></div>
+</section>
+</div>
+<footer>Voluntary participation · advisory positions · editorial proposals, not enacted laws. <a href="/">Return to the citizen workshop</a>.</footer>
+</main><script type="module" src="/public/government-ide.js"></script>
+</body></html>

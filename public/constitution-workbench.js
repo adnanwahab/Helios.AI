@@ -6,7 +6,7 @@ const fmt=n=>Number(n||0).toLocaleString();
 const message=(id,text,error=false)=>{$(id).textContent=text;$(id).classList.toggle('error',error)};
 const groups=[
  ['Start here',[['Participation guide','welcome.html'],['Original multi-tab dashboard','experiments.html'],['Email signup','public/signup.html','https://helioshtml.com/signup']]],
- ['Civic tools',[['Helios AI landing','helios_ai_landing_page.html'],['Helios Hippie','helios_hippie_landing.html'],['Helios Unified','helios-unified.html'],['100 Shared Goals','helios_100_frontend_demo.html','helios_100_frontend_demo.html'],['100-law atlas and simulations','law-atlas.html'],['Plan · Notion','helios_notion_preview.html'],['World Plan Simulator','world_plan_simulator.html'],['Vote Radar','vote_radar.html'],['Neighborhood Consensus','neighborhood_consensus.html'],['Three-Editor Merge','three_editor_merge.html'],['Acts in Orbit','heliosai_acts_orbit.html'],['Support Every Country','support_every_country.html'],['Eight Billion, Five Laws','public/eight-billion-five-laws/index.html'],['Eight Billion Map','eight_billion_map.html'],['Health & Wealth of Nations','health_wealth_of_nations.html']]],
+ ['Civic tools',[['Helios AI landing','helios_ai_landing_page.html'],['Helios Hippie','helios_hippie_landing.html'],['Helios Unified','helios-unified.html'],['100 Shared Goals','helios_100_frontend_demo.html','helios_100_frontend_demo.html'],['100-law atlas and simulations','law-atlas.html'],['Plan · Notion','helios_notion_preview.html'],['World suitability map','public/world-map/index.html'],['World Plan Simulator','world_plan_simulator.html'],['Vote Radar','vote_radar.html'],['Neighborhood Consensus','neighborhood_consensus.html'],['Three-Editor Merge','three_editor_merge.html'],['Acts in Orbit','heliosai_acts_orbit.html'],['Support Every Country','support_every_country.html'],['Eight Billion, Five Laws','public/eight-billion-five-laws/index.html'],['Eight Billion Map','eight_billion_map.html'],['Health & Wealth of Nations','health_wealth_of_nations.html']]],
  ['Worlds & experiments',[['The Missing Amendment · mystery game','public/mystery.html'],['Netherbrain fictional campaign','public/netherbrain.html'],['The Long Coil','long_coil.html'],['Communal Science Lab','communal_science_lab_webgpu%20(1).html'],['MorphLab · WebGPU','morphlab.html'],['MorphLab offline demo','morphlab-offline-demo.html'],['HappyBearLandia Pocket','happybearlandia_pocket.html'],['Digital Pensieve','https://digital-pensieve.fly.dev/'],['Braindance','helios_braindance.html'],['Rainbow Brain Realms','rainbow_brain.html'],['Sunshine for Breakfast','sunshine_breakfast.html'],['Particle interface','heliosai-particle-interface.html'],['Sand Castle','sand_castle.html']]],
  ['Project & operations',[['Mail · Resend (locked operator console)','helios_mail.html'],['YC Research','/proxy/ycr/','pages-ycr.html'],['Fork Helios','helios_fork.html'],['Repository documentation','https://github.com/adnanwahab/Helios.AI/tree/main/docs']]]
 ];
@@ -103,6 +103,7 @@ docs.addEventListener('close',()=>{
 });
 $('docs-search').addEventListener('input',()=>renderDocs($('docs-search').value));
 let board=sampleBoard(),connected=false,selected='S-001',busy=false,refreshing=false,csrf=null,lastWrite=null,related=null;
+let accountRevision=0,accountKey='guest||false',accountRefreshPending=false;
 const practiceVotes=new Map(),practiceComments=new Map(),practiceClauses=new Map();
 function rows(){return connected?board.clauses:[...board.clauses,...practiceClauses.values()]}
 function current(){return rows().find(x=>x.id===selected)||rows()[0]}
@@ -129,8 +130,9 @@ function drawReview(){
  const row=current();if(!row)return;selected=row.id;
  $('clause-topic').textContent=row.topic+' · '+row.id.slice(0,18)+(row.id.length>18?'…':'');
  $('clause-text').textContent=row.text;
+ const ideLink=$('government-ide-link');if(ideLink){ideLink.href=row.source==='practice'?'/constitution':'/constitution?community='+encodeURIComponent(row.id);ideLink.textContent=row.source==='practice'?'Open workspace (practice clause is not transferable) ↗':'Open linked constitution workspace ↗';}
  $('clause-synthetic').textContent=row.source==='synthetic'?'Synthetic: '+syntheticLabel(row.synthetic)+' · '+fmt(row.synthetic.mentions)+' distinct sample participants.':'No synthetic votes for this community clause.';
- const real=$('clause-real');real.replaceChildren(create('strong',connected?'Shared advisory votes (browser sessions)':'Practice only · no shared votes loaded'),create('span',connected?liveLabel(row.live)+' · '+fmt(row.live.contributors)+' opted-in contributions':'Your choices here are not sent or counted publicly.'));
+ const real=$('clause-real');real.replaceChildren(create('strong',connected?'Shared advisory votes (accounts + guests)':'Practice only · no shared votes loaded'),create('span',connected?liveLabel(row.live)+' · '+fmt(row.live.contributors)+' opted-in contributions':'Your choices here are not sent or counted publicly.'));
  const position=connected?row.myVote:practiceVotes.get(row.id);
  for(const b of document.querySelectorAll('[data-clause-vote]')){b.setAttribute('aria-pressed',String(position===b.dataset.clauseVote));b.disabled=busy}
  $('clear-vote').disabled=busy;
@@ -154,15 +156,29 @@ function draw(){
  drawList();drawReview();drawPending();updateDedupe();
 }
 async function request(path,options={}){
- const r=await fetch(path,{credentials:'same-origin',cache:'no-store',signal:AbortSignal.timeout(15000),...options});
- const data=await r.json().catch(()=>null);if(!r.ok||!data)throw Error(data?.error||'HTTP '+r.status);return data;
+ const headers=new Headers(options.headers),accountHeaders=await window.HeliosAccount?.fetchHeaders('votes')||{};
+ for(const [key,value] of Object.entries(accountHeaders))headers.set(key,value);
+ const revision=accountRevision;
+ const r=await fetch(path,{credentials:'same-origin',cache:'no-store',signal:AbortSignal.timeout(15000),...options,headers});
+ if(revision!==accountRevision)throw Error('Your account changed. Refresh the board before trying again.');
+ const data=await r.json().catch(()=>null);
+ if(revision!==accountRevision)throw Error('Your account changed. Refresh the board before trying again.');
+ if(!r.ok||!data)throw Error(data?.error||'HTTP '+r.status);return data;
 }
 async function refresh(){
  if(!connected||refreshing||busy)return;refreshing=true;$('board-refresh').disabled=true;
- try{const next=await request('/api/constitution');if(!Array.isArray(next.clauses)||!next.synthetic)throw Error('Invalid board response');board=next;draw();message('board-status','Shared board updated. Counts are advisory browser-session totals, separate from the synthetic corpus.')}
+ try{const next=await request('/api/constitution');if(!Array.isArray(next.clauses)||!next.synthetic)throw Error('Invalid board response');board=next;draw();message('board-status','Shared board updated. Counts are advisory votes by accounts and guest sessions, separate from the synthetic corpus.')}
  catch(e){message('board-status','Could not refresh: '+e.message,true)}
- finally{refreshing=false;$('board-refresh').disabled=false}
+ finally{refreshing=false;$('board-refresh').disabled=false;if(accountRefreshPending){accountRefreshPending=false;refresh()}}
 }
+window.addEventListener('helios:auth-changed',event=>{
+ const state=event.detail||{},key=[state.status,state.user?.id||'',state.persistence?.votes===true].join('|');
+ if(key===accountKey)return;accountKey=key;accountRevision++;csrf=null;lastWrite=null;
+ if(!connected)return;
+ for(const row of rows())row.myVote=null;
+ drawReview();
+ if(busy||refreshing)accountRefreshPending=true;else refresh();
+});
 $('board-connect').addEventListener('click',async()=>{
  if(isStatic||connected||busy)return;$('board-connect').disabled=true;message('board-status','Connecting to the shared board…');
  try{const session=await request('/api/session');if(typeof session.csrfToken!=='string')throw Error('No session token');const next=await request('/api/constitution');if(!Array.isArray(next.clauses)||!next.synthetic)throw Error('Invalid board response');csrf=session.csrfToken;board=next;connected=true;$('board-live-link').hidden=true;draw();message('board-status','Connected. Practice activity was not uploaded. Votes are public advisory counts; comments and new clauses await review.')}
@@ -180,16 +196,17 @@ for(const [existing, id] of [['comment-consent','comment-auto-consent'],['contri
 async function write(action,data,statusId,onSuccess){
  if(!connected||busy)return;
  if(refreshing){message(statusId,'Refreshing the shared board. Please try again in a moment.');return}
- busy=true;drawReview();const body=JSON.stringify(data),fingerprint=action+'|'+body;
+ busy=true;drawReview();const body=JSON.stringify(data),fingerprint=action+'|'+body,revision=accountRevision;
  if(!lastWrite||lastWrite.fingerprint!==fingerprint)lastWrite={fingerprint,key:crypto.randomUUID()};
  message(statusId,'Submitting…');
  let result=null;
  try{
    const session=await request('/api/session');csrf=session.csrfToken;
+   if(revision!==accountRevision)throw Error('Your account changed. Review the action and try again.');
    result=await request('/api/constitution/'+action,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrf,'Idempotency-Key':lastWrite.key},body});
-   lastWrite=null;onSuccess(result);message(statusId,action==='vote'?'Position recorded.':result.status==='approved'&&result.moderation==='unflagged'?'Safety check passed; published for discussion.':result.status==='pending'?'Saved · pending moderation.':action==='comment'?'Comment saved.':'Contribution grouped with the existing clause.');
+   lastWrite=null;onSuccess(result);message(statusId,action==='vote'?(window.HeliosAccount?.isSavingWithAccount('votes')?'Position recorded with your account.':'Position recorded for this guest browser session.'):result.status==='approved'&&result.moderation==='unflagged'?'Safety check passed; published for discussion.':result.status==='pending'?'Saved · pending moderation.':action==='comment'?'Comment saved.':'Contribution grouped with the existing clause.');
  }catch(e){message(statusId,'Submission not confirmed: '+e.message+' · retry unchanged to reuse the request key.',true)}
- finally{busy=false;drawReview();if(result)await refresh()}
+ finally{busy=false;drawReview();if(result||accountRefreshPending){accountRefreshPending=false;await refresh()}}
 }
 for(const b of document.querySelectorAll('[data-clause-vote]'))b.addEventListener('click',()=>{
  const row=current(),position=b.dataset.clauseVote;if(!row||busy)return;
