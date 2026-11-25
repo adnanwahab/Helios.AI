@@ -67,6 +67,6 @@ $('research-mission-form').addEventListener('submit',event=>{
  $('research-mission-status').textContent='Mission draft downloaded. Nothing was queued or transmitted.';
 });
 const requested=url().searchParams;
-if(requested.has('labLaw')||requested.get('labView')==='workshop')showView('workshop',{write:false});
-else if(requested.get('labView')==='research')showView('research',{write:false});
+if(requested.get('labView')==='research')showView('research',{write:false});
+else if(requested.has('labLaw')||requested.get('labView')==='workshop')showView('workshop',{write:false});
 }
