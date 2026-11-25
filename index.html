@@ -67,27 +67,28 @@ header.wrap,main.wrap,footer.wrap{width:min(100% - 40px,1560px)}#government-view
 <body>
 <header class="wrap"><div class="brand"><span class="sun" aria-hidden="true">✳</span> HELIOS AI</div><div class="top-actions"><div class="topnote">A shared civic workshop</div><a class="footer-archive" href="./grid.html">Grid story ↗</a><a class="footer-archive" href="./lunch.html">Vote for lunch ↗</a><a class="docs-trigger" id="mystery-link" href="./public/mystery.html" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Play the mystery ↗</a><button class="docs-trigger" type="button" id="pr-compose-open" aria-haspopup="dialog" aria-controls="pr-compose">✎ Message / PR</button><button class="docs-trigger" type="button" id="docs-open" aria-haspopup="dialog" aria-controls="docs-drawer">Docs ↗</button></div></header>
 <dialog id="pr-compose" aria-labelledby="pr-compose-title">
-  <div class="pr-compose-head"><div><p class="eyebrow">HELIOS / CONTRIBUTIONS</p><h2 id="pr-compose-title">Send a message. Propose a change.</h2></div><button type="button" class="secondary" id="pr-compose-close" aria-label="Close message modal">×</button></div>
-  <p class="hint">Describe a change to a law, feature, or the site. Review the exact proposal before creating a pull request. No Helios login needed to draft.</p>
-  <div class="pr-flow" aria-label="Workflow"><span>01 · Message</span><span>02 · Review</span><span>03 · Pull request</span></div>
+  <div class="pr-compose-head"><div><p class="eyebrow">HELIOS / CONTRIBUTE</p><h2 id="pr-compose-title">What should we build next?</h2></div><button type="button" class="secondary" id="pr-compose-close" aria-label="Close message modal">×</button></div>
+  <p class="hint">Suggest a law revision, simulator, feature or fix. Write in plain language. No Helios account required.</p>
+  <div class="pr-flow" aria-label="Contribution workflow"><span>01 · Message</span><span>02 · Research &amp; build</span><span>03 · Review PR</span><span>04 · GitHub</span></div>
   <form id="pr-compose-form">
-    <div class="field"><label for="pr-kind">Topic</label><select id="pr-kind"><option value="feature">Website / feature</option><option value="law">Law / policy proposal</option><option value="bug">Bug report</option><option value="other">Other idea</option></select></div>
-    <div class="field"><label for="pr-title">Short title</label><input id="pr-title" maxlength="120" required placeholder="Make the childcare simulator easier to use"></div>
-    <div class="field"><label for="pr-message">Your message</label><textarea id="pr-message" maxlength="4000" required rows="5" placeholder="What should change, and why?"></textarea><p class="hint" id="pr-count">0 / 4,000 · Stays here until you choose to publish.</p></div>
-    <button type="submit" class="primary">Review proposal →</button>
+    <div class="field"><label for="pr-kind">Topic</label><select id="pr-kind"><option value="feature">Website / feature</option><option value="law">Law / policy proposal</option><option value="bug">Bug / fix</option><option value="research">Research / simulation</option><option value="other">Other idea</option></select></div>
+    <div class="field"><label for="pr-title">Short title</label><input id="pr-title" maxlength="120" required placeholder="Improve the childcare simulator"></div>
+    <div class="field"><label for="pr-message">Your message</label><textarea id="pr-message" maxlength="4000" required rows="5" placeholder="What should change, and why?"></textarea><p class="hint" id="pr-count">0 / 4,000 · Your draft stays here until you choose to submit.</p></div>
+    <button type="submit" class="primary">Review message →</button>
   </form>
   <section id="pr-review" hidden aria-labelledby="pr-review-heading">
-    <h3 id="pr-review-heading" tabindex="-1">Review the exact file</h3>
-    <p class="hint">This creates a proposal record for human review, not an automatic implementation or an enacted law. GitHub is public; remove private information and secrets.</p>
-    <p class="pr-path" id="pr-path"></p>
-    <textarea id="pr-payload" rows="6" readonly aria-label="Exact public proposal file"></textarea>
-    <label class="consent"><input id="pr-consent" type="checkbox"><span>I approve publishing this exact proposal to public GitHub.</span></label>
-    <div class="actions"><button type="button" class="secondary" id="pr-edit">← Edit</button><button type="button" class="secondary" id="pr-copy" disabled>Copy proposal</button><a class="primary" id="pr-github" target="_blank" rel="noopener noreferrer" aria-disabled="true">Continue on GitHub ↗</a></div>
-    <p class="hint">On GitHub, sign in, paste the copied proposal, commit to a new branch or fork, then open a pull request. Nothing is published by opening the editor alone.</p>
-    <details id="pr-maintainer" hidden><summary>Maintainer · create draft PR directly</summary><label for="pr-access">Dedicated PR access key</label><input type="password" autocomplete="off" id="pr-access" placeholder="Maintainer access key"><p class="hint">Never paste a GitHub token here. The server uses a separate repository-scoped credential.</p><div class="actions"><button type="button" class="primary" id="pr-submit" disabled>Create draft pull request</button></div></details>
+    <h3 id="pr-review-heading" tabindex="-1">Review your contribution</h3>
+    <div class="field"><label for="pr-destination">Where should it go?</label><select id="pr-destination"><option value="team">Helios research &amp; development inbox</option><option value="github">GitHub · create a proposal PR myself</option></select></div>
+    <p class="hint" id="pr-destination-note"></p>
+    <p class="pr-path" id="pr-path" hidden></p>
+    <textarea id="pr-payload" rows="6" readonly aria-label="Exact contribution text"></textarea>
+    <label class="consent"><input id="pr-consent" type="checkbox"><span id="pr-consent-text"></span></label>
+    <div class="actions"><button type="button" class="secondary" id="pr-edit">← Edit</button><button type="button" class="primary" id="pr-send" disabled>Send to Helios</button><button type="button" class="secondary" id="pr-copy" hidden disabled>Copy proposal</button><a class="primary" id="pr-github" target="_blank" rel="noopener noreferrer" hidden aria-disabled="true">Continue on GitHub ↗</a></div>
   </section>
   <p id="pr-status" class="status" role="status" aria-live="polite"></p>
-  <div id="pr-receipt" class="receipt" hidden><h3>Pull request recorded</h3><p id="pr-result"></p><a id="pr-result-link" target="_blank" rel="noopener noreferrer">Open on GitHub ↗</a><button type="button" class="secondary" id="pr-new">Write another message</button></div>
+  <div id="pr-receipt" class="receipt" hidden><h3>Message received</h3><p id="pr-result"></p><p class="hint">Awaiting maintainer triage. No agent or pull request has started automatically.</p><button type="button" class="secondary" id="pr-new">Write another message</button></div>
+  <details id="pr-tracking"><summary>Your contributions &amp; progress</summary><p class="hint">Status is reported by the team. Research and coding are handled separately; GitHub remains the source of truth for reviews, previews and merges.</p><div id="pr-history"></div><p id="pr-history-status" class="status" role="status"></p><button type="button" class="secondary" id="pr-refresh">Refresh progress</button></details>
+  <div class="pr-links"><a href="https://github.com/adnanwahab/HeliosHTML/pulls" target="_blank" rel="noopener noreferrer">Browse GitHub pull requests ↗</a><a href="https://github.com/adnanwahab/HeliosHTML" target="_blank" rel="noopener noreferrer">Source repository ↗</a></div>
 </dialog>
 <dialog id="docs-drawer" class="docs-drawer" data-view="tabs" aria-labelledby="docs-title">
 <div class="docs-head"><div><p class="eyebrow docs-overline">HELIOS / ARCHIVE</p><h2 id="docs-title">Docs &amp; experiments</h2></div><div class="docs-head-actions"><button type="button" class="secondary" id="docs-layout" aria-pressed="true" aria-label="Toggle compact Docs drawer">Compact drawer</button><button type="button" class="secondary" id="docs-close" aria-label="Close docs drawer">Close ×</button></div></div>

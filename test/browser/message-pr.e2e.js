@@ -1,29 +1,33 @@
 import {test,expect} from '@playwright/test';
-test('message composer stays local until review, and direct PR receipt requires consent',async({page})=>{
- let writes=0,posted;
- await page.route('**/api/message-pr',async route=>{
-  if(route.request().method()==='GET')return route.fulfill({json:{enabled:true}});
-  writes++;posted=route.request().postDataJSON();return route.fulfill({json:{number:42,url:'https://github.com/adnanwahab/HeliosHTML/pull/42',draft:true,state:'open'}});
- });
+test('homepage modal submits consented inbox message and restores tracking',async({page})=>{
  await page.goto('/?compose=pr');
  await expect(page.locator('#pr-compose')).toBeVisible();
  await page.locator('#pr-title').fill('Better simulator');
  await page.locator('#pr-message').fill('Add an editable cost.');
  await page.locator('#pr-compose-form button[type=submit]').click();
- await expect(page.locator('#pr-payload')).toHaveValue(/Add an editable cost/);
- await expect(page.locator('#pr-github')).not.toHaveAttribute('href',/.+/);
- await expect(page.locator('#pr-submit')).toBeDisabled();expect(writes).toBe(0);
+ await expect(page.locator('#pr-send')).toBeDisabled();
  await page.locator('#pr-consent').check();
- await expect(page.locator('#pr-github')).toHaveAttribute('href',/github.com\/adnanwahab\/HeliosHTML\/new\/main\/docs\/proposals\/inbox\?filename=/);
- await page.locator('#pr-maintainer summary').click();
- await page.locator('#pr-access').fill('test-only');
- await page.locator('#pr-submit').click();
- await expect(page.locator('#pr-result-link')).toHaveAttribute('href','https://github.com/adnanwahab/HeliosHTML/pull/42');
- expect(writes).toBe(1);expect(posted.consent).toBe(true);expect(posted.proposal.message).toBe('Add an editable cost.');
- await expect(page.locator('#pr-access')).toHaveValue('');
- await page.locator('#pr-new').click();
- await expect(page.locator('#pr-message')).toHaveValue('');
+ await page.locator('#pr-send').click();
+ await expect(page.locator('#pr-receipt')).toBeVisible();
+ await expect(page.locator('#pr-history')).toContainText('Better simulator');
+ await page.reload();
+ await expect(page.locator('#pr-compose')).toBeVisible();
+ await page.locator('#pr-tracking summary').click();
+ await expect(page.locator('#pr-history')).toContainText('Awaiting triage');
  await page.setViewportSize({width:390,height:844});
  expect(await page.locator('#pr-compose').evaluate(el=>el.scrollWidth<=el.clientWidth+1)).toBe(true);
  await page.keyboard.press('Escape');await expect(page.locator('#pr-compose')).not.toBeVisible();
+});
+test('GitHub handoff needs consent, sends no message or credentials in URL and does not call inbox',async({page})=>{
+ let writes=0;page.on('request',r=>{if(r.url().includes('/api/contributions')&&r.method()==='POST')writes++});
+ await page.goto('/');await page.locator('#pr-compose-open').click();
+ await page.locator('#pr-title').fill('New feature');await page.locator('#pr-message').fill('Example review text');
+ await page.locator('#pr-compose-form button[type=submit]').click();
+ await page.locator('#pr-destination').selectOption('github');
+ await expect(page.locator('#pr-copy')).toBeDisabled();
+ await expect(page.locator('#pr-github')).not.toHaveAttribute('href',/.+/);
+ await page.locator('#pr-consent').check();
+ await expect(page.locator('#pr-github')).toHaveAttribute('href',/github.com\/adnanwahab\/HeliosHTML\/new\/main\/data\/contributions\?filename=[a-f0-9-]+\.json$/);
+ await expect(page.locator('#pr-payload')).toHaveValue(/Example review text/);
+ expect(writes).toBe(0);
 });

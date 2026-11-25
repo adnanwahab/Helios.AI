@@ -1,63 +1,95 @@
 const $=id=>document.getElementById(id);
 const modal=$('pr-compose'),form=$('pr-compose-form'),review=$('pr-review'),status=$('pr-status'),receipt=$('pr-receipt'),consent=$('pr-consent');
 const github='https://github.com/adnanwahab/HeliosHTML';
-let draft=null,busy=false,enabled=false;
+const isStatic=document.querySelector('meta[name="helios-mode"]')?.content==='static';
+const states={queued:'Awaiting triage',researching:'Researching',implementing:'Implementing',review:'PR ready for review',closed:'Closed by maintainer'};
+let draft=null,busy=false,historyRequest=0;
 const say=(message,error=false)=>{status.textContent=message;status.classList.toggle('error',error)};
-const secureId=()=>{const a=new Uint8Array(16);crypto.getRandomValues(a);return Array.from(a,x=>x.toString(16).padStart(2,'0')).join('')};
-const pathFor=d=>'docs/proposals/inbox/'+d.id+'.json';
-const serialized=d=>JSON.stringify(d,null,2)+'\n';
+const publicFile=()=>JSON.stringify({id:draft.id,kind:draft.kind,title:draft.title,message:draft.message},null,2)+'\n';
+const teamBody=()=>({kind:draft.kind,title:draft.title,message:draft.message,consent:true});
+const isPublic=()=>$('pr-destination').value==='github';
+async function request(path,options={}){
+ const res=await fetch(path,{credentials:'same-origin',cache:'no-store',signal:AbortSignal.timeout(15000),...options});
+ const data=await res.json().catch(()=>null);
+ if(!res.ok||!data)throw Error(data?.error||'The server did not confirm the request.');
+ return data;
+}
 function sync(){
  const ok=!!draft&&consent.checked&&!busy&&receipt.hidden;
- // The public editor receives only a generated filename, never the message or access key in a URL.
- $('pr-copy').disabled=!ok;$('pr-submit').disabled=!ok||!enabled;
- $('pr-edit').disabled=busy;$('pr-access').disabled=busy;consent.disabled=busy;
- const a=$('pr-github');a.setAttribute('aria-disabled',String(!ok));a.tabIndex=ok?0:-1;
- if(ok)a.href=github+'/new/main/docs/proposals/inbox?filename='+encodeURIComponent(draft.id+'.json');else a.removeAttribute('href');
+ const pub=isPublic(),a=$('pr-github');
+ $('pr-send').hidden=pub;$('pr-send').disabled=!ok||isStatic;
+ $('pr-copy').hidden=!pub;$('pr-copy').disabled=!ok;
+ a.hidden=!pub;a.setAttribute('aria-disabled',String(!ok||!pub));a.tabIndex=ok&&pub?0:-1;
+ if(ok&&pub)a.href=github+'/new/main/data/contributions?filename='+encodeURIComponent(draft.id+'.json');else a.removeAttribute('href');
+ $('pr-edit').disabled=busy;consent.disabled=busy;$('pr-destination').disabled=busy;
 }
-async function open(){
- if(!modal.open)modal.showModal();
- try{const r=await fetch('/api/message-pr',{cache:'no-store',signal:AbortSignal.timeout(5000)});enabled=r.ok&&(await r.json()).enabled===true;}catch{enabled=false}
- $('pr-maintainer').hidden=!enabled;sync();
+function destination(){
+ const pub=isPublic();consent.checked=false;
+ $('pr-path').hidden=!pub;
+ if(!draft)return;
+ $('pr-path').textContent='data/contributions/'+draft.id+'.json';
+ $('pr-payload').value=pub?publicFile():JSON.stringify(teamBody(),null,2);
+ $('pr-destination-note').textContent=pub?'GitHub is public. Copy this file, open GitHub’s editor, sign in and commit to a branch or fork, then open a PR. GitHub handles review and merging.':'This sends your message to the Helios team’s private inbox for triage. An agent may work on it only after review; this does not automatically create a PR.';
+ $('pr-consent-text').textContent=pub?'I approve publishing this exact proposal to public GitHub.':'I approve saving this exact message for Helios maintainers and their reviewed research workflow. I have removed private information and secrets.';
+ if(isStatic&&!pub)say('The inbox is unavailable on the static site. You can continue on GitHub instead.',true);else say('');
+ sync();
 }
-function reset(){
- form.reset();review.hidden=true;form.hidden=false;receipt.hidden=true;draft=null;consent.checked=false;$('pr-access').value='';$('pr-payload').value='';$('pr-count').textContent='0 / 4,000 · Stays here until you choose to publish.';say('');sync();
+async function refresh(){
+ const ticket=++historyRequest,root=$('pr-history'),info=$('pr-history-status');
+ if(isStatic){info.textContent='Saved inbox status is unavailable on this static site.';return}
+ info.textContent='Checking saved contributions…';
+ try{
+  const data=await request('/api/contributions');
+  if(ticket!==historyRequest)return;
+  if(!Array.isArray(data.contributions))throw Error('Unexpected inbox response.');
+  root.replaceChildren();
+  for(const item of data.contributions){
+   if(!item||typeof item.title!=='string'||!Object.hasOwn(states,item.status))continue;
+   const card=document.createElement('article'),title=document.createElement('strong'),line=document.createElement('p');
+   title.textContent=item.title;line.textContent=states[item.status];card.append(title,line);
+   if(Number.isSafeInteger(item.prNumber)&&item.prNumber>0){const link=document.createElement('a');link.href=github+'/pull/'+item.prNumber;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Review PR #'+item.prNumber+' ↗';card.append(link)}
+   root.append(card);
+  }
+  info.textContent=root.childElementCount?'Showing recent contributions from this browser session.':'No saved messages in this browser session.';
+ }catch(e){if(ticket===historyRequest)info.textContent='Inbox status unavailable: '+e.message+' GitHub remains available.'}
 }
+function open(){if(!modal.open)modal.showModal();if($('pr-tracking').open)refresh()}
+function reset(){form.reset();review.hidden=true;form.hidden=false;receipt.hidden=true;draft=null;consent.checked=false;$('pr-destination').value=isStatic?'github':'team';$('pr-payload').value='';$('pr-count').textContent='0 / 4,000 · Your draft stays here until you choose to submit.';say('');sync();$('pr-title').focus()}
 $('pr-compose-open').addEventListener('click',open);
 $('pr-compose-close').addEventListener('click',()=>{if(!busy)modal.close()});
 modal.addEventListener('cancel',e=>{if(busy)e.preventDefault()});
-modal.addEventListener('close',()=>{$('pr-access').value='';$('pr-compose-open').focus()});
-$('pr-message').addEventListener('input',()=>{$('pr-count').textContent=$('pr-message').value.length.toLocaleString()+' / 4,000 · Stays here until you choose to publish.'});
+modal.addEventListener('close',()=>{$('pr-compose-open').focus()});
+$('pr-message').addEventListener('input',()=>{$('pr-count').textContent=$('pr-message').value.length.toLocaleString()+' / 4,000 · Your draft stays here until you choose to submit.'});
 form.addEventListener('submit',e=>{
- e.preventDefault();
- const title=$('pr-title').value.trim(),message=$('pr-message').value.trim(),kind=$('pr-kind').value;
- if(!title||!message){say('Enter a title and message.',true);return;}
- // Preserve the same identifier across unchanged retries. A changed proposal gets a new ID.
- if(!draft||draft.title!==title||draft.message!==message||draft.kind!==kind)draft={id:secureId(),kind,title,message};
- $('pr-path').textContent=pathFor(draft);$('pr-payload').value=serialized(draft);
- consent.checked=false;form.hidden=true;review.hidden=false;say('');sync();$('pr-review-heading').focus();
+ e.preventDefault();const title=$('pr-title').value.trim(),message=$('pr-message').value.trim(),kind=$('pr-kind').value;
+ if(!title||!message){say('Enter a title and message.',true);return}
+ if(!draft||draft.title!==title||draft.message!==message||draft.kind!==kind)draft={id:crypto.randomUUID(),kind,title,message};
+ form.hidden=true;review.hidden=false;destination();$('pr-review-heading').focus();
 });
-$('pr-edit').addEventListener('click',()=>{review.hidden=true;form.hidden=false;consent.checked=false;$('pr-access').value='';say('');sync();$('pr-title').focus()});
+$('pr-destination').addEventListener('change',destination);
+$('pr-edit').addEventListener('click',()=>{review.hidden=true;form.hidden=false;consent.checked=false;say('');sync();$('pr-title').focus()});
 consent.addEventListener('change',sync);
 $('pr-copy').addEventListener('click',async()=>{
- if(!consent.checked||!draft)return;
- try{await navigator.clipboard.writeText(serialized(draft));say('Copied. Continue on GitHub, paste the file, then create your pull request.');}
- catch{$('pr-payload').focus();$('pr-payload').select();say('Select and copy the file manually, then continue on GitHub.');}
+ if(!consent.checked||!draft||!isPublic())return;
+ try{await navigator.clipboard.writeText(publicFile());say('Copied. Continue on GitHub, paste the file, then open your pull request.')}
+ catch{$('pr-payload').focus();$('pr-payload').select();say('Copy the selected file manually, then continue on GitHub.')}
 });
-$('pr-github').addEventListener('click',e=>{if(!consent.checked||busy||!draft)e.preventDefault();else say('GitHub editor opened. Your pull request is not yet created.');});
-$('pr-submit').addEventListener('click',async()=>{
- if(!draft||!consent.checked||!enabled||busy)return;
- const key=$('pr-access').value;if(!key){say('Enter your dedicated maintainer access key.',true);return;}
- busy=true;sync();say('Creating proposal branch and draft pull request…');
+$('pr-github').addEventListener('click',e=>{if(!consent.checked||busy||!draft||!isPublic())e.preventDefault();else say('GitHub editor opened. Your pull request has not been created yet.')});
+$('pr-send').addEventListener('click',async()=>{
+ if(!draft||!consent.checked||isPublic()||busy||isStatic)return;
+ busy=true;sync();say('Sending to Helios for review…');
  try{
-  const res=await fetch('/api/message-pr',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+key},body:JSON.stringify({proposal:draft,consent:true}),signal:AbortSignal.timeout(35000)});
-  const data=await res.json();
-  if(!res.ok)throw Error(data.error||'Could not confirm the pull request.');
-  if(!Number.isSafeInteger(data.number)||data.number<1||data.url!==github+'/pull/'+data.number)throw Error('Invalid GitHub receipt.');
-  $('pr-result').textContent='PR #'+data.number+' · '+(data.state==='closed'?'Previously closed; not reopened.':data.draft?'Draft · awaits human review.':'Open · awaits human review.');
-  $('pr-result-link').href=data.url;receipt.hidden=false;review.hidden=true;say('');$('pr-result-link').focus();
- }catch(e){say('Not confirmed: '+e.message+' Retry the unchanged proposal to recover its receipt.',true);}
- finally{busy=false;$('pr-access').value='';sync();}
+  const session=await request('/api/session');
+  if(typeof session.csrfToken!=='string')throw Error('Could not establish a browser session.');
+  const data=await request('/api/contributions',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':session.csrfToken,'Idempotency-Key':draft.id},body:JSON.stringify(teamBody())});
+  if(typeof data.id!=='string'||!/^[a-f0-9-]{36}$/.test(data.id)||data.status!=='queued')throw Error('No confirmed inbox receipt.');
+  $('pr-result').textContent='Contribution '+data.id+' · Awaiting triage';receipt.hidden=false;review.hidden=true;say('');$('pr-tracking').open=true;refresh();$('pr-new').focus();
+ }catch(e){say('Not confirmed: '+e.message+' Retry the unchanged message to reuse its request ID, or choose the GitHub option.',true)}
+ finally{busy=false;sync()}
 });
 $('pr-new').addEventListener('click',reset);
+$('pr-refresh').addEventListener('click',refresh);
+$('pr-tracking').addEventListener('toggle',()=>{if($('pr-tracking').open)refresh()});
+if(isStatic)$('pr-destination').value='github';
 sync();
 if(new URLSearchParams(location.search).get('compose')==='pr')open();

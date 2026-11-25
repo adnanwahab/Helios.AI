@@ -69,12 +69,14 @@ try {
 
   if(await page.locator('#pr-compose-open').count()){
     await page.goto(base+'/?compose=pr',{waitUntil:'domcontentloaded'});
-    await page.locator('#pr-title').fill('Make the childcare simulator easier to use');
-    await page.locator('#pr-message').fill('Show the hourly rate and subsidy side by side, with a short explanation of the estimated public cost.');
+    await page.locator('#pr-title').fill('Improve the childcare simulator');
+    await page.locator('#pr-message').fill('Show the hourly rate and subsidy side by side with a short explanation of the estimated public cost.');
     await page.screenshot({path:join(output,'message-pr-mobile.png'),animations:'disabled'});
     await page.setViewportSize({width:1440,height:900});
     await page.locator('#pr-compose-form button[type=submit]').click();
     await page.screenshot({path:join(output,'message-pr-review.png'),animations:'disabled'});
+    await page.locator('#pr-destination').selectOption('github');
+    await page.screenshot({path:join(output,'message-pr-github.png'),animations:'disabled'});
     await page.locator('#pr-compose-close').click();
     await page.goto(base+'/',{waitUntil:'domcontentloaded'});
   }

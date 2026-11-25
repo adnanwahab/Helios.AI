@@ -1,4 +1,3 @@
-import {messagePRHandler} from '../../src/message-pr.js';
 import {getRuntime} from '../../src/runtime.js';
 import {clientIP} from '../../src/email.js';
 import {configuredDatabase,forwardCivic} from '../../src/fly-civic-gateway.js';
@@ -6,7 +5,10 @@ import {configuredDatabase,forwardCivic} from '../../src/fly-civic-gateway.js';
 export const config = {path: ['/api/*', '/email/unsubscribe', '/proxy/ycr', '/proxy/ycr/*']};
 
 export default async (request, context) => {
-  if (new URL(request.url).pathname === '/api/message-pr') return messagePRHandler(request);
+  // Preview code must not mutate or read the production contribution inbox.
+  // Production may use the existing configured database or the allowlisted Fly gateway.
+  const path=new URL(request.url).pathname;
+  if((path==='/api/contributions'||path.startsWith('/api/contributions/'))&&(context?.deploy?.context||process.env.CONTEXT)!=='production')return Response.json({error:'The contribution inbox is available on the deployed production app, not this preview. Use the GitHub option.'},{status:503,headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});
   if (!configuredDatabase()) return forwardCivic(request,context);
   try {
     const {app} = await getRuntime();

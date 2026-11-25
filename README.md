@@ -408,10 +408,27 @@ The Helios dashboard includes **MorphLab · WebGPU** (`/morphlab.html`): type a 
 
 - `public/mystery.html` — The Missing Amendment, a fictional choose-your-own-adventure civic mystery. No real vote or personal information is sent. Available from the homepage and Docs.
 
-## Homepage Message / PR composer
+## Homepage Message / PR contribution modal
 
-Open **Message / PR** or visit `/?compose=pr`. Anyone can draft a feature, policy, bug or other proposal and review its exact JSON. With consent, copy the file and continue to GitHub's editor; GitHub authentication and its normal fork/branch/PR flow apply. No Helios account is required. The message is not sent automatically, and the journal is never included.
+Open **Message / PR** or `/?compose=pr` on the Fly application. Drafting requires no account and stays in the page. After review and explicit consent, choose one of two routes:
 
-For direct maintainer draft PR creation, configure `HELIOS_PR_ENABLED=1`, a separate random `HELIOS_PR_ACCESS_KEY` (32+ characters), and `HELIOS_PR_GITHUB_TOKEN` (fine-grained credential scoped only to HeliosHTML, Contents and Pull requests read/write, Metadata read). Set secrets on the Netlify Functions production context or Fly server, not the frontend or untrusted deploy previews. The access key is entered per direct submission; no credentials are saved in browser storage. Without configuration, only the GitHub editor path is available.
+- **Helios inbox:** sends the exact title, message and topic to the existing private Helios database (Fly PGlite volume or configured Supabase PostgreSQL). A pseudonymous browser session receives a durable receipt and can view its own recent status and PR links. This does not automatically dispatch agents or create PRs.
+- **GitHub:** copy the reviewed public JSON file, continue to GitHub's file editor, sign into GitHub, create a branch or fork and open a pull request. GitHub handles authentication, branch protection, CI and merging. No GitHub token, server-side Git client or merge API is required in Helios.
 
-The server accepts only consented, bounded JSON and writes a new file under `docs/proposals/inbox/` on a deterministic `message-pr/` branch, then opens a draft PR against main. Retries reuse the same proposal branch; no arbitrary paths, executable changes, AI execution, or merges are allowed. The proposal is public, not a legal amendment or implemented code. Maintainers must review it and make any actual implementation separately. Use repository branch protections and GitHub's normal review rules. Revoke/rotate the credential if compromised.
+### Maintainer handoff
+
+The existing `HELIOS_ADMIN_TOKEN` protects the inbox and status API. Do not expose that secret to the browser, public visitors or untrusted agent prompts. For an authorized operator:
+
+```sh
+curl -H "Authorization: Bearer $HELIOS_ADMIN_TOKEN" https://helios-ai-laws.fly.dev/api/contributions/inbox
+# After triaging a record, use its actual ID:
+curl -X POST -H "Authorization: Bearer $HELIOS_ADMIN_TOKEN" -H 'Content-Type: application/json' \
+  -d '{"expectedStatus":"queued","status":"researching"}' \
+  https://helios-ai-laws.fly.dev/api/contributions/CONTRIBUTION_ID/status
+```
+
+The operator can move a reviewed request from queued → researching → implementing → review (include the actual positive integer `prNumber`) → closed, return active work to queued for triage, or return review to implementation. Status changes are conditional on the expected prior state. No status represents a verified GitHub merge; use the linked PR for authoritative checks and review.
+
+For Mini Symphony (separate worker queue PR #65), a trusted coordinator should review each untrusted contribution, enqueue its ID with an approved task description using the worker queue's idempotent enqueue contract, then report real progress and the PR number through the operator API. The inbox is not a worker lease queue and this PR does not wire or start any agents. Worker GitHub credentials, if needed, belong only to the worker environment. Use least privilege and human review; never execute arbitrary messages directly.
+
+Netlify deploy previews keep the public GitHub handoff available but do not access the production inbox. Fly production deployment is manual after merge and preserves its existing database volume. No database switch or new GitHub credentials are required.
