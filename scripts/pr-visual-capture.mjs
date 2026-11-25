@@ -266,6 +266,18 @@ try {
     await page.locator('#ll-title').scrollIntoViewIfNeeded();
     await page.screenshot({path:join(output,'linked-laws-mobile.png'),animations:'disabled'});
   }
+  // Visual evidence of a durable selected-law/selected-clause URL, without writes.
+  await page.goto(base+'/?clause=S-002&law=HGA-012#review-title',{waitUntil:'domcontentloaded'});
+  if(await page.locator('#linked-laws').count()){
+    await page.setViewportSize({width:1440,height:900});
+    await page.locator('#constitution-list [data-clause-id="S-002"][aria-pressed="true"]').waitFor({state:'visible'});
+    await page.locator('#review-title').scrollIntoViewIfNeeded();
+    await page.screenshot({path:join(output,'shared-review-route.png'),animations:'disabled'});
+    await page.goto(base+'/?clause=S-002&law=HGA-012#ll-detail',{waitUntil:'domcontentloaded'});
+    await page.locator('#ll-tiles [data-law-id="HGA-012"][aria-pressed="true"]').waitFor({state:'visible'});
+    await page.locator('#ll-detail').scrollIntoViewIfNeeded();
+    await page.screenshot({path:join(output,'law-detail-route.png'),animations:'disabled'});
+  }
   console.log('Captured desktop and mobile screenshots from ' + (remote ? 'Netlify deployment' : 'local PR build'));
 } finally {
   await browser?.close().catch(() => {});

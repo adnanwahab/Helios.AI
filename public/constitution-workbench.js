@@ -231,6 +231,7 @@ function restoreClauseRoute(){
  scrollToCivicRoute('review-title','constitution-title');updateLiveLink();
 }
 window.addEventListener('popstate',restoreClauseRoute);
+document.addEventListener('helios:civic-route-change',updateLiveLink);
 $('board-refresh').addEventListener('click',refresh);
 setInterval(()=>{if(connected&&!document.hidden)refresh()},20000);
 // Offer the optional fast safety check without changing the existing public consent.

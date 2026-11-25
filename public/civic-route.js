@@ -16,7 +16,7 @@ export function civicUrl(href,patch={}){
  return u;
 }
 export function updateCivicRoute(patch,{replace=false}={}){
- const u=civicUrl(location.href,patch);if(u.href!==location.href)history[replace?'replaceState':'pushState'](history.state,'',u);
+ const u=civicUrl(location.href,patch);if(u.href!==location.href){history[replace?'replaceState':'pushState'](history.state,'',u);document.dispatchEvent(new CustomEvent('helios:civic-route-change'))}
  return readCivicRoute(u.href);
 }
 export function scrollToCivicRoute(...allowed){
