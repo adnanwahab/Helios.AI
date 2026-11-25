@@ -32,7 +32,7 @@ function relevance(query,target){
  const score=shared.length*12+Math.min(overlap,8)*2+(shared.includes(q[0])?5:0)-Math.max(0,t.length-shared.length);
  return {score,overlap,shared};
 }
-function rank(records,query,category){return records.map(p=>{const hit=relevance(query,[p.title,p.sharedGoal,p.illustrativeLocalOption,p.topic,p.text].filter(Boolean).join(' '));return {p,...hit,categoryMatch:p.category===category}}).filter(x=>x.score>0).sort((a,b)=>b.score-a.score||Number(b.categoryMatch)-Number(a.categoryMatch)||String(a.p.id).localeCompare(String(b.p.id)))}
+function rank(records,query,category){return records.map(p=>{const hit=relevance(query,[p.title,p.sharedGoal,p.illustrativeLocalOption,p.topic,p.text].filter(Boolean).join(' '));const core=relevance(query,[p.title,p.sharedGoal,p.topic,p.text].filter(Boolean).join(' '));return {p,...hit,score:hit.score>0?hit.score+Math.max(0,core.score):0,categoryMatch:p.category===category}}).filter(x=>x.score>0).sort((a,b)=>b.score-a.score||Number(b.categoryMatch)-Number(a.categoryMatch)||String(a.p.id).localeCompare(String(b.p.id)))}
 function matches(query,target){if(!String(query).trim())return true;return String(target).toLowerCase().includes(String(query).trim().toLowerCase())||relevance(query,target).score>0}
 function split(text){return [...new Set(String(text).trim().split(/(?<=[.!?])\s+|\n+|;\s*/u).map(s=>s.trim()).filter(Boolean))]}
 const conditionPattern=/\b(?:do not|don't|must not|never|without|no fare|no fee|no admission|no increase|non.negotiable|keep|retain|protect|preserve|affordable|cheap|low.cost|free entry|free admission|accessib\w*|review after|review in|after \d+ days|before expanding|budget|staffing|overtime)\b/i;
@@ -65,7 +65,7 @@ function draft(analysis,index,categories){
  const constraint=analysis.conditions.length?' Conditions to review and preserve:\n'+analysis.conditions.join('\n'):'';
  return {issue,category:categories[categoryIndex[c.topic]??7],outcome,approach:approach+constraint,conditions:analysis.conditions,topic:c.topic,label:c.label};
 }
-function scenario(text){const s=String(text);if(concepts.library.test(s)&&/\b(hours?|open\w*|clos\w*|evening|late|after work)\b/i.test(s))return 'library';if(concepts.transit.test(s)&&/\b(shade|shelter|heat|hot)\b/i.test(s))return 'shade';if(concepts.transit.test(s)&&/\b(wait\w*|frequen\w*|reliab\w*|late|minutes?|service|headway|bus(?:es)?)\b/i.test(s))return 'transit';return null}
+function scenario(text){const s=String(text);if(concepts.library.test(s)&&/\b(hours?|open\w*|clos\w*|evening|late|after work)\b/i.test(s))return 'library';if((concepts.transit.test(s)||/\bstops?\b/i.test(s))&&/\b(shade|shelter|heat|hot)\b/i.test(s))return 'shade';if(concepts.transit.test(s)&&/\b(wait\w*|frequen\w*|reliab\w*|late|minutes?|service|headway|bus(?:es)?)\b/i.test(s))return 'transit';return null}
 function simulate(kind,value){
  if(kind==='library'){const days=Math.max(0,Math.min(5,Math.round(value)));return {value:days,access:days*3,resource:days*3*2,description:days+' later evening(s) × 3 hours; 2 staff assumed.'}}
  if(kind==='transit'){const headway=Math.max(5,Math.min(30,Math.round(value/5)*5));return {value:headway,access:headway/2,resource:Math.ceil(60/headway)*12,description:'Uniform arrivals; 60-minute round trip, 12 operating hours; no congestion modeled.'}}
@@ -73,7 +73,7 @@ function simulate(kind,value){
  return null;
 }
 function mergeReview(a,b){
- const A=split(a),B=split(b),normalize=s=>s.toLowerCase().replace(/[.!?]+$/,'').replace(/\s+/g,' ').trim();
+ const allA=split(a),allB=split(b),limited=allA.length>200||allB.length>200;const A=allA.slice(0,200),B=allB.slice(0,200),normalize=s=>s.toLowerCase().replace(/[.!?]+$/,'').replace(/\s+/g,' ').trim();
  const shared=[],similar=[],conditions=[],conflicts=[],seen=new Set();
  const add=(list,s)=>{if(!list.includes(s))list.push(s)};
  for(const x of [...A,...B])if(conditionPattern.test(x))add(conditions,x);
@@ -89,7 +89,7 @@ function mergeReview(a,b){
   if(neg.test(nx)!==neg.test(ny)&&nx.replace(neg,'').replace(/\s+/g,' ').trim()===ny.replace(neg,'').replace(/\s+/g,' ').trim()){conflicts.push({a:x,b:y});continue}
   const hit=relevance(x,y);if(hit.shared.length&&hit.overlap>=2)similar.push({a:x,b:y});
  }
- return {shared,similar,conditions,conflicts};
+ return {shared,similar,conditions,conflicts,limited};
 }
 root.HeliosIdeas=Object.freeze({tags,words,relevance,rank,matches,analyze,draft,scenario,simulate,mergeReview,split});
 })(globalThis);
