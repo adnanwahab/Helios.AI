@@ -1,3 +1,5 @@
+"$schema" = "https://open-api.netlify.com/netlify.schema.json"
+
 # Publish only the built static folder. Source, data, scripts and .git are not served.
 [build]
   command = "node scripts/build-netlify.mjs"
@@ -9,6 +11,16 @@
 
 # /api/*, /email/unsubscribe and /proxy/ycr/* are served by netlify/functions/api.mjs
 # (paths declared in that file). The backend runs on Supabase Postgres.
+
+[[redirects]]
+  from = "/launch"
+  to = "/launch-dashboard.html"
+  status = 200
+
+[[redirects]]
+  from = "/contribute"
+  to = "/contribute.html"
+  status = 200
 
 [[redirects]]
   from = "/laws"
