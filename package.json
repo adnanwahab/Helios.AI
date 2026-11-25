@@ -18,7 +18,9 @@
     "test:security": "bun test scripts/security-registry.test.js",
     "simulate:votes": "cd consensus-lab && bun run simulate",
     "serve:votes": "cd consensus-lab && bun run serve",
-    "test:votes": "cd consensus-lab && bun test"
+    "test:votes": "cd consensus-lab && bun test",
+    "votes:8b": "bun scripts/vote-profile-lab/cli.ts",
+    "test:votes:8b": "bun test test/vote-profile-lab.test.ts"
   },
   "engines": {
     "bun": ">=1.3.0",
