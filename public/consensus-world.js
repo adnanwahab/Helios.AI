@@ -1,5 +1,6 @@
 import {AXES,MAX_POPULATION,GPU_BATCH,CPU_BATCH,BINS,VERSION,hash,evaluate,cpuBatch,assertBatch,createGPU,suggestEffects,validEffects} from './consensus-world-engine.js';
 import {initWorkshop} from './consensus-world-workshop.js';
+import {findResearchRound} from './law-research-model.js';
 import {initGlobe,voteLabel} from './consensus-world-globe.js';
 import {canonicalCatalog,sharedCatalog,featuredDraft,formatBill,originFor,validOrigin,originLabel,sameLaw,matchesLaw} from './consensus-world-catalog.js';
 const $=id=>document.getElementById(id), fmt=n=>Number(n).toLocaleString('en-US'), pct=(n,d)=>d? (n/d*100).toFixed(2)+'%':'—';
@@ -7,7 +8,7 @@ const seed=20261125, key='helios.consensus-world.v1', choices=['Yes','Not sure',
 const validPops=[100000,1000000,10000000,100000000,MAX_POPULATION];
 let effects=Array(8).fill(0),reasons=Array(8).fill('Unknown / not assessed'),history=[],archive=[],active=null,shown=null,busy=false,stop=false,gpu=null,backend='Not started',storageOK=true,dirty=false;
 const axisInputs=[],axisReasons=[];
-const query=new URLSearchParams(location.search),requestedLaw=query.get('law'),requestedVersion=query.get('version');
+const query=new URLSearchParams(location.search),requestedLaw=query.get('law'),requestedVersion=query.get('version'),requestedResearchRun=query.get('researchRun');
 let origin=null,catalog=[],catalogBusy=false,restored=false,initialDraft=null;
 const HISTORY_LIMIT=120,ARCHIVE_LIMIT=100;
 const globe=initGlobe({canvas:$('particles'),motion:$('globe-motion'),assess:(id,r)=>evaluate(id,r.effects,r.seed,r.day,false).vote,onPick:id=>{$('agent').value=String(id);$('agent-details').open=true;inspectVoter();$('agent-details').scrollIntoView({block:'nearest'});}});
@@ -194,7 +195,7 @@ function sourceUI(){
  $('draft-source').textContent=origin?originLabel(origin)+' · '+origin.title+($('bill').value===origin.originalBill?' · original wording':' · local revision; source remains unchanged'):'Custom / legacy draft · not linked to the catalog.';
 }
 function syncUrl(){
- const url=new URL(location.href);if(origin){url.searchParams.set('law',origin.lawId);if(origin.versionId)url.searchParams.set('version',origin.versionId);else url.searchParams.delete('version');}
+ const url=new URL(location.href);url.searchParams.delete('researchRun');if(origin){url.searchParams.set('law',origin.lawId);if(origin.versionId)url.searchParams.set('version',origin.versionId);else url.searchParams.delete('version');}
  else{url.searchParams.delete('law');url.searchParams.delete('version');}window.history.replaceState(null,'',url);
 }
 function archiveCurrent(){
@@ -252,4 +253,17 @@ $('catalog-search').addEventListener('input',()=>fillCatalog());
 $('catalog-law').addEventListener('change',controls);
 $('catalog-load').addEventListener('click',()=>loadCatalogLaw($('catalog-law').value));
 $('catalog-refresh').addEventListener('click',()=>void refreshCatalog(false));
-void refreshCatalog(true);
+function restoreResearchBaseline(){
+ if(!requestedResearchRun)return false;
+ if(active){status('A saved run is active. Resume or discard it before opening a research baseline.');return false;}
+ let r;try{r=findResearchRound(localStorage,requestedResearchRun)}catch{}
+ if(!r||r.origin.lawId!==requestedLaw||!validRound(r)){status('Research baseline unavailable in this browser. No stored draft was replaced.');return false;}
+ if(restored)archiveCurrent();
+ history=[r,...history.filter(old=>old.id!==r.id)].slice(0,HISTORY_LIMIT);
+ loadDraft(r);shown=r;historyUI(r.id);syncUrl();save();render();
+ status('Research baseline restored · '+fmt(r.done)+' evaluated. Improve the draft or edit assumptions, then run a matched round.');
+ return true;
+}
+const loadedResearch=restoreResearchBaseline();
+void refreshCatalog(!loadedResearch&&!requestedResearchRun);
+
