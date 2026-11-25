@@ -3,7 +3,7 @@ import {initWorkshop} from './consensus-world-workshop.js';
 const $=id=>document.getElementById(id), fmt=n=>Number(n).toLocaleString('en-US'), pct=(n,d)=>d? (n/d*100).toFixed(2)+'%':'—';
 const seed=20261125, key='helios.consensus-world.v1', choices=['Yes','Not sure','No'];
 const validPops=[100000,1000000,10000000,100000000,MAX_POPULATION];
-let effects=Array(8).fill(0),reasons=Array(8).fill('Unknown / not assessed'),history=[],active=null,shown=null,busy=false,stop=false,gpu=null,backend='Not started',storageOK=true,dirty=false;
+let effects=Array(8).fill(0),reasons=Array(8).fill('Unknown / not assessed'),history=[],archive=[],active=null,shown=null,busy=false,stop=false,gpu=null,backend='Not started',storageOK=true,dirty=false;
 const axisInputs=[],axisReasons=[];
 for(let i=0;i<AXES.length;i++){
   const wrap=document.createElement('div');wrap.className='axis';
@@ -23,7 +23,7 @@ function loadDraft(d){
   axisInputs.forEach((el,i)=>{el.value=effects[i];axisReasons[i].textContent=reasons[i];});
 }
 function save(){
-  try{localStorage.setItem(key,JSON.stringify({version:VERSION,draft:draft(),history,active}));storageOK=true;}
+  try{localStorage.setItem(key,JSON.stringify({version:VERSION,draft:draft(),history,archive,active}));storageOK=true;}
   catch{storageOK=false;}
 }
 function historyUI(selected=$('baseline').value){
@@ -36,6 +36,9 @@ function historyUI(selected=$('baseline').value){
   if(history.some(r=>r.id===selected))select.value=selected;
   else select.value='';
   if(!history.length)list.textContent='Completed rounds will appear here.';
+  const drafts=$('draft-archive');drafts.replaceChildren();
+  for(const d of archive){const b=document.createElement('button');b.type='button';b.disabled=!!active||busy;b.textContent='Unrun draft · '+d.bill.slice(0,80);b.onclick=()=>{if(active||busy)return;loadDraft(d);shown=null;historyUI('');save();render();status('Archived draft restored. Run it to establish a matching baseline.');};drafts.append(b);}
+  if(!archive.length)drafts.textContent='Originals kept before simulation will appear here.';
 }
 function status(s){$('status').textContent=s+(storageOK?'':' Browser storage unavailable; export before closing.');}
 function controls(){
@@ -46,6 +49,7 @@ function controls(){
   $('run').disabled=busy;$('run').textContent=active?'Resume voting round':'Run voting round';
   $('pause').disabled=!busy||stop;$('discard').disabled=busy||!active;
   $('history').querySelectorAll('button').forEach(el=>el.disabled=locked);
+  $('draft-archive').querySelectorAll('button').forEach(el=>el.disabled=locked);
 }
 function paint(r){
   const c=$('particles'),ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);
@@ -122,11 +126,12 @@ $('inspect').addEventListener('click',()=>{
   $('agent-result').textContent='Agent '+fmt(id)+': '+choices[e.vote]+(id>=r.done?' (preview; not yet counted)':'')+'. Model score '+e.score+'. Highest weights: '+order.slice(0,3).map(i=>AXES[i]+' '+e.weights[i]+'/8').join(', ')+'.';
 });
 $('export').addEventListener('click',()=>{
-  const blob=new Blob([JSON.stringify({version:VERSION,draft:draft(),history,active},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='helios-consensus-world.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  const blob=new Blob([JSON.stringify({version:VERSION,draft:draft(),history,archive,active},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='helios-consensus-world.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 });
 try{
   const stored=JSON.parse(localStorage.getItem(key)||'null');
   if(stored?.version===VERSION){
+    archive=Array.isArray(stored.archive)?stored.archive.filter(validDraft).slice(0,20):[];
     history=Array.isArray(stored.history)?stored.history.filter(r=>validRound(r)&&r.done===r.population).slice(0,20):[];
     active=validRound(stored.active)&&stored.active.done<stored.active.population?stored.active:null;
     // Recover a completed run if the page closed before finalizing its history.
@@ -151,9 +156,10 @@ initWorkshop({
     const current=draft();
     if(current.bill!==original.bill||current.day!==original.day||current.population!==original.population||current.effects.some((v,i)=>v!==original.effects[i]))return false;
     const prior=matchingRound(original);
+    if(!prior){archive=[{...current},...archive.filter(d=>!(d.bill===current.bill&&d.day===current.day&&d.population===current.population&&d.effects.every((v,i)=>v===current.effects[i])))].slice(0,20);}
     loadDraft({...current,bill,effects:next,reasons:why,dirty:false});
     historyUI(prior?.id||'');save();render();
-    status(prior?'Revision ready · matched baseline selected.':'Revision ready · no completed matching original; run without baseline or restore the original first.');
+    status(prior?'Revision ready · matched baseline selected.':'Revision ready · original archived; restore and run it first for a matched comparison, or run the revision without a baseline.');
     if(runNow&&prior)void run();
     return true;
   }
