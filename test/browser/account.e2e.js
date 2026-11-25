@@ -47,14 +47,16 @@ async function signIn(page, email=user.email) {
   await expect(page.locator('#helios-account-identity')).toContainText(email);
 }
 
-test('guests start without auth or API calls and closing login preserves their private draft', async ({page}) => {
+test('guests start without auth or session calls and closing login preserves their private draft', async ({page}) => {
   const requests=[];
-  page.on('request',request=>{if(request.url().includes('/api/')||request.url().startsWith(authOrigin))requests.push(request.url());});
+  page.on('request',request=>{if(request.url().includes('/api/')||request.url().startsWith(authOrigin))requests.push({url:request.url(),method:request.method()});});
+  const sessionOrWrite=r=>r.method!=='GET'||/\/api\/(?:research\/)?session\b/.test(r.url);
   await page.goto('/');
   await expect(page.locator('#constitution-list .clause-card').first()).toBeVisible();
   await expect(page.locator('#account-open')).toBeVisible();
   await expect(page.locator('#helios-account-dialog')).not.toBeVisible();
-  expect(requests).toEqual([]);
+  // The homepage reads the public shared board and law catalog on load (#63).
+  expect(requests.filter(r=>r.url.startsWith(authOrigin)||/\/api\/(?:research\/)?account\//.test(r.url)||sessionOrWrite(r))).toEqual([]);
   await page.locator('#journal').fill('Private test draft: shaded stops that welcome every neighbor.');
   await page.locator('#account-open').click();
   await expect(page.locator('#helios-account-dialog')).toBeVisible();
@@ -63,8 +65,8 @@ test('guests start without auth or API calls and closing login preserves their p
   await expect(page.locator('#helios-account-dialog')).not.toBeVisible();
   await expect(page.locator('#journal')).toHaveValue('Private test draft: shaded stops that welcome every neighbor.');
   await expect(page.locator('#account-open')).toBeFocused();
-  expect(requests.filter(url=>url.startsWith(authOrigin))).toEqual([]);
-  expect(requests.filter(url=>url.includes('/api/constitution')||url.includes('/api/session'))).toEqual([]);
+  expect(requests.filter(r=>r.url.startsWith(authOrigin))).toEqual([]);
+  expect(requests.filter(sessionOrWrite)).toEqual([]);
 });
 
 test('open_login deep link preserves selected keyframe and mobile guest editing', async ({page},testInfo) => {
@@ -96,8 +98,8 @@ test('mocked verified account adds proof only to connected votes and signout pre
   await expect(page.locator('#helios-account-identity')).toContainText(user.email);
   expect(seen.writes).toEqual([]);
   await page.locator('#helios-account-guest').click();
-  await page.locator('#board-connect').click();
-  await expect(page.locator('#board-status')).toContainText('Connected');
+  await expect(page.locator('#review-mode')).toHaveText('Shared');
+  await expect(page.locator('#board-refresh')).toBeEnabled();
   await page.locator('[data-clause-vote="support"]').click();
   await expect.poll(()=>seen.writes.length).toBe(1);
   expect(seen.writes[0].headers['x-helios-access-token']).toBe(token);
@@ -126,6 +128,21 @@ test('rejected stored session can explicitly return to guest mode', async ({page
   expect(await page.evaluate(()=>window.HeliosAccount.getState().authenticated)).toBe(false);
 });
 
+test('a returning signed-in visitor joins shared review once the account is verified', async ({page}) => {
+  // The board connects on page load (#63) while a stored account may still be verifying.
+  const seen=await mockAccount(page);
+  const boardTokens=[];
+  page.on('request',request=>{if(new URL(request.url()).pathname==='/api/constitution')boardTokens.push(request.headers()['x-helios-access-token']||null);});
+  await page.addInitScript(value=>{
+    localStorage.setItem('helios-account-session-v1',JSON.stringify(value));
+    localStorage.setItem('helios-account-present-v1','1');
+  },session);
+  await page.goto('/');
+  await expect(page.locator('#review-mode')).toHaveText('Shared');
+  await expect.poll(()=>boardTokens.includes(token)).toBe(true);
+  expect(seen.writes).toEqual([]);
+});
+
 test('static preview never connects the account SDK even with a stored hint', async ({page}) => {
   const calls=[];
   page.on('request',request=>{if(request.url().startsWith(authOrigin)||/\/api\/(?:research\/)?account\//.test(request.url()))calls.push(request.url());});
@@ -144,8 +161,8 @@ test('a response body completed after signout cannot restore the previous accoun
   await page.goto('/');
   await signIn(page);
   await page.locator('#helios-account-guest').click();
-  await page.locator('#board-connect').click();
-  await expect(page.locator('#board-status')).toContainText('Connected');
+  await expect(page.locator('#review-mode')).toHaveText('Shared');
+  await expect(page.locator('#board-refresh')).toBeEnabled();
   await page.locator('[data-clause-vote="support"]').click();
   await expect(page.locator('[data-clause-vote="support"]')).toHaveAttribute('aria-pressed','true');
   // Hold parsed response bodies while allowing headers through, reproducing a
@@ -178,8 +195,8 @@ test('cross-tab account changes fence votes until the new identity has been veri
   await page.goto('/');
   await signIn(page);
   await page.locator('#helios-account-guest').click();
-  await page.locator('#board-connect').click();
-  await expect(page.locator('#board-status')).toContainText('Connected');
+  await expect(page.locator('#review-mode')).toHaveText('Shared');
+  await expect(page.locator('#board-refresh')).toBeEnabled();
   await page.locator('[data-clause-vote="support"]').click();
   await expect(page.locator('[data-clause-vote="support"]')).toHaveAttribute('aria-pressed','true');
   const otherUser={...user,id:'81c23237-81fa-4532-a44d-0336eff712cd',email:'second-account@example.invalid'};

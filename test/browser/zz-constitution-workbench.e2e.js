@@ -8,8 +8,8 @@ async function expectCompleteArchive(page){
  expect(new Set(names).size).toBe(names.length);
 }
 test('Docs drawer and three-lane workbench stay private in practice; matching is local',async({page})=>{
- const api=[];page.on('request',r=>{if(r.url().includes('/api/'))api.push(r.url())});
- await page.goto('/');
+ const api=[];page.on('request',r=>{const u=new URL(r.url());if(u.pathname.includes('/api/')&&!(r.method()==='GET'&&!r.postData()&&/^\/api\/(catalog|laws\/[A-Z0-9-]+)$/i.test(u.pathname)&&!u.search))api.push(r.url())});
+ await page.goto('/?review=practice');
  await expect(page.locator('#constitution-list .clause-card')).toHaveCount(12);
  await expect(page.locator('#synthetic-people')).toHaveText('256');
  await expect(page.locator('#journal')).toBeVisible();
@@ -40,7 +40,6 @@ test('Docs drawer and three-lane workbench stay private in practice; matching is
 });
 test('connected vote counts persist across browser contexts, pending comments are private',async({page,browser})=>{
  await page.goto('/');
- await page.locator('#board-connect').click();
  await expect(page.locator('#review-mode')).toHaveText('Shared');
  await page.locator('[data-clause-vote="support"]').click();
  await expect(page.locator('#clause-status')).toContainText('Position recorded');
@@ -54,7 +53,7 @@ test('connected vote counts persist across browser contexts, pending comments ar
  const other=await browser.newPage();
  try{
  await other.goto(page.url());
- await other.locator('#board-connect').click();
+ await expect(other.locator('#review-mode')).toHaveText('Shared');
  await expect(other.locator('#clause-real')).toContainText(/1 support/);
  await expect(other.locator('#clause-comments')).not.toContainText('Test comment pending review.');
  }finally{await other.close()}

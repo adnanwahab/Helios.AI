@@ -63,3 +63,21 @@ test('shared constitution aggregates unique session votes and contributions; tex
  expect(JSON.stringify(await get())).not.toContain(a.session.csrfToken);
  }finally{await rt.store.close()}
 });
+
+test('an approved clause beyond the first 200 restores from a public ID, never a pending clause',async()=>{
+ const rt=await setup();
+ try{
+  const id=n=>'C-'+String(n).padStart(64,'0');
+  await rt.db.query("INSERT INTO constitution_clauses(id,text,author,status,created_at) SELECT 'C-'||lpad(n::text,64,'0'),'Public clause '||n,'test','approved','2026-01-01T00:00:00Z' FROM generate_series(1,201) AS n");
+  await rt.db.query("INSERT INTO constitution_clauses(id,text,author,status,created_at) VALUES($1,'Pending test','test','pending','2026-01-01T00:00:00Z')",[id(202)]);
+  const get=async path=>await rt.app(new Request('http://localhost'+path));
+  const initial=await (await get('/api/constitution')).json();
+  expect(initial.clauses.some(x=>x.id===id(201))).toBe(false);
+  const focus=await (await get('/api/constitution?clause='+id(201))).json();
+  expect(focus.clauses.some(x=>x.id===id(201))).toBe(true);
+  expect(focus.clauses.filter(x=>x.source==='community')).toHaveLength(200);
+  const pending=await (await get('/api/constitution?clause='+id(202))).json();
+  expect(pending.clauses.some(x=>x.id===id(202))).toBe(false);
+  expect((await get('/api/constitution?clause=private%20text')).status).toBe(400);
+ }finally{await rt.store.close()}
+});

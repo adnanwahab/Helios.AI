@@ -1,5 +1,6 @@
 // Each original law has an explicit model assumption and policy lever.
 // Values are dimensionless scenario indices, NOT observed outcomes or forecasts.
+import {validateScenario} from './law-scenario-spec.js';
 export const families=[
  {name:'Service uptake',explain:'Gradual voluntary uptake with diminishing returns.',curve:(t,lag)=>1-Math.exp(-t/lag)},
  {name:'Build capacity',explain:'Construction/permitting ramps up gradually; benefits arrive after capacity is built.',curve:(t,lag)=>1-Math.exp(-Math.pow(t/lag,1.6))},
@@ -122,12 +123,16 @@ export const defaults=Object.freeze({years:10,reach:60,capacity:70,effect:20,bas
 const clamp=(v,min,max,fallback)=>Number.isFinite(Number(v))?Math.max(min,Math.min(max,Number(v))):fallback;
 export function modelFor(law){
  const index=Number(String(law?.id).match(/^HGA-(\d{3})$/)?.[1])-1;
- if(!Number.isInteger(index)||index<0||index>=inputs.length)throw Error('No original law model');
+ if(!Number.isInteger(index)||index<0||index>=inputs.length){
+   if(law?.scenario){const s=validateScenario(law.scenario);return {id:law.id,metric:s.metric,lever:s.lever,direction:s.direction,lag:s.lag,family:families[s.family],version:MODEL_VERSION,custom:s}}
+   return {id:law?.id,metric:'Illustrative progress toward the stated goal',lever:'Eligible people reached',direction:1,lag:3,family:families[0],version:MODEL_VERSION,generic:true};
+ }
  const [lever,direction,lag]=inputs[index],family=families[Math.floor(index/10)];
  return {id:law.id,metric:law.suggestedMeasures?.[0]||'Selected outcome',lever,direction,lag,family,version:MODEL_VERSION};
 }
+export function scenarioDefaults(law){const spec=modelFor(law),s=spec.custom;return s?{...defaults,years:s.years,reach:s.reach,capacity:s.capacity,effect:s.effect,lag:s.lag}:{...defaults,lag:spec.lag}}
 export function simulate(law,assumptions={}){
- const spec=modelFor(law),a={...defaults,...assumptions};
+ const spec=modelFor(law),a={...scenarioDefaults(law),...assumptions};
  const years=Math.round(clamp(a.years,1,30,10)),reach=clamp(a.reach,0,100,60)/100,capacity=clamp(a.capacity,0,100,70)/100;
  const effect=clamp(a.effect,-50,50,20)/100,baseline=clamp(a.baseline,1,200,100),lag=a.lag==null?spec.lag:clamp(a.lag,.5,15,spec.lag);
  const points=Array.from({length:years+1},(_,year)=>{

@@ -22,7 +22,7 @@ async function loadBoard(){
  try{return await boardPromise}catch{return null}
 }
 async function chooseFeature(id){
- const u=url();u.searchParams.set('labLaw',id);u.searchParams.set('labView','workshop');u.hash='communal-science-lab';history.replaceState(history.state,'',u);
+ const u=url();u.searchParams.set('law',id);u.searchParams.set('labView','workshop');u.hash='communal-science-lab';history.replaceState(history.state,'',u);
  showView('workshop',{write:false});
  const board=await loadBoard();if(board)board.selectLaw(id);
 }
@@ -53,7 +53,7 @@ async function loadMissionCatalog(){
   if(!Array.isArray(data.goals)||data.goals.length!==100)throw Error('Catalog unavailable');
   const select=$('research-proposal');select.replaceChildren();
   for(const law of data.goals){const o=make('option',law.id+' · '+law.title);o.value=law.id;select.append(o)}
-  const id=url().searchParams.get('labLaw')||'HGA-051';if(data.goals.some(l=>l.id===id))select.value=id;
+  const id=[url().searchParams.get('law'),'HGA-051'].find(x=>data.goals.some(l=>l.id===x));if(id)select.value=id;
   select.disabled=false;$('research-export').disabled=false;
  }catch{$('research-mission-status').textContent='Catalog unavailable. Mission export disabled.';}
 }
@@ -68,5 +68,5 @@ $('research-mission-form').addEventListener('submit',event=>{
 });
 const requested=url().searchParams;
 if(requested.get('labView')==='research')showView('research',{write:false});
-else if(requested.has('labLaw')||requested.get('labView')==='workshop')showView('workshop',{write:false});
+else if(requested.get('labView')==='workshop')showView('workshop',{write:false});
 }
