@@ -1,5 +1,8 @@
 # Helios.AI
 
+
+please use https://greydanus.github.io/2026/11/12/pengpt/ to make a signature.
+
 # We welcome contributors
 pls edit the readme and then we will regenerate the html.
 
@@ -411,3 +414,6 @@ The Helios dashboard includes **MorphLab · WebGPU** (`/morphlab.html`): type a 
 # contact
 
 please email shel.bernstein123@gmail.com
+
+
+https://claude.ai/chat/80840df3-8f63-4cb3-9335-0b6bec7598e3
