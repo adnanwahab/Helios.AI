@@ -243,3 +243,14 @@
   from = "/constitution"
   to = "/public/government-ide.html"
   status = 200
+
+# Fixed, synthetic voting lab. Explicit rewrite also supports the Fly dev server.
+[[redirects]]
+  from = "/consensus-lab"
+  to = "/consensus-lab/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/consensus-lab/"
+  to = "/consensus-lab/index.html"
+  status = 200

@@ -2,8 +2,8 @@
 // the source tree, data, scripts and .git stay out of the site.
 import {copyFile, cp, mkdir, readFile, rm, writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
-import {buildAccount} from './build-account.mjs';
 import {execFileSync} from 'node:child_process';
+import {buildAccount} from './build-account.mjs';
 import {buildPlanDocument} from '../src/notion.js';
 import seedCatalog from '../data/catalog.json' with {type: 'json'};
 
