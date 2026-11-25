@@ -96,6 +96,7 @@ export async function createGPU(){
     readback=device.createBuffer({size:bytes,usage:GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ});
     const bind=device.createBindGroup({layout:pipeline.getBindGroupLayout(0),entries:[{binding:0,resource:{buffer:params}},{binding:1,resource:{buffer:output}}]});
     return {
+      bufferBytes:params.size+output.size+readback.size,
       async batch(r){
         validateRequest(r);
         const words=new Uint32Array(22);words.set([r.start>>>0,Math.floor(r.start/4294967296),r.count,r.seed,r.day,Number(r.compare)]);

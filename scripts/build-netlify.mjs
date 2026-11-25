@@ -2,6 +2,7 @@
 // the source tree, data, scripts and .git stay out of the site.
 import {copyFile, cp, mkdir, readFile, rm, writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
+import {execFileSync} from 'node:child_process';
 import {buildAccount} from './build-account.mjs';
 import {buildPlanDocument} from '../src/notion.js';
 import seedCatalog from '../data/catalog.json' with {type: 'json'};
@@ -69,4 +70,6 @@ await writeFile(join(out, 'public', 'law-catalog.json'), JSON.stringify(seedCata
 // Fallback for the Notion screen if the API is unreachable.
 await writeFile(join(out, 'notion-preview.json'), JSON.stringify(buildPlanDocument(seedCatalog)));
 await writeFile(join(out, 'grid-catalog.json'), JSON.stringify({goals: seedCatalog.goals}));
+// Generate the fixed synthetic report from the same model as the local Bun task.
+execFileSync(process.execPath, ['--experimental-strip-types', join(root, 'consensus-lab', 'src', 'preview.ts'), join(out, 'consensus-lab', 'index.html')], {stdio: 'inherit'});
 console.log(`Built Netlify static site in dist/ (${pages.length} files plus public assets).`);

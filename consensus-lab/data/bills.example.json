@@ -1,0 +1,254 @@
+[
+  {
+    "id": "HBL-001",
+    "title": "Backyard homes",
+    "topic": "Housing",
+    "summary": "Allow an extra small home on qualifying residential lots.",
+    "provenance": "Invented Helios-inspired proposal for interface testing; not a real bill introduced today.",
+    "initial": {
+      "text": "Allow one small additional home on every residential lot, with a standard approval path and no new infrastructure funding.",
+      "effects": {
+        "affordability": 0.82,
+        "equity": 0.58,
+        "privacy": -0.18,
+        "environment": 0.2,
+        "cost": -0.36,
+        "delivery": -0.51
+      }
+    },
+    "amendment": {
+      "text": "Allow one small additional home on qualifying residential lots. Publish infrastructure capacity checks, offer low-interest construction loans, and review rents and displacement after two years.",
+      "summary": "Add capacity checks, construction loans and a two-year displacement review; administration and public costs increase.",
+      "effects": {
+        "affordability": 0.73,
+        "equity": 0.75,
+        "privacy": -0.06,
+        "environment": 0.22,
+        "cost": -0.54,
+        "delivery": 0.3
+      }
+    },
+    "evidence": {
+      "summary": "Scenario assumption: extra homes ease some supply pressure, while utility capacity and construction finance constrain delivery. These are authored model inputs.",
+      "quality": 0.7,
+      "adjustments": {
+        "affordability": -0.13,
+        "equity": -0.04,
+        "privacy": 0.02,
+        "environment": 0.04,
+        "cost": -0.07,
+        "delivery": -0.18
+      }
+    }
+  },
+  {
+    "id": "HBL-002",
+    "title": "Third places for everyone",
+    "topic": "Public space",
+    "summary": "Open neighborhood places to meet, learn and spend time without buying anything.",
+    "provenance": "Invented Helios-inspired proposal for interface testing; not a real bill introduced today.",
+    "initial": {
+      "text": "Build a new staffed public gathering space in every neighborhood, open every day and free to enter.",
+      "effects": {
+        "affordability": 0.54,
+        "equity": 0.72,
+        "privacy": 0.14,
+        "environment": 0.14,
+        "cost": -0.78,
+        "delivery": -0.35
+      }
+    },
+    "amendment": {
+      "text": "Run a one-year third-place pilot in existing libraries and community buildings, with accessible evening hours and an independently reviewed expansion budget.",
+      "summary": "Reuse existing buildings and cap the pilot budget; coverage and opening hours are smaller than the original promise.",
+      "effects": {
+        "affordability": 0.42,
+        "equity": 0.45,
+        "privacy": 0.16,
+        "environment": 0.32,
+        "cost": 0.18,
+        "delivery": 0.59
+      }
+    },
+    "evidence": {
+      "summary": "Scenario assumption: reusing buildings lowers modeled cost, while staffing and accessible travel remain constraints. No real-world impact estimate is asserted.",
+      "quality": 0.67,
+      "adjustments": {
+        "affordability": 0.03,
+        "equity": -0.08,
+        "privacy": 0,
+        "environment": 0.03,
+        "cost": -0.1,
+        "delivery": -0.06
+      }
+    }
+  },
+  {
+    "id": "HBL-003",
+    "title": "Private civic journal",
+    "topic": "Privacy",
+    "summary": "Let residents turn private notes into proposals they choose to share.",
+    "provenance": "Invented Helios-inspired proposal for interface testing; not a real bill introduced today.",
+    "initial": {
+      "text": "Create a public civic journal service. Automatically analyze every submitted note and store the full note indefinitely to help generate proposed laws.",
+      "effects": {
+        "affordability": 0.22,
+        "equity": 0.31,
+        "privacy": -0.91,
+        "environment": 0.02,
+        "cost": -0.24,
+        "delivery": 0.3
+      }
+    },
+    "amendment": {
+      "text": "Create an opt-in civic journal. Keep notes private by default, process only specifically shared excerpts, permit deletion and export, and publish security review findings before launch.",
+      "summary": "Add explicit sharing consent, deletion, export and security review; usefulness, speed and operating costs face tradeoffs.",
+      "effects": {
+        "affordability": 0.18,
+        "equity": 0.26,
+        "privacy": 0.82,
+        "environment": 0.01,
+        "cost": -0.4,
+        "delivery": -0.19
+      }
+    },
+    "evidence": {
+      "summary": "Scenario assumption: centralized indefinite retention increases modeled privacy risk; adding controls makes implementation slower. This is a designed stress case.",
+      "quality": 0.86,
+      "adjustments": {
+        "affordability": 0,
+        "equity": -0.03,
+        "privacy": -0.11,
+        "environment": 0,
+        "cost": -0.08,
+        "delivery": -0.05
+      }
+    }
+  },
+  {
+    "id": "HBL-004",
+    "title": "Autonomous shuttle pilot",
+    "topic": "Mobility",
+    "summary": "Try a small driverless shuttle service on a limited route.",
+    "provenance": "Invented Helios-inspired proposal for interface testing; not a real bill introduced today.",
+    "initial": {
+      "text": "Deploy autonomous public shuttles across the city immediately, recording all rides to improve service and replacing existing routes.",
+      "effects": {
+        "affordability": 0.48,
+        "equity": -0.3,
+        "privacy": -0.61,
+        "environment": 0.46,
+        "cost": -0.46,
+        "delivery": -0.82
+      }
+    },
+    "amendment": {
+      "text": "Run a six-month autonomous shuttle pilot on one accessible route, with a safety operator, published stop criteria, short data retention, and existing transit routes retained.",
+      "summary": "Limit the route, retain existing transit and add safety and data protections; coverage stays narrow and the pilot costs more per rider.",
+      "effects": {
+        "affordability": 0.2,
+        "equity": 0.11,
+        "privacy": 0.35,
+        "environment": 0.24,
+        "cost": -0.73,
+        "delivery": -0.14
+      }
+    },
+    "evidence": {
+      "summary": "Scenario assumption: reliability, accessibility and total operating cost are uncertain; no claim of real-world safety or savings is made.",
+      "quality": 0.38,
+      "adjustments": {
+        "affordability": -0.16,
+        "equity": -0.08,
+        "privacy": -0.04,
+        "environment": -0.05,
+        "cost": -0.19,
+        "delivery": -0.16
+      }
+    }
+  },
+  {
+    "id": "HBL-005",
+    "title": "Rain-ready neighborhoods",
+    "topic": "Resilience",
+    "summary": "Upgrade drainage and shaded public space in flood-exposed neighborhoods.",
+    "provenance": "Invented Helios-inspired proposal for interface testing; not a real bill introduced today.",
+    "initial": {
+      "text": "Fund drainage upgrades and rain gardens citywide through a uniform household fee, beginning with projects that are easiest to build.",
+      "effects": {
+        "affordability": -0.39,
+        "equity": -0.35,
+        "privacy": 0.1,
+        "environment": 0.88,
+        "cost": 0.19,
+        "delivery": 0.36
+      }
+    },
+    "amendment": {
+      "text": "Fund drainage upgrades and rain gardens first in high-exposure neighborhoods. Exempt low-income households from the fee and publish project delivery and maintenance costs.",
+      "summary": "Prioritize exposure and exempt low-income households; larger public subsidy and more complex delivery reduce some budget gains.",
+      "effects": {
+        "affordability": 0.18,
+        "equity": 0.72,
+        "privacy": 0.11,
+        "environment": 0.85,
+        "cost": -0.48,
+        "delivery": 0.14
+      }
+    },
+    "evidence": {
+      "summary": "Scenario assumption: flood exposure and upkeep differ by neighborhood; the scenario assigns unequal impacts without claiming a measured forecast.",
+      "quality": 0.78,
+      "adjustments": {
+        "affordability": -0.06,
+        "equity": -0.14,
+        "privacy": 0,
+        "environment": 0.04,
+        "cost": -0.09,
+        "delivery": -0.08
+      }
+    }
+  },
+  {
+    "id": "HBL-006",
+    "title": "Open contracts ledger",
+    "topic": "Public accountability",
+    "summary": "Make spending decisions and contract changes easier to inspect.",
+    "provenance": "Invented Helios-inspired proposal for interface testing; not a real bill introduced today.",
+    "initial": {
+      "text": "Publish every public contract and supplier document immediately in a searchable public ledger, including all contact and bank details.",
+      "effects": {
+        "affordability": 0.18,
+        "equity": 0.24,
+        "privacy": -0.82,
+        "environment": 0.02,
+        "cost": 0.61,
+        "delivery": 0.15
+      }
+    },
+    "amendment": {
+      "text": "Publish public contracts, awards and amendments in a searchable ledger. Redact personal and bank details, show reasons for redactions, and allow independent review of withheld records.",
+      "summary": "Redact sensitive details and add review; moderation costs and slower publication trade off against privacy.",
+      "effects": {
+        "affordability": 0.14,
+        "equity": 0.33,
+        "privacy": 0.52,
+        "environment": 0.02,
+        "cost": 0.3,
+        "delivery": -0.1
+      }
+    },
+    "evidence": {
+      "summary": "Scenario assumption: detailed publication helps inspection but unredacted records expose sensitive data. Model weights express the tradeoff, not measured savings.",
+      "quality": 0.75,
+      "adjustments": {
+        "affordability": 0.02,
+        "equity": 0.02,
+        "privacy": -0.1,
+        "environment": 0,
+        "cost": -0.05,
+        "delivery": -0.09
+      }
+    }
+  }
+]

@@ -4,6 +4,7 @@ const catalog=JSON.parse(readFileSync(new URL('../../data/catalog.json',import.m
 test('canonical deep link, versioned revisions, local edits and matched synthetic vote',async({page},testInfo)=>{
  await page.addInitScript(()=>Object.defineProperty(navigator,'gpu',{value:undefined,configurable:true}));
  await page.route('**/api/law-board',route=>route.fulfill({json:{storage:'supabase-postgres',records:catalog.goals.map(law=>({law:{...law,version:2,versionId:'rev-'+law.id},votes:{support:999}}))}}));
+ await page.emulateMedia({reducedMotion:'reduce'});
  await page.setViewportSize({width:1440,height:1000});
  await page.goto('/public/consensus-world.html?law=HGA-031&version=rev-HGA-031');
  await expect(page.locator('#draft-source')).toContainText('HGA-031 · shared revision 2');
@@ -46,4 +47,32 @@ test('law atlas links the selected canonical law into Consensus World',async({pa
  await expect(page.locator('#law-consensus-world')).toHaveAttribute('href','./public/consensus-world.html?law=HGA-031');
  await page.locator('#law-consensus-world').click();
  await expect(page.locator('#draft-source')).toContainText('HGA-031');
+});
+
+test('particle sphere and measured tally stay separate, with keyboard-accessible inspection',async({page})=>{
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await page.addInitScript(()=>Object.defineProperty(navigator,'gpu',{value:undefined,configurable:true}));
+ await page.route('**/api/law-board',r=>r.fulfill({status:503,body:'Unavailable'}));
+ await page.goto('/public/consensus-world.html?law=HGA-031');
+ await expect(page.locator('#draft-source')).toContainText('HGA-031');
+ await expect(page.getByRole('heading',{name:'One proposal. Many perspectives.'})).toBeVisible();
+ await expect(page.locator('#particles')).toBeVisible();
+ await expect(page.locator('#globe-motion')).toHaveAttribute('aria-pressed','true');
+ await page.locator('#globe-motion').click();
+ await expect(page.locator('#globe-motion')).toHaveAttribute('aria-pressed','false');
+ await page.locator('#globe-motion').click();
+ await page.locator('#meet-voter').click();
+ await expect(page.locator('#agent-result')).toContainText('preview; not yet counted');
+ await page.locator('#run').click();
+ await expect(page.locator('#status')).toContainText('round complete');
+ await expect(page.locator('#count')).toHaveText('100,000 / 100,000 evaluated');
+ await expect(page.locator('#progress-percent')).toHaveText('100%');
+ await expect(page.locator('#compute-backend')).toHaveText('CPU fallback');
+ await expect(page.locator('#throughput')).not.toHaveText('— votes / sec');
+ await expect(page.locator('#gpu-memory')).toHaveText('No GPU buffers recorded');
+ await expect(page.locator('#yes-count')).toContainText('yes votes counted');
+ await page.locator('#meet-voter').click();
+ await expect(page.locator('#agent-result')).not.toContainText('preview; not yet counted');
+ await page.setViewportSize({width:390,height:844});
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
