@@ -1,12 +1,12 @@
 import {normalizeClause,sampleBoard} from './constitution-model.js';
 const $=id=>document.getElementById(id);
-const isStatic=document.querySelector('meta[name="helios-mode"]').content==='static';
+const isStatic=document.querySelector('meta[name="helios-mode"]').content==='static'||/^deploy-preview-\d+--heliosailol\.netlify\.app$/.test(location.hostname);
 const create=(tag,text,cls)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e};
 const fmt=n=>Number(n||0).toLocaleString();
 const message=(id,text,error=false)=>{$(id).textContent=text;$(id).classList.toggle('error',error)};
 const groups=[
  ['Start here',[['Participation guide','welcome.html'],['Original multi-tab dashboard','experiments.html'],['Email signup','public/signup.html','https://helioshtml.com/signup']]],
- ['Civic tools',[['Helios AI landing','helios_ai_landing_page.html'],['Helios Hippie','helios_hippie_landing.html'],['Helios Unified','helios-unified.html'],['100 Shared Goals','helios_100_frontend_demo.html','helios_100_frontend_demo.html'],['Plan · Notion','helios_notion_preview.html'],['World Plan Simulator','world_plan_simulator.html'],['Vote Radar','vote_radar.html'],['Neighborhood Consensus','neighborhood_consensus.html'],['Three-Editor Merge','three_editor_merge.html'],['Acts in Orbit','heliosai_acts_orbit.html'],['Support Every Country','support_every_country.html'],['Eight Billion, Five Laws','public/eight-billion-five-laws/index.html'],['Eight Billion Map','eight_billion_map.html'],['Health & Wealth of Nations','health_wealth_of_nations.html']]],
+ ['Civic tools',[['Helios AI landing','helios_ai_landing_page.html'],['Helios Hippie','helios_hippie_landing.html'],['Helios Unified','helios-unified.html'],['100 Shared Goals','helios_100_frontend_demo.html','helios_100_frontend_demo.html'],['100-law atlas and simulations','law-atlas.html'],['Plan · Notion','helios_notion_preview.html'],['World Plan Simulator','world_plan_simulator.html'],['Vote Radar','vote_radar.html'],['Neighborhood Consensus','neighborhood_consensus.html'],['Three-Editor Merge','three_editor_merge.html'],['Acts in Orbit','heliosai_acts_orbit.html'],['Support Every Country','support_every_country.html'],['Eight Billion, Five Laws','public/eight-billion-five-laws/index.html'],['Eight Billion Map','eight_billion_map.html'],['Health & Wealth of Nations','health_wealth_of_nations.html']]],
  ['Worlds & experiments',[['The Missing Amendment · mystery game','public/mystery.html'],['Netherbrain fictional campaign','public/netherbrain.html'],['The Long Coil','long_coil.html'],['Communal Science Lab','communal_science_lab_webgpu%20(1).html'],['MorphLab · WebGPU','morphlab.html'],['MorphLab offline demo','morphlab-offline-demo.html'],['HappyBearLandia Pocket','happybearlandia_pocket.html'],['Digital Pensieve','https://digital-pensieve.fly.dev/'],['Braindance','helios_braindance.html'],['Rainbow Brain Realms','rainbow_brain.html'],['Sunshine for Breakfast','sunshine_breakfast.html'],['Particle interface','heliosai-particle-interface.html'],['Sand Castle','sand_castle.html']]],
  ['Project & operations',[['Mail · Resend (locked operator console)','helios_mail.html'],['YC Research','/proxy/ycr/','pages-ycr.html'],['Fork Helios','helios_fork.html'],['Repository documentation','https://github.com/adnanwahab/Helios.AI/tree/main/docs']]]
 ];
@@ -122,7 +122,7 @@ function drawList(){
 }
 function choose(id){
  if(busy||!rows().some(r=>r.id===id))return;
- if(id!==selected){if($('clause-comment').value.trim()&&!confirm('Switch clauses and clear your unsent comment?'))return;$('clause-comment').value='';$('comment-consent').checked=false;message('comment-status','');message('clause-status','')}
+ if(id!==selected){if($('clause-comment').value.trim()&&!confirm('Switch clauses and clear your unsent comment?'))return;$('clause-comment').value='';$('comment-consent').checked=false;$('comment-auto-consent').checked=false;message('comment-status','');message('clause-status','')}
  selected=id;drawList();drawReview();
 }
 function drawReview(){
@@ -138,7 +138,7 @@ function drawReview(){
  const data=connected?row.comments:(practiceComments.get(row.id)||[]);
  if(!data.length)comments.append(create('p',connected?'No visible comments yet.':'No practice comments yet.','hint'));
  for(const item of data){const card=create('div',item.text,'comment-card');card.append(create('small',item.status==='pending'?'Your comment · pending moderation':item.status==='practice'?'Practice · not public':'Approved public comment'));comments.append(card)}
- $('review-mode').textContent=connected?'Shared':'Practice';$('comment-consent-wrap').hidden=!connected;$('contribution-consent-wrap').hidden=!connected;
+ $('review-mode').textContent=connected?'Shared':'Practice';$('comment-consent-wrap').hidden=!connected;$('contribution-consent-wrap').hidden=!connected;$('comment-auto-consent-wrap').hidden=!connected;$('clause-auto-consent-wrap').hidden=!connected;
  $('post-comment').textContent=connected?'Submit comment for review':'Add practice comment';
  $('contribute-clause').textContent=connected?'Submit public clause':'Add to practice draft';
  $('post-comment').disabled=busy;$('contribute-clause').disabled=busy;
@@ -171,6 +171,12 @@ $('board-connect').addEventListener('click',async()=>{
 });
 $('board-refresh').addEventListener('click',refresh);
 setInterval(()=>{if(connected&&!document.hidden)refresh()},20000);
+// Offer the optional fast safety check without changing the existing public consent.
+for(const [existing, id] of [['comment-consent','comment-auto-consent'],['contribution-consent','clause-auto-consent']]){
+ const original=$(existing), label=document.createElement('label'), input=document.createElement('input');
+ input.type='checkbox';input.id=id;label.append(input,document.createTextNode(' Allow OpenAI to screen this exact public text for automatic safety approval (otherwise human review).'));
+ label.id=id+'-wrap';label.className='consent';label.hidden=true;original.parentElement.after(label);
+}
 async function write(action,data,statusId,onSuccess){
  if(!connected||busy)return;
  if(refreshing){message(statusId,'Refreshing the shared board. Please try again in a moment.');return}
@@ -181,7 +187,7 @@ async function write(action,data,statusId,onSuccess){
  try{
    const session=await request('/api/session');csrf=session.csrfToken;
    result=await request('/api/constitution/'+action,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrf,'Idempotency-Key':lastWrite.key},body});
-   lastWrite=null;onSuccess(result);message(statusId,action==='vote'?'Position recorded.':action==='comment'?'Comment submitted for moderation.':result.status==='pending'?'Clause submitted for moderation.':'Contribution grouped with the existing clause.');
+   lastWrite=null;onSuccess(result);message(statusId,action==='vote'?'Position recorded.':result.status==='approved'&&result.moderation==='unflagged'?'Safety check passed; published for discussion.':result.status==='pending'?'Saved · pending moderation.':action==='comment'?'Comment saved.':'Contribution grouped with the existing clause.');
  }catch(e){message(statusId,'Submission not confirmed: '+e.message+' · retry unchanged to reuse the request key.',true)}
  finally{busy=false;drawReview();if(result)await refresh()}
 }
@@ -197,24 +203,24 @@ $('clear-vote').addEventListener('click',()=>{
 });
 $('post-comment').addEventListener('click',()=>{
  const row=current(),text=$('clause-comment').value.trim();if(!row||busy||!text)return message('comment-status','Write a comment first.',true);
- if(connected){if(!$('comment-consent').checked)return message('comment-status','Confirm the exact public comment before submitting.',true);write('comment',{clauseId:row.id,text,consent:true},'comment-status',()=>{$('clause-comment').value='';$('comment-consent').checked=false})}
+ if(connected){if(!$('comment-consent').checked)return message('comment-status','Confirm the exact public comment before submitting.',true);write('comment',{clauseId:row.id,text,consent:true,...($('comment-auto-consent').checked?{autoModerationConsent:true}:{})},'comment-status',()=>{$('clause-comment').value='';$('comment-consent').checked=false;$('comment-auto-consent').checked=false})}
  else{const list=practiceComments.get(row.id)||[];list.unshift({text,status:'practice'});practiceComments.set(row.id,list.slice(0,8));$('clause-comment').value='';drawReview();message('comment-status','Practice comment added. Nothing was sent.')}
 });
-$('clause-comment').addEventListener('input',()=>$('comment-consent').checked=false);
+$('clause-comment').addEventListener('input',()=>{$('comment-consent').checked=false;$('comment-auto-consent').checked=false});
 const emptyTally=()=>({support:0,oppose:0,unsure:0,contributors:0,commentCount:0});
 function updateDedupe(){
  const text=$('new-clause').value.trim();const hit=text&&rows().find(r=>normalizeClause(r.text)===normalizeClause(text));
  $('dedupe-hint').textContent=!text?'':hit?'Same normalized wording as '+hit.id+' — this will join the existing clause instead of creating a duplicate.':'New wording · separate clause; no semantic equivalence assumed.';
 }
-$('new-clause').addEventListener('input',()=>{$('contribution-consent').checked=false;updateDedupe()});
+$('new-clause').addEventListener('input',()=>{$('contribution-consent').checked=false;$('clause-auto-consent').checked=false;updateDedupe()});
 $('use-concern').addEventListener('click',()=>{
  const first=$('journal').value.trim().split(/(?<=[.!?])\s+|\n/)[0];if(!first)return message('contribution-status','Write a private concern first.',true);
  if($('new-clause').value.trim()&&!confirm('Replace your unsent clause draft?'))return;
- $('new-clause').value=first.slice(0,280);$('contribution-consent').checked=false;updateDedupe();$('new-clause').focus();
+ $('new-clause').value=first.slice(0,280);$('contribution-consent').checked=false;$('clause-auto-consent').checked=false;updateDedupe();$('new-clause').focus();
 });
 $('contribute-clause').addEventListener('click',()=>{
  const text=$('new-clause').value.trim();if(!text||busy)return message('contribution-status','Write a short clause first.',true);
- if(connected){if(!$('contribution-consent').checked)return message('contribution-status','Confirm the exact public wording before submitting.',true);write('contribute',{text,consent:true},'contribution-status',()=>{$('new-clause').value='';$('contribution-consent').checked=false})}
+ if(connected){if(!$('contribution-consent').checked)return message('contribution-status','Confirm the exact public wording before submitting.',true);write('contribute',{text,consent:true,...($('clause-auto-consent').checked?{autoModerationConsent:true}:{})},'contribution-status',()=>{$('new-clause').value='';$('contribution-consent').checked=false;$('clause-auto-consent').checked=false})}
  else{const hit=rows().find(r=>normalizeClause(r.text)===normalizeClause(text));if(hit){choose(hit.id);message('contribution-status','Matched existing wording. No duplicate clause added.')}
  else{const id='P-'+crypto.randomUUID();practiceClauses.set(id,{id,topic:'Your practice contribution',text,source:'practice',synthetic:{mentions:0,support:0,oppose:0,unsure:0},live:emptyTally(),comments:[]});choose(id);message('contribution-status','Added to your practice draft only.')}
  $('new-clause').value='';updateDedupe()}

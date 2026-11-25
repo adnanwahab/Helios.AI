@@ -6,7 +6,8 @@ export const CONSTITUTION_SCHEMA=[
  'CREATE TABLE IF NOT EXISTS constitution_contributions(clause_id TEXT NOT NULL, actor TEXT NOT NULL, PRIMARY KEY(clause_id,actor))',
  'CREATE TABLE IF NOT EXISTS constitution_votes(clause_id TEXT NOT NULL, actor TEXT NOT NULL, position TEXT NOT NULL CHECK(position IN (\'support\',\'oppose\',\'unsure\')), PRIMARY KEY(clause_id,actor))',
  'CREATE TABLE IF NOT EXISTS constitution_comments(id TEXT PRIMARY KEY, clause_id TEXT NOT NULL, author TEXT NOT NULL, text TEXT NOT NULL, status TEXT NOT NULL CHECK(status IN (\'pending\',\'approved\',\'rejected\')), created_at TEXT NOT NULL)',
- 'CREATE INDEX IF NOT EXISTS constitution_comment_lookup ON constitution_comments(clause_id,status,created_at)'
+ 'CREATE INDEX IF NOT EXISTS constitution_comment_lookup ON constitution_comments(clause_id,status,created_at)',
+ 'CREATE TABLE IF NOT EXISTS constitution_auto_moderation(kind TEXT NOT NULL, record_id TEXT NOT NULL, decision TEXT NOT NULL, reason TEXT NOT NULL, model TEXT, request_id TEXT, created_at TEXT NOT NULL, PRIMARY KEY(kind,record_id))'
 ];
 const byId=new Map(syntheticRows.map(r=>[r.id,r]));
 const byText=new Map(syntheticRows.map(r=>[normalizeClause(r.text),r]));
@@ -50,7 +51,7 @@ export function constitutionStore(db,Problem){
    return {clauseId:input.clauseId,position:input.position};
  }
  async function contribute(q,input,actor){
-   shape(input,['text','consent']);if(input.consent!==true)fail(400,'Explicit public contribution consent required.');
+   shape(input,['text','consent','autoModerationConsent']);if(input.consent!==true)fail(400,'Explicit public contribution consent required.');
    const text=validateText(input.text,280),key=normalizeClause(text),seed=byText.get(key);
    const id=seed?.id||'C-'+createHash('sha256').update(key).digest('hex');
    let status='approved', deduplicated=!!seed;
@@ -64,7 +65,7 @@ export function constitutionStore(db,Problem){
    return {clauseId:id,status,deduplicated};
  }
  async function comment(q,input,actor){
-   shape(input,['clauseId','text','consent']);if(input.consent!==true)fail(400,'Explicit public comment consent required.');await visible(q,input.clauseId);
+   shape(input,['clauseId','text','consent','autoModerationConsent']);if(input.consent!==true)fail(400,'Explicit public comment consent required.');await visible(q,input.clauseId);
    const text=validateText(input.text,500),id=randomUUID();
    await q.query("INSERT INTO constitution_comments(id,clause_id,author,text,status,created_at) VALUES($1,$2,$3,$4,'pending',$5)",[id,input.clauseId,actor,text,new Date().toISOString()]);
    return {id,clauseId:input.clauseId,status:'pending'};
@@ -80,5 +81,24 @@ export function constitutionStore(db,Problem){
    const row=(await q.query("UPDATE "+table+" SET status=$1 WHERE id=$2 AND status='pending' RETURNING id,status",[input.decision,input.id])).rows[0];
    if(!row)fail(404,'Pending record not found.');return row;
  }
- return {board,vote,contribute,comment,moderationQueue,moderate};
+ // Re-read stored text before screening. Never send journals or session identifiers.
+ async function autoModerate(kind,id,text,classify){
+   const table=kind==='clause'?'constitution_clauses':kind==='comment'?'constitution_comments':null;
+   if(!table)return {status:'pending'};
+   const row=(await db.query('SELECT text,status FROM '+table+' WHERE id=$1',[id])).rows[0];
+   if(!row||row.status!=='pending'||row.text!==text)return {status:row?.status||'pending'};
+   const prior=(await db.query('SELECT reason FROM constitution_auto_moderation WHERE kind=$1 AND record_id=$2',[kind,id])).rows[0];
+   if(prior)return {status:'pending',reason:prior.reason};
+   const verdict=await classify(row.text);
+   return db.transaction(async q=>{
+     // Manual decisions always win; store a bounded audit record without the text.
+     const current=(await q.query('SELECT text,status FROM '+table+' WHERE id=$1 FOR UPDATE',[id])).rows[0];
+     if(!current||current.status!=='pending'||current.text!==text)return {status:current?.status||'pending'};
+     const attempt=(await q.query('INSERT INTO constitution_auto_moderation(kind,record_id,decision,reason,model,request_id,created_at) VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT(kind,record_id) DO NOTHING RETURNING record_id',[kind,id,verdict.decision,verdict.reason,verdict.model||null,verdict.requestId||null,new Date().toISOString()])).rows[0];
+     if(!attempt||verdict.decision!=='approve')return {status:'pending',reason:verdict.reason};
+     await q.query("UPDATE "+table+" SET status='approved' WHERE id=$1 AND status='pending'",[id]);
+     return {status:'approved',reason:'unflagged'};
+   });
+ }
+ return {board,vote,contribute,comment,moderationQueue,moderate,autoModerate};
 }
