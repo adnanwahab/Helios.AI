@@ -245,6 +245,27 @@ try {
     await page.locator('#scene-title').scrollIntoViewIfNeeded();
     await page.screenshot({path:join(output,'rainbow-pensieve-mobile.png'),animations:'disabled'});
   }
+  // The bottom law workshop is read-only during screenshot capture.
+  await page.goto(base + '/', {waitUntil:'domcontentloaded'});
+  if(await page.locator('#linked-laws').count()){
+    await page.setViewportSize({width:1440,height:900});
+    await page.locator('#ll-tiles .ll-tile').first().waitFor({state:'visible',timeout:30000});
+    await page.locator('#linked-laws').scrollIntoViewIfNeeded();
+    await page.screenshot({path:join(output,'linked-laws-desktop.png'),animations:'disabled'});
+    if(await page.locator('#ll-propose').isEnabled()){
+      await page.locator('#ll-propose').click();
+      await page.locator('#ll-problem').fill('Bus stops need shade and accessible seating.');
+      await page.locator('#ll-change').fill('Pilot shaded neighborhood bus stops.');
+      await page.screenshot({path:join(output,'linked-laws-quiz.png'),animations:'disabled'});
+      await page.locator('#ll-manual').click();
+      await page.locator('#ll-draft-chart').scrollIntoViewIfNeeded();
+      await page.screenshot({path:join(output,'linked-laws-draft.png'),animations:'disabled'});
+      await page.locator('#ll-close').click();
+    }
+    await page.setViewportSize({width:390,height:844});
+    await page.locator('#ll-title').scrollIntoViewIfNeeded();
+    await page.screenshot({path:join(output,'linked-laws-mobile.png'),animations:'disabled'});
+  }
   console.log('Captured desktop and mobile screenshots from ' + (remote ? 'Netlify deployment' : 'local PR build'));
 } finally {
   await browser?.close().catch(() => {});
