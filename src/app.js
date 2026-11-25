@@ -105,7 +105,9 @@ export function createApp({store, email, notion = null, morphlab = null, lawDraf
     }
     if (method === 'GET' && path === '/api/constitution') {
       const session = await store.authenticate(cookie);
-      return response(await store.constitution.board(session?.id));
+      const focus=url.searchParams.get('clause');
+      if(focus!==null&&!/^(?:S-(?:00[1-9]|01[0-2])|C-[a-f0-9]{64})$/.test(focus))throw new Problem(400,'Invalid public clause ID.');
+      return response(await store.constitution.board(session?.id,focus));
     }
     if (method === 'GET' && path === '/api/constitution/moderation') {
       if (!adminToken || !equal(request.headers.get('authorization'), 'Bearer ' + adminToken)) throw new Problem(403, 'Maintainer authorization required.');

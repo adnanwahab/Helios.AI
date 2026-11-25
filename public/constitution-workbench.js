@@ -129,7 +129,7 @@ function requestedUnavailable(){const id=readCivicRoute().clause;return id&&!row
 function selectedBoardPath(){const id=readCivicRoute().clause;return '/api/constitution'+(id?.startsWith('C-')?'?clause='+encodeURIComponent(id):'')}
 
 const practiceVotes=new Map(),practiceComments=new Map(),practiceClauses=new Map();
-function rows(){return connected?board.clauses:[...board.clauses,...practiceClauses.values()]}
+function rows(){return practiceMode?[...board.clauses,...practiceClauses.values()]:board.clauses}
 function current(){return rows().find(x=>x.id===selected)||rows()[0]}
 function syntheticLabel(s){return fmt(s.support)+' support · '+fmt(s.oppose)+' oppose · '+fmt(s.unsure)+' unsure'}
 function liveLabel(l){return fmt(l.support)+' support · '+fmt(l.oppose)+' oppose · '+fmt(l.unsure)+' unsure'}
@@ -149,6 +149,7 @@ function choose(id,{navigate=true}={}){
  if(busy||!rows().some(r=>r.id===id))return;
  const changed=id!==selected;setSelected(id);
  if(navigate)updateCivicRoute({clause:validClause(id)?id:null,...(changed?{law:null}:{}),anchor:'review-title'});
+ if(!navigate)$('clause-search').value='';
  drawList();drawReview(navigate?'user':'history');updateLiveLink();
 }
 function drawReview(navigation='sync'){
@@ -158,7 +159,7 @@ function drawReview(navigation='sync'){
  document.dispatchEvent(new CustomEvent('helios:clause-selected',{detail:{id:row.id,topic:row.topic,text:row.text,source:row.source,navigation}}));
  $('clause-synthetic').textContent=row.source==='synthetic'?'Synthetic: '+syntheticLabel(row.synthetic)+' · '+fmt(row.synthetic.mentions)+' distinct sample participants.':'No synthetic votes for this community clause.';
  const real=$('clause-real');real.replaceChildren(create('strong',connected?'Shared advisory votes (browser sessions)':practiceMode?'Practice only · no shared votes loaded':connecting?'Loading shared review…':'Shared database unavailable'),create('span',connected?liveLabel(row.live)+' · '+fmt(row.live.contributors)+' opted-in contributions':practiceMode?'Your choices here are not sent or counted publicly.':'No votes or comments will be saved until the connection is restored.'));
- const position=connected?row.myVote:practiceVotes.get(row.id);
+ const position=connected?row.myVote:practiceMode?practiceVotes.get(row.id):null;
  for(const b of document.querySelectorAll('[data-clause-vote]')){b.setAttribute('aria-pressed',String(position===b.dataset.clauseVote));b.disabled=blocked()}
  $('clear-vote').disabled=blocked();
  const comments=$('clause-comments');comments.replaceChildren();
@@ -171,7 +172,7 @@ function drawReview(navigation='sync'){
  $('post-comment').disabled=blocked();$('contribute-clause').disabled=blocked();
 }
 function drawPending(){
- const node=$('pending-clauses');node.replaceChildren();node.hidden=!board.pending?.length;
+ const node=$('pending-clauses');node.replaceChildren();node.hidden=!connected||!board.pending?.length;if(!connected)return;
  for(const p of board.pending||[])node.append(create('p','Pending moderation: '+p.text));
 }
 function draw(){
@@ -207,14 +208,14 @@ async function refresh(){
  finally{refreshing=false;$('board-refresh').disabled=false}
 }
 function enterPractice({navigate=true}={}){
- ++connectionEpoch;connected=false;connecting=false;practiceMode=true;board=sampleBoard();
+ ++connectionEpoch;connected=false;connecting=false;practiceMode=true;board=sampleBoard();$('comment-consent').checked=false;$('comment-auto-consent').checked=false;$('contribution-consent').checked=false;$('clause-auto-consent').checked=false;
  if(navigate)updateCivicRoute({practice:true});
  applyRequestedClause();draw();updatePulse();
  message('board-status',isStatic?'Preview practice · no shared review writes. Use the live app to save votes and comments.':'Private practice · votes and comments stay in this page only. Join shared review to save new activity.');
 }
 function leavePractice({navigate=true}={}){
  if(isStatic||busy)return;
- practiceMode=false;
+ if(practiceMode)board=sampleBoard();practiceMode=false;$('comment-consent').checked=false;$('comment-auto-consent').checked=false;$('contribution-consent').checked=false;$('clause-auto-consent').checked=false;
  if(navigate)updateCivicRoute({practice:false});
  connect({restoreScroll:true});
 }
@@ -250,7 +251,7 @@ async function write(action,data,statusId,onSuccess){
    result=await request('/api/constitution/'+action,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrf,'Idempotency-Key':lastWrite.key},body});
    lastWrite=null;onSuccess(result);message(statusId,action==='vote'?'Position recorded in the database.':result.status==='approved'&&result.moderation==='unflagged'?'Safety check passed; published for discussion.':result.status==='pending'?'Saved to database · pending moderation.':action==='comment'?'Comment saved.':'Contribution grouped with the existing clause.');
  }catch(e){message(statusId,'Submission not confirmed: '+e.message+' · retry unchanged to reuse the request key.',true)}
- finally{busy=false;drawReview();if(result)await refresh();const id=readCivicRoute().clause;if(id&&id!==selected)restoreClauseRoute()}
+ finally{busy=false;drawReview();if(result)await refresh();const route=readCivicRoute();if((route.clause&&route.clause!==selected)||(!isStatic&&route.practice!==practiceMode))restoreClauseRoute()}
 }
 for(const b of document.querySelectorAll('[data-clause-vote]'))b.addEventListener('click',()=>{
  const row=current(),position=b.dataset.clauseVote;if(!row||blocked())return;
@@ -265,7 +266,7 @@ $('clear-vote').addEventListener('click',()=>{
 $('post-comment').addEventListener('click',()=>{
  const row=current(),text=$('clause-comment').value.trim();if(blocked())return;if(!row||!text)return message('comment-status','Write a comment first.',true);
  if(connected){if(!$('comment-consent').checked)return message('comment-status','Confirm the exact public comment before submitting.',true);write('comment',{clauseId:row.id,text,consent:true,...($('comment-auto-consent').checked?{autoModerationConsent:true}:{})},'comment-status',()=>{$('clause-comment').value='';commentDrafts.delete(row.id);$('comment-consent').checked=false;$('comment-auto-consent').checked=false})}
- else{const list=practiceComments.get(row.id)||[];list.unshift({text,status:'practice'});practiceComments.set(row.id,list.slice(0,8));$('clause-comment').value='';drawReview();message('comment-status','Practice comment added. Nothing was sent.')}
+ else{const list=practiceComments.get(row.id)||[];list.unshift({text,status:'practice'});practiceComments.set(row.id,list.slice(0,8));$('clause-comment').value='';commentDrafts.delete(row.id);drawReview();message('comment-status','Practice comment added. Nothing was sent.')}
 });
 $('clause-comment').addEventListener('input',()=>{$('comment-consent').checked=false;$('comment-auto-consent').checked=false});
 const emptyTally=()=>({support:0,oppose:0,unsure:0,contributors:0,commentCount:0});

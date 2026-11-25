@@ -41,8 +41,11 @@ export async function forwardCivic(request,context,{fetchImpl=fetch}={}){
    out.set('X-CSRF-Token',request.headers.get('x-csrf-token'));out.set('Idempotency-Key',key);
  }
  try{
-   // No arbitrary query string is needed by the allowlisted endpoints.
-   const upstream=await fetchImpl(FLY_ORIGIN+path,{method,headers:out,body,redirect:'manual',signal:AbortSignal.timeout(path==='/api/law-drafts/generate'?28000:10000)});
+   // Only a validated public clause identifier may be forwarded, never arbitrary search or journal text.
+   const focus=method==='GET'&&path==='/api/constitution'?url.searchParams.get('clause'):null;
+   if(focus!==null&&!/^(?:S-(?:00[1-9]|01[0-2])|C-[a-f0-9]{64})$/.test(focus))return json({error:'Invalid public clause ID.'},400);
+   const suffix=focus===null?'':'?clause='+encodeURIComponent(focus);
+   const upstream=await fetchImpl(FLY_ORIGIN+path+suffix,{method,headers:out,body,redirect:'manual',signal:AbortSignal.timeout(path==='/api/law-drafts/generate'?28000:10000)});
    if(upstream.status===404&&path.startsWith('/api/constitution'))return unavailable('The shared constitution API is not deployed yet. Practice mode is available.');
    if(upstream.status>=500||upstream.status>=300&&upstream.status<400)return unavailable();
    if(!upstream.headers.get('content-type')?.toLowerCase().includes('application/json'))return unavailable('The shared civic backend returned an unexpected response.');

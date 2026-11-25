@@ -23,10 +23,10 @@ export function constitutionStore(db,Problem){
    if(!(await q.query("SELECT id FROM constitution_clauses WHERE id=$1 AND status='approved'",[id])).rows[0])fail(404,'Clause not found.');
    return true;
  }
- async function board(actor=null){
+ async function board(actor=null,focus=null){
    const result=sampleBoard();
    const [clauses,votes,contributions,commentCounts,comments,ownVotes,pending]=await Promise.all([
-     db.query("SELECT id,text,status FROM constitution_clauses WHERE status='approved' ORDER BY created_at,id LIMIT 200"),
+     db.query("SELECT id,text,status FROM constitution_clauses WHERE status='approved' ORDER BY CASE WHEN id=$1 THEN 0 ELSE 1 END,created_at,id LIMIT 200",[focus||'']),
      db.query('SELECT clause_id,position,COUNT(*) AS n FROM constitution_votes GROUP BY clause_id,position'),
      db.query('SELECT clause_id,COUNT(*) AS n FROM constitution_contributions GROUP BY clause_id'),
      db.query("SELECT clause_id,COUNT(*) AS n FROM constitution_comments WHERE status='approved' GROUP BY clause_id"),

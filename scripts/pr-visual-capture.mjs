@@ -111,7 +111,7 @@ try {
     await page.screenshot({path: join(output, 'citizen-feedback.png'), fullPage: true, animations: 'disabled'});
   }
   if (await page.locator('#docs-open').count()) {
-    await page.goto(base + '/', {waitUntil:'domcontentloaded'});
+    await page.goto(base + '/?review=practice', {waitUntil:'domcontentloaded'});
     await page.locator('#constitution-list .clause-card').first().waitFor({state:'visible'});
     await page.locator('#journal').fill('Our bus stops need accessible shade. Everyone should have a comfortable commute.');
     await page.locator('#review-match').click();
