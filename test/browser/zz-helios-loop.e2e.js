@@ -21,7 +21,7 @@ test('mobile journal stays private, public draft is editable and explicit consen
  await expect(page.locator('#screen-2')).toBeHidden();
  await expect(page.locator('#screen-3')).toBeHidden();
  await draft(page);
- expect(requests.filter(r=>!(r.method==='GET'&&!r.body&&/^\/api\/(catalog|laws\/[A-Z0-9-]+)$/i.test(new URL(r.url).pathname)&&!new URL(r.url).search))).toEqual([]);
+ expect(requests.filter(r=>!(r.method==='GET'&&!r.body&&/^\/api\/(catalog|constitution|laws\/[A-Z0-9-]+)$/i.test(new URL(r.url).pathname)&&!new URL(r.url).search))).toEqual([]);
  await expect(page.locator('#publish')).toBeDisabled();
  await page.locator('#consent').check();
  await expect(page.locator('#publish')).toBeEnabled();

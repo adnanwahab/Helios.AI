@@ -39,3 +39,14 @@ test('upstream outage and old Fly releases return explicit 503, not fake counts 
    expect(response.status).toBe(503);expect((await response.json()).code).toBe('SHARED_BACKEND_UNAVAILABLE');
  }
 });
+
+test('gateway forwards only a validated public clause ID for a deep link',async()=>{
+ let url;
+ const fetchImpl=async u=>{url=u;return Response.json({clauses:[]})};
+ const id='C-'+'a'.repeat(64);
+ const response=await forwardCivic(new Request(origin+'/api/constitution?clause='+id+'&journal=PRIVATE'),context,{fetchImpl});
+ expect(response.status).toBe(200);
+ expect(url).toBe(FLY_ORIGIN+'/api/constitution?clause='+id);
+ const invalid=await forwardCivic(new Request(origin+'/api/constitution?clause=private%20text'),context,{fetchImpl});
+ expect(invalid.status).toBe(400);
+});

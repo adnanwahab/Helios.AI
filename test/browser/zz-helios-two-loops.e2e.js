@@ -41,7 +41,7 @@ test('citizen finds an existing public record locally and previews a complete go
  await completeReview(page);
  await expect(page.locator('#decision-panel')).toBeVisible();
  // The new workshop performs one additional public catalog GET on page load.
- expect(api).toHaveLength(2);expect(api.every(r=>r.url===new URL('/api/catalog',page.url()).href&&r.method==='GET'&&r.body===null)).toBe(true);
+ expect(api.filter(r=>new URL(r.url).pathname==='/api/catalog')).toHaveLength(2);expect(api.filter(r=>new URL(r.url).pathname==='/api/constitution')).toHaveLength(1);expect(api.every(r=>['/api/catalog','/api/constitution'].includes(new URL(r.url).pathname)&&r.method==='GET'&&r.body===null&&!new URL(r.url).search)).toBe(true);
  expect(JSON.stringify(api)).not.toContain('PRIVATE-JOURNAL-SENTINEL');
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  await page.locator('#mode-government').click();
