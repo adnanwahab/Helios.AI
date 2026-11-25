@@ -130,6 +130,7 @@ $('childcare-draft-button').addEventListener('click',()=>{
 function drawDetail({resetDraft=true}={}){
  const row=current(),law=row?.law;if(!law)return;
  const draft=isCannabisDraft();
+ const lab=$('law-consensus-world'),params=new URLSearchParams({law:law.id});if(connected&&!draft&&law.versionId)params.set('version',law.versionId);lab.href='./public/consensus-world.html?'+params.toString();lab.hidden=false;
  for(const id of ['law-votes','law-vote-controls','law-generic-sim','law-history-section','law-update-section'])$(id).hidden=draft;
  if(draft){
   $('law-id').textContent='Featured law 01 · New draft';$('law-title').textContent=law.title;$('law-goal').textContent=law.sharedGoal;$('law-version').textContent='Unpublished draft';
