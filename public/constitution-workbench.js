@@ -130,6 +130,7 @@ function drawReview(){
  const row=current();if(!row)return;selected=row.id;
  $('clause-topic').textContent=row.topic+' · '+row.id.slice(0,18)+(row.id.length>18?'…':'');
  $('clause-text').textContent=row.text;
+ const ideLink=$('government-ide-link');if(ideLink){ideLink.href=row.source==='practice'?'/constitution':'/constitution?community='+encodeURIComponent(row.id);ideLink.textContent=row.source==='practice'?'Open workspace (practice clause is not transferable) ↗':'Open linked constitution workspace ↗';}
  $('clause-synthetic').textContent=row.source==='synthetic'?'Synthetic: '+syntheticLabel(row.synthetic)+' · '+fmt(row.synthetic.mentions)+' distinct sample participants.':'No synthetic votes for this community clause.';
  const real=$('clause-real');real.replaceChildren(create('strong',connected?'Shared advisory votes (accounts + guests)':'Practice only · no shared votes loaded'),create('span',connected?liveLabel(row.live)+' · '+fmt(row.live.contributors)+' opted-in contributions':'Your choices here are not sent or counted publicly.'));
  const position=connected?row.myVote:practiceVotes.get(row.id);
