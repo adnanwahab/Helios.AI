@@ -77,6 +77,8 @@ function updateDraft(){
 function drawDetail({resetDraft=true}={}){
  const row=current(),law=row?.law;if(!law)return;
  const spec=modelFor(law);$('law-id').textContent=law.id+' · '+law.category;
+ const ide=$('atlas-ide-link');if(ide){const p=new URLSearchParams({law:law.id,clause:'implementation'});if(connected&&law.versionId)p.set('revision',law.versionId);ide.href='/constitution?'+p.toString()}
+
  $('law-title').textContent=law.title;$('law-goal').textContent=law.sharedGoal;
  const assemblyChapter={'HGA-012':'homes','HGA-051':'places','HGA-091':'water'}[law.id],assemblyLink=$('law-assembly-selected');
  if(assemblyLink){

@@ -9,7 +9,7 @@ const preview=/^deploy-preview-\d+--heliosailol\.netlify\.app$/.test(location.ho
 const routePath='/constitution';
 let laws=new Map(),community=new Map(sampleBoard().clauses.map(r=>[r.id,r])),connected=false,busy=false,selection=null,history=null,historyTicket=0,tab='discussion',lastWrite=null;
 const practiceVotes=new Map(),practiceComments=new Map(),practiceUpdates=new Map(),drafts=new Map(),scenarios=new Map();
-const related={'S-001':['HGA-093','HGA-095'],'S-002':['HGA-011','HGA-012'],'S-003':['HGA-051','HGA-052'],'S-004':['HGA-040','HGA-039'],'S-005':['HGA-075'],'S-006':['HGA-081'],'S-007':['HGA-027'],'S-009':['HGA-091'],'S-010':['HGA-078'],'S-011':['HGA-095'],'S-012':['HGA-011','HGA-012']};
+const related={'S-001':['HGA-093','HGA-095'],'S-002':['HGA-011','HGA-012'],'S-003':['HGA-051','HGA-052'],'S-004':['HGA-040','HGA-039'],'S-005':['HGA-076','HGA-077'],'S-006':['HGA-081'],'S-007':['HGA-027'],'S-009':['HGA-096'],'S-010':['HGA-078'],'S-011':['HGA-095'],'S-012':['HGA-011','HGA-012']};
 const initial={kind:'law',id:'HGA-012',field:'implementation',revision:null};
 function readRoute(){
  const p=new URLSearchParams(location.search);
@@ -39,13 +39,16 @@ function navigate(s,{replace=false,fromPop=false,keepQuery=false}={}){
  if(!fromPop){if(s.kind==='law'&&!s.revision&&connected)s={...s,revision:laws.get(s.id).law.versionId};const next=href(s);if(location.pathname+location.search!==next)window.history[replace?'replaceState':'pushState'](null,'',next)}
  selection=s;history=null;historyTicket++;tab='discussion';$('edit-form').hidden=true;$('edit-toggle').setAttribute('aria-expanded','false');
  if(!keepQuery){$('search').value='';$('category').value=''}
- status('editor-status','');status('review-status','');render();if(connected&&s.kind==='law')loadHistory();
+ status('editor-status','');status('review-status','');render();
+ const tree=$('tree'),active=tree.querySelector('.clause[aria-current=true]')||tree.querySelector('.law[aria-current=true]');if(active){const box=tree.getBoundingClientRect(),item=active.getBoundingClientRect();if(item.top<box.top||item.bottom>box.bottom)tree.scrollTop+=item.top-box.top-55;}
+ if(connected&&s.kind==='law')loadHistory();
 }
 function selectLaw(id,f='goal'){if(!busy)navigate({kind:'law',id,field:f,revision:null},{keepQuery:true})}
 function selectCommunity(id){if(!busy)navigate({kind:'community',id,field:null,revision:null},{keepQuery:true})}
 function showDataset(kind){if(busy)return;const id=kind==='law'?(laws.has(selection?.id)?selection.id:initial.id):community.keys().next().value;if(id)kind==='law'?selectLaw(id,initial.field):selectCommunity(id)}
 function treeButton(label,sub,cls,active,click){const b=el('button',undefined,cls);b.type='button';if(sub)b.append(el('small',sub));b.append(document.createTextNode(label));if(active)b.setAttribute('aria-current','true');b.disabled=busy;b.addEventListener('click',click);return b}
 function renderTree(){
+ if(!selection)return;
  const root=$('tree'),query=$('search').value.trim().toLowerCase(),cat=$('category').value,kind=selection.kind;
  root.replaceChildren();$('show-laws').setAttribute('aria-pressed',String(kind==='law'));$('show-community').setAttribute('aria-pressed',String(kind==='community'));$('category').hidden=kind==='community';
  let count=0;
@@ -155,7 +158,7 @@ async function shared(){
  laws=new Map(board.records.map(r=>[r.law.id,r]));community=new Map(clauses.clauses.map(r=>[r.id,r]));connected=true;$('mode').textContent=local?'Local test database':'Shared Supabase';
 }
 async function connect(){
- if(busy||preview)return;saveDraft();busy=true;render();status('connection-status','Loading shared law revisions and community clauses…');
+ if(busy||preview||!selection)return;saveDraft();$('edit-form').hidden=true;$('edit-toggle').setAttribute('aria-expanded','false');busy=true;render();status('connection-status','Loading shared law revisions and community clauses…');
  try{await request('/api/session');await shared();let s=selection;
   if(!valid(s)){s=initial;status('connection-status','Requested record is not visible; showing the editorial default.',true)}
   else status('connection-status','Shared advisory counts loaded. Practice activity was not uploaded.');
@@ -222,7 +225,7 @@ window.addEventListener('popstate',()=>{const s=readRoute();if(busy){window.hist
  if(!valid(requested)&&requested.kind==='community'&&!preview){try{await request('/api/session');await shared()}catch{}}
  const s=valid(requested)?requested:initial;
  if(!valid(requested))status('connection-status','Requested record is not available; showing the default proposal.',true);
- else status('connection-status',preview?'Deploy preview · practice only, no shared writes.':'Practice mode · connect explicitly to load and review shared data.');
+ else status('connection-status',connected?'Shared record loaded. Advisory positions are per browser session.':preview?'Deploy preview · practice only, no shared writes.':'Practice mode · connect explicitly to load and review shared data.');
  $('mode').textContent=connected?'Shared database':preview?'Preview · practice':'Editorial catalog · practice';
- navigate(s,{replace:true});
+ $('workspace').inert=false;navigate(s,{replace:true});
  }catch(e){status('connection-status','Could not load workspace: '+e.message,true);$('mode').textContent='Catalog unavailable'}})();
