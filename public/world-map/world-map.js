@@ -27,24 +27,41 @@ function validateData(data){
   return data;
 }
 
+function rainbowColor(cell){
+  const lon=cell.lon*Math.PI/180,lat=cell.lat*Math.PI/180;
+  const u=Math.cos(lat)*Math.cos(lon),v=Math.cos(lat)*Math.sin(lon),z=Math.sin(lat);
+  const angle=Math.atan2(z,v),radius=Math.hypot(v,z);
+  // Sixfold petals and radial bands form a fixed, purely decorative palette.
+  // Spherical coordinates join at the date line; scores never enter this color.
+  const phase=radius*2.4+0.22*Math.cos(6*angle)+0.28*u;
+  const hue=((phase*360)%360+360)%360;
+  return 'hsl('+hue.toFixed(1)+' 82% 64%)';
+}
+
 function mount(data){
   const d3=window.d3;
-  const cells=data.cells.map(c=>({...c,values:factorScores(c),score:null,geo:{type:'Polygon',coordinates:[c.boundary]}}));
+  const cells=data.cells.map(c=>({...c,values:factorScores(c),score:null,rainbow:rainbowColor(c),geo:{type:'Polygon',coordinates:[c.boundary]}}));
   const byId=new Map(cells.map(c=>[c.id,c]));
   const initial=readUrlState(location.search,new Set(byId.keys()));
   let weights=initial.weights,selectedId=initial.selectedId,weightSum=0,ordered=[],framePending=false,mapWidth=0;
+  let kaleidoscope=initial.kaleidoscope,colorsPaused=false,mapVisible=false;
+  const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
   document.body.classList.toggle('embedded',initial.embed);
 
   const controls=root.querySelector('.weight-controls');
   const breakdown=root.querySelector('.breakdown');
   const select=document.getElementById('world-hex-choice');
   const stage=root.querySelector('.map-stage');
+  const colorToggle=document.getElementById('kaleidoscope-toggle');
+  const colorPause=document.getElementById('kaleidoscope-pause');
+  const colorStatus=document.getElementById('kaleidoscope-status');
   const svg=d3.select(document.getElementById('world-map'));
   const chart=svg.append('g');
   const sphere=chart.append('path').attr('class','ocean');
   const graticule=chart.append('path').attr('class','graticule');
   const land=chart.append('g');
-  const hexes=chart.append('g');
+  const hexes=chart.append('g').attr('class','hex-layer');
+  const grid=chart.append('g').attr('class','hex-grid').attr('aria-hidden','true');
   const borders=chart.append('g');
   const halo=chart.append('path').attr('class','selection-halo');
   const outline=chart.append('path').attr('class','selection-outline');
@@ -73,10 +90,21 @@ function mount(data){
   }
 
   const landPaths=land.selectAll('path').data(data.countries.features).join('path').attr('class','land');
+  const gridPaths=grid.selectAll('path').data(cells,c=>c.id).join('path').attr('class','hex-border');
   const borderPaths=borders.selectAll('path').data(data.countries.features).join('path').attr('class','country-lines');
   const hexPaths=hexes.selectAll('path').data(cells,c=>c.id).join('path').attr('class','hex').attr('data-cell-id',c=>c.id).on('click',(_,c)=>selectCell(c.id));
   hexPaths.append('title');
   select.addEventListener('change',()=>selectCell(select.value));
+  colorToggle.addEventListener('click',()=>{
+    kaleidoscope=!kaleidoscope;
+    colorsPaused=false;
+    renderColorMode();
+    saveUrl();
+  });
+  colorPause.addEventListener('click',()=>{
+    colorsPaused=!colorsPaused;
+    updateColorMotion();
+  });
 
   function scoreColor(score){
     if(!weightSum) return 'var(--land)';
@@ -85,13 +113,37 @@ function mount(data){
   }
 
   function saveUrl(){
-    const search=stateSearch(weights,selectedId,document.body.classList.contains('embedded'));
+    const search=stateSearch(weights,selectedId,document.body.classList.contains('embedded'),kaleidoscope);
     if(location.search!==search) history.replaceState(null,'',location.pathname+search+location.hash);
     updateFullPageLink();
   }
 
   function updateFullPageLink(){
-    root.querySelector('.full-page-link').href=location.pathname+stateSearch(weights,selectedId);
+    root.querySelector('.full-page-link').href=location.pathname+stateSearch(weights,selectedId,false,kaleidoscope);
+  }
+
+  function updateColorMotion(){
+    const motion=!kaleidoscope?'off':reducedMotion.matches?'reduced':colorsPaused?'paused':document.hidden||!mapVisible?'suspended':'running';
+    root.dataset.colorMotion=motion;
+    colorPause.hidden=!kaleidoscope||reducedMotion.matches;
+    colorPause.textContent=colorsPaused?'Resume colors':'Pause colors';
+    const suffix=motion==='reduced'?' · reduced motion':motion==='paused'?' · paused':'';
+    colorStatus.textContent='Rainbow colors · scores in the details'+suffix;
+    publishSize();
+  }
+
+  function renderColorMode(){
+    root.dataset.colorMode=kaleidoscope?'kaleidoscope':'fit';
+    colorToggle.setAttribute('aria-pressed',String(kaleidoscope));
+    colorToggle.querySelector('.kaleidoscope-state').textContent=kaleidoscope?'On':'Off';
+    root.querySelector('.legend').hidden=kaleidoscope;
+    colorStatus.hidden=!kaleidoscope;
+    hexPaths.attr('fill',c=>kaleidoscope?c.rainbow:scoreColor(c.score));
+    document.getElementById('map-description').textContent=kaleidoscope
+      ?'Land-centered geographic hexagons in decorative rainbow colors. Select a hexagon by clicking or tapping it, or use the location selector below. Suitability scores and explanations remain in the details and update with the sliders.'
+      :'Land-centered geographic hexagons colored by a weighted preference score. Select a hexagon by clicking or tapping it, or use the location selector below. Sliders recalculate the score.';
+    updateColorMotion();
+    updateFullPageLink();
   }
 
   function drawSelection(){
@@ -115,6 +167,7 @@ function mount(data){
     landPaths.attr('d',path);
     borderPaths.attr('d',path);
     hexPaths.attr('d',c=>path(c.geo));
+    gridPaths.attr('d',c=>path(c.geo));
     drawSelection();
     publishSize();
   }
@@ -172,7 +225,7 @@ function mount(data){
       label.querySelector('.influence').textContent=weights[f.key]&&weightSum?share+'% influence':'Ignored';
       input.setAttribute('aria-valuetext',weights[f.key]+' out of 100 importance; '+share+' percent influence');
     }
-    hexPaths.attr('fill',c=>scoreColor(c.score)).attr('data-score',c=>c.score===null?'':c.score.toFixed(2));
+    hexPaths.attr('data-score',c=>c.score===null?'':c.score.toFixed(2));
     hexPaths.select('title').text(c=>c.country+' · '+coordinates(c)+' · '+(weightSum?Math.round(c.score)+'/100 modeled fit':'Unranked'));
     root.querySelector('.empty-state').hidden=Boolean(weightSum);
     root.querySelector('.selection-sort').textContent=weightSum?'· ordered by modeled fit':'· alphabetical while preferences are off';
@@ -190,6 +243,7 @@ function mount(data){
       legend.appendChild(swatch);
     }
     root.dataset.weightSum=String(weightSum);
+    renderColorMode();
     renderSelection();
   }
 
@@ -197,6 +251,22 @@ function mount(data){
   updateScores();
   content.hidden=false;
   drawMap();
+  if(typeof IntersectionObserver==='function') new IntersectionObserver(entries=>{
+    mapVisible=entries[0].isIntersecting;
+    updateColorMotion();
+  }).observe(stage);
+  else {
+    const checkVisibility=()=>{
+      const rect=stage.getBoundingClientRect();
+      mapVisible=rect.bottom>0&&rect.top<innerHeight&&rect.right>0&&rect.left<innerWidth;
+      updateColorMotion();
+    };
+    checkVisibility();
+    window.addEventListener('scroll',checkVisibility,{passive:true});
+    window.addEventListener('resize',checkVisibility);
+  }
+  document.addEventListener('visibilitychange',updateColorMotion);
+  reducedMotion.addEventListener('change',updateColorMotion);
   if(typeof ResizeObserver==='function') new ResizeObserver(()=>{
     if(Math.abs(stage.getBoundingClientRect().width-mapWidth)>.5) drawMap();
     publishSize();
@@ -207,6 +277,8 @@ function mount(data){
     const state=readUrlState(location.search,new Set(byId.keys()));
     weights=state.weights;
     selectedId=state.selectedId;
+    kaleidoscope=state.kaleidoscope;
+    colorsPaused=false;
     document.body.classList.toggle('embedded',state.embed);
     updateScores();
     drawMap();

@@ -8,11 +8,20 @@ This browser-only experiment compares **1,526 land-centered H3 resolution-2 cell
 - Direct source page: `/public/world-map/index.html`.
 - GitHub Pages: `<repository-prefix>/public/world-map/index.html`. A small entry-page base resolver keeps styles, scripts, favicon, and navigation relative to that repository; module imports and data resolve against the module URL.
 - Embedded route: `/world-map?embed=1`.
+- Rainbow view: `/world-map?kaleidoscope=1`. Omit the flag for the default suitability colors; only the exact value `1` enables it.
 - Query parameters: `climate`, `cost`, `city`, `nature`, `coast` accept integers 0–100. `cell` accepts an ID present in the bundled data. Invalid values fall back to defaults; unrelated parameters cannot alter the model.
 - Slider changes and cell selection replace the URL, preserving a shareable state without adding hundreds of browser-history entries.
 - Embedded mode sends `{type: 'helios:world-map:size', height}` to the **same origin** after layout changes. Height measures the content root so the iframe can shrink when details close. The parent must validate both `event.origin` and `event.source` before applying the height.
 
 The host page loads the iframe on demand. The iframe then loads only local, versioned assets; there are no map-tile or third-party data requests. The data fetch has a timeout and a visible retry state.
+
+## Kaleidoscope colors
+
+The **Kaleidoscope** toggle switches the hexagon fills to a decorative rainbow palette. Its sixfold spatial pattern is computed once per cell. One slow CSS hue rotation animates the complete fill layer; geographic outlines, grid borders, selection, and text stay outside that layer. The toggle restores the current suitability colors when switched off, including the neutral all-zero state. Scores, ordering, selection, and the explanatory paragraph always use the same preference model.
+
+**Pause colors** freezes the current colors and **Resume colors** continues them. Animation pauses while the document is hidden or the map is offscreen. With reduced motion enabled, the map uses still rainbow colors and hides the pause control. The suitability color legend is replaced with an explicit rainbow-mode label while the effect is active. The URL preserves the selected color mode alongside preferences and the selected cell; the temporary pause state is local to the page.
+
+UI selectors: `#kaleidoscope-toggle` has a stable accessible name and `aria-pressed`; `#kaleidoscope-pause` supplies the pause/resume action. The root exposes `data-color-mode="fit|kaleidoscope"` and `data-color-motion="off|running|paused|reduced|suspended"`. The animated element is `.hex-layer`. `readUrlState()` returns a `kaleidoscope` boolean, and `stateSearch(weights, selectedId, embed = false, kaleidoscope = false)` preserves existing callers.
 
 ## Model
 
