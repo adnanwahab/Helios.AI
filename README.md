@@ -90,6 +90,19 @@ bun run votes:world --proposal "A voluntary childcare pilot" --batch-size 100m -
 
 The prompt asks for a proposal and five assumed impacts. The default represents exactly **8,000,000,000 synthetic votes**, releasing **200 million every two seconds** in a live Yes/No/Abstain dashboard with a written summary. Space/P pauses, Q saves a partial result, and Ctrl+C stops cleanly. Results and a Markdown summary are saved under `.data/world-vote-lab/` by default. The model uses eight fictional cohorts and approximate aggregate sampling; explicit assumptions determine support, while proposal text labels the experiment. See [the vote lab guide](scripts/world-vote-lab/README.md). The existing exact-range shard tool remains available at `scripts/population-vote.mjs`.
 
+### Weighted eight-billion console
+
+For a second, profile-level simulation with six explicit assumptions and a paced console dashboard, run:
+
+```sh
+bun run votes:8b
+bun run votes:8b --demo
+bun run votes:8b --demo --fast --json --no-save
+bun run test:votes:8b
+```
+
+This model represents exactly eight billion fictional votes using 80,000 weighted profiles. The default is 250 million every three seconds, with pause/resume, speed controls and local JSON/TXT/Markdown reports. It is not a poll, and the supplied text labels the scenario rather than predicting responses. The existing `votes:world` task remains available. See the [weighted vote lab guide](scripts/vote-profile-lab/README.md).
+
 ### Example: address the strongest objections
 
 For a Backyard Homes and Affordable Housing Pilot Act, a useful contribution might be a stronger safeguard rather than a new feature:
