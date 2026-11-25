@@ -1,5 +1,7 @@
 import {createHash, randomBytes, randomUUID} from 'node:crypto';
 import {CONSTITUTION_SCHEMA,constitutionStore} from './constitution.js';
+import {validateScenario} from '../public/law-scenario-spec.js';
+import {syntheticRows} from '../public/constitution-model.js';
 import seedCatalog from '../data/catalog.json' with {type: 'json'};
 
 export const hash = value => createHash('sha256').update(value).digest('hex');
@@ -9,7 +11,7 @@ const fields = {title: 160, sharedGoal: 4000, illustrativeLocalOption: 6000, ris
 
 export function proposalContent(input, base = {}) {
   if (!input || Array.isArray(input) || typeof input !== 'object') fail(400, 'A proposal object is required.');
-  const allowed = new Set([...Object.keys(fields), 'suggestedMeasures', 'category']);
+  const allowed = new Set([...Object.keys(fields), 'suggestedMeasures', 'category', 'scenario']);
   if (Object.keys(input).some(k => !allowed.has(k))) fail(400, 'Unknown proposal field. Source identities and status cannot be edited.');
   const result = {...base};
   for (const [field, max] of Object.entries(fields)) {
@@ -21,6 +23,7 @@ export function proposalContent(input, base = {}) {
   result.category = input.category;
   if (!Array.isArray(input.suggestedMeasures) || input.suggestedMeasures.length < 1 || input.suggestedMeasures.length > 8 || input.suggestedMeasures.some(x => typeof x !== 'string' || !x.trim() || x.length > 240)) fail(400, 'Provide 1–8 measures, each at most 240 characters.');
   result.suggestedMeasures = input.suggestedMeasures.map(x => x.trim());
+  if(Object.hasOwn(input,'scenario')){try{result.scenario=validateScenario(input.scenario)}catch(e){fail(400,e.message)}}
   return result;
 }
 
@@ -130,9 +133,13 @@ function createStore(db, catalogHash) {
 
   // Write operations run inside a transaction supplied by the caller (q),
   // so an idempotent write and its receipt commit together.
-  async function createIn(q, input, author) {
+  async function createIn(q, input, author, relatedClauseId=null) {
     const content = proposalContent(input, {legalStatus: 'editorial_draft_not_law', reviewStatus: 'unreviewed', publicVoteStatus: 'not_open', sourceRepository: 'adnanwahab/Helios.AI', collectionId: seedCatalog.metadata.collectionId, costEstimate: null, impactEvidence: 'not_evaluated', consensusSupport: null});
     const id = 'HGP-' + randomUUID(), version = randomUUID(), now = new Date().toISOString();
+    if(relatedClauseId!==null){
+      if(typeof relatedClauseId!=='string'||(!syntheticRows.some(r=>r.id===relatedClauseId)&&(!/^C-[a-f0-9]{64}$/.test(relatedClauseId)||!(await q.query("SELECT id FROM constitution_clauses WHERE id=$1 AND status='approved'",[relatedClauseId])).rows[0])))fail(400,'Choose a visible shared constitution clause.');
+      content.relatedClauseId=relatedClauseId;
+    }
     content.id = id;
     await q.query('INSERT INTO laws(id, current_version, author, created_at) VALUES($1, $2, $3, $4)', [id, version, author, now]);
     await q.query('INSERT INTO versions(id, law_id, number, content, created_at, amendment_id) VALUES($1, $2, 1, $3, $4, NULL)', [version, id, JSON.stringify(content), now]);

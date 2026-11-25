@@ -1,4 +1,5 @@
 import {Problem, hash} from './store.js';
+import {quizInput} from './law-drafts.js';
 import {timingSafeEqual} from 'node:crypto';
 
 // Static files, redirects and embed routes are served by Netlify's CDN (netlify.toml).
@@ -17,7 +18,7 @@ const rewriteYcrText = text => text
   .replace(/(["'`])\/api\//g, `$1${YCR_PROXY_PREFIX}/api/`)
   .replace(/https?:\/\/(?:www\.)?(?:ycr\.org|openresearchlab\.org)\//gi, `${YCR_PROXY_PREFIX}/`);
 
-export function createApp({store, email, notion = null, morphlab = null, moderator = null, origins = [], adminToken = null, secure = true, health = {storage: 'unknown', runtime: 'unknown'}} = {}) {
+export function createApp({store, email, notion = null, morphlab = null, lawDrafts = null, moderator = null, origins = [], adminToken = null, secure = true, health = {storage: 'unknown', runtime: 'unknown'}} = {}) {
   if (!store) throw Error('Store required');
   const response = (data, status = 200, extra = {}) => Response.json(data, {status, headers: {'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', ...extra}});
 
@@ -91,6 +92,7 @@ export function createApp({store, email, notion = null, morphlab = null, moderat
       }
     }
 
+    if(method==='GET'&&path==='/api/law-drafts/config')return response({enabled:!!lawDrafts?.enabled,model:lawDrafts?.model||null});
     if (method === 'GET' && path === '/api/health') {
       const {goals} = await store.catalog();
       return response({status: 'ok', storage: health.storage, runtime: health.runtime, schemaVersion: 1, seedCount: 100, proposalCount: goals.length, catalogHash: store.catalogHash});
@@ -156,6 +158,20 @@ export function createApp({store, email, notion = null, morphlab = null, moderat
     let body;
     try { body = JSON.parse(Buffer.concat(chunks).toString('utf8')); } catch { throw new Problem(400, 'Invalid JSON.'); }
 
+    if(path==='/api/law-drafts/generate'){
+      if(!lawDrafts?.enabled)throw new Problem(503,'Transformer generation is disabled on this server.');
+      let input;try{input=quizInput(body)}catch(e){throw new Problem(400,e.message)}
+      await store.limit('law-draft:ip:'+hash(remoteIP),8,3600000);
+      await store.limit('law-draft:session:'+session.id,4,3600000);
+      try{return response({draft:await lawDrafts.generate(input),source:'openai',model:lawDrafts.model})}
+      catch(e){if(e.code==='LAW_DRAFT_BUSY')throw new Problem(429,'Draft generation is busy. Try again shortly.');throw new Problem(502,'Transformer generation failed. Your answers were not published.')}
+    }
+    if(path==='/api/law-drafts/publish'){
+      if(!body||Array.isArray(body)||Object.keys(body).some(k=>!['draft','consent','clauseId'].includes(k))||body.consent!==true||!body.draft?.scenario)throw new Problem(400,'Review the draft and explicitly consent to publish its illustrative scenario.');
+      const key=request.headers.get('idempotency-key');
+      if(!key||!/^[a-zA-Z0-9-]{16,80}$/.test(key))throw new Problem(400,'A unique Idempotency-Key is required.');
+      return response(await store.idempotent(session.id,key,hash(path+JSON.stringify(body)),q=>store.createIn(q,body.draft,session.id,body.clauseId??null)),201);
+    }
     if (lawBoardPath?.[2]) {
       const key=request.headers.get('idempotency-key');
       if(!key||!/^[a-zA-Z0-9-]{16,80}$/.test(key))throw new Problem(400,'A unique Idempotency-Key is required.');
