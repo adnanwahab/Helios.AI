@@ -16,3 +16,27 @@ test('preview writes require distinct explicit credentials and trusted deploy co
  expect(capability({storage:'pglite',runtime:'fly-machine'}).writable).toBe(false);
  expect(capability({storage:'pglite',runtime:'node-server'}).writable).toBe(true);
 });
+
+import {createApiHandler} from '../netlify/functions/api.mjs';
+test('Netlify reconciliation keeps preview writes isolated and never calls the civic runtime',async()=>{
+ let productionCalls=0,previewCalls=0,forwardCalls=0;
+ const loadRuntime=async()=>{productionCalls++;throw Error('must not initialize production')};
+ const forward=async()=>{forwardCalls++;return Response.json({storage:'pglite',runtime:'fly-machine'})};
+ const context={deploy:{context:'deploy-preview'}};
+ const request=(path,method='GET')=>new Request('https://'+host+path,{method});
+ const handle=createApiHandler({hasDatabase:()=>true,loadRuntime,forward,env:{SUPABASE_DB_URL:main},log:()=>{}});
+ const status=await (await handle(request('/api/workspace-status'),context)).json();
+ expect(status.writable).toBe(false);
+ expect((await handle(request('/api/law-board/HGA-012/vote','POST'),context)).status).toBe(503);
+ expect((await handle(request('/api/contributions','POST'),context)).status).toBe(403);
+ expect((await handle(request('/api/account/config'),context)).status).toBe(200);
+ expect(productionCalls).toBe(0);
+ const isolated=createApiHandler({hasDatabase:()=>true,loadRuntime,forward,env:{SUPABASE_DB_URL:main,HELIOS_PREVIEW_DB_URL:other,HELIOS_PREVIEW_WRITES:'1'},loadPreviewRuntime:async()=>{previewCalls++;return {db:{kind:'supabase-postgres'},app:async req=>Response.json({path:new URL(req.url).pathname})}},log:()=>{}});
+ expect((await (await isolated(request('/api/workspace-status'),context)).json()).mode).toBe('preview-test');
+ expect((await isolated(request('/api/law-board/HGA-012/vote','POST'),context)).status).toBe(200);
+ expect((await isolated(request('/api/contributions','POST'),context)).status).toBe(403);
+ expect((await isolated(request('/api/laws','POST'),context)).status).toBe(503);
+ expect(previewCalls).toBe(2);
+ expect(productionCalls).toBe(0);
+ expect(forwardCalls).toBe(1);
+});

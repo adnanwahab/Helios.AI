@@ -5,8 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#101a1a">
 <meta name="helios-mode" content="live">
+<meta name="helios-contribution-mode" content="live">
 <meta name="description" content="Turn a private reflection into a civic proposal for public review.">
 <link rel="icon" href="./public/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./public/account.css">
+<script type="module" src="./public/account.js"></script>
+<link rel="stylesheet" href="./public/research-entry.css">
 <title>Helios AI — Citizen & government loops</title>
 <style>
 :root{color-scheme:dark;--bg:#101a1a;--panel:#182625;--text:#eff7ef;--muted:#a9bdb6;--line:#35504b;--accent:#baf2be;--dark:#14251b;--danger:#ffc5b8;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -62,9 +66,36 @@ header.wrap,main.wrap,footer.wrap{width:min(100% - 40px,1560px)}#government-view
 .law-assembly-feature{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px 20px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(115deg,#203b32,#182625);padding:clamp(16px,3vw,24px);margin:0 0 16px}.law-assembly-feature h2{font-size:clamp(23px,4vw,35px);letter-spacing:-.04em;margin:0 0 8px;line-height:1.1}.law-assembly-feature p:not(.eyebrow){margin:0;color:var(--muted)}.law-assembly-feature .primary{display:inline-flex;align-items:center;text-decoration:none;justify-content:center}.law-assembly-links{display:flex;gap:8px 16px;flex-wrap:wrap;grid-column:1/-1}.law-assembly-links a{font-size:13px;font-weight:700}.law-assembly-feature .hint{grid-column:1/-1}#law-assembly-selected{display:inline-flex;align-items:center;text-decoration:none;margin:0 0 12px}@media(max-width:600px){.law-assembly-feature{grid-template-columns:minmax(0,1fr)}.law-assembly-feature .primary{justify-self:start}}
 .top-actions{flex-wrap:wrap;justify-content:flex-end}@media(max-width:700px){header.wrap{align-items:flex-start}.top-actions{gap:5px}#mystery-link{font-size:11px;padding:7px 8px;min-height:36px}.docs-trigger{font-size:12px}}
 </style>
+<style>.top-actions{flex-wrap:wrap;justify-content:flex-end;min-width:0}.community-link{display:inline-flex;align-items:center}.community-link:hover{border-color:var(--accent)}@media(max-width:700px){header.wrap{flex-wrap:wrap}.top-actions{justify-content:flex-start;width:100%}}</style>
+<link rel="stylesheet" href="./public/pr-composer.css">
 </head>
 <body>
-<header class="wrap"><div class="brand"><span class="sun" aria-hidden="true">✳</span> HELIOS AI</div><div class="top-actions"><div class="topnote">A shared civic workshop</div><a class="footer-archive" href="./grid.html">Grid story ↗</a><a class="footer-archive" href="./lunch.html">Vote for lunch ↗</a><a class="docs-trigger" id="mystery-link" href="./public/mystery.html" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Play the mystery ↗</a><button class="docs-trigger" type="button" id="docs-open" aria-haspopup="dialog" aria-controls="docs-drawer">Docs ↗</button></div></header>
+<header class="wrap"><div class="brand"><span class="sun" aria-hidden="true">✳</span> HELIOS AI</div><div class="top-actions"><button class="helios-account-trigger" type="button" id="account-open" data-open-login>Sign in</button><div class="topnote">A shared civic workshop</div><a class="footer-archive" href="./grid.html">Grid story ↗</a><a class="footer-archive" href="./lunch.html">Vote for lunch ↗</a><a class="docs-trigger" id="mystery-link" href="./public/mystery.html" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Play the mystery ↗</a><a class="docs-trigger launch-link" href="./launch-dashboard.html" style="text-decoration:none">Launch dashboard</a><a class="docs-trigger community-link" href="./contribute.html" style="text-decoration:none">Contribute ↗</a><button class="docs-trigger" type="button" id="pr-compose-open" aria-haspopup="dialog" aria-controls="pr-compose">✎ Propose a change</button><button class="docs-trigger" type="button" id="docs-open" aria-haspopup="dialog" aria-controls="docs-drawer">Docs ↗</button></div></header>
+<dialog id="pr-compose" aria-labelledby="pr-compose-title">
+  <div class="pr-compose-head"><div><p class="eyebrow">HELIOS / CONTRIBUTE</p><h2 id="pr-compose-title">What should we build next?</h2></div><button type="button" class="secondary" id="pr-compose-close" aria-label="Close message modal">×</button></div>
+  <p class="hint">Suggest a law revision, simulator, feature or fix. Write in plain language. No Helios account required.</p>
+  <p class="hint" id="pr-inbox-notice" role="status" hidden></p>
+  <div class="pr-flow" aria-label="Contribution workflow"><span>01 · Message</span><span>02 · Research &amp; build</span><span>03 · Review PR</span><span>04 · GitHub</span></div>
+  <form id="pr-compose-form">
+    <div class="field"><label for="pr-kind">Topic</label><select id="pr-kind"><option value="feature">Website / feature</option><option value="law">Law / policy proposal</option><option value="bug">Bug / fix</option><option value="research">Research / simulation</option><option value="other">Other idea</option></select></div>
+    <div class="field"><label for="pr-title">Short title</label><input id="pr-title" maxlength="120" required placeholder="Improve the childcare simulator"></div>
+    <div class="field"><label for="pr-message">Your message</label><textarea id="pr-message" maxlength="4000" required rows="5" placeholder="What should change, and why?"></textarea><p class="hint" id="pr-count">0 / 4,000 · Your draft stays here until you choose to submit.</p></div>
+    <button type="submit" class="primary">Review message →</button>
+  </form>
+  <section id="pr-review" hidden aria-labelledby="pr-review-heading">
+    <h3 id="pr-review-heading" tabindex="-1">Review your contribution</h3>
+    <div class="field"><label for="pr-destination">Where should it go?</label><select id="pr-destination"><option value="team">Helios research &amp; development inbox</option><option value="github">GitHub · create a proposal PR myself</option></select></div>
+    <p class="hint" id="pr-destination-note"></p>
+    <p class="pr-path" id="pr-path" hidden></p>
+    <textarea id="pr-payload" rows="6" readonly aria-label="Exact contribution text"></textarea>
+    <label class="consent"><input id="pr-consent" type="checkbox"><span id="pr-consent-text"></span></label>
+    <div class="actions"><button type="button" class="secondary" id="pr-edit">← Edit</button><button type="button" class="primary" id="pr-send" disabled>Send to Helios</button><button type="button" class="secondary" id="pr-copy" hidden disabled>Copy proposal</button><a class="primary" id="pr-github" target="_blank" rel="noopener noreferrer" hidden aria-disabled="true">Continue on GitHub ↗</a></div>
+  </section>
+  <p id="pr-status" class="status" role="status" aria-live="polite"></p>
+  <div id="pr-receipt" class="receipt" hidden><h3>Message received</h3><p id="pr-result"></p><p class="hint">Awaiting maintainer triage. No agent or pull request has started automatically.</p><button type="button" class="secondary" id="pr-new">Write another message</button></div>
+  <details id="pr-tracking"><summary>Your contributions &amp; progress</summary><p class="hint">Status is reported by the team. Research and coding are handled separately; GitHub remains the source of truth for reviews, previews and merges.</p><div id="pr-history"></div><p id="pr-history-status" class="status" role="status"></p><button type="button" class="secondary" id="pr-refresh">Refresh progress</button></details>
+  <div class="pr-links"><a href="./contribute.html">Explore contributor teams ↗</a><a href="https://github.com/adnanwahab/HeliosHTML/pulls" target="_blank" rel="noopener noreferrer">Browse GitHub pull requests ↗</a><a href="https://github.com/adnanwahab/HeliosHTML" target="_blank" rel="noopener noreferrer">Source repository ↗</a></div>
+</dialog>
 <dialog id="docs-drawer" class="docs-drawer" data-view="tabs" aria-labelledby="docs-title">
 <div class="docs-head"><div><p class="eyebrow docs-overline">HELIOS / ARCHIVE</p><h2 id="docs-title">Docs &amp; experiments</h2></div><div class="docs-head-actions"><button type="button" class="secondary" id="docs-layout" aria-pressed="true" aria-label="Toggle compact Docs drawer">Compact drawer</button><button type="button" class="secondary" id="docs-close" aria-label="Close docs drawer">Close ×</button></div></div>
 <div class="docs-body">
@@ -80,6 +111,11 @@ header.wrap,main.wrap,footer.wrap{width:min(100% - 40px,1560px)}#government-view
 <div><p class="eyebrow" style="color:#f3c8ff">HELIOS / HAPPYBEARLANDIA · FICTIONAL ADVENTURE</p><h2 id="rainbow-pensieve-title">Meet the Rainbow Brain.</h2><p>Explore the happy bears' mirror-world Pensieves, follow shared memories as rainbow particles, cast eleven spells and choose a mission to imagine a kinder future.</p></div>
 <a class="primary" id="rainbow-pensieve-link" href="./public/rainbow-pensieve.html" target="_blank" rel="noopener noreferrer" style="background:linear-gradient(110deg,#ffd0db,#ffe8aa,#baf2be,#d2c4ff);color:#242238">Play Rainbow Pensieve ↗</a>
 <p class="hint">Optional fictional story · browser-local notes · no actual mind access, external app control or real votes · opens in a new tab.</p>
+</aside>
+<aside class="law-assembly-feature" id="consensus-world-feature" aria-labelledby="consensus-world-title">
+<div><p class="eyebrow">HELIOS / CONSENSUS WORLD · SIMULATION LAB</p><h2 id="consensus-world-title">Can we design a law for everyone?</h2><p>Propose a bill, simulate up to eight billion synthetic choices, listen to objections and revise. Explore the same population across drafts.</p></div>
+<a class="primary" id="consensus-world-link" href="./public/consensus-world.html">Play Consensus World ↗</a>
+<p class="hint">Experimental model · local processing · simulated support is not real consent.</p>
 </aside>
 <div id="journal-workbench" class="law-anchor"></div>
 <div class="rolebar"><div class="role-switch" role="group" aria-label="Choose workflow"><button type="button" id="mode-citizen" aria-pressed="true" aria-controls="citizen-view">Citizen</button><button type="button" id="mode-government" aria-pressed="false" aria-controls="government-view">Government preview</button></div><span id="mode-caption" class="role-caption">Express → Synthesize → Decide</span></div>
@@ -159,7 +195,7 @@ header.wrap,main.wrap,footer.wrap{width:min(100% - 40px,1560px)}#government-view
 <p class="netherbrain-link"><a href="./public/netherbrain.html" target="_blank" rel="noopener noreferrer">Please vote for the Netherbrain ↗</a><span>Fictional campaign · opens in a new tab</span></p>
 <p class="hint">One evolving draft of distinct public ideas. Repeated wording is grouped; different qualifications and dissent stay separate.</p>
 <div class="board-stats" aria-label="Synthetic corpus statistics"><div class="board-stat"><strong id="synthetic-people">—</strong><span>Synthetic journals</span></div><div class="board-stat"><strong id="synthetic-clauses">—</strong><span>Unique clauses</span></div><div class="board-stat"><strong id="synthetic-duplicates">—</strong><span>Repeated mentions removed</span></div></div>
-<div class="notice">Illustrative synthetic votes are not real people, public opinion, or election results. Shared votes are counted separately by browser session.</div>
+<div class="notice">Illustrative synthetic votes are not real people, public opinion, or election results. Shared votes are counted separately by account or guest browser session.</div>
 <div class="board-controls"><button type="button" class="primary" id="board-connect">Connect shared board</button><button type="button" class="secondary" id="board-refresh" hidden>Refresh</button></div>
 <p class="hint">Shared board votes are recorded in the live civic database after you connect; on Helios Netlify previews they use the existing Fly backend when no Netlify database is configured.</p><p id="board-status" class="status" role="status">Loading synthetic corpus…</p><p class="hint" id="board-live-link" hidden>Use the <a href="https://helios-ai-laws.fly.dev/" target="_blank" rel="noopener noreferrer">live Fly app</a> for the shared board.</p>
 <div class="board-filter"><a id="government-ide-link" class="secondary" style="display:block;text-decoration:none;margin-bottom:10px" href="/constitution?community=S-001">Open linked constitution workspace ↗</a><label for="clause-search">Find a clause</label><input type="search" id="clause-search" placeholder="Filter shared constitution"></div>
@@ -171,7 +207,7 @@ header.wrap,main.wrap,footer.wrap{width:min(100% - 40px,1560px)}#government-view
 <p class="netherbrain-link"><a href="./public/netherbrain.html" target="_blank" rel="noopener noreferrer">Please vote for the Netherbrain ↗</a><span>Fictional campaign · opens in a new tab</span></p>
 <p id="clause-topic" class="eyebrow"></p><p id="clause-text" class="clause-detail"></p><div id="clause-synthetic" class="vote-counts"></div><div id="clause-real" class="real-tally"></div>
 <div class="vote-actions" role="group" aria-label="Advisory position on selected clause"><button type="button" class="secondary" data-clause-vote="support" aria-pressed="false">Support</button><button type="button" class="secondary" data-clause-vote="oppose" aria-pressed="false">Oppose</button><button type="button" class="secondary" data-clause-vote="unsure" aria-pressed="false">Unsure</button></div>
-<button type="button" class="quiet" id="clear-vote">Clear my position</button><p id="clause-status" class="status" role="status"></p>
+<button type="button" class="quiet" id="clear-vote">Clear my position</button><button type="button" class="helios-account-save" data-open-login data-login-reason="save_votes" id="account-save-votes">Save with an account</button><p id="clause-status" class="status" role="status"></p>
 <hr class="section-line"><h2>Discuss this clause</h2><p class="hint">Comments refer to the selected wording. Connected comments are reviewed before becoming public. Practice comments stay in this page.</p><div id="clause-comments"></div>
 <label for="clause-comment">Your comment</label><textarea id="clause-comment" maxlength="500" placeholder="What would improve this clause?"></textarea>
 <label class="consent" id="comment-consent-wrap" hidden><input type="checkbox" id="comment-consent"><span>I agree to submit this exact comment for public moderation; remove personal details.</span></label>
@@ -228,6 +264,34 @@ header.wrap,main.wrap,footer.wrap{width:min(100% - 40px,1560px)}#government-view
 <p id="gov-feedback-status" class="status" role="status"></p>
 </form></section>
 </div>
+<div class="research-entry-grid">
+<section class="research-entry" aria-labelledby="research-entry-title">
+  <p class="research-entry-label">MINI_SYMPHONY / COLLABORATIVE RESEARCH</p>
+  <h2 id="research-entry-title">research coordinator playground supervision center</h2>
+  <p>Give a research team a shared question. Write its inputs, organize 100+ agent tasks, and review the evidence together.</p>
+  <div class="research-entry-matrix" aria-hidden="true"></div>
+  <div class="research-entry-stats"><span><strong>100+</strong> planned agent slots</span><span><strong>5</strong> research roles</span><span><strong>You</strong> supervise</span></div>
+  <a class="primary" href="./research.html#coordinator">Open supervision center</a>
+</section>
+<section class="research-entry research-entry-futures" aria-labelledby="keyframe-entry-title">
+  <p class="research-entry-label">A SHARED TIMELINE / A THOUSAND PERSPECTIVES</p>
+  <h2 id="keyframe-entry-title">key frame interpolation: future projection</h2>
+  <p>Design future keyframes together. Describe what changes between them, attach proposed laws, and leave room for a different future.</p>
+  <ol class="research-entry-timeline" aria-label="Example future keyframes"><li>2026<span>Today</span></li><li>2028<span>First pilots</span></li><li>2032<span>Learn &amp; revise</span></li><li>2036<span>Next horizon</span></li></ol>
+  <p class="research-entry-note">1,000 collaborators is the design goal. Your room shows its actual contributors.</p>
+  <a class="primary" href="./research.html#keyframes">Design keyframes together</a>
+</section>
+</div>
+<aside class="law-assembly-feature" id="first-law" aria-labelledby="first-law-title">
+<div><p class="eyebrow">PROPOSED LAW 01 · NEW DRAFT</p><h2 id="first-law-title">Free Weed for Everyone</h2><p>Explore a hypothetical, publicly funded cannabis policy for eligible adults aged 21 and over. Compare program costs and safeguards before considering any implementation.</p></div>
+<a class="primary" href="./law-atlas.html#cannabis-budget">Explore the first law ↗</a>
+<p class="hint">Policy draft only · requires legal authorization and independent public-health review · no cannabis is provided.</p>
+</aside>
+<aside class="law-assembly-feature" id="second-law" aria-labelledby="second-law-title">
+<div><p class="eyebrow">PROPOSED LAW 02 · HGA-031</p><h2 id="second-law-title">The Affordable Childcare and Family Freedom Act</h2><p>Make regular childcare and occasional babysitting more affordable while protecting caregiver pay. Change the hours, hourly rate, subsidy and participation to explore the public budget.</p></div>
+<a class="primary" href="./law-atlas.html#childcare-budget">Explore the second law ↗</a>
+<p class="hint">Draft policy scenario · not enacted law or evidence of consensus.</p>
+</aside>
 </main>
 <footer class="wrap site-footer"><span>Helios AI · Citizen contributions → public deliberation → government response → feedback. No official vote or government action is simulated as real.</span><a class="footer-archive" href="./experiments.html" target="_blank" rel="noopener noreferrer" aria-label="Docs &amp; Experiments (opens in a new tab)">Docs &amp; Experiments ↗</a></footer>
 <script>
@@ -332,5 +396,6 @@ $('gov-measure').addEventListener('submit',e=>{e.preventDefault();try{lastFeedba
 count();setPublish();
 </script>
 <script type="module" src="./public/constitution-workbench.js"></script>
+<script type="module" src="./public/pr-composer.js"></script>
 </body>
 </html>

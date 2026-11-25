@@ -1,0 +1,433 @@
+{
+  "schemaVersion": 1,
+  "project": "Helios",
+  "updatedAt": "2026-11-25T20:47:21Z",
+  "launchTarget": "2026-12-01",
+  "timezone": "America/Chicago",
+  "sourcePR": "https://github.com/adnanwahab/HeliosHTML/pull/75",
+  "phases": [
+    {
+      "id": "foundation",
+      "title": "Establish the foundation",
+      "dates": "November 25–26"
+    },
+    {
+      "id": "contributing",
+      "title": "Make contributing easy",
+      "dates": "November 26–27"
+    },
+    {
+      "id": "community",
+      "title": "Create a community",
+      "dates": "November 27–28"
+    },
+    {
+      "id": "recruitment",
+      "title": "Recruit founding contributors",
+      "dates": "November 28–30"
+    },
+    {
+      "id": "launch",
+      "title": "Public launch",
+      "dates": "December 1 target"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "L01",
+      "phase": "foundation",
+      "title": "Finalize the project’s mission in one paragraph.",
+      "status": "done",
+      "owner": "Maintainer",
+      "summary": "A single mission now leads the README and defines who can contribute, voluntary participation, human review, and the role of simulations.",
+      "evidence": [
+        {
+          "label": "Read the mission",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/README.md"
+        }
+      ],
+      "nextAction": null,
+      "completedAt": "2026-11-25T20:42:20Z"
+    },
+    {
+      "id": "L02",
+      "phase": "foundation",
+      "title": "Select an open-source license after checking third-party rights.",
+      "status": "blocked",
+      "owner": "Maintainer / rights reviewer",
+      "summary": "MIT is the candidate for original code. The audit found missing provenance for bundled assets, downloaded data, and external dependencies, so a blanket license has not been applied.",
+      "evidence": [
+        {
+          "label": "Rights audit",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/license-audit.md"
+        },
+        {
+          "label": "License task #99",
+          "url": "https://github.com/adnanwahab/HeliosHTML/issues/99"
+        }
+      ],
+      "nextAction": "Resolve the asset and data provenance inventory, preserve required notices, and approve the exact scope of the license.",
+      "completedAt": null
+    },
+    {
+      "id": "L03",
+      "phase": "foundation",
+      "title": "Rewrite the README with screenshots, a live demo and five-minute setup instructions.",
+      "status": "in_progress",
+      "owner": "Maintainer",
+      "summary": "The focused README contains the mission, real setup commands, demo and preview links, contribution paths, and architecture links. Desktop and mobile screenshot verification is being completed.",
+      "evidence": [
+        {
+          "label": "README",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/README.md"
+        }
+      ],
+      "nextAction": "Attach and inspect the dashboard screenshots, and verify the documented fresh local setup.",
+      "completedAt": null
+    },
+    {
+      "id": "L04",
+      "phase": "foundation",
+      "title": "Create CONTRIBUTING.md and a code of conduct.",
+      "status": "done",
+      "owner": "Maintainer",
+      "summary": "Contribution and conduct guides cover developers and non-programmers, evidence, consent, review, and reporting. A private moderation contact and backup coverage remain a separately identified staffing gate.",
+      "evidence": [
+        {
+          "label": "Contributor guide",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/CONTRIBUTING.md"
+        },
+        {
+          "label": "Code of conduct",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/CODE_OF_CONDUCT.md"
+        }
+      ],
+      "nextAction": null,
+      "completedAt": "2026-11-25T20:42:20Z"
+    },
+    {
+      "id": "L05",
+      "phase": "contributing",
+      "title": "Add a prominent “Propose a change” button to the homepage.",
+      "status": "done",
+      "owner": "Maintainer",
+      "summary": "The homepage button opens the existing proposal workflow; the contributor hub and dashboard link to the same entry point.",
+      "evidence": [
+        {
+          "label": "Homepage implementation",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/index.html"
+        },
+        {
+          "label": "Button change #73",
+          "url": "https://github.com/adnanwahab/HeliosHTML/pull/73"
+        }
+      ],
+      "nextAction": null,
+      "completedAt": "2026-11-25T20:42:20Z"
+    },
+    {
+      "id": "L06",
+      "phase": "contributing",
+      "title": "Support contributions from non-programmers as well as developers.",
+      "status": "done",
+      "owner": "Community maintainer",
+      "summary": "The contributor hub offers proposal, research, design, simulation, testing, documentation and code paths. A GitHub web-editor walkthrough requires no local development setup.",
+      "evidence": [
+        {
+          "label": "Contributor hub",
+          "url": "https://deploy-preview-75--heliosailol.netlify.app/contribute"
+        },
+        {
+          "label": "No-terminal walkthrough",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/CONTRIBUTING.md#your-first-contribution-without-a-terminal"
+        }
+      ],
+      "nextAction": null,
+      "completedAt": "2026-11-25T20:42:20Z"
+    },
+    {
+      "id": "L07",
+      "phase": "contributing",
+      "title": "Create 30 well-scoped GitHub issues with acceptance criteria.",
+      "status": "done",
+      "owner": "Maintainer",
+      "summary": "All 30 launch issues, #76–#105, are published with scoped deliverables and acceptance criteria. Existing issues were verified instead of duplicated.",
+      "evidence": [
+        {
+          "label": "All launch issues",
+          "url": "https://github.com/adnanwahab/HeliosHTML/issues?q=is%3Aissue+in%3Atitle+%22Launch%3A%22"
+        },
+        {
+          "label": "Roadmap and issue index",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/contributor-launch.md"
+        }
+      ],
+      "nextAction": null,
+      "completedAt": "2026-11-25T20:42:20Z"
+    },
+    {
+      "id": "L08",
+      "phase": "contributing",
+      "title": "Label beginner-friendly issues as good first issue.",
+      "status": "done",
+      "owner": "Community maintainer",
+      "summary": "21 of the 30 launch issues have the good first issue label; larger infrastructure, modeling and rights-review tasks remain separate.",
+      "evidence": [
+        {
+          "label": "Beginner-friendly issues",
+          "url": "https://github.com/adnanwahab/HeliosHTML/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22"
+        }
+      ],
+      "nextAction": null,
+      "completedAt": "2026-11-25T20:42:20Z"
+    },
+    {
+      "id": "L09",
+      "phase": "contributing",
+      "title": "Require automated tests, screenshots and deployment previews for relevant PRs.",
+      "status": "in_progress",
+      "owner": "Maintainer / reviewer",
+      "summary": "CI, desktop/mobile capture, preview deployment, a PR evidence check and review template are implemented. Stale catalog and archive test expectations are repaired in this PR.",
+      "evidence": [
+        {
+          "label": "PR evidence workflow",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/.github/workflows/pr-evidence.yml"
+        },
+        {
+          "label": "Review policy",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/.github/REVIEW_POLICY.md"
+        },
+        {
+          "label": "PR checks",
+          "url": "https://github.com/adnanwahab/HeliosHTML/pull/75/checks"
+        }
+      ],
+      "nextAction": "Verify the current PR head and require the successful check contexts in branch protection.",
+      "completedAt": null
+    },
+    {
+      "id": "L10",
+      "phase": "contributing",
+      "title": "Establish human review and branch protection.",
+      "status": "blocked",
+      "owner": "Repository owner",
+      "summary": "The independent-review policy is written and the main protection form was prepared with one approval, stale-review dismissal, latest-push approval, up-to-date tests, screenshots, container smoke, Netlify preview, resolved conversations and no admin bypass. GitHub stopped saving at its re-authentication screen.",
+      "evidence": [
+        {
+          "label": "Human review policy",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/.github/REVIEW_POLICY.md"
+        },
+        {
+          "label": "Branch settings",
+          "url": "https://github.com/adnanwahab/HeliosHTML/settings/branches"
+        }
+      ],
+      "nextAction": "The repository owner must complete GitHub’s passkey/security-key or password re-authentication in the prepared settings tab; then verify the saved rule. Protection is not yet enabled.",
+      "completedAt": null
+    },
+    {
+      "id": "L11",
+      "phase": "community",
+      "title": "Enable GitHub Discussions for ideas, questions and announcements.",
+      "status": "done",
+      "owner": "Repository owner",
+      "summary": "GitHub Discussions is enabled and its repository setting was verified through the GitHub API.",
+      "evidence": [
+        {
+          "label": "Open Discussions",
+          "url": "https://github.com/adnanwahab/HeliosHTML/discussions"
+        }
+      ],
+      "nextAction": null,
+      "completedAt": "2026-11-25T20:42:20Z"
+    },
+    {
+      "id": "L12",
+      "phase": "community",
+      "title": "Create a public roadmap and contributor dashboard.",
+      "status": "done",
+      "owner": "Maintainer",
+      "summary": "The roadmap is paired with this 22-item dashboard, dated evidence, phase/status/search filters, task permalinks and a downloadable evidence ledger. Its completion count is derived from the records.",
+      "evidence": [
+        {
+          "label": "Launch dashboard",
+          "url": "https://deploy-preview-75--heliosailol.netlify.app/launch"
+        },
+        {
+          "label": "Public roadmap",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/contributor-launch.md"
+        },
+        {
+          "label": "Evidence source",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/public/launch-checklist.json"
+        }
+      ],
+      "nextAction": null,
+      "completedAt": "2026-11-25T20:42:20Z"
+    },
+    {
+      "id": "L13",
+      "phase": "community",
+      "title": "Publish a short video demonstrating the entire contribution workflow.",
+      "status": "ready",
+      "owner": "Community / demo producer",
+      "summary": "A concrete demonstration script covers choosing work, drafting, GitHub submission, checks, human review, and progress updates. The public video has not been recorded or published yet.",
+      "evidence": [
+        {
+          "label": "Demonstration script",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/community-operations.md#short-contribution-workflow-video"
+        }
+      ],
+      "nextAction": "Record the real preview-to-GitHub workflow, caption it, and publish the accessible video with a link here.",
+      "completedAt": null
+    },
+    {
+      "id": "L14",
+      "phase": "community",
+      "title": "Define maintainer roles and how contributors earn additional responsibility.",
+      "status": "done",
+      "owner": "Maintainer",
+      "summary": "Governance defines contributor, reviewer, area-maintainer and release-owner responsibilities, evidence-based progression, recusal and access boundaries. It does not invent named staff or automatically grant repository access.",
+      "evidence": [
+        {
+          "label": "Governance and progression",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/GOVERNANCE.md"
+        }
+      ],
+      "nextAction": null,
+      "completedAt": "2026-11-25T20:42:20Z"
+    },
+    {
+      "id": "L15",
+      "phase": "recruitment",
+      "title": "Personally invite 20–30 interested developers, designers and researchers.",
+      "status": "ready",
+      "owner": "Community maintainer",
+      "summary": "An opt-in invitation and role-balanced recruitment plan are ready. No recipients were selected from private data and no invitations have been sent.",
+      "evidence": [
+        {
+          "label": "Invitation and recruitment plan",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/community-operations.md#invite-2030-founding-contributors"
+        }
+      ],
+      "nextAction": "Choose 20–30 interested recipients and send personalized invitations. Record aggregate counts and voluntary responses, without publishing private contact details.",
+      "completedAt": null
+    },
+    {
+      "id": "L16",
+      "phase": "recruitment",
+      "title": "Host a one-hour introductory workshop.",
+      "status": "ready",
+      "owner": "Facilitator",
+      "summary": "A timed 60-minute agenda, preparation checklist and accessible asynchronous path are prepared. No workshop has been scheduled or held.",
+      "evidence": [
+        {
+          "label": "Workshop runbook",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/community-operations.md#one-hour-introductory-workshop"
+        }
+      ],
+      "nextAction": "Choose a time, host, backup facilitator and meeting link; invite participants and hold the session.",
+      "completedAt": null
+    },
+    {
+      "id": "L17",
+      "phase": "recruitment",
+      "title": "Help each new contributor complete their first meaningful contribution.",
+      "status": "ready",
+      "owner": "Mentor / reviewer",
+      "summary": "An onboarding flow defines a small first task, a named buddy, acceptance criteria, first review and opt-in credit. No contributor completions are claimed.",
+      "evidence": [
+        {
+          "label": "Onboarding process",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/community-operations.md#first-contribution-support"
+        }
+      ],
+      "nextAction": "Pair each person who opts in with a willing mentor and link the accepted contribution as it is completed.",
+      "completedAt": null
+    },
+    {
+      "id": "L18",
+      "phase": "recruitment",
+      "title": "Respond to new issues and pull requests within 24 hours.",
+      "status": "in_progress",
+      "owner": "Triage maintainer",
+      "summary": "A twice-daily assistant triage task is scheduled around 9 a.m. and 9 p.m. Chicago time, with substantive GitHub replies, duplicate prevention and human escalation. The response target and primary/backup process are documented; sustained 24-hour compliance is not yet measured.",
+      "evidence": [
+        {
+          "label": "Triage and response target",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/community-operations.md#24-hour-response-process"
+        }
+      ],
+      "nextAction": "Assign human primary and backup owners, inspect first-response metrics, and escalate decisions that require independent human review.",
+      "completedAt": null
+    },
+    {
+      "id": "L19",
+      "phase": "launch",
+      "title": "Verify production reliability, privacy and data persistence.",
+      "status": "blocked",
+      "owner": "Operations maintainer",
+      "summary": "The canonical Netlify homepage returned 200 but its API health returned 502 twice. Fly health and isolated persistence tests passed. Production restore evidence is still missing; this PR sanitizes unexpected initialization errors.",
+      "evidence": [
+        {
+          "label": "Production audit and recovery gates",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/production-readiness.md"
+        },
+        {
+          "label": "Data safety runbook",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/data-safety-and-launch.md"
+        }
+      ],
+      "nextAction": "Verify the deployed version and intended authoritative store, repair production API configuration, and complete an isolated privacy, persistence and backup-restore drill.",
+      "completedAt": null
+    },
+    {
+      "id": "L20",
+      "phase": "launch",
+      "title": "Publish on Hacker News, relevant Reddit communities and social media.",
+      "status": "ready",
+      "owner": "Launch coordinator",
+      "summary": "Truthful launch copy and destination-specific posting guidance are prepared. Public promotion is held behind the license and production-readiness gates; no external launch posts are claimed.",
+      "evidence": [
+        {
+          "label": "Public launch kit",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/community-operations.md#public-launch-publication-kit"
+        }
+      ],
+      "nextAction": "Clear the launch gates, select permitted communities and the publishing accounts, then post and record each public URL.",
+      "completedAt": null
+    },
+    {
+      "id": "L21",
+      "phase": "launch",
+      "title": "Run the first public collaborative law-design experiment.",
+      "status": "ready",
+      "owner": "Facilitator / research reviewer",
+      "summary": "A bounded Backyard Homes pilot experiment includes source gathering, objections, proposed compromises, exact-revision feedback and a published outcome format. No participant activity or agreement is fabricated.",
+      "evidence": [
+        {
+          "label": "First experiment runbook",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/community-operations.md#first-public-collaborative-law-design-experiment"
+        }
+      ],
+      "nextAction": "Recruit willing participants, confirm a working shared submission path, run the experiment, and publish the revision, evidence and remaining disagreement.",
+      "completedAt": null
+    },
+    {
+      "id": "L22",
+      "phase": "launch",
+      "title": "Publish weekly progress, accepted contributions and upcoming challenges.",
+      "status": "in_progress",
+      "owner": "Community maintainer",
+      "summary": "Weekly factual GitHub progress reports are scheduled for Monday mornings around 9 a.m. Chicago time, starting November 30. Reports will include verified outcomes, accepted contributions and upcoming challenges; none has yet been published.",
+      "evidence": [
+        {
+          "label": "Weekly progress template",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/community-operations.md#weekly-progress-update"
+        }
+      ],
+      "nextAction": "Publish the first evidence-backed report, link it here, and keep future weekly reports grounded in actual merged work and accepted contributions.",
+      "completedAt": null
+    }
+  ]
+}

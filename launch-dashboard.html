@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101a1a">
+  <meta name="description" content="Helios launch dashboard: 22 milestones, evidence of completed work, and a clear path for founding contributors.">
+  <title>Launch dashboard · Helios</title>
+  <link rel="icon" href="./public/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./public/launch-dashboard.css">
+  <script type="module" src="./public/launch-dashboard.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to launch checklist</a>
+  <header class="site-header shell">
+    <a class="brand" href="./index.html"><span class="sun" aria-hidden="true">✳</span> HELIOS</a>
+    <nav aria-label="Launch navigation">
+      <a href="./contribute.html">Contributor hub</a>
+      <a href="https://github.com/adnanwahab/HeliosHTML/discussions">Discussions</a>
+      <a class="button small primary" href="./index.html?compose=pr">Propose a change</a>
+    </nav>
+  </header>
+  <main id="main" class="shell">
+    <section class="hero" aria-labelledby="launch-title">
+      <div>
+        <p class="eyebrow">Building in public / Launch dashboard</p>
+        <h1 id="launch-title">A clear path<br>to launch<span>.</span></h1>
+        <p class="lede">One shared checklist. Visible progress. A place for everyone to help build Helios.</p>
+        <div class="hero-links"><a class="button primary" href="https://github.com/adnanwahab/HeliosHTML/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22">Find your first contribution</a><a class="button" href="https://github.com/adnanwahab/HeliosHTML/pull/75">Review the launch PR</a></div>
+        <p class="target">Target <strong>December 1, 2026</strong><span>Readiness determines launch.</span></p>
+      </div>
+      <div class="progress-panel">
+        <p class="eyebrow">Launch checklist</p>
+        <div class="progress-number" data-launch-progress aria-live="polite">— / 22</div>
+        <p class="progress-caption">tasks completed with evidence</p>
+        <progress id="launch-meter" max="22" value="0" aria-label="Completed launch tasks">0 of 22</progress>
+        <div id="launch-counts" class="status-counts"></div>
+        <p class="snapshot-note">A reviewed snapshot of the work. Changes in this PR are available in its preview; production follows review and merge.</p>
+        <p class="updated" id="launch-updated">Loading the evidence ledger…</p>
+      </div>
+    </section>
+    <section class="phase-overview" aria-labelledby="phases-title"><h2 id="phases-title" class="sr-only">Five launch phases</h2><div id="launch-phases" class="phase-grid"></div></section>
+    <div class="work-layout">
+      <section class="checklist" aria-labelledby="checklist-title">
+        <div class="section-heading"><div><p class="eyebrow">The work, in the open</p><h2 id="checklist-title">Launch checklist</h2></div><button id="launch-export" class="text-button" type="button" disabled>Download evidence</button></div>
+        <div class="filters">
+          <div class="search-field"><label for="launch-search">Find a task</label><input type="search" id="launch-search" placeholder="Search tasks, owners, or evidence"></div>
+          <div><label for="launch-phase">Phase</label><select id="launch-phase"><option value="all">All phases</option></select></div>
+        </div>
+        <div class="filter-tabs" role="group" aria-label="Filter by task status">
+          <button type="button" data-status-filter="all" aria-pressed="true">Everything</button>
+          <button type="button" data-status-filter="done" aria-pressed="false">Done</button>
+          <button type="button" data-status-filter="in_progress" aria-pressed="false">In progress</button>
+          <button type="button" data-status-filter="ready" aria-pressed="false">Ready to run</button>
+          <button type="button" data-status-filter="blocked" aria-pressed="false">Blocked</button>
+          <button type="button" data-status-filter="pending" aria-pressed="false">Not started</button>
+        </div>
+        <p id="launch-results" class="results" role="status" aria-live="polite"></p>
+        <div id="launch-tasks" aria-busy="true"></div>
+        <p id="launch-empty" class="empty" hidden>No tasks match these filters. Try another phase or search.</p>
+        <div id="launch-error" class="error" role="alert" hidden><h3>The checklist could not be loaded.</h3><p>Refresh to retry, or read the <a href="https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/public/launch-checklist.json">evidence file on GitHub</a>.</p></div>
+        <noscript><p>This dashboard needs JavaScript to filter its evidence ledger. Read the <a href="https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/STATUS.md">launch status on GitHub</a>.</p></noscript>
+      </section>
+      <aside class="side-panel" aria-labelledby="next-title">
+        <p class="eyebrow">What moves us forward</p><h2 id="next-title">Next up</h2><div id="launch-next"></div>
+        <div class="starter-note"><p class="eyebrow">Your first contribution</p><h3>Small work counts.</h3><p>Research a concern, improve a sentence, test a flow, or build a focused fix.</p><div class="starter-metrics"><span><strong>30</strong> scoped issues</span><span><strong>21</strong> beginner friendly</span></div><a href="https://github.com/adnanwahab/HeliosHTML/issues?q=is%3Aissue+is%3Aopen+in%3Atitle+Launch">Browse launch issues</a></div>
+        <div class="ledger-note"><h3>How progress is recorded</h3><p>Completed tasks include a dated result and a link you can inspect. A prepared invitation or workshop plan stays “Ready to run” until it happens.</p><p>Suggest an update with evidence in a pull request. This page does not store private contact lists or change completion in your browser.</p><a href="https://github.com/adnanwahab/HeliosHTML/edit/feat/contributor-launch/public/launch-checklist.json">Propose a dashboard update</a></div>
+      </aside>
+    </div>
+    <section class="closing-note"><span class="sun" aria-hidden="true">✳</span><div><h2>A launch is the start of the conversation.</h2><p>Propose, listen, revise, and recheck. Simulated responses help explore assumptions; real people decide whether to participate.</p></div><a class="button" href="./contribute.html">Find your place</a></section>
+  </main>
+  <footer class="shell"><span>Helios · A voluntary civic research workshop</span><a href="https://github.com/adnanwahab/HeliosHTML/pull/75">Source &amp; evidence</a></footer>
+</body>
+</html>
