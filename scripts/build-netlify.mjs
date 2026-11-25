@@ -2,6 +2,7 @@
 // the source tree, data, scripts and .git stay out of the site.
 import {copyFile, cp, mkdir, readFile, rm, writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
+import {buildAccount} from './build-account.mjs';
 import {buildPlanDocument} from '../src/notion.js';
 import seedCatalog from '../data/catalog.json' with {type: 'json'};
 
@@ -9,6 +10,9 @@ const root = process.cwd();
 const out = join(root, 'dist');
 const pages = [
   'index.html',
+  'research.html',
+  'contribute.html',
+  'launch-dashboard.html',
   'law-atlas.html',
   'welcome.html',
   'helios_mail.html',
@@ -59,6 +63,7 @@ if (previewBuild) {
 }
 await copyFile(join(root, 'docs', 'legacy-home.html'), join(out, 'experiments.html'));
 await cp(join(root, 'public'), join(out, 'public'), {recursive: true});
+await buildAccount(root, out);
 // The public editorial catalog is bundled for offline simulations; no database rows or secrets.
 await writeFile(join(out, 'public', 'law-catalog.json'), JSON.stringify(seedCatalog));
 // Fallback for the Notion screen if the API is unreachable.
