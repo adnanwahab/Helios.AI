@@ -83,7 +83,7 @@ function updateDraft(){
 const dollars=(amount,digits=0)=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',minimumFractionDigits:digits,maximumFractionDigits:digits}).format(amount);
 let cannabisAssumptions={...cannabisDefaults};
 function drawCannabis(){
- const panel=$('cannabis-budget');panel.hidden=!isCannabisDraft();if(panel.hidden)return;
+ const panel=$('cannabis-budget');if(!panel)return;panel.hidden=!isCannabisDraft();if(panel.hidden)return;
  const model=cannabisBudget(cannabisAssumptions);cannabisAssumptions=model.assumptions;
  for(const [key,value] of Object.entries(model.assumptions)){
   $('cannabis-'+key).value=String(value);
@@ -94,11 +94,13 @@ function drawCannabis(){
  $('cannabis-admin').textContent=dollars(model.administrationCost);
  $('cannabis-total').textContent=dollars(model.totalCost);
 }
+if($('cannabis-budget')){
 for(const key of Object.keys(cannabisDefaults))$('cannabis-'+key).addEventListener('input',()=>{cannabisAssumptions[key]=Number($('cannabis-'+key).value);drawCannabis()});
 $('cannabis-reset').addEventListener('click',()=>{cannabisAssumptions={...cannabisDefaults};drawCannabis()});
+}
 let childcareAssumptions={...childcareDefaults};
 function drawChildcare(){
- const panel=$('childcare-budget');panel.hidden=selected!=='HGA-031';if(panel.hidden)return;
+ const panel=$('childcare-budget');if(!panel)return;panel.hidden=selected!=='HGA-031';if(panel.hidden)return;
  const model=childcareBudget(childcareAssumptions);childcareAssumptions=model.assumptions;
  for(const [key,value] of Object.entries(model.assumptions)){
   $('childcare-'+key).value=String(value);
@@ -108,6 +110,7 @@ function drawChildcare(){
  for(const [key,value] of Object.entries(amounts))$('childcare-'+key).textContent=value;
  $('childcare-share').style.width=model.assumptions.subsidy+'%';
 }
+if($('childcare-budget')){
 for(const key of Object.keys(childcareDefaults))$('childcare-'+key).addEventListener('input',()=>{
  childcareAssumptions[key]=Number($('childcare-'+key).value);drawChildcare();
  $('childcare-draft-status').textContent='Local scenario changed. Use the current assumptions to create a new update draft.';
@@ -128,9 +131,11 @@ $('childcare-draft-button').addEventListener('click',()=>{
  $('childcare-draft-status').textContent='Update draft filled with this scenario. Review the wording and explicitly consent before submitting; existing votes and wording are unchanged.';
  $('law-update-goal').focus();
 });
+}
 function drawDetail({resetDraft=true}={}){
  const row=current(),law=row?.law;if(!law)return;
  const draft=isCannabisDraft();
+ const lab=$('law-consensus-world');if(lab){const params=new URLSearchParams({law:law.id});if(connected&&!draft&&law.versionId)params.set('version',law.versionId);lab.href='./public/consensus-world.html?'+params.toString();lab.hidden=false}
  const ide=$('atlas-ide-link');if(ide){ide.hidden=draft;if(!draft){const p=new URLSearchParams({law:law.id,clause:'implementation'});if(connected&&law.versionId)p.set('revision',law.versionId);ide.href='/constitution?'+p.toString()}}
  for(const id of ['law-votes','law-vote-controls','law-generic-sim','law-history-section','law-update-section'])$(id).hidden=draft;
  if(draft){
@@ -179,13 +184,15 @@ async function loadHistory(){
  try{const data=await request('/api/law-board/'+encodeURIComponent(id));if(ticket!==loadingDetail||id!==selected)return;history=data;renderHistory()}
  catch(e){if(ticket===loadingDetail)setDetailStatus('Could not load revision history: '+e.message,true)}
 }
-function selectLaw(id,{navigate=true}={}){
+export function selectLaw(id,{navigate=true}={}){
  if(writing||!records.has(id))return;
  if(id!==selected){saveDraft();selected=id;history=null;setDetailStatus('')}
- if(navigate)updateCivicRoute({law:id,anchor:'law-title'});
- drawCatalog();drawDetail();if(connected)loadHistory()
+ const lab=document.getElementById('communal-science-lab');
+ if(navigate&&!lab)updateCivicRoute({law:id,anchor:'law-title'});
+ drawCatalog();drawDetail();if(connected)loadHistory();
+ if(lab){const url=new URL(location.href);url.searchParams.set('labLaw',id);window.history.replaceState(window.history.state,'',url)}
 }
-window.addEventListener('popstate',()=>{const id=readCivicRoute().law||'HGA-001';if(records.has(id)){ $('law-search').value='';$('law-category').value='';selectLaw(id,{navigate:false});scrollToCivicRoute('law-title','laws-workbench')}});
+window.addEventListener('popstate',()=>{if(document.getElementById('communal-science-lab'))return;const id=readCivicRoute().law||'HGA-001';if(records.has(id)){ $('law-search').value='';$('law-category').value='';selectLaw(id,{navigate:false});scrollToCivicRoute('law-title','laws-workbench')}});
 async function loadBoard({preserveDraft=true}={}){
  if(preserveDraft&&connected)saveDraft();
  const result=await request('/api/law-board');
@@ -246,13 +253,15 @@ for(const k of ['years','reach','capacity','effect','lag'])$('law-input-'+k).add
 $('law-reset').addEventListener('click',()=>{scenario.delete(selected);drawDetail({resetDraft:false})});
 $('law-search').addEventListener('input',drawCatalog);$('law-category').addEventListener('change',drawCatalog);
 $('law-connect').hidden=isStatic;
-(async()=>{try{
+export const ready=(async()=>{try{
  const response=await fetch('./public/law-catalog.json',{cache:'force-cache'});if(!response.ok)throw Error('Catalog asset unavailable');
  const result=await response.json();seed=result.goals;if(!Array.isArray(seed)||seed.length!==100)throw Error('Expected 100 original proposals');
  for(const law of seed){modelFor(law);records.set(law.id,{law,votes:null,myVote:null,updates:0})}
  records.set(cannabisDraft.id,newDraftRow());
  for(const category of result.categories){const option=el('option',category);option.value=category;$('law-category').append(option)}
- $('law-count').textContent=records.size;const routed=readCivicRoute().law;if(records.has(routed))selected=routed;drawCatalog();drawDetail();$('law-connect').disabled=false;scrollToCivicRoute('law-title','laws-workbench');
+ const params=new URLSearchParams(location.search),lab=document.getElementById('communal-science-lab'),requested=lab?params.get('labLaw'):(readCivicRoute().law||params.get('goal'));
+ if(records.has(requested))selected=requested;else if(lab&&records.has('HGA-051'))selected='HGA-051';
+ $('law-count').textContent=records.size;drawCatalog();drawDetail();$('law-connect').disabled=false;if(!lab)scrollToCivicRoute('law-title','laws-workbench');
  if(['#childcare-budget','#cannabis-budget'].includes(location.hash))requestAnimationFrame(()=>$(location.hash.slice(1)).scrollIntoView({block:'start'}));
  status(isStatic?'Static preview · simulations only, no shared votes.':'Original editorial catalog plus one new draft · connect to load shared Supabase votes and revisions for the original laws.')
 }catch(e){status('Could not load the bundled law catalog: '+e.message,true)}})();
