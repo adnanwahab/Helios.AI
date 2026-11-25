@@ -245,6 +245,15 @@ try {
     await page.locator('#scene-title').scrollIntoViewIfNeeded();
     await page.screenshot({path:join(output,'rainbow-pensieve-mobile.png'),animations:'disabled'});
   }
+  // Linked constitution workspace: no public writes during capture.
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto(base+'/constitution?law=HGA-012&clause=implementation',{waitUntil:'domcontentloaded'});
+  if(await page.locator('#explorer-title').count()){
+    await page.locator('[data-section="HGA-012:implementation"]').waitFor({state:'visible'});
+    await page.screenshot({path:join(output,'government-ide-desktop.png'),fullPage:true,animations:'disabled'});
+    await page.setViewportSize({width:390,height:844});
+    await page.screenshot({path:join(output,'government-ide-mobile.png'),fullPage:true,animations:'disabled'});
+  }
   console.log('Captured desktop and mobile screenshots from ' + (remote ? 'Netlify deployment' : 'local PR build'));
 } finally {
   await browser?.close().catch(() => {});
