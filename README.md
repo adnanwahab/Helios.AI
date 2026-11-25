@@ -60,11 +60,30 @@ The browser suite starts its own server on port 3101 and uses a temporary databa
 | --- | --- | --- |
 | Civic workshop | `/` | Express a concern, develop a proposal, inspect revisions and advisory feedback. |
 | Consensus World | `/public/consensus-world` | Revise a draft and compare synthetic responses under explicit assumptions. |
+| World preference map | `/world-map` or the homepage's **Explore the world map here** section | Compare 1,526 geographic hexagons using five importance sliders and a live explanation. |
 | Contribution hub | `/contribute` | Paths for research, design, testing, documentation, and code contributions. |
 | Launch dashboard | `/launch` | Evidence and remaining work for the 22 launch checklist items. |
 | Editorial law atlas | `/laws` | Proposed goals, scenario assumptions, revision review, and environment-dependent shared features. |
 
 The contribution hub and launch dashboard are delivered in [PR #75](https://github.com/adnanwahab/HeliosHTML/pull/75); use its preview until merged. Other experiences and implementation details are cataloged in [the archive](docs/experiences.md) and [implementation notes](docs/launch/implementation-notes.md).
+
+### World preferences and paced voting
+
+The world map loads only when opened on the homepage. Its five sliders weight mild climate, lower living costs, city access, nature, and coastal proximity. Click a hexagon or use the location selector to read its explanation. The full map keeps its preferences and selected cell in the URL so a refresh or shared link restores the same view. All-zero preferences produce an unranked map.
+
+The geography is published map data, and city/coast distance scores are approximate straight-line proxies. Climate uses latitude; living costs and nature are explicitly synthetic layers. These are broad regional examples, not observed livability rankings. See [map sources and method](public/world-map/README.md).
+
+Run the terminal vote lab from this checkout:
+
+```sh
+bun run votes:world
+# Or use the included proposal:
+bun run votes:world:demo
+# Change the interval and batch size:
+bun run votes:world --proposal "A voluntary childcare pilot" --batch-size 100m --interval 3
+```
+
+The prompt asks for a proposal and five assumed impacts. The default represents exactly **8,000,000,000 synthetic votes**, releasing **200 million every two seconds** in a live Yes/No/Abstain dashboard with a written summary. Space/P pauses, Q saves a partial result, and Ctrl+C stops cleanly. Results and a Markdown summary are saved under `.data/world-vote-lab/` by default. The model uses eight fictional cohorts and approximate aggregate sampling; explicit assumptions determine support, while proposal text labels the experiment. See [the vote lab guide](scripts/world-vote-lab/README.md). The existing exact-range shard tool remains available at `scripts/population-vote.mjs`.
 
 ### Example: address the strongest objections
 
@@ -95,6 +114,8 @@ These are candidate objections and compromises to investigate, not measured publ
 | `docs/` | Feature, operational, and launch documentation. |
 
 For backend setup see [backend documentation](docs/backend.md). For preview review see [PR visual previews](docs/pr-visual-previews.md). For persistence and recovery checks see [data safety and launch](docs/data-safety-and-launch.md). Public proposal text, private journal content, browser practice data, and simulated votes have different handling requirements; preserve those boundaries when changing a feature.
+
+Maintainers: run the [private traffic-light security registry](docs/security-registry.md) with `bun --env-file=.env.security run security:registry` after setting up the secret. Local-only; not connected to public authentication.
 
 ## Community and launch operations
 
