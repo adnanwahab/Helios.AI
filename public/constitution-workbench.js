@@ -102,36 +102,72 @@ docs.addEventListener('close',()=>{
  $('docs-open').focus();
 });
 $('docs-search').addEventListener('input',()=>renderDocs($('docs-search').value));
-let board=sampleBoard(),connected=false,selected='S-001',busy=false,refreshing=false,csrf=null,lastWrite=null,related=null;
-const practiceVotes=new Map(),practiceComments=new Map(),practiceClauses=new Map();
-function rows(){return connected?board.clauses:[...board.clauses,...practiceClauses.values()]}
+// Shared constitution board. Practice activity is saved in this browser only
+// (localStorage); shared activity goes through the existing consent-gated API.
+const M=window.HeliosMatch;
+const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const emptyTally=()=>({support:0,oppose:0,unsure:0,contributors:0,commentCount:0});
+let board=sampleBoard(),connected=false,selected='S-001',busy=false,refreshing=false,csrf=null,lastWrite=null,related=null,lastRelatedId=null,ready=false,lastWhy=[];
+const practiceVotes=new Map(),practiceComments=new Map(),practiceClauses=new Map(),commentDrafts=new Map();let eventLog=[];
+const PRACTICE_KEY='helios-practice-v1';
+function storage(){try{return window.localStorage}catch(e){return null}}
+function savePractice(){const s=storage();if(!s)return;try{s.setItem(PRACTICE_KEY,JSON.stringify({v:1,votes:[...practiceVotes],comments:[...practiceComments],clauses:[...practiceClauses.values()].map(({id,topic,text,parent})=>({id,topic,text,parent})),drafts:[...commentDrafts].filter(([,t])=>String(t).trim()),log:eventLog.slice(-80)}))}catch(e){}}
+function practiceRow(id,text,topic='Your practice contribution',parent=null){return {id,topic,text,parent,source:'practice',synthetic:{mentions:0,support:0,oppose:0,unsure:0},live:emptyTally(),comments:[]}}
+function loadPractice(){let data=null;try{data=JSON.parse(storage()?.getItem(PRACTICE_KEY)||'null')}catch(e){}if(!data||data.v!==1)return;
+ for(const c of Array.isArray(data.clauses)?data.clauses:[])if(c&&typeof c.id==='string'&&/^P-/.test(c.id)&&typeof c.text==='string')practiceClauses.set(c.id,practiceRow(c.id,c.text.slice(0,280),typeof c.topic==='string'?c.topic:undefined,typeof c.parent==='string'?c.parent:null));
+ const known=id=>board.clauses.some(r=>r.id===id)||practiceClauses.has(id);
+ for(const [id,pos] of Array.isArray(data.votes)?data.votes:[])if(known(id)&&['support','oppose','unsure'].includes(pos))practiceVotes.set(id,pos);
+ for(const [id,list] of Array.isArray(data.comments)?data.comments:[])if(known(id)&&Array.isArray(list))practiceComments.set(id,list.filter(x=>x&&typeof x.text==='string').slice(0,8).map(x=>({text:x.text.slice(0,500),status:'practice'})));
+ for(const [id,text] of Array.isArray(data.drafts)?data.drafts:[])if(known(id)&&typeof text==='string')commentDrafts.set(id,text.slice(0,500));
+ eventLog=(Array.isArray(data.log)?data.log:[]).filter(e=>e&&typeof e.type==='string').slice(-80)}
+function emit(type){document.dispatchEvent(new CustomEvent('helios:board',{detail:{type}}))}
+function logEvent(type,data={}){eventLog.push({type,t:Date.now(),...data});if(eventLog.length>120)eventLog=eventLog.slice(-120);savePractice();emit(type)}
+function rows(){return connected?board.clauses:[...practiceClauses.values(),...board.clauses]}
 function current(){return rows().find(x=>x.id===selected)||rows()[0]}
+function myVote(row){return connected?row.myVote:practiceVotes.get(row.id)}
+// Synthetic counts plus your own practice vote, so voting visibly moves the bar.
+function shown(row){const s=row.synthetic||{},v=connected?null:practiceVotes.get(row.id);return {support:(s.support||0)+(v==='support'?1:0),oppose:(s.oppose||0)+(v==='oppose'?1:0),unsure:(s.unsure||0)+(v==='unsure'?1:0),mine:v||null}}
+function liveTotal(l){return (l?.support||0)+(l?.oppose||0)+(l?.unsure||0)}
+function shortId(id){return /^P-/.test(id)?'your practice clause':id.length>14?id.slice(0,12)+'…':id}
 function syntheticLabel(s){return fmt(s.support)+' support · '+fmt(s.oppose)+' oppose · '+fmt(s.unsure)+' unsure'}
 function liveLabel(l){return fmt(l.support)+' support · '+fmt(l.oppose)+' oppose · '+fmt(l.unsure)+' unsure'}
 function meter(s){const el=create('div',undefined,'vote-meter');el.setAttribute('aria-hidden','true');for(const name of ['support','oppose','unsure']){const span=create('span',undefined,'vote-'+name);span.style.flexGrow=String(s[name]||0);el.append(span)}return el}
+function cardFor(id){return [...document.querySelectorAll('#constitution-list .clause-card')].find(c=>c.dataset.clauseId===id)||null}
+function flash(id,cls){const card=cardFor(id);if(!card)return;card.classList.remove(cls);void card.offsetWidth;card.classList.add(cls);card.scrollIntoView({block:'nearest',behavior:reduceMotion?'auto':'smooth'})}
+function bump(id,position){if(reduceMotion||!position)return;const wrap=cardFor(id)?.querySelector('.meter-wrap');if(!wrap)return;const tag=create('span','+1 '+position,'plus-one');wrap.append(tag);setTimeout(()=>tag.remove(),1100)}
+function quickActions(row){
+ const box=create('div',undefined,'clause-quick');box.setAttribute('role','group');box.setAttribute('aria-label','Quick position on this clause');const mine=myVote(row);
+ for(const [position,label] of [['support','Support'],['oppose','Oppose'],['unsure','Unsure']]){const b=create('button',label,'secondary');b.type='button';b.dataset.quickVote=position;b.setAttribute('aria-pressed',String(mine===position));b.disabled=busy;b.addEventListener('click',()=>castVote(row.id,position));box.append(b)}
+ const discuss=create('button','Discuss →','quiet quick-discuss');discuss.type='button';discuss.addEventListener('click',()=>{$('clause-comment').focus({preventScroll:true});$('clause-comment').scrollIntoView({block:'center',behavior:reduceMotion?'auto':'smooth'})});box.append(discuss);
+ return box;
+}
 function drawList(){
- const filter=$('clause-search').value.trim().toLowerCase(),root=$('constitution-list');root.replaceChildren();
- for(const row of rows().filter(x=>[x.text,x.topic,x.id].some(v=>String(v).toLowerCase().includes(filter)))){
+ const query=$('clause-search').value.trim(),root=$('constitution-list');root.replaceChildren();
+ const list=M.search(rows(),query,{fields:r=>r.text+' '+r.topic,id:r=>r.id});
+ for(const row of list){
    const btn=create('button',undefined,'clause-card');btn.type='button';btn.dataset.clauseId=row.id;btn.setAttribute('aria-pressed',String(row.id===selected));
    const meta=create('span',undefined,'clause-meta');meta.append(create('span',row.topic),create('span',row.source==='synthetic'?fmt(row.synthetic.mentions)+' sample mentions':row.source==='practice'?'Your practice clause':'Community clause'));btn.append(meta,create('span',row.text,'clause-text'));
-   if(row.source==='synthetic')btn.append(meter(row.synthetic),create('span','Synthetic: '+syntheticLabel(row.synthetic),'vote-counts'));
-   if(connected)btn.append(create('span','Shared: '+liveLabel(row.live),'vote-counts'));
-   btn.addEventListener('click',()=>choose(row.id));root.append(btn)
+   if(row.source==='synthetic'){const c=shown(row),wrap=create('span',undefined,'meter-wrap');wrap.append(meter(c));btn.append(wrap,create('span','Synthetic: '+syntheticLabel(c)+(c.mine?' · incl. your practice vote':''),'vote-counts'))}
+   if(connected)btn.append(create('span',liveTotal(row.live)?'Shared: '+liveLabel(row.live):'Shared: no votes yet. Be the first.','vote-counts'));
+   btn.addEventListener('click',()=>choose(row.id));root.append(btn);
+   if(row.id===selected)root.append(quickActions(row));
  }
- if(!root.childElementCount)root.append(create('p','No clauses match your filter.','hint'));
+ if(!list.length){const p=create('p','No clause matches “'+query+'”. ','hint'),b=create('button','Suggest it as a new clause','quiet inline');b.type='button';b.addEventListener('click',()=>{if(!$('new-clause').value.trim()){$('new-clause').value=query;updateDedupe()}$('new-clause').focus({preventScroll:true});$('new-clause').scrollIntoView({block:'center',behavior:reduceMotion?'auto':'smooth'})});p.append(b);root.append(p)}
 }
+// Unsent comments are kept per clause, so switching clauses never asks or loses text.
 function choose(id){
  if(busy||!rows().some(r=>r.id===id))return;
- if(id!==selected){if($('clause-comment').value.trim()&&!confirm('Switch clauses and clear your unsent comment?'))return;$('clause-comment').value='';$('comment-consent').checked=false;$('comment-auto-consent').checked=false;message('comment-status','');message('clause-status','')}
- selected=id;drawList();drawReview();
+ if(id!==selected){commentDrafts.set(selected,$('clause-comment').value);const draft=commentDrafts.get(id)||'';$('clause-comment').value=draft;$('comment-consent').checked=false;$('comment-auto-consent').checked=false;message('comment-status',draft.trim()?'Your unsent comment for this clause is back.':'');message('clause-status','');savePractice()}
+ selected=id;drawList();drawReview();renderMatchCardFor(related,lastWhy);emit('select');
 }
 function drawReview(){
  const row=current();if(!row)return;selected=row.id;
- $('clause-topic').textContent=row.topic+' · '+row.id.slice(0,18)+(row.id.length>18?'…':'');
+ $('clause-topic').textContent=row.topic+' · '+shortId(row.id);
  $('clause-text').textContent=row.text;
- $('clause-synthetic').textContent=row.source==='synthetic'?'Synthetic: '+syntheticLabel(row.synthetic)+' · '+fmt(row.synthetic.mentions)+' distinct sample participants.':'No synthetic votes for this community clause.';
- const real=$('clause-real');real.replaceChildren(create('strong',connected?'Shared advisory votes (browser sessions)':'Practice only · no shared votes loaded'),create('span',connected?liveLabel(row.live)+' · '+fmt(row.live.contributors)+' opted-in contributions':'Your choices here are not sent or counted publicly.'));
- const position=connected?row.myVote:practiceVotes.get(row.id);
+ const c=shown(row);
+ $('clause-synthetic').textContent=row.source==='synthetic'?'Synthetic: '+syntheticLabel(c)+' · '+fmt(row.synthetic.mentions)+' distinct sample participants'+(c.mine?' · incl. your practice vote':'')+'.':row.source==='practice'?'Your own clause, on this device only.':'No synthetic votes for this community clause.';
+ const real=$('clause-real');real.replaceChildren(create('strong',connected?'Shared advisory votes (browser sessions)':'Practice'),create('span',connected?(liveTotal(row.live)?liveLabel(row.live)+' · '+fmt(row.live.contributors)+' opted-in contributions':'No shared votes yet on this clause. Yours would be the first.'):'Your position is saved on this device only.'));
+ const position=myVote(row);
  for(const b of document.querySelectorAll('[data-clause-vote]')){b.setAttribute('aria-pressed',String(position===b.dataset.clauseVote));b.disabled=busy}
  $('clear-vote').disabled=busy;
  const comments=$('clause-comments');comments.replaceChildren();
@@ -148,7 +184,7 @@ function drawPending(){
  for(const p of board.pending||[])node.append(create('p','Pending moderation: '+p.text));
 }
 function draw(){
- const s=board.synthetic;$('synthetic-people').textContent=fmt(s.participants);$('synthetic-clauses').textContent=fmt(s.clauses);$('synthetic-duplicates').textContent=fmt(s.rawMentions-s.uniqueMentions);
+ const s=board.synthetic,mine=connected?0:practiceClauses.size;$('synthetic-people').textContent=fmt(s.participants);$('synthetic-clauses').textContent=fmt(s.clauses+mine);$('yours-count').hidden=!mine;$('yours-count').textContent=mine?'incl. '+mine+' yours':'';$('synthetic-duplicates').textContent=fmt(s.rawMentions-s.uniqueMentions);
  $('board-mode').textContent=connected?'Shared + sample':'Synthetic sample';$('board-connect').hidden=connected||isStatic;$('board-refresh').hidden=!connected;
  if(!rows().some(r=>r.id===selected))selected=rows()[0]?.id;
  drawList();drawReview();drawPending();updateDedupe();
@@ -159,13 +195,13 @@ async function request(path,options={}){
 }
 async function refresh(){
  if(!connected||refreshing||busy)return;refreshing=true;$('board-refresh').disabled=true;
- try{const next=await request('/api/constitution');if(!Array.isArray(next.clauses)||!next.synthetic)throw Error('Invalid board response');board=next;draw();message('board-status','Shared board updated. Counts are advisory browser-session totals, separate from the synthetic corpus.')}
+ try{const next=await request('/api/constitution');if(!Array.isArray(next.clauses)||!next.synthetic)throw Error('Invalid board response');board=next;draw();emit('refresh');message('board-status','Shared board updated. Counts are advisory browser-session totals, separate from the synthetic corpus.')}
  catch(e){message('board-status','Could not refresh: '+e.message,true)}
  finally{refreshing=false;$('board-refresh').disabled=false}
 }
 $('board-connect').addEventListener('click',async()=>{
  if(isStatic||connected||busy)return;$('board-connect').disabled=true;message('board-status','Connecting to the shared board…');
- try{const session=await request('/api/session');if(typeof session.csrfToken!=='string')throw Error('No session token');const next=await request('/api/constitution');if(!Array.isArray(next.clauses)||!next.synthetic)throw Error('Invalid board response');csrf=session.csrfToken;board=next;connected=true;$('board-live-link').hidden=true;draw();message('board-status','Connected. Practice activity was not uploaded. Votes are public advisory counts; comments and new clauses await review.')}
+ try{const session=await request('/api/session');if(typeof session.csrfToken!=='string')throw Error('No session token');const next=await request('/api/constitution');if(!Array.isArray(next.clauses)||!next.synthetic)throw Error('Invalid board response');csrf=session.csrfToken;board=next;connected=true;$('board-live-link').hidden=true;draw();emit('connect');message('board-status','Connected. Practice activity was not uploaded. Votes are public advisory counts; comments and new clauses await review.')}
  catch(e){message('board-status','Connection unavailable: '+e.message+' · practice remains available.',true);$('board-live-link').hidden=false}
  finally{$('board-connect').disabled=false}
 });
@@ -178,8 +214,8 @@ for(const [existing, id] of [['comment-consent','comment-auto-consent'],['contri
  label.id=id+'-wrap';label.className='consent';label.hidden=true;original.parentElement.after(label);
 }
 async function write(action,data,statusId,onSuccess){
- if(!connected||busy)return;
- if(refreshing){message(statusId,'Refreshing the shared board. Please try again in a moment.');return}
+ if(!connected||busy)return null;
+ if(refreshing){message(statusId,'Refreshing the shared board. Please try again in a moment.');return null}
  busy=true;drawReview();const body=JSON.stringify(data),fingerprint=action+'|'+body;
  if(!lastWrite||lastWrite.fingerprint!==fingerprint)lastWrite={fingerprint,key:crypto.randomUUID()};
  message(statusId,'Submitting…');
@@ -190,54 +226,96 @@ async function write(action,data,statusId,onSuccess){
    lastWrite=null;onSuccess(result);message(statusId,action==='vote'?'Position recorded.':result.status==='approved'&&result.moderation==='unflagged'?'Safety check passed; published for discussion.':result.status==='pending'?'Saved · pending moderation.':action==='comment'?'Comment saved.':'Contribution grouped with the existing clause.');
  }catch(e){message(statusId,'Submission not confirmed: '+e.message+' · retry unchanged to reuse the request key.',true)}
  finally{busy=false;drawReview();if(result)await refresh()}
+ return result;
 }
-for(const b of document.querySelectorAll('[data-clause-vote]'))b.addEventListener('click',()=>{
- const row=current(),position=b.dataset.clauseVote;if(!row||busy)return;
- if(connected)write('vote',{clauseId:row.id,position},'clause-status',()=>{});
- else{practiceVotes.set(row.id,position);drawReview();message('clause-status','Practice position saved in this page only.')}
-});
+// One path for every vote button (review lane, quick row, match card, daily deck).
+async function castVote(id,position){
+ const row=rows().find(r=>r.id===id);if(!row||busy)return false;
+ if(id!==selected)choose(id);
+ if(connected){const result=await write('vote',{clauseId:row.id,position},'clause-status',()=>{});if(result)logEvent('vote',{id:row.id,topic:row.topic,text:row.text,position,shared:true});return !!result}
+ const previous=practiceVotes.get(row.id);practiceVotes.set(row.id,position);drawList();drawReview();renderMatchCardFor(related,lastWhy);
+ if(previous!==position)bump(row.id,position);
+ message('clause-status',previous===position?'Practice position kept: '+position+'.':'Practice position saved on this device: '+position+'.');
+ if(previous!==position)logEvent('vote',{id:row.id,topic:row.topic,text:row.text,position,previous:previous||null});
+ return true;
+}
+for(const b of document.querySelectorAll('[data-clause-vote]'))b.addEventListener('click',()=>{const row=current();if(row)castVote(row.id,b.dataset.clauseVote)});
 $('clear-vote').addEventListener('click',()=>{
  const row=current();if(!row||busy)return;
  if(connected)write('vote',{clauseId:row.id,position:null},'clause-status',()=>{});
- else{practiceVotes.delete(row.id);drawReview();message('clause-status','Practice position cleared.')}
+ else{practiceVotes.delete(row.id);drawList();drawReview();renderMatchCardFor(related,lastWhy);savePractice();emit('vote');message('clause-status','Practice position cleared.')}
 });
 $('post-comment').addEventListener('click',()=>{
  const row=current(),text=$('clause-comment').value.trim();if(!row||busy||!text)return message('comment-status','Write a comment first.',true);
- if(connected){if(!$('comment-consent').checked)return message('comment-status','Confirm the exact public comment before submitting.',true);write('comment',{clauseId:row.id,text,consent:true,...($('comment-auto-consent').checked?{autoModerationConsent:true}:{})},'comment-status',()=>{$('clause-comment').value='';$('comment-consent').checked=false;$('comment-auto-consent').checked=false})}
- else{const list=practiceComments.get(row.id)||[];list.unshift({text,status:'practice'});practiceComments.set(row.id,list.slice(0,8));$('clause-comment').value='';drawReview();message('comment-status','Practice comment added. Nothing was sent.')}
+ if(connected){if(!$('comment-consent').checked)return message('comment-status','Confirm the exact public comment before submitting.',true);write('comment',{clauseId:row.id,text,consent:true,...($('comment-auto-consent').checked?{autoModerationConsent:true}:{})},'comment-status',()=>{$('clause-comment').value='';commentDrafts.delete(row.id);$('comment-consent').checked=false;$('comment-auto-consent').checked=false})}
+ else{const list=practiceComments.get(row.id)||[];list.unshift({text,status:'practice'});practiceComments.set(row.id,list.slice(0,8));$('clause-comment').value='';commentDrafts.delete(row.id);drawReview();message('comment-status','Practice comment added. Nothing was sent.');logEvent('comment',{id:row.id,topic:row.topic,text})}
 });
-$('clause-comment').addEventListener('input',()=>{$('comment-consent').checked=false;$('comment-auto-consent').checked=false});
-const emptyTally=()=>({support:0,oppose:0,unsure:0,contributors:0,commentCount:0});
+let draftTimer=0;
+$('clause-comment').addEventListener('input',()=>{$('comment-consent').checked=false;$('comment-auto-consent').checked=false;commentDrafts.set(selected,$('clause-comment').value);clearTimeout(draftTimer);draftTimer=setTimeout(savePractice,300)});
 function updateDedupe(){
  const text=$('new-clause').value.trim();const hit=text&&rows().find(r=>normalizeClause(r.text)===normalizeClause(text));
- $('dedupe-hint').textContent=!text?'':hit?'Same normalized wording as '+hit.id+' — this will join the existing clause instead of creating a duplicate.':'New wording · separate clause; no semantic equivalence assumed.';
+ $('dedupe-hint').textContent=!text?'':hit?'Same normalized wording as '+shortId(hit.id)+' — this will join the existing clause instead of creating a duplicate.':'New wording · separate clause; no semantic equivalence assumed.';
 }
 $('new-clause').addEventListener('input',()=>{$('contribution-consent').checked=false;$('clause-auto-consent').checked=false;updateDedupe()});
 $('use-concern').addEventListener('click',()=>{
- const first=$('journal').value.trim().split(/(?<=[.!?])\s+|\n/)[0];if(!first)return message('contribution-status','Write a private concern first.',true);
- if($('new-clause').value.trim()&&!confirm('Replace your unsent clause draft?'))return;
- $('new-clause').value=first.slice(0,280);$('contribution-consent').checked=false;$('clause-auto-consent').checked=false;updateDedupe();$('new-clause').focus();
+ const main=M.pickProblem($('journal').value).text;if(!main)return message('contribution-status','Write a private concern first.',true);
+ const before=$('new-clause').value;$('new-clause').value=main.slice(0,280);$('contribution-consent').checked=false;$('clause-auto-consent').checked=false;updateDedupe();$('new-clause').focus();
+ if(before.trim()&&before!==$('new-clause').value&&window.HeliosUndo)window.HeliosUndo('Clause draft replaced.',()=>{$('new-clause').value=before;updateDedupe()});
 });
+function addPracticeClause(text,topic,parent=null){const id='P-'+crypto.randomUUID(),label=topic||'Your practice contribution';practiceClauses.set(id,practiceRow(id,String(text).slice(0,280),label,parent));selected=id;draw();flash(id,'fresh');logEvent(parent?'amendment':'clause',{id,topic:label,text:String(text).slice(0,280),parent});return id}
 $('contribute-clause').addEventListener('click',()=>{
  const text=$('new-clause').value.trim();if(!text||busy)return message('contribution-status','Write a short clause first.',true);
  if(connected){if(!$('contribution-consent').checked)return message('contribution-status','Confirm the exact public wording before submitting.',true);write('contribute',{text,consent:true,...($('clause-auto-consent').checked?{autoModerationConsent:true}:{})},'contribution-status',()=>{$('new-clause').value='';$('contribution-consent').checked=false;$('clause-auto-consent').checked=false})}
- else{const hit=rows().find(r=>normalizeClause(r.text)===normalizeClause(text));if(hit){choose(hit.id);message('contribution-status','Matched existing wording. No duplicate clause added.')}
- else{const id='P-'+crypto.randomUUID();practiceClauses.set(id,{id,topic:'Your practice contribution',text,source:'practice',synthetic:{mentions:0,support:0,oppose:0,unsure:0},live:emptyTally(),comments:[]});choose(id);message('contribution-status','Added to your practice draft only.')}
+ else{const hit=rows().find(r=>normalizeClause(r.text)===normalizeClause(text));if(hit){choose(hit.id);flash(hit.id,'echo');message('contribution-status','Matched existing wording. No duplicate clause added.')}
+ else{addPracticeClause(text);message('contribution-status','Added to your practice draft, at the top of the constitution.')}
  $('new-clause').value='';updateDedupe()}
 });
 $('clause-search').addEventListener('input',drawList);
 const pulse=$('typing-pulse');for(let i=0;i<32;i++)pulse.append(create('i'));
-function tokens(text){return new Set((text.toLowerCase().match(/[a-z0-9]{3,}/g)||[]).filter(x=>!['the','and','with','that','this','our','would','should','have','from','about','what','people','for','are','into','make','public'].includes(x)))}
-function updatePulse(){
- const value=$('journal').value.trim(),ts=tokens(value);pulse.classList.toggle('active',!!value);
- [...pulse.children].forEach((bar,i)=>{bar.style.height=value?(5+((value.charCodeAt((i*7)%value.length)||0)+i*11+value.length*3)%25)+'px':'5px'});
- const candidates=rows().map(row=>{const words=tokens(row.text+' '+row.topic);let score=0;for(const w of ts)if(words.has(w))score++;return {row,score}}).sort((a,b)=>b.score-a.score||a.row.id.localeCompare(b.row.id));
- related=candidates[0]?.score>0?candidates[0].row:null;const label=$('local-signal');label.replaceChildren();
- label.append(document.createTextNode(value?fmt(value.split(/\s+/).length)+' words · ':''));label.append(related?create('strong','Related wording: '+related.topic+' · '+related.id.slice(0,14)):document.createTextNode(value?'No strong keyword match yet. Your idea can remain distinct.':'Write a thought to discover related clauses as you type.'));
- $('review-match').hidden=!related;
+// The match moment: your words find their clause, fly over and light it up.
+function renderMatchCardFor(row,why=null){
+ const card=$('match-card');if(!row||!$('journal').value.trim()){card.hidden=true;return}card.hidden=false;
+ $('match-kicker').textContent=row.source==='synthetic'?'You + '+fmt(row.synthetic.mentions)+' sample journals said something like this':row.source==='practice'?'Close to your own practice clause':'Close to a community clause';
+ $('match-text').textContent='“'+row.text+'”'+(why&&why.length?' · matched on '+why.join(', '):'');
+ const mine=myVote(row);$('match-support').textContent=mine==='support'?'Supported ✓':'Support it';$('match-support').disabled=busy||mine==='support';
 }
+function celebrate(row,why){
+ if(!ready)return;const card=cardFor(row.id);if(!card)return;
+ const finish=()=>{card.classList.remove('echo');void card.offsetWidth;card.classList.add('echo')};
+ const from=$('journal').getBoundingClientRect(),to=card.getBoundingClientRect(),visible=r=>r.bottom>0&&r.top<innerHeight;
+ if(reduceMotion||!visible(from)||!visible(to)){finish();return}
+ const chip=create('div',(why&&why.length?why.slice(0,3).join(' · '):row.topic),'fly-chip');document.body.append(chip);
+ chip.style.transform='translate('+Math.round(from.left+from.width*.4)+'px,'+Math.round(from.top+from.height*.5)+'px)';
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{chip.style.transform='translate('+Math.round(to.left+18)+'px,'+Math.round(to.top+to.height*.45)+'px) scale(.85)';chip.style.opacity='.25'}));
+ setTimeout(()=>{chip.remove();finish()},800);
+}
+function updatePulse(){
+ const value=$('journal').value.trim();pulse.classList.toggle('active',!!value);
+ [...pulse.children].forEach((bar,i)=>{bar.style.height=value?(5+((value.charCodeAt((i*7)%value.length)||0)+i*11+value.length*3)%25)+'px':'5px'});
+ const best=value?M.rank(rows(),value,{fields:r=>r.text+' '+r.topic,limit:1})[0]:null;
+ related=best?best.record:null;lastWhy=best?best.why:[];
+ const label=$('local-signal');label.replaceChildren();
+ label.append(document.createTextNode(value?M.plural(value.split(/\s+/).length,'word')+' · ':''));
+ label.append(related?create('strong','Related wording: '+related.topic+' · '+shortId(related.id)):document.createTextNode(value?'No match yet. Your idea can start a new clause.':'Write a thought to discover related clauses as you type.'));
+ $('review-match').hidden=!related;
+ renderMatchCardFor(related,lastWhy);
+ if(related&&related.id!==lastRelatedId)celebrate(related,lastWhy);
+ lastRelatedId=related?related.id:null;
+}
+$('match-support').addEventListener('click',()=>{if(related)castVote(related.id,'support')});
 $('journal').addEventListener('input',updatePulse);
 $('example').addEventListener('click',updatePulse);
 $('restart').addEventListener('click',updatePulse);
 $('review-match').addEventListener('click',()=>{if(related){choose(related.id);$('review-title').scrollIntoView({block:'nearest'})}});
-draw();message('board-status',isStatic?'Static practice · no network writes or public tallies.':'Practice mode · connect to load shared counts and cast advisory votes.');updatePulse();
+// Small API for the play features in workshop-play.js.
+window.HeliosBoard=Object.freeze({
+ rows:()=>rows(),current:()=>current(),select:id=>choose(id),vote:(id,position)=>castVote(id,position),
+ positionOf:id=>{const r=rows().find(x=>x.id===id);return r?myVote(r)||null:null},
+ counts:id=>{const r=rows().find(x=>x.id===id);return r?shown(r):null},
+ connected:()=>connected,isStatic:()=>isStatic,
+ addPracticeClause:(text,topic,parent)=>addPracticeClause(text,topic,parent),
+ log:()=>eventLog.slice(),note:(type,data)=>logEvent(type,data),
+ stats:()=>({...board.synthetic,practiceClauses:practiceClauses.size})
+});
+loadPractice();$('clause-comment').value=commentDrafts.get(selected)||'';
+draw();message('board-status',isStatic?'Static practice · no network writes or public tallies.':'Practice mode. Connect to see shared counts and cast advisory votes.');updatePulse();ready=true;emit('ready');

@@ -13,7 +13,7 @@ const STOP=new Set(('a an the and or but if so to of in on at by for from with i
  'wasnt werent wont wouldnt shouldnt even still yet ever back out up down off again then now well way want wants wanted '+
  'need needs needed think thought know feel felt said says say tell told keep keeps kept time times day days year years '+
  'people person someone something anything everything nothing everyone anyone nobody la el los las de del y en un una es '+
- 'que por para con no se al lo'
+ 'que por para con no se al lo big small good bad great little long real sure able last next first other new kind sort take took taken use using used put give find found'
 ).split(/\s+/));
 
 // Irregular forms and words the light stemmer would damage.
@@ -55,7 +55,7 @@ const EMOJI={'🚌':' bus ','🚏':' bus stop ','🚇':' subway ','🚆':' train
  '📶':' internet ','💡':' lights ','🧒':' child ','👵':' older ','♿':' accessible '};
 // A few phrases mean something different from their words.
 const PHRASES=[[/\bget(?:ting)? around\b/g,' transit '],[/\bpublic transportation\b/g,' transit '],[/\bgas stations?\b/g,' gasstation '],
- [/\bwork(?:ing)? from home\b/g,' remote work '],[/\b(?:from|at) home\b/g,' '],[/\bcooling centers?\b/g,' cooling ']];
+ [/\bwork(?:ing)? from home\b/g,' remote work '],[/\bhome (internet|wifi|broadband|connection)\b/g,' $1 '],[/\b(?:from|at) home\b/g,' '],[/\bcooling centers?\b/g,' cooling ']];
 function plain(text){
  let s=String(text||'');
  for(const [k,v] of Object.entries(EMOJI))if(s.includes(k))s=s.split(k).join(v);
@@ -98,6 +98,12 @@ function conceptsOf(text){
  for(const c of CONCEPTS)for(const w of list)if(c.words.has(w)){if(!found.has(c.id))found.set(c.id,new Set());found.get(c.id).add(w)}
  return found;
 }
+// Everyday words count half: "anyone who works a shift" should not outweigh "library".
+const GENERIC_WORDS=new Set(('work shift home house street road lane car speed ride water rain? care community neighbor neighborhood '+
+ 'center event class learn skill training trade data app phone online rights reason decision respond response answer publish '+
+ 'official ticket sun summer degree cool green power noise sick friend hang private seat seating').replace(/\?/g,'').split(/\s+/).map(stem));
+function weigh(set){let w=0;for(const word of set)w+=GENERIC_WORDS.has(word)?.5:1;return w}
+function weightOf(p,id){return p.concepts.has(id)?weigh(p.concepts.get(id)):0}
 function profile(text){return {terms:terms(text),concepts:conceptsOf(text)}}
 function asProfile(x){return x&&x.terms&&x.concepts?x:profile(x)}
 
@@ -108,11 +114,12 @@ function similarity(a,b){
  for(const [id,set] of pa.concepts){
    const other=pb.concepts.get(id);if(!other)continue;
    const c=CONCEPT_BY_ID.get(id);concepts.push(id);
-   score+=(c.weak?0:2)+Math.min(set.size,2)+Math.min(other.size,2);
+   // What the person stressed counts double: two flood words outweigh one street word.
+   const q=weigh(set),d=weigh(other);
+   score+=c.weak?Math.min(q,2)+Math.min(d,2):2*Math.min(d,1)+2*Math.min(q,2)+Math.min(d,2);
  }
- for(const w of pa.terms)if(pb.terms.has(w))shared.push(w);
- score+=shared.length*2;
- if(score>0)for(const [id,set] of pb.concepts)if(set.size>=3&&!pa.concepts.has(id)&&!CONCEPT_BY_ID.get(id).weak)score-=1;
+ for(const w of pa.terms)if(pb.terms.has(w)){shared.push(w);score+=GENERIC_WORDS.has(w)?1:2}
+ if(score>0)for(const [id,set] of pb.concepts)if(weigh(set)>=3&&!pa.concepts.has(id)&&!CONCEPT_BY_ID.get(id).weak)score-=1;
  return {score:Math.max(0,score),concepts,words:shared,labels:concepts.map(id=>CONCEPT_BY_ID.get(id).label)};
 }
 function explain(match,limit=4){
@@ -125,13 +132,14 @@ function explain(match,limit=4){
 // Rank records against a free-text concern. fields(record) returns searchable text.
 // title(record), when given, adds a point if the record's title shares a concept.
 function rank(records,query,{fields=r=>String(r),title=null,category=null,limit=Infinity,min=3}={}){
- const q=profile(query),out=[];
+ const q=profile(query),out=[];let dominant=null,most=0;
+ for(const id of q.concepts.keys()){const w=weightOf(q,id);if(w>most&&!CONCEPT_BY_ID.get(id).weak){dominant=id;most=w}}
  for(const record of records||[]){
    const m=similarity(q,fields(record));
    const categoryMatch=!!category&&record&&record.category===category;
    if(m.score<min)continue;
-   const titled=title?[...conceptsOf(title(record)).keys()].some(id=>q.concepts.has(id)):false;
-   out.push({record,score:m.score+(categoryMatch?1:0)+(titled?1:0),match:m,categoryMatch,why:explain(m)});
+   const titleHit=title&&dominant?conceptsOf(title(record)).get(dominant):null,titled=!!titleHit&&weigh(titleHit)>=1;
+   out.push({record,score:m.score+(categoryMatch?.5:0)+(titled?1.5:0),match:m,categoryMatch,why:explain(m)});
  }
  return out.sort((a,b)=>b.score-a.score||String(a.record.id||'').localeCompare(String(b.record.id||''))).slice(0,limit);
 }
@@ -155,7 +163,7 @@ function search(records,query,{fields=r=>String(r),conceptFields=fields,id=r=>r&
    for(const t of qTokens){
      if(docStems.has(t)){score+=4;hit++;continue}
      const concept=CONCEPTS.find(c=>!c.weak&&c.words.has(t)&&docConcepts.has(c.id));
-     if(concept){score+=1+Math.min(docConcepts.get(concept.id).size,3);hit++;continue}
+     if(concept){score+=1+Math.min(weigh(docConcepts.get(concept.id)),3);hit++;continue}
      if(t.length>=3&&[...docStems].some(d=>d.startsWith(t))){weakHit++;score+=1}
    }
    const need=qTokens.length<=1?1:qTokens.length-1;
@@ -168,7 +176,7 @@ function search(records,query,{fields=r=>String(r),conceptFields=fields,id=r=>r&
 
 function suggestCategory(text,categories){
  const found=conceptsOf(text),totals=new Map(),labels=[];
- for(const [id,set] of found){const c=CONCEPT_BY_ID.get(id);if(c.category<0)continue;totals.set(c.category,(totals.get(c.category)||0)+set.size);labels.push(c.label)}
+ for(const [id,set] of found){const c=CONCEPT_BY_ID.get(id);if(c.category<0)continue;totals.set(c.category,(totals.get(c.category)||0)+weigh(set));labels.push(c.label)}
  let best=7,bestScore=0;
  for(const [index,score] of totals)if(score>bestScore||(score===bestScore&&index<best)){best=index;bestScore=score}
  const winners=[...found.entries()].filter(([id])=>CONCEPT_BY_ID.get(id).category===best).flatMap(([,set])=>[...set]);
@@ -186,7 +194,7 @@ function sentenceScore(s,index,theme=null){
  const p=plain(s),n=(p.match(/[a-z0-9]+/g)||[]).length;
  const problem=(p.match(PROBLEM)||[]).length;
  const found=conceptsOf(s);
- let concept=0;for(const set of found.values())concept+=set.size;
+ let concept=0;for(const set of found.values())concept+=weigh(set);
  let score=problem*1.5+concept*2+(n>=6&&n<=40?1:0)+(index===0?.3:0)+(theme&&found.has(theme)?2:0);
  if(THROAT.test(s)||(FILLER.test(s)&&n<8))score-=4;
  if(n<4)score-=3;
@@ -296,13 +304,13 @@ const TEMPLATES={
 };
 const GENERIC={outcome:'People in the community see a clear, measurable improvement.',approach:'Start with a small voluntary pilot, measure what changes, and decide openly whether to expand.',measures:['Progress toward the intended outcome','Participation and equitable access','Implementation cost and unintended effects'],safeguards:'Protect privacy and equal access; invite affected communities to review the proposal; identify legal authority, costs and unintended consequences before adoption.'};
 function topConcept(text){
- let best=null,score=0;
- for(const [id,set] of conceptsOf(text))if(set.size>score){best=id;score=set.size}
+ const p=profile(text);let best=null,score=0;
+ for(const id of p.concepts.keys()){const w=weightOf(p,id);if(w>score){best=id;score=w}}
  return best;
 }
 function template(text){const id=topConcept(text);return {concept:id,label:id?CONCEPT_BY_ID.get(id).label:null,...(TEMPLATES[id]||GENERIC)}}
 function sceneKind(text){
- const c=conceptsOf(text),has=id=>c.has(id)?c.get(id).size:0;
+ const c=conceptsOf(text),has=id=>c.has(id)?weigh(c.get(id)):0;
  const ranked=[['stop',has('transit')+has('heat')],['flood',has('flood')+has('environment')],['homes',has('housing')+has('economy')],['crossing',has('streets')+has('safety')],['commons',has('community')+has('education')+has('health')+has('digital')+has('work')+has('government')]].sort((a,b)=>b[1]-a[1]);
  return ranked[0][1]>0?ranked[0][0]:'commons';
 }
