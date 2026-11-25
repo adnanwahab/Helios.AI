@@ -9,6 +9,12 @@
 [build.environment]
   NODE_VERSION = "22"
 
+# Geographic preference lab; all assets stay in the copied public directory.
+[[redirects]]
+  from = "/world-map"
+  to = "/public/world-map/index.html"
+  status = 200
+
 # /api/*, /email/unsubscribe and /proxy/ycr/* are served by netlify/functions/api.mjs
 # (paths declared in that file). The backend runs on Supabase Postgres.
 
