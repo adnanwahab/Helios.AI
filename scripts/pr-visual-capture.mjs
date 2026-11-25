@@ -73,6 +73,19 @@ try {
     await page.locator('#law-tiles .law-tile').first().waitFor({state:'visible'});
     await page.locator('#laws-workbench').scrollIntoViewIfNeeded();
     await page.screenshot({path: join(output,'law-atlas.png'), animations:'disabled'});
+    if(await page.locator('#cannabis-budget').isVisible()) {
+      await page.locator('#cannabis-budget').screenshot({path:join(output,'cannabis-desktop.png'),animations:'disabled'});
+      await page.setViewportSize({width:390,height:844});
+      await page.locator('#cannabis-budget').screenshot({path:join(output,'cannabis-mobile.png'),animations:'disabled'});
+      await page.setViewportSize({width:1440,height:900});
+      await page.locator('[data-law="HGA-031"]').click();
+    }
+    if(await page.locator('#childcare-budget').isVisible()) {
+      await page.locator('#childcare-budget').screenshot({path:join(output,'childcare-desktop.png'),animations:'disabled'});
+      await page.setViewportSize({width:390,height:844});
+      await page.locator('#childcare-budget').screenshot({path:join(output,'childcare-mobile.png'),animations:'disabled'});
+      await page.setViewportSize({width:1440,height:900});
+    }
     await page.locator('#law-search').fill('HGA-011');
     await page.locator('[data-law="HGA-011"]').click();
     await page.locator('#law-input-reach').fill('90');
