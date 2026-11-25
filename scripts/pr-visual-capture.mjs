@@ -123,7 +123,8 @@ try {
     await page.goto(base+'/',{waitUntil:'domcontentloaded'});
   }
   await page.setViewportSize({width: 1440, height: 900});
-  if (!(await page.locator('#law-tiles').count())) await page.goto(base + '/law-atlas.html',{waitUntil:'domcontentloaded'});
+  // The homepage lab embeds the board behind a tab, so capture the standalone atlas unless it is already showing.
+  if (!(await page.locator('#law-tiles').isVisible())) await page.goto(base + '/law-atlas.html',{waitUntil:'domcontentloaded'});
   if (await page.locator('#law-tiles').count()) {
     await page.locator('#law-tiles .law-tile').first().waitFor({state:'visible'});
     await page.locator('#laws-workbench').scrollIntoViewIfNeeded();
