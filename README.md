@@ -1,5 +1,26 @@
 # Helios.AI
 
+## Consensus World — bill revision workshop
+
+Open [Consensus World](https://helioshtml.com/public/consensus-world) and select **Improve draft bill** or, after a completed round, **Address remaining objections**. Choose revision modes, generate a local draft or explicitly opt into the configured AI provider, edit the proposed text and policy assumptions, then keep the revision. Complete the original round first to compare exactly the same population, seed and simulated day. The quick preview evaluates 10,000 matching synthetic IDs; it is not a survey. Diagnostics report the lowest weighted contribution among non-yes agents, not actual people's reasons. A high score does not demonstrate real consent or policy effectiveness.
+
+### Example: Backyard Homes and Affordable Housing Pilot Act
+
+| Potential objection | Proposed compromise |
+| --- | --- |
+| Neighborhood overcrowding | Limit the initial pilot to one additional home per eligible property |
+| Increased property taxes | Require a transparent assessment of tax impacts before enrollment |
+| Flooding and drainage | Require drainage and infrastructure capacity checks |
+| Loss of privacy | Establish reasonable setbacks and privacy standards |
+| Expensive implementation | Publish a capped pilot budget |
+| Government overreach | Keep participation voluntary |
+| Benefits mainly wealthy owners | Include affordable financing options for eligible lower-income homeowners |
+
+These are candidate objections and compromises to investigate, not measured public opinions. Review evidence and unresolved trade-offs before changing model assumptions.
+
+Local drafting is available without login or API configuration. Local modes use templates; custom prompts need manual edits or the optional AI provider. To enable the Netlify AI endpoint, set `CONSENSUS_AI_ENABLED=1` and a secret server-side `OPENAI_API_KEY`; optionally set `OPENAI_MODEL` (defaults to `gpt-4.1-mini`). This is a paid feature and is disabled by default; use provider spend limits before enabling it publicly. Each request requires explicit consent, sends only the draft, instructions and aggregate diagnostic context, and uses `store:false`. Rate limits are best-effort per warm function instance, not a global quota. No key is sent to the browser. AI responses are suggestions, not legal advice or votes.
+
+
 **First-time participants:** [Start here](https://helios-ai-laws.fly.dev/welcome) to explore editorial draft goals, private demo notes, and optional public proposals/amendments. These are not government ballots.
 
 **Maintainers:** [Data safety and launch checklist](docs/data-safety-and-launch.md) covers Fly volume snapshots, isolated persistence tests, and careful participant onboarding. The production Fly volume must never be replaced to run tests.

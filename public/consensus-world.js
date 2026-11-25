@@ -1,4 +1,5 @@
 import {AXES,MAX_POPULATION,GPU_BATCH,CPU_BATCH,BINS,VERSION,hash,evaluate,cpuBatch,assertBatch,createGPU,suggestEffects,validEffects} from './consensus-world-engine.js';
+import {initWorkshop} from './consensus-world-workshop.js';
 const $=id=>document.getElementById(id), fmt=n=>Number(n).toLocaleString('en-US'), pct=(n,d)=>d? (n/d*100).toFixed(2)+'%':'—';
 const seed=20261125, key='helios.consensus-world.v1', choices=['Yes','Not sure','No'];
 const validPops=[100000,1000000,10000000,100000000,MAX_POPULATION];
@@ -39,8 +40,9 @@ function historyUI(selected=$('baseline').value){
 function status(s){$('status').textContent=s+(storageOK?'':' Browser storage unavailable; export before closing.');}
 function controls(){
   const locked=!!active||busy;
-  for(const id of ['bill','interpret','clear','population','day','baseline'])$(id).disabled=locked;
+  for(const id of ['bill','interpret','clear','population','day','baseline','improve'])$(id).disabled=locked;
   axisInputs.forEach(el=>el.disabled=locked);
+  $('improve-objections').disabled=locked||!shown||shown.done!==shown.population;
   $('run').disabled=busy;$('run').textContent=active?'Resume voting round':'Run voting round';
   $('pause').disabled=!busy||stop;$('discard').disabled=busy||!active;
   $('history').querySelectorAll('button').forEach(el=>el.disabled=locked);
@@ -135,3 +137,24 @@ try{
   }else{interpret();historyUI();}
 }catch{interpret();historyUI();status('Unable to restore local draft; started a new experiment.');}
 render();
+
+function matchingRound(d){
+  return history.find(r=>r.done===r.population&&r.bill===d.bill&&r.population===d.population&&r.day===d.day&&r.effects.every((v,i)=>v===d.effects[i]));
+}
+initWorkshop({
+  getDraft:draft,
+  getRound:matchingRound,
+  canOpen:()=>!active&&!busy,
+  getSeed:()=>seed,
+  apply:({original,bill,effects:next,reasons:why,runNow})=>{
+    if(active||busy||!validEffects(next)||!bill.trim()||bill.length>12000)return false;
+    const current=draft();
+    if(current.bill!==original.bill||current.day!==original.day||current.population!==original.population||current.effects.some((v,i)=>v!==original.effects[i]))return false;
+    const prior=matchingRound(original);
+    loadDraft({...current,bill,effects:next,reasons:why,dirty:false});
+    historyUI(prior?.id||'');save();render();
+    status(prior?'Revision ready · matched baseline selected.':'Revision ready · no completed matching original; run without baseline or restore the original first.');
+    if(runNow&&prior)void run();
+    return true;
+  }
+});
