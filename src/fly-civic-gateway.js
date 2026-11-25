@@ -11,8 +11,8 @@ function trustedSite(url,context){
  url.hostname==='helioshtml.com'||url.hostname==='www.helioshtml.com'||url.hostname==='heliosailol.netlify.app'||
  /^(?:main|deploy-preview-\d+|[a-f0-9]{24})--heliosailol\.netlify\.app$/.test(url.hostname));
 }
-const allowedRead=path=>['/api/health','/api/catalog','/api/laws','/api/session','/api/constitution'].includes(path)||/^\/api\/laws\/[A-Z0-9-]+$/i.test(path);
-const allowedWrite=path=>['/api/laws','/api/constitution/vote','/api/constitution/comment','/api/constitution/contribute'].includes(path)||/^\/api\/laws\/[A-Z0-9-]+\/amendments$/i.test(path);
+const allowedRead=path=>['/api/health','/api/catalog','/api/laws','/api/session','/api/constitution','/api/contributions'].includes(path)||/^\/api\/laws\/[A-Z0-9-]+$/i.test(path);
+const allowedWrite=path=>['/api/laws','/api/constitution/vote','/api/constitution/comment','/api/constitution/contribute','/api/contributions'].includes(path)||/^\/api\/laws\/[A-Z0-9-]+\/amendments$/i.test(path);
 const unavailable=(message='The shared civic backend is temporarily unavailable.')=>json({error:message,code:'SHARED_BACKEND_UNAVAILABLE',liveUrl:FLY_ORIGIN+'/'},503);
 async function boundedBody(request){
  const declared=Number(request.headers.get('content-length')||0);if(declared>MAX_BODY)return null;
@@ -29,7 +29,7 @@ export async function forwardCivic(request,context,{fetchImpl=fetch}={}){
  // Never forward maintainer authorization, arbitrary cookies, IP headers,
  // or client-selected destinations. This gateway only handles civic routes.
  const cookie=request.headers.get('cookie')?.match(/(?:^|;\s*)helios_session=([a-f0-9]{64})(?:;|$)/i)?.[1];
- if(cookie&&(method==='POST'||path==='/api/session'||path==='/api/constitution'))out.set('Cookie','helios_session='+cookie);
+ if(cookie&&(method==='POST'||path==='/api/session'||path==='/api/constitution'||path==='/api/contributions'))out.set('Cookie','helios_session='+cookie);
  let body;
  if(method==='POST'){
    if(request.headers.get('origin')!==url.origin)return json({error:'A same-origin request is required.'},403);
