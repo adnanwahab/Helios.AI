@@ -190,7 +190,7 @@ export function selectLaw(id,{navigate=true}={}){
  const lab=document.getElementById('communal-science-lab');
  if(navigate&&!lab)updateCivicRoute({law:id,anchor:'law-title'});
  drawCatalog();drawDetail();if(connected)loadHistory();
- if(lab){const url=new URL(location.href);url.searchParams.set('labLaw',id);window.history.replaceState(window.history.state,'',url)}
+ if(lab){const url=new URL(location.href);url.searchParams.set('law',id);window.history.replaceState(window.history.state,'',url)}
 }
 window.addEventListener('popstate',()=>{if(document.getElementById('communal-science-lab'))return;const id=readCivicRoute().law||'HGA-001';if(records.has(id)){ $('law-search').value='';$('law-category').value='';selectLaw(id,{navigate:false});scrollToCivicRoute('law-title','laws-workbench')}});
 async function loadBoard({preserveDraft=true}={}){
@@ -259,7 +259,7 @@ export const ready=(async()=>{try{
  for(const law of seed){modelFor(law);records.set(law.id,{law,votes:null,myVote:null,updates:0})}
  records.set(cannabisDraft.id,newDraftRow());
  for(const category of result.categories){const option=el('option',category);option.value=category;$('law-category').append(option)}
- const params=new URLSearchParams(location.search),lab=document.getElementById('communal-science-lab'),requested=lab?params.get('labLaw'):(readCivicRoute().law||params.get('goal'));
+ const lab=document.getElementById('communal-science-lab'),requested=lab?new URLSearchParams(location.search).get('law'):readCivicRoute().law;
  if(records.has(requested))selected=requested;else if(lab&&records.has('HGA-051'))selected='HGA-051';
  $('law-count').textContent=records.size;drawCatalog();drawDetail();$('law-connect').disabled=false;if(!lab)scrollToCivicRoute('law-title','laws-workbench');
  if(['#childcare-budget','#cannabis-budget'].includes(location.hash))requestAnimationFrame(()=>$(location.hash.slice(1)).scrollIntoView({block:'start'}));

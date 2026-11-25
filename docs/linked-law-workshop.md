@@ -16,4 +16,5 @@ On the live site, the constitution automatically reads the existing database. Se
 - `/?clause=S-002&law=HGA-011#review-title` restores the clause and linked law, with focus on review.
 - `/?clause=S-002&law=HGA-012#ll-detail` restores the chosen law and its simulator.
 - `/law-atlas.html?law=HGA-011#law-title` restores an original law on the standalone atlas. The older public library uses `/laws?goal=HGA-011`.
+- `/?law=HGA-012&labView=workshop#communal-science-lab` opens the homepage Communal Science Lab's public workshop on that law. The lab and the linked-law workshop share `?law=`; without `labView`, the lab stays closed.
 - Back/Forward restore selections without a network write. The URL stores public IDs only; never journal text, comments, or unsaved proposals. Practice mode may be restored with `review=practice`. Community clause links retrieve only approved records, including a linked clause outside the first 200.
