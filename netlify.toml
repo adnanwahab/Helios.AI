@@ -11,6 +11,11 @@
 # (paths declared in that file). The backend runs on Supabase Postgres.
 
 [[redirects]]
+  from = "/contribute"
+  to = "/contribute.html"
+  status = 200
+
+[[redirects]]
   from = "/laws"
   to = "/helios_100_frontend_demo.html"
   status = 200

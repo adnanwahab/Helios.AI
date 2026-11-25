@@ -1,7 +1,27 @@
-# Helios.AI
+# Helios AI
 
-# We welcome contributors
-pls edit the readme and then we will regenerate the html.
+Helios is a collaborative civic research workshop. People can propose improvements, compare evidence, simulate possible policy outcomes, and review revisions together. It is a voluntary research experiment, not an official government or a representative poll.
+
+**[Explore the contribution hub](https://helioshtml.com/contribute) · [Consensus World](https://helioshtml.com/public/consensus-world) · [Open issues](https://github.com/adnanwahab/HeliosHTML/issues) · [Contributor guide](CONTRIBUTING.md)**
+
+## Get started
+
+No coding experience is required. Choose one of six working areas: civic research, simulation, visualization, consensus, infrastructure, or community. Submit a proposal, evidence, design, test, or focused PR. See the [launch roadmap](docs/contributor-launch.md) and [code of conduct](CODE_OF_CONDUCT.md).
+
+For local development, install Node.js 22+ and Bun 1.3+ (CI uses Bun 1.4.2):
+
+```sh
+git clone https://github.com/adnanwahab/HeliosHTML.git
+cd HeliosHTML
+bun install --frozen-lockfile
+bun run dev
+# Open http://127.0.0.1:3000/contribute
+```
+
+Use an isolated local database; do not configure production credentials. Run `bun --no-env-file test` before submitting code. For browser tests, run `bunx playwright install chromium` and `CI=1 bun run test:browser`. For static-only work, run `bun run build` and serve `dist/` locally. See [contribution guide](CONTRIBUTING.md) for more detail.
+
+License selection and third-party rights review are pending. A public repository alone is not an open-source license; do not assume redistribution or relicensing rights.
+
 
 ## Consensus World — bill revision workshop
 
