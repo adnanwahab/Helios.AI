@@ -1,6 +1,6 @@
 import {normalizeClause,sampleBoard} from './constitution-model.js';
 const $=id=>document.getElementById(id);
-const isStatic=document.querySelector('meta[name="helios-mode"]').content==='static';
+const isStatic=document.querySelector('meta[name="helios-mode"]').content==='static'||/^deploy-preview-\d+--heliosailol\.netlify\.app$/.test(location.hostname);
 const create=(tag,text,cls)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e};
 const fmt=n=>Number(n||0).toLocaleString();
 const message=(id,text,error=false)=>{$(id).textContent=text;$(id).classList.toggle('error',error)};
@@ -138,7 +138,7 @@ function drawReview(){
  const data=connected?row.comments:(practiceComments.get(row.id)||[]);
  if(!data.length)comments.append(create('p',connected?'No visible comments yet.':'No practice comments yet.','hint'));
  for(const item of data){const card=create('div',item.text,'comment-card');card.append(create('small',item.status==='pending'?'Your comment · pending moderation':item.status==='practice'?'Practice · not public':'Approved public comment'));comments.append(card)}
- $('review-mode').textContent=connected?'Shared':'Practice';$('comment-consent-wrap').hidden=!connected;$('contribution-consent-wrap').hidden=!connected;
+ $('review-mode').textContent=connected?'Shared':'Practice';$('comment-consent-wrap').hidden=!connected;$('contribution-consent-wrap').hidden=!connected;$('comment-auto-consent-wrap').hidden=!connected;$('clause-auto-consent-wrap').hidden=!connected;
  $('post-comment').textContent=connected?'Submit comment for review':'Add practice comment';
  $('contribute-clause').textContent=connected?'Submit public clause':'Add to practice draft';
  $('post-comment').disabled=busy;$('contribute-clause').disabled=busy;
@@ -175,7 +175,7 @@ setInterval(()=>{if(connected&&!document.hidden)refresh()},20000);
 for(const [existing, id] of [['comment-consent','comment-auto-consent'],['contribution-consent','clause-auto-consent']]){
  const original=$(existing), label=document.createElement('label'), input=document.createElement('input');
  input.type='checkbox';input.id=id;label.append(input,document.createTextNode(' Allow OpenAI to screen this exact public text for automatic safety approval (otherwise human review).'));
- original.parentElement.append(document.createElement('br'),label);
+ label.id=id+'-wrap';label.className='consent';label.hidden=true;original.parentElement.after(label);
 }
 async function write(action,data,statusId,onSuccess){
  if(!connected||busy)return;
@@ -203,7 +203,7 @@ $('clear-vote').addEventListener('click',()=>{
 });
 $('post-comment').addEventListener('click',()=>{
  const row=current(),text=$('clause-comment').value.trim();if(!row||busy||!text)return message('comment-status','Write a comment first.',true);
- if(connected){if(!$('comment-consent').checked)return message('comment-status','Confirm the exact public comment before submitting.',true);write('comment',{clauseId:row.id,text,consent:true,autoModerationConsent:$('comment-auto-consent').checked},'comment-status',()=>{$('clause-comment').value='';$('comment-consent').checked=false;$('comment-auto-consent').checked=false})}
+ if(connected){if(!$('comment-consent').checked)return message('comment-status','Confirm the exact public comment before submitting.',true);write('comment',{clauseId:row.id,text,consent:true,...($('comment-auto-consent').checked?{autoModerationConsent:true}:{})},'comment-status',()=>{$('clause-comment').value='';$('comment-consent').checked=false;$('comment-auto-consent').checked=false})}
  else{const list=practiceComments.get(row.id)||[];list.unshift({text,status:'practice'});practiceComments.set(row.id,list.slice(0,8));$('clause-comment').value='';drawReview();message('comment-status','Practice comment added. Nothing was sent.')}
 });
 $('clause-comment').addEventListener('input',()=>{$('comment-consent').checked=false;$('comment-auto-consent').checked=false});
@@ -220,7 +220,7 @@ $('use-concern').addEventListener('click',()=>{
 });
 $('contribute-clause').addEventListener('click',()=>{
  const text=$('new-clause').value.trim();if(!text||busy)return message('contribution-status','Write a short clause first.',true);
- if(connected){if(!$('contribution-consent').checked)return message('contribution-status','Confirm the exact public wording before submitting.',true);write('contribute',{text,consent:true,autoModerationConsent:$('clause-auto-consent').checked},'contribution-status',()=>{$('new-clause').value='';$('contribution-consent').checked=false;$('clause-auto-consent').checked=false})}
+ if(connected){if(!$('contribution-consent').checked)return message('contribution-status','Confirm the exact public wording before submitting.',true);write('contribute',{text,consent:true,...($('clause-auto-consent').checked?{autoModerationConsent:true}:{})},'contribution-status',()=>{$('new-clause').value='';$('contribution-consent').checked=false;$('clause-auto-consent').checked=false})}
  else{const hit=rows().find(r=>normalizeClause(r.text)===normalizeClause(text));if(hit){choose(hit.id);message('contribution-status','Matched existing wording. No duplicate clause added.')}
  else{const id='P-'+crypto.randomUUID();practiceClauses.set(id,{id,topic:'Your practice contribution',text,source:'practice',synthetic:{mentions:0,support:0,oppose:0,unsure:0},live:emptyTally(),comments:[]});choose(id);message('contribution-status','Added to your practice draft only.')}
  $('new-clause').value='';updateDedupe()}
