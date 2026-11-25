@@ -11,8 +11,8 @@ function trustedSite(url,context){
  url.hostname==='helioshtml.com'||url.hostname==='www.helioshtml.com'||url.hostname==='heliosailol.netlify.app'||
  /^(?:main|deploy-preview-\d+|[a-f0-9]{24})--heliosailol\.netlify\.app$/.test(url.hostname));
 }
-const allowedRead=path=>['/api/health','/api/catalog','/api/laws','/api/session','/api/constitution'].includes(path)||/^\/api\/laws\/[A-Z0-9-]+$/i.test(path);
-const allowedWrite=path=>['/api/laws','/api/constitution/vote','/api/constitution/comment','/api/constitution/contribute'].includes(path)||/^\/api\/laws\/[A-Z0-9-]+\/amendments$/i.test(path);
+const allowedRead=path=>['/api/health','/api/catalog','/api/laws','/api/session','/api/constitution','/api/law-drafts/config'].includes(path)||/^\/api\/laws\/[A-Z0-9-]+$/i.test(path);
+const allowedWrite=path=>['/api/laws','/api/law-drafts/generate','/api/law-drafts/publish','/api/constitution/vote','/api/constitution/comment','/api/constitution/contribute'].includes(path)||/^\/api\/laws\/[A-Z0-9-]+\/amendments$/i.test(path);
 const unavailable=(message='The shared civic backend is temporarily unavailable.')=>json({error:message,code:'SHARED_BACKEND_UNAVAILABLE',liveUrl:FLY_ORIGIN+'/'},503);
 async function boundedBody(request){
  const declared=Number(request.headers.get('content-length')||0);if(declared>MAX_BODY)return null;
@@ -42,7 +42,7 @@ export async function forwardCivic(request,context,{fetchImpl=fetch}={}){
  }
  try{
    // No arbitrary query string is needed by the allowlisted endpoints.
-   const upstream=await fetchImpl(FLY_ORIGIN+path,{method,headers:out,body,redirect:'manual',signal:AbortSignal.timeout(10000)});
+   const upstream=await fetchImpl(FLY_ORIGIN+path,{method,headers:out,body,redirect:'manual',signal:AbortSignal.timeout(path==='/api/law-drafts/generate'?28000:10000)});
    if(upstream.status===404&&path.startsWith('/api/constitution'))return unavailable('The shared constitution API is not deployed yet. Practice mode is available.');
    if(upstream.status>=500||upstream.status>=300&&upstream.status<400)return unavailable();
    if(!upstream.headers.get('content-type')?.toLowerCase().includes('application/json'))return unavailable('The shared civic backend returned an unexpected response.');

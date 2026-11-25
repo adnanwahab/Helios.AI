@@ -125,7 +125,7 @@ export function modelFor(law){
  const index=Number(String(law?.id).match(/^HGA-(\d{3})$/)?.[1])-1;
  if(!Number.isInteger(index)||index<0||index>=inputs.length){
    if(law?.scenario){const s=validateScenario(law.scenario);return {id:law.id,metric:s.metric,lever:s.lever,direction:s.direction,lag:s.lag,family:families[s.family],version:MODEL_VERSION,custom:s}}
-   return {id:law?.id,metric:law?.suggestedMeasures?.[0]||'Illustrative outcome',lever:'Eligible people reached',direction:1,lag:3,family:families[0],version:MODEL_VERSION,generic:true};
+   return {id:law?.id,metric:'Illustrative progress toward the stated goal',lever:'Eligible people reached',direction:1,lag:3,family:families[0],version:MODEL_VERSION,generic:true};
  }
  const [lever,direction,lag]=inputs[index],family=families[Math.floor(index/10)];
  return {id:law.id,metric:law.suggestedMeasures?.[0]||'Selected outcome',lever,direction,lag,family,version:MODEL_VERSION};

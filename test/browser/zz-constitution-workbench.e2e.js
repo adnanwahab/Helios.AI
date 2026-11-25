@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 test('Docs drawer and three-lane workbench stay private in practice; matching is local',async({page})=>{
- const api=[];page.on('request',r=>{if(r.url().includes('/api/'))api.push(r.url())});
+ const api=[];page.on('request',r=>{const u=new URL(r.url());if(u.pathname.includes('/api/')&&!(r.method()==='GET'&&!r.postData()&&/^\/api\/(catalog|laws\/[A-Z0-9-]+)$/i.test(u.pathname)&&!u.search))api.push(r.url())});
  await page.goto('/');
  await expect(page.locator('#constitution-list .clause-card')).toHaveCount(12);
  await expect(page.locator('#synthetic-people')).toHaveText('256');

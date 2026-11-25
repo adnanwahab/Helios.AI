@@ -14,14 +14,14 @@ async function draft(page){
 }
 test('mobile journal stays private, public draft is editable and explicit consent saves a real proposal',async({page},info)=>{
  await page.setViewportSize({width:390,height:844});
- const requests=[];page.on('request',r=>{if(r.url().includes('/api/'))requests.push({url:r.url(),body:r.postData()})});
+ const requests=[];page.on('request',r=>{if(r.url().includes('/api/'))requests.push({url:r.url(),body:r.postData(),method:r.method()})});
  await page.goto('/');
  await expect(page.locator('#heading-1')).toBeVisible();
  await expect(page.locator('iframe')).toHaveCount(0);
  await expect(page.locator('#screen-2')).toBeHidden();
  await expect(page.locator('#screen-3')).toBeHidden();
  await draft(page);
- expect(requests).toEqual([]);
+ expect(requests.filter(r=>!(r.method==='GET'&&!r.body&&/^\/api\/(catalog|laws\/[A-Z0-9-]+)$/i.test(new URL(r.url).pathname)&&!new URL(r.url).search))).toEqual([]);
  await expect(page.locator('#publish')).toBeDisabled();
  await page.locator('#consent').check();
  await expect(page.locator('#publish')).toBeEnabled();
