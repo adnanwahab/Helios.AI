@@ -117,6 +117,9 @@ const loop = await readFile(join(root, 'index.html'), 'utf8');
 const mode = '<meta name="helios-mode" content="live">';
 if (!loop.includes(mode)) throw new Error('Helios Loop mode marker missing');
 await writeFile(join(out, 'index.html'), loop.replace(mode, '<meta name="helios-mode" content="static">'));
+const atlas = await readFile(join(root, 'law-atlas.html'), 'utf8');
+if (!atlas.includes(mode)) throw new Error('Law atlas mode marker missing');
+await writeFile(join(out, 'law-atlas.html'), atlas.replace(mode, '<meta name="helios-mode" content="static">'));
 // All welcome links remain under a fork's GitHub Pages base path.
 const welcome = (await readFile(join(root, 'welcome.html'), 'utf8'))
   .replaceAll('href="/laws"', 'href="./helios_100_frontend_demo.html"')

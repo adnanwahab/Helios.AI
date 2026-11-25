@@ -17,7 +17,7 @@ const rewriteYcrText = text => text
   .replace(/(["'`])\/api\//g, `$1${YCR_PROXY_PREFIX}/api/`)
   .replace(/https?:\/\/(?:www\.)?(?:ycr\.org|openresearchlab\.org)\//gi, `${YCR_PROXY_PREFIX}/`);
 
-export function createApp({store, email, notion = null, morphlab = null, origins = [], adminToken = null, secure = true, health = {storage: 'unknown', runtime: 'unknown'}} = {}) {
+export function createApp({store, email, notion = null, morphlab = null, moderator = null, origins = [], adminToken = null, secure = true, health = {storage: 'unknown', runtime: 'unknown'}} = {}) {
   if (!store) throw Error('Store required');
   const response = (data, status = 200, extra = {}) => Response.json(data, {status, headers: {'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', ...extra}});
 
@@ -168,6 +168,16 @@ export function createApp({store, email, notion = null, morphlab = null, origins
       const key = request.headers.get('idempotency-key');
       if (!key || !/^[a-zA-Z0-9-]{16,80}$/.test(key)) throw new Problem(400, 'A unique Idempotency-Key is required.');
       const result = await store.idempotent(session.id, key, hash(path + JSON.stringify(body)), q => store.constitution[constitutionAction](q, body, session.id));
+      if (moderator?.enabled && body.autoModerationConsent===true && result.status==='pending' &&
+          (constitutionAction==='comment'||(constitutionAction==='contribute'&&!result.deduplicated))) {
+        // The submission has already committed. Provider failure must not lose it.
+        try {
+          const kind=constitutionAction==='comment'?'comment':'clause';
+          const id=kind==='comment'?result.id:result.clauseId;
+          const moderation=await store.constitution.autoModerate(kind,id,body.text.normalize('NFC').trim(),moderator.classify);
+          return response({...result,status:moderation.status,moderation:moderation.reason||'reviewed'},201);
+        } catch { return response({...result,moderation:'review-unavailable'},201); }
+      }
       return response(result, 201);
     }
     if (path === '/api/laws' || (match?.[2] && !match[3])) {

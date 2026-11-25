@@ -68,6 +68,7 @@ try {
   await page.screenshot({path: join(output, 'mobile.png'), animations: 'disabled'});
 
   await page.setViewportSize({width: 1440, height: 900});
+  if (!(await page.locator('#law-tiles').count())) await page.goto(base + '/law-atlas.html',{waitUntil:'domcontentloaded'});
   if (await page.locator('#law-tiles').count()) {
     await page.locator('#law-tiles .law-tile').first().waitFor({state:'visible'});
     await page.locator('#laws-workbench').scrollIntoViewIfNeeded();
@@ -79,6 +80,7 @@ try {
     await page.locator('#law-search').fill('');
   }
   if (loop) {
+    await page.goto(base + '/', {waitUntil:'domcontentloaded'});
     // Never submit to a real deployment; these screenshots stop at the editable draft.
     await page.locator('#example').click();
     await page.locator('#journal-form button[type=submit]').click();
@@ -180,6 +182,7 @@ try {
   }
   // Historical preview backfills may not have the new public page.
   await page.goto(base + '/', {waitUntil:'domcontentloaded'});
+  if (!(await page.locator('[aria-labelledby="law-assembly-title"]').count())) await page.goto(base + '/law-atlas.html',{waitUntil:'domcontentloaded'});
   if (await page.locator('[aria-labelledby="law-assembly-title"]').count()) {
     await page.setViewportSize({width:1440,height:900});
     await page.locator('[aria-labelledby="law-assembly-title"]').scrollIntoViewIfNeeded();
@@ -209,6 +212,7 @@ try {
   }
   // Public futures fullscreen story, when present in this preview.
   await page.goto(base+'/',{waitUntil:'domcontentloaded'});
+  if(!(await page.locator('#law-futures-title').count())) await page.goto(base + '/law-atlas.html',{waitUntil:'domcontentloaded'});
   if(await page.locator('#law-futures-title').count()){
     await page.setViewportSize({width:1440,height:900});
     await page.goto(base+'/public/helios-futures.html',{waitUntil:'domcontentloaded'});
@@ -222,6 +226,24 @@ try {
     await page.setViewportSize({width:390,height:844});
     await page.locator('nav a[href="#decisions"]').click();
     await page.screenshot({path:join(output,'futures-mobile.png'),animations:'disabled'});
+  }
+  // Capture the actual playable Rainbow Pensieve, not only the homepage card.
+  await page.goto(base + '/', {waitUntil:'domcontentloaded'});
+  if (await page.locator('#rainbow-pensieve-link').count()) {
+    await page.setViewportSize({width:1440,height:900});
+    await page.goto(base + '/public/rainbow-pensieve.html', {waitUntil:'domcontentloaded'});
+    await page.locator('#garden-population').waitFor({state:'visible'});
+    await page.waitForFunction(() => {
+      const status=document.getElementById('garden-view-status');
+      return status && !status.textContent.startsWith('Loading');
+    }, {timeout:30000}).catch(() => {});
+    await page.locator('[data-spell="chorus"]').click();
+    await page.locator('#cast').click();
+    await page.locator('#garden-viewport, #garden-map').filter({visible:true}).first().scrollIntoViewIfNeeded();
+    await page.screenshot({path:join(output,'rainbow-pensieve-desktop.png'),animations:'disabled'});
+    await page.setViewportSize({width:390,height:844});
+    await page.locator('#scene-title').scrollIntoViewIfNeeded();
+    await page.screenshot({path:join(output,'rainbow-pensieve-mobile.png'),animations:'disabled'});
   }
   console.log('Captured desktop and mobile screenshots from ' + (remote ? 'Netlify deployment' : 'local PR build'));
 } finally {

@@ -76,53 +76,12 @@ header.wrap,main.wrap,footer.wrap{width:min(100% - 40px,1560px)}#government-view
 <p class="docs-viewer-note" id="docs-viewer-note" role="status">Some external or restricted pages must be opened in a separate tab.</p>
 </section></div></dialog>
 <main class="wrap">
-<section class="law-section" id="laws-workbench" aria-labelledby="law-section-title">
-<div class="law-top"><div><p class="eyebrow">HELIOS / 100 SHARED GOALS</p><h1 id="law-section-title">A hundred possible futures.</h1><p class="lede">Explore, simulate and help improve the original 100 law proposals. Change the assumptions and see the potential trade-offs before deciding what you support.</p></div><div class="law-top-actions"><span id="law-source" class="law-source">Editorial catalog · not enacted law</span><button type="button" class="primary" id="law-connect" disabled>Connect shared votes</button><button type="button" class="secondary" id="law-refresh" hidden>Refresh votes</button><a class="secondary" href="#journal-workbench">Write in journal ↓</a></div></div>
 <aside class="law-assembly-feature" aria-labelledby="rainbow-pensieve-title" style="border-color:#9a80b0;background:linear-gradient(115deg,#29253b,#253b35)">
 <div><p class="eyebrow" style="color:#f3c8ff">HELIOS / HAPPYBEARLANDIA · FICTIONAL ADVENTURE</p><h2 id="rainbow-pensieve-title">Meet the Rainbow Brain.</h2><p>Explore the happy bears' mirror-world Pensieves, follow shared memories as rainbow particles, cast eleven spells and choose a mission to imagine a kinder future.</p></div>
 <a class="primary" id="rainbow-pensieve-link" href="./public/rainbow-pensieve.html" target="_blank" rel="noopener noreferrer" style="background:linear-gradient(110deg,#ffd0db,#ffe8aa,#baf2be,#d2c4ff);color:#242238">Play Rainbow Pensieve ↗</a>
 <p class="hint">Optional fictional story · browser-local notes · no actual mind access, external app control or real votes · opens in a new tab.</p>
 </aside>
-<aside class="law-assembly-feature" aria-labelledby="law-assembly-title">
-<div><p class="eyebrow">HELIOS / FIELD NOTES · 03 OF 100</p><h2 id="law-assembly-title">Built from the ground up.</h2><p>Scroll to assemble three proposed laws, piece by piece. Explore their physical components, implementation choices and safeguards.</p></div>
-<a class="primary" href="./public/helios-law-assembly.html" target="_blank" rel="noopener noreferrer">Explore 3D assembly ↗</a>
-<div class="law-assembly-links" aria-label="Assembly chapters"><a href="./public/helios-law-assembly.html#homes" target="_blank" rel="noopener noreferrer">012 · Backyard homes ↗</a><a href="./public/helios-law-assembly.html#places" target="_blank" rel="noopener noreferrer">051 · Third places ↗</a><a href="./public/helios-law-assembly.html#water" target="_blank" rel="noopener noreferrer">091 · Lead-free water ↗</a></div>
-<p class="hint">Illustrative models · editorial proposals, not enacted laws · opens in a new tab.</p>
-</aside>
-<aside class="law-assembly-feature" aria-labelledby="law-futures-title">
-<div><p class="eyebrow">HELIOS / HFL-090 · PUBLIC FUTURES SIMULATION ACT</p><h2 id="law-futures-title">One city. 100 futures.</h2><p>Scroll through a city, branch into a hundred reproducible illustrative futures, then enter a selected scenario and compare its assumptions.</p></div>
-<a class="primary" href="./public/helios-futures.html" target="_blank" rel="noopener noreferrer">Explore 100 futures ↗</a>
-<p class="hint">Interactive teaching model · not calibrated forecasts or enacted law · opens in a new tab.</p>
-</aside>
-<p id="law-board-status" class="status" role="status">Loading the original 100 proposals…</p>
-<div class="law-layout">
-<div class="law-atlas"><div class="lane-header"><div><p class="eyebrow">01 / Explore</p><h2><span id="law-count">100</span> proposals</h2></div><span class="lane-tag">HGA-001–100</span></div>
-<div class="law-filters"><label>Search by title or number<input type="search" id="law-search" placeholder="e.g. housing, 011" autocomplete="off"></label><label>Policy area<select id="law-category"><option value="">All ten categories</option></select></label></div>
-<p id="law-results" class="hint">Loading…</p><div id="law-tiles" class="law-tiles" aria-label="100 law proposals"></div>
-<p class="notice">Each tile has an illustrative outcome sparkline. These proposals are editorial drafts, not passed laws or evidence of consensus. Shared counts are never simulated.</p></div>
-<div class="law-detail" aria-labelledby="law-title">
-<div class="law-detail-head"><div><p id="law-id" class="eyebrow">HGA-001</p><h2 id="law-title">Select a proposal</h2></div><span id="law-version" class="lane-tag">Original draft</span></div>
-<p id="law-goal" class="law-goal"></p>
-<a id="law-assembly-selected" class="secondary" href="./public/helios-law-assembly.html" target="_blank" rel="noopener noreferrer" hidden>See how it works · 3D assembly ↗</a>
-<div id="law-votes" class="law-counts" aria-label="Actual advisory votes on this revision"></div>
-<div class="law-controls" aria-label="Vote on selected law"><button type="button" class="secondary" data-law-vote="support" aria-pressed="false" disabled>Support law</button><button type="button" class="secondary" data-law-vote="oppose" aria-pressed="false" disabled>Oppose law</button><button type="button" class="secondary" data-law-vote="unsure" aria-pressed="false" disabled>Unsure</button><button type="button" class="quiet" id="law-clear-vote" disabled>Clear vote</button></div>
-<div class="law-sim"><div class="law-sim-top"><h3>02 / Simulate this future</h3><button type="button" class="quiet" id="law-reset">Reset assumptions</button></div>
-<p id="law-model-family" class="hint"></p><p id="law-model-direction" class="hint"></p>
-<svg id="law-chart" class="law-chart" role="img" aria-label="Illustrative scenario chart" viewBox="0 0 600 220"></svg>
-<div class="law-legend"><span>Baseline</span><span>Intervention</span><span>Effect sensitivity ±10 percentage points</span></div>
-<div class="law-kpis"><div class="law-kpi"><small>Final normalized outcome</small><strong id="law-outcome">—</strong><small id="law-change"></small></div><div class="law-kpi"><small>Effective implementation</small><strong id="law-reach-result">—</strong><small>Reach × capacity × rollout</small></div></div>
-<div class="law-sliders">
-<div class="law-slider wide"><label for="law-input-reach" id="law-lever-label">Eligible population reached</label><output id="law-value-reach" for="law-input-reach"></output><input type="range" id="law-input-reach" min="0" max="100" step="5" value="60"></div>
-<div class="law-slider"><label for="law-input-capacity">Implementation capacity</label><output id="law-value-capacity" for="law-input-capacity"></output><input type="range" id="law-input-capacity" min="0" max="100" step="5" value="70"></div>
-<div class="law-slider"><label for="law-input-effect">Assumed full-scale improvement</label><output id="law-value-effect" for="law-input-effect"></output><input type="range" id="law-input-effect" min="-50" max="50" step="5" value="20"></div>
-<div class="law-slider"><label for="law-input-years">Time horizon</label><output id="law-value-years" for="law-input-years"></output><input type="range" id="law-input-years" min="1" max="30" step="1" value="10"></div>
-<div class="law-slider"><label for="law-input-lag">Rollout lag</label><output id="law-value-lag" for="law-input-lag"></output><input type="range" id="law-input-lag" min=".5" max="15" step=".5" value="2"></div>
-</div><p class="notice">Illustrative assumptions, not calibrated forecasts. The baseline is 100. Negative improvement models harm; uncertainty here is sensitivity to the assumed effect, not a confidence interval. Legal authority, budgets, distributional effects and evidence need real-world review.</p></div>
-<details><summary>Implementation, safeguards &amp; success measures</summary><p id="law-option"></p><p id="law-safeguards"></p><p id="law-measures" class="law-meta"></p></details>
-<details id="law-history-section"><summary>03 / Revision and update history</summary><div id="law-history"></div></details>
-<details><summary>Suggest a public update</summary><form id="law-update-form" class="law-update-form"><p class="hint">Changes are stored as proposed updates to the current revision, not automatic amendments to enacted laws.</p><div class="field"><label for="law-update-goal">Public goal</label><textarea id="law-update-goal" maxlength="4000" required></textarea></div><div class="field"><label for="law-update-implementation">Implementation</label><textarea id="law-update-implementation" maxlength="6000" required></textarea></div><div class="field"><label for="law-update-safeguards">Risks and safeguards</label><textarea id="law-update-safeguards" maxlength="4000" required></textarea></div><div class="field"><label for="law-update-reason">Why change it?</label><textarea id="law-update-reason" maxlength="3000" required></textarea></div><label class="consent"><input type="checkbox" id="law-update-consent"><span>I approve publishing this exact proposed update and have removed personal information.</span></label><button type="submit" id="law-update-submit" class="primary" disabled>Submit update for review</button></form></details>
-<p id="law-detail-status" class="status" role="status"></p></div></div></section>
-<hr class="law-divider"><div id="journal-workbench" class="law-anchor"></div>
+<div id="journal-workbench" class="law-anchor"></div>
 <div class="rolebar"><div class="role-switch" role="group" aria-label="Choose workflow"><button type="button" id="mode-citizen" aria-pressed="true" aria-controls="citizen-view">Citizen</button><button type="button" id="mode-government" aria-pressed="false" aria-controls="government-view">Government preview</button></div><span id="mode-caption" class="role-caption">Express → Synthesize → Decide</span></div>
 <div id="citizen-view">
 <div id="citizen-feedback" class="feedback" hidden aria-live="polite"></div>
@@ -373,6 +332,5 @@ $('gov-measure').addEventListener('submit',e=>{e.preventDefault();try{lastFeedba
 count();setPublish();
 </script>
 <script type="module" src="./public/constitution-workbench.js"></script>
-<script type="module" src="./public/law-board.js"></script>
 </body>
 </html>
