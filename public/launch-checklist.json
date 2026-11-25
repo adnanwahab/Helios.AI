@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "project": "Helios",
-  "updatedAt": "2026-11-25T20:47:21Z",
+  "updatedAt": "2026-11-25T21:12:10Z",
   "launchTarget": "2026-12-01",
   "timezone": "America/Chicago",
-  "sourcePR": "https://github.com/adnanwahab/HeliosHTML/pull/75",
+  "sourcePR": "https://github.com/adnanwahab/HeliosHTML/pull/108",
   "phases": [
     {
       "id": "foundation",
@@ -73,17 +73,21 @@
       "id": "L03",
       "phase": "foundation",
       "title": "Rewrite the README with screenshots, a live demo and five-minute setup instructions.",
-      "status": "in_progress",
+      "status": "done",
       "owner": "Maintainer",
-      "summary": "The focused README contains the mission, real setup commands, demo and preview links, contribution paths, and architecture links. Desktop and mobile screenshot verification is being completed.",
+      "summary": "The README now includes the mission, live demo and preview links, five-minute setup commands, and inspected desktop/mobile screenshots from the hosted capture run. Dependency installation and builds passed; screenshot progress is labeled as a dated snapshot.",
       "evidence": [
         {
           "label": "README",
           "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/README.md"
+        },
+        {
+          "label": "Desktop/mobile capture",
+          "url": "https://github.com/adnanwahab/HeliosHTML/actions/runs/45698534055"
         }
       ],
-      "nextAction": "Attach and inspect the dashboard screenshots, and verify the documented fresh local setup.",
-      "completedAt": null
+      "nextAction": null,
+      "completedAt": "2026-11-25T20:59:56Z"
     },
     {
       "id": "L04",
@@ -135,7 +139,7 @@
       "evidence": [
         {
           "label": "Contributor hub",
-          "url": "https://deploy-preview-75--heliosailol.netlify.app/contribute"
+          "url": "https://deploy-preview-108--heliosailol.netlify.app/contribute"
         },
         {
           "label": "No-terminal walkthrough",
@@ -199,7 +203,7 @@
         },
         {
           "label": "PR checks",
-          "url": "https://github.com/adnanwahab/HeliosHTML/pull/75/checks"
+          "url": "https://github.com/adnanwahab/HeliosHTML/pull/108/checks"
         }
       ],
       "nextAction": "Verify the current PR head and require the successful check contexts in branch protection.",
@@ -251,7 +255,7 @@
       "evidence": [
         {
           "label": "Launch dashboard",
-          "url": "https://deploy-preview-75--heliosailol.netlify.app/launch"
+          "url": "https://deploy-preview-108--heliosailol.netlify.app/launch"
         },
         {
           "label": "Public roadmap",
@@ -269,17 +273,25 @@
       "id": "L13",
       "phase": "community",
       "title": "Publish a short video demonstrating the entire contribution workflow.",
-      "status": "ready",
+      "status": "done",
       "owner": "Community / demo producer",
-      "summary": "A concrete demonstration script covers choosing work, drafting, GitHub submission, checks, human review, and progress updates. The public video has not been recorded or published yet.",
+      "summary": "A 96-second captioned tutorial is published in this PR preview, with a transcript and capture provenance. It uses real app captures and clearly labeled GitHub/check/review instruction panels; no demonstration proposal was submitted or accepted.",
       "evidence": [
         {
-          "label": "Demonstration script",
-          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/community-operations.md#short-contribution-workflow-video"
+          "label": "Watch the tutorial",
+          "url": "https://deploy-preview-108--heliosailol.netlify.app/launch#workflow-video"
+        },
+        {
+          "label": "Transcript and capture provenance",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/public/launch/contribution-workflow-transcript.md"
+        },
+        {
+          "label": "Original capture run",
+          "url": "https://github.com/adnanwahab/HeliosHTML/actions/runs/45698534170"
         }
       ],
-      "nextAction": "Record the real preview-to-GitHub workflow, caption it, and publish the accessible video with a link here.",
-      "completedAt": null
+      "nextAction": null,
+      "completedAt": "2026-11-25T20:59:56Z"
     },
     {
       "id": "L14",
@@ -367,7 +379,7 @@
       "title": "Verify production reliability, privacy and data persistence.",
       "status": "blocked",
       "owner": "Operations maintainer",
-      "summary": "The canonical Netlify homepage returned 200 but its API health returned 502 twice. Fly health and isolated persistence tests passed. Production restore evidence is still missing; this PR sanitizes unexpected initialization errors.",
+      "summary": "Fresh post-merge checks at 3:09 p.m. Chicago on November 25 still found canonical API health 502. Netlify is publishing an older November 23 source, not the new merge. Fly health and isolated persistence checks pass, but canonical readiness and production recovery remain unverified.",
       "evidence": [
         {
           "label": "Production audit and recovery gates",
@@ -401,33 +413,41 @@
       "id": "L21",
       "phase": "launch",
       "title": "Run the first public collaborative law-design experiment.",
-      "status": "ready",
+      "status": "in_progress",
       "owner": "Facilitator / research reviewer",
-      "summary": "A bounded Backyard Homes pilot experiment includes source gathering, objections, proposed compromises, exact-revision feedback and a published outcome format. No participant activity or agreement is fabricated.",
+      "summary": "The first asynchronous public experiment is open on GitHub with exact draft BH-PILOT-v1, an objection/evidence template, two revision rounds and voluntary participation. Opening the issue does not establish participant activity or agreement. A round-one synthesis is scheduled for November 30 morning, with human review required before round two.",
       "evidence": [
+        {
+          "label": "Join the public experiment #107",
+          "url": "https://github.com/adnanwahab/HeliosHTML/issues/107"
+        },
         {
           "label": "First experiment runbook",
           "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/community-operations.md#first-public-collaborative-law-design-experiment"
         }
       ],
-      "nextAction": "Recruit willing participants, confirm a working shared submission path, run the experiment, and publish the revision, evidence and remaining disagreement.",
+      "nextAction": "Invite willing participants to issue #107, review real round-one responses by November 29 at 6 p.m. Chicago time, and publish a reviewed revision and outcome without inventing participation.",
       "completedAt": null
     },
     {
       "id": "L22",
       "phase": "launch",
       "title": "Publish weekly progress, accepted contributions and upcoming challenges.",
-      "status": "in_progress",
+      "status": "done",
       "owner": "Community maintainer",
-      "summary": "Weekly factual GitHub progress reports are scheduled for Monday mornings around 9 a.m. Chicago time, starting November 30. Reports will include verified outcomes, accepted contributions and upcoming challenges; none has yet been published.",
+      "summary": "The initial public progress report is published with the merged foundation, pending follow-up work, verified accomplishments, unresolved gates and next challenges. Future factual reports are scheduled for Monday mornings around 9 a.m. Chicago time, starting November 30.",
       "evidence": [
+        {
+          "label": "Published progress report #109",
+          "url": "https://github.com/adnanwahab/HeliosHTML/issues/109"
+        },
         {
           "label": "Weekly progress template",
           "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/community-operations.md#weekly-progress-update"
         }
       ],
-      "nextAction": "Publish the first evidence-backed report, link it here, and keep future weekly reports grounded in actual merged work and accepted contributions.",
-      "completedAt": null
+      "nextAction": null,
+      "completedAt": "2026-11-25T21:12:10Z"
     }
   ]
 }

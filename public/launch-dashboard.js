@@ -83,7 +83,7 @@ async function initialize() {
     document.querySelector('#launch-empty').hidden = tasks.length !== 0;
     for (const button of document.querySelectorAll('[data-status-filter]')) button.setAttribute('aria-pressed', String(button.dataset.statusFilter === selectedStatus));
     for (const button of document.querySelectorAll('[data-phase]')) button.setAttribute('aria-pressed', String(button.dataset.phase === phaseInput.value));
-    if (updateURL) { const url = new URL(location.href); for (const [key,value] of [['status',selectedStatus],['phase',phaseInput.value],['q',searchInput.value.trim()]]) { if (value && value !== 'all') url.searchParams.set(key,value); else url.searchParams.delete(key); } history.replaceState(null,'',url); }
+    if (updateURL) { const url = new URL(location.href); for (const [key,value] of [['status',selectedStatus],['phase',phaseInput.value],['q',searchInput.value.trim()]]) { if (value && value !== 'all') url.searchParams.set(key,value); else url.searchParams.delete(key); } if (/^#launch-L\d{2}$/.test(url.hash) && !tasks.some(task=>`#launch-${task.id}`===url.hash)) url.hash=''; history.replaceState(null,'',url); }
   }
   const nextTasks = [...data.tasks.filter(task => task.status === 'blocked'), ...data.tasks.filter(task => task.status === 'in_progress'), ...data.tasks.filter(task => task.status === 'ready')].slice(0,3);
   for (const task of nextTasks) {

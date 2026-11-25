@@ -21,8 +21,13 @@ test('homepage launches the native rainbow Pensieve and a full mission completes
   await story.screenshot({path: testInfo.outputPath('rainbow-pensieve-desktop.png'),fullPage:true,animations:'disabled'});
 });
 test('spell undo preserves explicit sharing, sources and local-only notes', async ({page}, testInfo) => {
+  // These sharing/undo invariants must also work in the supported SVG view.
+  // Isolate them from the optional software-rendered WebGL scene; the first
+  // test and visual-capture workflow continue to exercise the native scene.
+  await page.route('https://cdn.jsdelivr.net/npm/three@*/**',route=>route.abort());
   await page.setViewportSize({width:390,height:844});
   await page.goto('/public/rainbow-pensieve.html');
+  await expect(page.locator('#garden-view-status')).toContainText('garden map active');
   await expect(page.locator('#shared-count')).toHaveText('6 shared memories');
   await page.locator('[data-spell="forget"]').click();
   await page.locator('#cast').click();

@@ -13,7 +13,9 @@ for (const viewport of [{width:1440,height:1000},{width:390,height:844}]) {
     await expect(page.getByText('Real participants and simulated agents are separate.', {exact:false})).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     await page.screenshot({path:testInfo.outputPath(`contribute-${viewport.width}.png`),fullPage:true});
-    await page.getByRole('link',{name:'Propose a change →',exact:true}).click();
+    const propose=page.getByRole('link',{name:'Propose a change',exact:true});
+    await expect(propose).toHaveAttribute('href','./index.html?compose=pr');
+    await propose.click();
     await expect(page.getByRole('dialog',{name:'What should we build next?'})).toBeVisible();
   });
 }

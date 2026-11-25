@@ -10,6 +10,8 @@
 
 ## Screenshots / visual review
 
+Current-head visual capture run: <!-- Link the completed Actions run for this head. -->
+
 <!-- Desktop and mobile screenshots or visual review artifact link; explain if not applicable. -->
 
 ## Verification
