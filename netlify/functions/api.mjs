@@ -14,7 +14,7 @@ function getPreviewRuntime(){
 }
 async function unavailableStatus(url,context,reason){
  let upstream=null;
- if(!configuredDatabase())try{const res=await forwardCivic(new Request(new URL('/api/health',url)),context);if(res.ok)upstream=await res.json()}catch{}
+ try{const res=await forwardCivic(new Request(new URL('/api/health',url)),context);if(res.ok)upstream=await res.json()}catch{}
  return reply({storage:upstream?.storage||'unverified',runtime:upstream?.runtime||'netlify-functions',mode:'practice',writable:false,reason});
 }
 export default async (request, context) => {
@@ -30,6 +30,7 @@ export default async (request, context) => {
   if(mode==='practice'){
    if(status)return unavailableStatus(url,context,'Preview writes require an explicitly enabled isolated test database.');
    if(method!=='GET'&&method!=='HEAD'||path==='/api/session')return reply({error:'Preview database writes are disabled.'},503);
+   if(path==='/api/health'&&method==='GET')return forwardCivic(request,context);
    if(configuredDatabase())return reply({error:'Production database credentials are not used on this preview.'},503);
    return forwardCivic(request,context);
   }

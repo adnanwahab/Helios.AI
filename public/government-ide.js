@@ -15,7 +15,7 @@ function dbAction(msg,error=false){status('db-last',msg,error)}
 function paintDatabase(){
  const c=capability;
  $('db-storage').textContent=checking?'Checking…':c?.storage==='supabase-postgres'?'Supabase PostgreSQL':c?.storage==='pglite'?(c.runtime==='node-server'?'Local PGlite test DB':'Fly PGlite'):c?.storage||'Unavailable';
- $('db-write').textContent=checking?'Checking…':canWrite()?(c.mode==='preview-test'?'Persistent · test database':c.runtime==='node-server'?'Persistent · local test':'Persistent'):restoreRequired?'Blocked · reconnect':c?.writable?'Available · connect to save':'Practice · not saved';
+ $('db-write').textContent=checking?'Checking…':canWrite()?(c.mode==='preview-test'?'Persistent · test database':c.runtime==='node-server'?'Persistent · local test':'Persistent'):blocked()?'Blocked · reconnect':c?.writable?'Available · connect to save':'Practice · not saved';
  $('db-reason').textContent=c?.reason||'Checking database availability.';
  $('db-recheck').disabled=checking||busy;$('connect').disabled=checking||busy||!selection;
  $('connect').textContent=canWrite()?'Refresh shared data':c?.writable?'Connect shared data':'Check database';
