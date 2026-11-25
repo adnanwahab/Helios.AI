@@ -109,10 +109,11 @@ async function loadHistory(){
  try{const data=await request('/api/law-board/'+encodeURIComponent(id));if(ticket!==loadingDetail||id!==selected)return;history=data;renderHistory()}
  catch(e){if(ticket===loadingDetail)setDetailStatus('Could not load revision history: '+e.message,true)}
 }
-function selectLaw(id){
+export function selectLaw(id){
  if(writing||!records.has(id))return;
  if(id!==selected){saveDraft();selected=id;history=null;setDetailStatus('')}
- drawCatalog();drawDetail();if(connected)loadHistory()
+ drawCatalog();drawDetail();if(connected)loadHistory();
+ const url=new URL(location.href);url.searchParams.set(document.getElementById('communal-science-lab')?'labLaw':'goal',id);window.history.replaceState(window.history.state,'',url);
 }
 async function loadBoard({preserveDraft=true}={}){
  if(preserveDraft&&connected)saveDraft();
@@ -159,11 +160,13 @@ for(const k of ['years','reach','capacity','effect','lag'])$('law-input-'+k).add
 $('law-reset').addEventListener('click',()=>{scenario.delete(selected);drawDetail({resetDraft:false})});
 $('law-search').addEventListener('input',drawCatalog);$('law-category').addEventListener('change',drawCatalog);
 $('law-connect').hidden=isStatic;
-(async()=>{try{
+export const ready=(async()=>{try{
  const response=await fetch('./public/law-catalog.json',{cache:'force-cache'});if(!response.ok)throw Error('Catalog asset unavailable');
  const result=await response.json();seed=result.goals;if(!Array.isArray(seed)||seed.length!==100)throw Error('Expected 100 original proposals');
  for(const law of seed){modelFor(law);records.set(law.id,{law,votes:null,myVote:null,updates:0})}
  for(const category of result.categories){const option=el('option',category);option.value=category;$('law-category').append(option)}
+ const params=new URLSearchParams(location.search),requested=params.get(document.getElementById('communal-science-lab')?'labLaw':'goal');
+ if(records.has(requested))selected=requested;else if(document.getElementById('communal-science-lab')&&records.has('HGA-051'))selected='HGA-051';
  $('law-count').textContent=records.size;drawCatalog();drawDetail();$('law-connect').disabled=false;
  status(isStatic?'Static preview · simulations only, no shared votes.':'Original editorial catalog · connect to load shared Supabase votes and revisions.')
 }catch(e){status('Could not load the bundled law catalog: '+e.message,true)}})();
