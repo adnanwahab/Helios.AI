@@ -6,6 +6,7 @@ import {createServer} from 'node:http';
 import {readFile, stat} from 'node:fs/promises';
 import {extname, join, resolve, sep} from 'node:path';
 import {createPGliteDatabase, pgliteDataDir} from '../src/db-pglite.js';
+import {messagePRHandler} from '../src/message-pr.js';
 import {createRuntime} from '../src/runtime.js';
 
 const root = process.cwd();
@@ -45,7 +46,8 @@ const server = createServer(async (req, res) => {
   for (const [name, value] of Object.entries(req.headers)) if (value !== undefined) headers.set(name, Array.isArray(value) ? value.join(', ') : value);
   const init = {method: req.method, headers};
   if (chunks.length) init.body = Buffer.concat(chunks);
-  const response = await runtime.app(new Request(url, init), req.socket.remoteAddress || 'local');
+  const request = new Request(url, init);
+  const response = url.pathname === '/api/message-pr' ? await messagePRHandler(request) : await runtime.app(request, req.socket.remoteAddress || 'local');
   const out = {};
   response.headers.forEach((value, name) => { if (name !== 'set-cookie') out[name] = value; });
   const cookies = response.headers.getSetCookie?.() ?? [];

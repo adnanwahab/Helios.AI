@@ -62,9 +62,33 @@ header.wrap,main.wrap,footer.wrap{width:min(100% - 40px,1560px)}#government-view
 .law-assembly-feature{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px 20px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(115deg,#203b32,#182625);padding:clamp(16px,3vw,24px);margin:0 0 16px}.law-assembly-feature h2{font-size:clamp(23px,4vw,35px);letter-spacing:-.04em;margin:0 0 8px;line-height:1.1}.law-assembly-feature p:not(.eyebrow){margin:0;color:var(--muted)}.law-assembly-feature .primary{display:inline-flex;align-items:center;text-decoration:none;justify-content:center}.law-assembly-links{display:flex;gap:8px 16px;flex-wrap:wrap;grid-column:1/-1}.law-assembly-links a{font-size:13px;font-weight:700}.law-assembly-feature .hint{grid-column:1/-1}#law-assembly-selected{display:inline-flex;align-items:center;text-decoration:none;margin:0 0 12px}@media(max-width:600px){.law-assembly-feature{grid-template-columns:minmax(0,1fr)}.law-assembly-feature .primary{justify-self:start}}
 .top-actions{flex-wrap:wrap;justify-content:flex-end}@media(max-width:700px){header.wrap{align-items:flex-start}.top-actions{gap:5px}#mystery-link{font-size:11px;padding:7px 8px;min-height:36px}.docs-trigger{font-size:12px}}
 </style>
+<link rel="stylesheet" href="./public/pr-composer.css">
 </head>
 <body>
-<header class="wrap"><div class="brand"><span class="sun" aria-hidden="true">✳</span> HELIOS AI</div><div class="top-actions"><div class="topnote">A shared civic workshop</div><a class="footer-archive" href="./grid.html">Grid story ↗</a><a class="footer-archive" href="./lunch.html">Vote for lunch ↗</a><a class="docs-trigger" id="mystery-link" href="./public/mystery.html" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Play the mystery ↗</a><button class="docs-trigger" type="button" id="docs-open" aria-haspopup="dialog" aria-controls="docs-drawer">Docs ↗</button></div></header>
+<header class="wrap"><div class="brand"><span class="sun" aria-hidden="true">✳</span> HELIOS AI</div><div class="top-actions"><div class="topnote">A shared civic workshop</div><a class="footer-archive" href="./grid.html">Grid story ↗</a><a class="footer-archive" href="./lunch.html">Vote for lunch ↗</a><a class="docs-trigger" id="mystery-link" href="./public/mystery.html" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Play the mystery ↗</a><button class="docs-trigger" type="button" id="pr-compose-open" aria-haspopup="dialog" aria-controls="pr-compose">✎ Message / PR</button><button class="docs-trigger" type="button" id="docs-open" aria-haspopup="dialog" aria-controls="docs-drawer">Docs ↗</button></div></header>
+<dialog id="pr-compose" aria-labelledby="pr-compose-title">
+  <div class="pr-compose-head"><div><p class="eyebrow">HELIOS / CONTRIBUTIONS</p><h2 id="pr-compose-title">Send a message. Propose a change.</h2></div><button type="button" class="secondary" id="pr-compose-close" aria-label="Close message modal">×</button></div>
+  <p class="hint">Describe a change to a law, feature, or the site. Review the exact proposal before creating a pull request. No Helios login needed to draft.</p>
+  <div class="pr-flow" aria-label="Workflow"><span>01 · Message</span><span>02 · Review</span><span>03 · Pull request</span></div>
+  <form id="pr-compose-form">
+    <div class="field"><label for="pr-kind">Topic</label><select id="pr-kind"><option value="feature">Website / feature</option><option value="law">Law / policy proposal</option><option value="bug">Bug report</option><option value="other">Other idea</option></select></div>
+    <div class="field"><label for="pr-title">Short title</label><input id="pr-title" maxlength="120" required placeholder="Make the childcare simulator easier to use"></div>
+    <div class="field"><label for="pr-message">Your message</label><textarea id="pr-message" maxlength="4000" required rows="5" placeholder="What should change, and why?"></textarea><p class="hint" id="pr-count">0 / 4,000 · Stays here until you choose to publish.</p></div>
+    <button type="submit" class="primary">Review proposal →</button>
+  </form>
+  <section id="pr-review" hidden aria-labelledby="pr-review-heading">
+    <h3 id="pr-review-heading" tabindex="-1">Review the exact file</h3>
+    <p class="hint">This creates a proposal record for human review, not an automatic implementation or an enacted law. GitHub is public; remove private information and secrets.</p>
+    <p class="pr-path" id="pr-path"></p>
+    <textarea id="pr-payload" rows="6" readonly aria-label="Exact public proposal file"></textarea>
+    <label class="consent"><input id="pr-consent" type="checkbox"><span>I approve publishing this exact proposal to public GitHub.</span></label>
+    <div class="actions"><button type="button" class="secondary" id="pr-edit">← Edit</button><button type="button" class="secondary" id="pr-copy" disabled>Copy proposal</button><a class="primary" id="pr-github" target="_blank" rel="noopener noreferrer" aria-disabled="true">Continue on GitHub ↗</a></div>
+    <p class="hint">On GitHub, sign in, paste the copied proposal, commit to a new branch or fork, then open a pull request. Nothing is published by opening the editor alone.</p>
+    <details id="pr-maintainer" hidden><summary>Maintainer · create draft PR directly</summary><label for="pr-access">Dedicated PR access key</label><input type="password" autocomplete="off" id="pr-access" placeholder="Maintainer access key"><p class="hint">Never paste a GitHub token here. The server uses a separate repository-scoped credential.</p><div class="actions"><button type="button" class="primary" id="pr-submit" disabled>Create draft pull request</button></div></details>
+  </section>
+  <p id="pr-status" class="status" role="status" aria-live="polite"></p>
+  <div id="pr-receipt" class="receipt" hidden><h3>Pull request recorded</h3><p id="pr-result"></p><a id="pr-result-link" target="_blank" rel="noopener noreferrer">Open on GitHub ↗</a><button type="button" class="secondary" id="pr-new">Write another message</button></div>
+</dialog>
 <dialog id="docs-drawer" class="docs-drawer" data-view="tabs" aria-labelledby="docs-title">
 <div class="docs-head"><div><p class="eyebrow docs-overline">HELIOS / ARCHIVE</p><h2 id="docs-title">Docs &amp; experiments</h2></div><div class="docs-head-actions"><button type="button" class="secondary" id="docs-layout" aria-pressed="true" aria-label="Toggle compact Docs drawer">Compact drawer</button><button type="button" class="secondary" id="docs-close" aria-label="Close docs drawer">Close ×</button></div></div>
 <div class="docs-body">
@@ -347,5 +371,6 @@ $('gov-measure').addEventListener('submit',e=>{e.preventDefault();try{lastFeedba
 count();setPublish();
 </script>
 <script type="module" src="./public/constitution-workbench.js"></script>
+<script type="module" src="./public/pr-composer.js"></script>
 </body>
 </html>

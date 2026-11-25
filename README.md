@@ -407,3 +407,11 @@ see everyone elses vote using deckgl map
 The Helios dashboard includes **MorphLab · WebGPU** (`/morphlab.html`): type a prompt and morph a glowing particle cloud into a procedural 3D sculpture, or drag in an uncompressed GLB model. OpenAI-powered shape recipes use a server-side, explicitly enabled API and fall back to local presets when unconfigured. See [MorphLab setup and security](docs/morphlab.md).
 
 - `public/mystery.html` — The Missing Amendment, a fictional choose-your-own-adventure civic mystery. No real vote or personal information is sent. Available from the homepage and Docs.
+
+## Homepage Message / PR composer
+
+Open **Message / PR** or visit `/?compose=pr`. Anyone can draft a feature, policy, bug or other proposal and review its exact JSON. With consent, copy the file and continue to GitHub's editor; GitHub authentication and its normal fork/branch/PR flow apply. No Helios account is required. The message is not sent automatically, and the journal is never included.
+
+For direct maintainer draft PR creation, configure `HELIOS_PR_ENABLED=1`, a separate random `HELIOS_PR_ACCESS_KEY` (32+ characters), and `HELIOS_PR_GITHUB_TOKEN` (fine-grained credential scoped only to HeliosHTML, Contents and Pull requests read/write, Metadata read). Set secrets on the Netlify Functions production context or Fly server, not the frontend or untrusted deploy previews. The access key is entered per direct submission; no credentials are saved in browser storage. Without configuration, only the GitHub editor path is available.
+
+The server accepts only consented, bounded JSON and writes a new file under `docs/proposals/inbox/` on a deterministic `message-pr/` branch, then opens a draft PR against main. Retries reuse the same proposal branch; no arbitrary paths, executable changes, AI execution, or merges are allowed. The proposal is public, not a legal amendment or implemented code. Maintainers must review it and make any actual implementation separately. Use repository branch protections and GitHub's normal review rules. Revoke/rotate the credential if compromised.
