@@ -1,6 +1,9 @@
 # Helios.AI
 
 # We welcome contributors
+
+Maintainers: run the [private traffic-light security registry](docs/security-registry.md) with `bun --env-file=.env.security run security:registry` after setting up the secret. Local-only; not connected to public authentication.
+
 pls edit the readme and then we will regenerate the html.
 
 ## Consensus World — bill revision workshop
