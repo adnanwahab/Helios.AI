@@ -9,17 +9,28 @@
     "migrate:sqlite": "bun scripts/migrate-sqlite.js",
     "email:status": "node scripts/email-status.js",
     "notion:publish": "node scripts/notion-publish.mjs",
-    "test:browser": "playwright test"
+    "test:browser": "playwright test",
+    "launch:status": "node scripts/launch-status.mjs",
+    "launch:sync": "node scripts/launch-status.mjs --write",
+    "votes:world": "bun run scripts/world-vote-lab/cli.ts",
+    "votes:world:demo": "bun run scripts/world-vote-lab/cli.ts --proposal-file scripts/world-vote-lab/examples/childcare.txt --interval 2 --batch-size 200000000",
+    "security:registry": "bun scripts/security-registry.js",
+    "test:security": "bun test scripts/security-registry.test.js",
+    "simulate:votes": "cd consensus-lab && bun run simulate",
+    "serve:votes": "cd consensus-lab && bun run serve",
+    "test:votes": "cd consensus-lab && bun test"
   },
   "engines": {
     "bun": ">=1.3.0",
     "node": ">=22"
   },
   "dependencies": {
+    "@supabase/supabase-js": "2.119.2",
     "pg": "^8.23.1"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.17",
-    "@playwright/test": "1.63.0"
+    "@playwright/test": "1.63.0",
+    "esbuild": "0.28.2"
   }
 }

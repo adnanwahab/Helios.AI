@@ -53,6 +53,26 @@ try {
     viewport: {width: 1440, height: 900}, deviceScaleFactor: 1,
     reducedMotion: 'reduce',
   });
+  // The fixed synthetic report is part of the local static build. Capture its exact route.
+  const labResponse = await page.goto(base + '/consensus-lab/', {waitUntil:'domcontentloaded'});
+  if (!remote || (labResponse?.ok() && await page.locator('#consensus-app').count())) {
+    if (!labResponse?.ok()) throw new Error('Consensus Lab route failed');
+    await page.locator('#agent-grid button').first().waitFor({state:'visible', timeout:15000});
+    if (await page.locator('#agent-grid button').count() !== 100) throw new Error('Expected 100 synthetic agent buttons');
+    await page.screenshot({path:join(output,'consensus-lab-desktop.png'),fullPage:true,animations:'disabled'});
+    await page.setViewportSize({width:390,height:844});
+    await page.screenshot({path:join(output,'consensus-lab-mobile.png'),fullPage:true,animations:'disabled'});
+    await page.setViewportSize({width:1440,height:900});
+  }
+  // Capture the new workspace first so its artifacts survive unrelated legacy failures.
+  const workspaceResponse=await page.goto(base+'/constitution?law=HGA-012&clause=implementation',{waitUntil:'domcontentloaded'});
+  if(workspaceResponse?.ok()&&await page.locator('#explorer-title').count()){
+    await page.locator('[data-section="HGA-012:implementation"]').waitFor({state:'visible'});
+    await page.screenshot({path:join(output,'government-ide-desktop.png'),fullPage:true,animations:'disabled'});
+    await page.setViewportSize({width:390,height:844});
+    await page.screenshot({path:join(output,'government-ide-mobile.png'),fullPage:true,animations:'disabled'});
+    await page.setViewportSize({width:1440,height:900});
+  }
   await page.goto(base + '/', {waitUntil: 'domcontentloaded', timeout: 45000});
   const loop = await page.locator('#journal-form').count() > 0;
   if (loop) await page.locator('#journal').waitFor({timeout: 20000});
@@ -67,12 +87,48 @@ try {
   await page.waitForTimeout(700);
   await page.screenshot({path: join(output, 'mobile.png'), animations: 'disabled'});
 
+  if (await page.locator('#world-map-feature').count()) {
+    await page.setViewportSize({width: 1440, height: 1000});
+    await page.goto(base + '/world-map?climate=70&cost=45&city=30&nature=60&coast=40', {waitUntil: 'domcontentloaded'});
+    await page.locator('#world-hex-suitability[data-ready="true"]').waitFor({timeout: 20000});
+    await page.screenshot({path: join(output, 'world-map-desktop.png'), fullPage: true, animations: 'disabled'});
+    await page.setViewportSize({width: 390, height: 844});
+    await page.screenshot({path: join(output, 'world-map-mobile.png'), fullPage: true, animations: 'disabled'});
+    await page.goto(base + '/', {waitUntil: 'domcontentloaded'});
+  }
+
+  if(await page.locator('#pr-compose-open').count()){
+    await page.goto(base+'/?compose=pr',{waitUntil:'domcontentloaded'});
+    await page.locator('#pr-title').fill('Improve the childcare simulator');
+    await page.locator('#pr-message').fill('Show the hourly rate and subsidy side by side with a short explanation of the estimated public cost.');
+    await page.screenshot({path:join(output,'message-pr-mobile.png'),animations:'disabled'});
+    await page.setViewportSize({width:1440,height:900});
+    await page.locator('#pr-compose-form button[type=submit]').click();
+    await page.screenshot({path:join(output,'message-pr-review.png'),animations:'disabled'});
+    await page.locator('#pr-destination').selectOption('github');
+    await page.screenshot({path:join(output,'message-pr-github.png'),animations:'disabled'});
+    await page.locator('#pr-compose-close').click();
+    await page.goto(base+'/',{waitUntil:'domcontentloaded'});
+  }
   await page.setViewportSize({width: 1440, height: 900});
   if (!(await page.locator('#law-tiles').count())) await page.goto(base + '/law-atlas.html',{waitUntil:'domcontentloaded'});
   if (await page.locator('#law-tiles').count()) {
     await page.locator('#law-tiles .law-tile').first().waitFor({state:'visible'});
     await page.locator('#laws-workbench').scrollIntoViewIfNeeded();
     await page.screenshot({path: join(output,'law-atlas.png'), animations:'disabled'});
+    if(await page.locator('#cannabis-budget').isVisible()) {
+      await page.locator('#cannabis-budget').screenshot({path:join(output,'cannabis-desktop.png'),animations:'disabled'});
+      await page.setViewportSize({width:390,height:844});
+      await page.locator('#cannabis-budget').screenshot({path:join(output,'cannabis-mobile.png'),animations:'disabled'});
+      await page.setViewportSize({width:1440,height:900});
+      await page.locator('[data-law="HGA-031"]').click();
+    }
+    if(await page.locator('#childcare-budget').isVisible()) {
+      await page.locator('#childcare-budget').screenshot({path:join(output,'childcare-desktop.png'),animations:'disabled'});
+      await page.setViewportSize({width:390,height:844});
+      await page.locator('#childcare-budget').screenshot({path:join(output,'childcare-mobile.png'),animations:'disabled'});
+      await page.setViewportSize({width:1440,height:900});
+    }
     await page.locator('#law-search').fill('HGA-011');
     await page.locator('[data-law="HGA-011"]').click();
     await page.locator('#law-input-reach').fill('90');
@@ -244,6 +300,54 @@ try {
     await page.setViewportSize({width:390,height:844});
     await page.locator('#scene-title').scrollIntoViewIfNeeded();
     await page.screenshot({path:join(output,'rainbow-pensieve-mobile.png'),animations:'disabled'});
+  }
+  // Research evidence is retained in the capture artifact. The trusted publisher
+  // on main has its own filename allowlist; a PR cannot expand that allowlist.
+  await page.goto(base + '/', {waitUntil:'domcontentloaded'});
+  if (await page.locator('#research-entry-title').count()) {
+    await page.setViewportSize({width:1440,height:1000});
+    await page.goto(base + '/research', {waitUntil:'domcontentloaded'});
+    await page.locator('#agent-grid [data-task]').first().waitFor({state:'visible'});
+    await page.waitForFunction(() => !document.getElementById('save-status')?.textContent.includes('Loading'));
+    await page.screenshot({path:join(output,'research-desktop.png'),animations:'disabled'});
+    await page.locator('#keyframes').scrollIntoViewIfNeeded();
+    await page.screenshot({path:join(output,'keyframe.png'),animations:'disabled'});
+    await page.setViewportSize({width:390,height:844});
+    await page.goto(base + '/research', {waitUntil:'domcontentloaded'});
+    await page.locator('#agent-grid [data-task]').first().waitFor({state:'visible'});
+    await page.waitForFunction(() => !document.getElementById('save-status')?.textContent.includes('Loading'));
+    await page.screenshot({path:join(output,'research-mobile.png'),animations:'disabled'});
+    await page.locator('#keyframes').scrollIntoViewIfNeeded();
+    await page.screenshot({path:join(output,'keyframe-mobile.png'),animations:'disabled'});
+    // The optional account panel is public UI. Never enter credentials or send
+    // login email during visual capture; guests can dismiss it and keep working.
+    if (await page.locator('[data-open-login]').count()) {
+      await page.setViewportSize({width:1440,height:1000});
+      await page.goto(base + '/research?open_login=1#coordinator', {waitUntil:'domcontentloaded'});
+      await page.locator('#helios-account-dialog').waitFor({state:'visible'});
+      await page.waitForFunction(() => !document.getElementById('helios-account-status')?.textContent.includes('Checking'));
+      await page.screenshot({path:join(output,'optional-login-desktop.png'),animations:'disabled'});
+      await page.setViewportSize({width:390,height:844});
+      await page.screenshot({path:join(output,'optional-login-mobile.png'),animations:'disabled'});
+      await page.locator('#helios-account-guest').click();
+    }
+  }
+  // The launch dashboard is a public, source-controlled evidence view. Older
+  // preview backfills may not contain it; no data is submitted by this capture.
+  await page.goto(base + '/launch', {waitUntil:'domcontentloaded'});
+  if (await page.locator('[data-launch-progress]').count()) {
+    await page.locator('[data-launch-task]').last().waitFor({state:'visible'});
+    await page.setViewportSize({width:1440,height:1000});
+    await page.screenshot({path:join(output,'launch-dashboard-desktop.png'),fullPage:true,animations:'disabled'});
+    await page.setViewportSize({width:390,height:844});
+    await page.screenshot({path:join(output,'launch-dashboard-mobile.png'),fullPage:true,animations:'disabled'});
+  }
+  await page.goto(base + '/contribute', {waitUntil:'domcontentloaded'});
+  if (await page.locator('#paths').count()) {
+    await page.setViewportSize({width:1440,height:1000});
+    await page.screenshot({path:join(output,'contribute-desktop.png'),fullPage:true,animations:'disabled'});
+    await page.setViewportSize({width:390,height:844});
+    await page.screenshot({path:join(output,'contribute-mobile.png'),fullPage:true,animations:'disabled'});
   }
   // The bottom law workshop is read-only during screenshot capture.
   await page.goto(base + '/', {waitUntil:'domcontentloaded'});

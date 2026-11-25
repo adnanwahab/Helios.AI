@@ -1,4 +1,12 @@
 import {test,expect} from '@playwright/test';
+async function expectCompleteArchive(page){
+ const links=page.locator('#docs-links a');
+ const required=['Participation guide','Email signup','Neighborhood Consensus','Three-Editor Merge','Repository documentation'];
+ for(const name of required)await expect(links.filter({hasText:name})).toHaveCount(1);
+ const names=await links.evaluateAll(items=>items.map(item=>item.dataset.experience));
+ expect(names.every(Boolean)).toBe(true);
+ expect(new Set(names).size).toBe(names.length);
+}
 test('Docs drawer and three-lane workbench stay private in practice; matching is local',async({page})=>{
  const api=[];page.on('request',r=>{const u=new URL(r.url());if(u.pathname.includes('/api/')&&!(r.method()==='GET'&&!r.postData()&&/^\/api\/(catalog|laws\/[A-Z0-9-]+)$/i.test(u.pathname)&&!u.search))api.push(r.url())});
  await page.goto('/?review=practice');
@@ -9,7 +17,7 @@ test('Docs drawer and three-lane workbench stay private in practice; matching is
  await expect(page.locator('#review-title')).toBeVisible();
  await page.locator('#docs-open').click();
  await expect(page.locator('#docs-drawer')).toBeVisible();
- await expect(page.locator('#docs-links a')).toHaveCount(35);
+ await expectCompleteArchive(page);
  await page.locator('#docs-search').fill('morphlab');
  await expect(page.locator('#docs-links a')).toHaveCount(2);
  await page.keyboard.press('Escape');await expect(page.locator('#docs-drawer')).toBeHidden();
@@ -58,7 +66,7 @@ test('Docs opens a full archive with one toggled iframe and preserves the journa
  await expect(page.locator('iframe')).toHaveCount(0);
  await page.locator('#docs-open').click();
  await expect(page.locator('#docs-drawer')).toHaveAttribute('data-view','tabs');
- await expect(page.locator('#docs-links a')).toHaveCount(35);
+ await expectCompleteArchive(page);
  await expect(page.locator('#docs-frame')).toHaveCount(0);
  await page.locator('#docs-links a[data-experience="Neighborhood Consensus"]').click();
  await expect(page.locator('#docs-current')).toHaveText('Neighborhood Consensus');

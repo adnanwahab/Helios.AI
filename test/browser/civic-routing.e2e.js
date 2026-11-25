@@ -75,7 +75,7 @@ test('database outage never silently records practice votes; opt-in practice rem
 });
 test('archived law atlas restores a selected original law',async({page})=>{
  await page.goto('/law-atlas.html');
- await expect(page.locator('#law-tiles .law-tile')).toHaveCount(100);
+ await expect(page.locator('#law-tiles .law-tile')).toHaveCount(101);
  await page.locator('[data-law="HGA-011"]').click();
  await expect(page).toHaveURL(/law=HGA-011#law-title$/);
  await page.reload();

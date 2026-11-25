@@ -7,7 +7,7 @@ const fmt=n=>Number(n||0).toLocaleString();
 const message=(id,text,error=false)=>{$(id).textContent=text;$(id).classList.toggle('error',error)};
 const groups=[
  ['Start here',[['Participation guide','welcome.html'],['Original multi-tab dashboard','experiments.html'],['Email signup','public/signup.html','https://helioshtml.com/signup']]],
- ['Civic tools',[['Helios AI landing','helios_ai_landing_page.html'],['Helios Hippie','helios_hippie_landing.html'],['Helios Unified','helios-unified.html'],['100 Shared Goals','helios_100_frontend_demo.html','helios_100_frontend_demo.html'],['100-law atlas and simulations','law-atlas.html'],['Plan · Notion','helios_notion_preview.html'],['World Plan Simulator','world_plan_simulator.html'],['Vote Radar','vote_radar.html'],['Neighborhood Consensus','neighborhood_consensus.html'],['Three-Editor Merge','three_editor_merge.html'],['Acts in Orbit','heliosai_acts_orbit.html'],['Support Every Country','support_every_country.html'],['Eight Billion, Five Laws','public/eight-billion-five-laws/index.html'],['Eight Billion Map','eight_billion_map.html'],['Health & Wealth of Nations','health_wealth_of_nations.html']]],
+ ['Civic tools',[['Helios AI landing','helios_ai_landing_page.html'],['Helios Hippie','helios_hippie_landing.html'],['Helios Unified','helios-unified.html'],['100 Shared Goals','helios_100_frontend_demo.html','helios_100_frontend_demo.html'],['100-law atlas and simulations','law-atlas.html'],['Plan · Notion','helios_notion_preview.html'],['World suitability map','public/world-map/index.html'],['World Plan Simulator','world_plan_simulator.html'],['Vote Radar','vote_radar.html'],['Neighborhood Consensus','neighborhood_consensus.html'],['Three-Editor Merge','three_editor_merge.html'],['Acts in Orbit','heliosai_acts_orbit.html'],['Support Every Country','support_every_country.html'],['Eight Billion, Five Laws','public/eight-billion-five-laws/index.html'],['Eight Billion Map','eight_billion_map.html'],['Health & Wealth of Nations','health_wealth_of_nations.html']]],
  ['Worlds & experiments',[['The Missing Amendment · mystery game','public/mystery.html'],['Netherbrain fictional campaign','public/netherbrain.html'],['The Long Coil','long_coil.html'],['Communal Science Lab','communal_science_lab_webgpu%20(1).html'],['MorphLab · WebGPU','morphlab.html'],['MorphLab offline demo','morphlab-offline-demo.html'],['HappyBearLandia Pocket','happybearlandia_pocket.html'],['Digital Pensieve','https://digital-pensieve.fly.dev/'],['Braindance','helios_braindance.html'],['Rainbow Brain Realms','rainbow_brain.html'],['Sunshine for Breakfast','sunshine_breakfast.html'],['Particle interface','heliosai-particle-interface.html'],['Sand Castle','sand_castle.html']]],
  ['Project & operations',[['Mail · Resend (locked operator console)','helios_mail.html'],['YC Research','/proxy/ycr/','pages-ycr.html'],['Fork Helios','helios_fork.html'],['Repository documentation','https://github.com/adnanwahab/Helios.AI/tree/main/docs']]]
 ];
@@ -104,6 +104,7 @@ docs.addEventListener('close',()=>{
 });
 $('docs-search').addEventListener('input',()=>renderDocs($('docs-search').value));
 let board=sampleBoard(),connected=false,selected=readCivicRoute().clause||'S-001',busy=false,refreshing=false,connecting=false,csrf=null,lastWrite=null,related=null;
+let accountRevision=0,accountKey='guest||false',accountRefreshPending=false;
 let practiceMode=isStatic||readCivicRoute().practice,connectionEpoch=0;
 const commentDrafts=new Map();
 const unavailable=()=>!connected&&!practiceMode;
@@ -156,9 +157,10 @@ function drawReview(navigation='sync'){
  const row=current();if(!row)return;selected=row.id;
  $('clause-topic').textContent=row.topic+' · '+row.id.slice(0,18)+(row.id.length>18?'…':'');
  $('clause-text').textContent=row.text;
+ const ideLink=$('government-ide-link');if(ideLink){ideLink.href=row.source==='practice'?'/constitution':'/constitution?community='+encodeURIComponent(row.id);ideLink.textContent=row.source==='practice'?'Open workspace (practice clause is not transferable) ↗':'Open linked constitution workspace ↗';}
  document.dispatchEvent(new CustomEvent('helios:clause-selected',{detail:{id:row.id,topic:row.topic,text:row.text,source:row.source,navigation}}));
  $('clause-synthetic').textContent=row.source==='synthetic'?'Synthetic: '+syntheticLabel(row.synthetic)+' · '+fmt(row.synthetic.mentions)+' distinct sample participants.':'No synthetic votes for this community clause.';
- const real=$('clause-real');real.replaceChildren(create('strong',connected?'Shared advisory votes (browser sessions)':practiceMode?'Practice only · no shared votes loaded':connecting?'Loading shared review…':'Shared database unavailable'),create('span',connected?liveLabel(row.live)+' · '+fmt(row.live.contributors)+' opted-in contributions':practiceMode?'Your choices here are not sent or counted publicly.':'No votes or comments will be saved until the connection is restored.'));
+ const real=$('clause-real');real.replaceChildren(create('strong',connected?'Shared advisory votes (accounts + guests)':practiceMode?'Practice only · no shared votes loaded':connecting?'Loading shared review…':'Shared database unavailable'),create('span',connected?liveLabel(row.live)+' · '+fmt(row.live.contributors)+' opted-in contributions':practiceMode?'Your choices here are not sent or counted publicly.':'No votes or comments will be saved until the connection is restored.'));
  const position=connected?row.myVote:practiceMode?practiceVotes.get(row.id):null;
  for(const b of document.querySelectorAll('[data-clause-vote]')){b.setAttribute('aria-pressed',String(position===b.dataset.clauseVote));b.disabled=blocked()}
  $('clear-vote').disabled=blocked();
@@ -182,8 +184,14 @@ function draw(){
  drawList();drawReview();drawPending();updateDedupe();
 }
 async function request(path,options={}){
- const r=await fetch(path,{credentials:'same-origin',cache:'no-store',signal:AbortSignal.timeout(15000),...options});
- const data=await r.json().catch(()=>null);if(!r.ok||!data)throw Error(data?.error||'HTTP '+r.status);return data;
+ const headers=new Headers(options.headers),accountHeaders=await window.HeliosAccount?.fetchHeaders('votes')||{};
+ for(const [key,value] of Object.entries(accountHeaders))headers.set(key,value);
+ const revision=accountRevision;
+ const r=await fetch(path,{credentials:'same-origin',cache:'no-store',signal:AbortSignal.timeout(15000),...options,headers});
+ if(revision!==accountRevision)throw Error('Your account changed. Refresh the board before trying again.');
+ const data=await r.json().catch(()=>null);
+ if(revision!==accountRevision)throw Error('Your account changed. Refresh the board before trying again.');
+ if(!r.ok||!data)throw Error(data?.error||'HTTP '+r.status);return data;
 }
 async function connect({restoreScroll=false}={}){
  if(isStatic||connected||connecting||busy||practiceMode)return;
@@ -195,7 +203,7 @@ async function connect({restoreScroll=false}={}){
    board=next;connected=true;applyRequestedClause();
    message('board-status',requestedUnavailable()?'The requested clause is not publicly available. Showing the shared board.':'Shared review is live. Advisory positions save to the database; comments and new clauses await moderation.');
  }catch(e){if(epoch!==connectionEpoch)return;connected=false;message('board-status','Shared database unavailable: '+e.message+' · nothing was saved. Retry, or explicitly choose private practice.',true)}
- finally{if(epoch===connectionEpoch){connecting=false;draw();updatePulse();if(restoreScroll)scrollToCivicRoute('review-title','constitution-title')}}
+ finally{if(epoch===connectionEpoch){connecting=false;draw();updatePulse();if(restoreScroll)scrollToCivicRoute('review-title','constitution-title');if(accountRefreshPending){accountRefreshPending=false;if(connected)refresh();else if(window.HeliosAccount?.getState().status!=='verifying')connect()}}}
 }
 async function refresh(){
  if(!connected||refreshing||busy)return;const epoch=connectionEpoch;refreshing=true;$('board-refresh').disabled=true;
@@ -203,10 +211,19 @@ async function refresh(){
    const next=await request(selectedBoardPath());
    if(epoch!==connectionEpoch||practiceMode)return;
    if(!Array.isArray(next.clauses)||!next.synthetic)throw Error('Invalid board response');
-   board=next;applyRequestedClause();draw();message('board-status',requestedUnavailable()?'The requested clause is not publicly available. Showing the shared board.':'Shared board updated. Counts are advisory browser-session totals, separate from the synthetic corpus.')
+   board=next;applyRequestedClause();draw();message('board-status',requestedUnavailable()?'The requested clause is not publicly available. Showing the shared board.':'Shared board updated. Counts are advisory votes by accounts and guest sessions, separate from the synthetic corpus.')
  }catch(e){if(epoch===connectionEpoch){connected=false;draw();message('board-status','Could not refresh the shared database: '+e.message+' · writes are disabled until you reconnect.',true)}}
- finally{refreshing=false;$('board-refresh').disabled=false}
+ finally{refreshing=false;$('board-refresh').disabled=false;if(accountRefreshPending){accountRefreshPending=false;if(connected)refresh();else connect()}}
 }
+window.addEventListener('helios:auth-changed',event=>{
+ const state=event.detail||{},key=[state.status,state.user?.id||'',state.persistence?.votes===true].join('|');
+ if(key===accountKey)return;accountKey=key;accountRevision++;csrf=null;lastWrite=null;
+ if(connecting){accountRefreshPending=true;return}
+ if(!connected){if(!practiceMode&&state.status!=='verifying')connect();return}
+ for(const row of rows())row.myVote=null;
+ drawReview();
+ if(busy||refreshing)accountRefreshPending=true;else refresh();
+});
 function enterPractice({navigate=true}={}){
  ++connectionEpoch;connected=false;connecting=false;practiceMode=true;board=sampleBoard();$('comment-consent').checked=false;$('comment-auto-consent').checked=false;$('contribution-consent').checked=false;$('clause-auto-consent').checked=false;
  if(navigate)updateCivicRoute({practice:true});
@@ -243,16 +260,17 @@ for(const [existing, id] of [['comment-consent','comment-auto-consent'],['contri
 async function write(action,data,statusId,onSuccess){
  if(!connected||busy)return;
  if(refreshing){message(statusId,'Refreshing the shared board. Please try again in a moment.');return}
- busy=true;drawReview();const body=JSON.stringify(data),fingerprint=action+'|'+body;
+ busy=true;drawReview();const body=JSON.stringify(data),fingerprint=action+'|'+body,revision=accountRevision;
  if(!lastWrite||lastWrite.fingerprint!==fingerprint)lastWrite={fingerprint,key:crypto.randomUUID()};
  message(statusId,'Submitting…');
  let result=null;
  try{
    const session=await request('/api/session');csrf=session.csrfToken;
+   if(revision!==accountRevision)throw Error('Your account changed. Review the action and try again.');
    result=await request('/api/constitution/'+action,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrf,'Idempotency-Key':lastWrite.key},body});
-   lastWrite=null;onSuccess(result);message(statusId,action==='vote'?'Position recorded in the database.':result.status==='approved'&&result.moderation==='unflagged'?'Safety check passed; published for discussion.':result.status==='pending'?'Saved to database · pending moderation.':action==='comment'?'Comment saved.':'Contribution grouped with the existing clause.');
+   lastWrite=null;onSuccess(result);message(statusId,action==='vote'?(window.HeliosAccount?.isSavingWithAccount('votes')?'Position recorded in the database with your account.':'Position recorded in the database for this guest browser session.'):result.status==='approved'&&result.moderation==='unflagged'?'Safety check passed; published for discussion.':result.status==='pending'?'Saved to database · pending moderation.':action==='comment'?'Comment saved.':'Contribution grouped with the existing clause.');
  }catch(e){message(statusId,'Submission not confirmed: '+e.message+' · retry unchanged to reuse the request key.',true)}
- finally{busy=false;drawReview();if(result)await refresh();const route=readCivicRoute();if((route.clause&&route.clause!==selected)||(!isStatic&&route.practice!==practiceMode))restoreClauseRoute()}
+ finally{busy=false;drawReview();if(result||accountRefreshPending){accountRefreshPending=false;await refresh()}const route=readCivicRoute();if((route.clause&&route.clause!==selected)||(!isStatic&&route.practice!==practiceMode))restoreClauseRoute()}
 }
 for(const b of document.querySelectorAll('[data-clause-vote]'))b.addEventListener('click',()=>{
  const row=current(),position=b.dataset.clauseVote;if(!row||blocked())return;

@@ -11,8 +11,8 @@ function trustedSite(url,context){
  url.hostname==='helioshtml.com'||url.hostname==='www.helioshtml.com'||url.hostname==='heliosailol.netlify.app'||
  /^(?:main|deploy-preview-\d+|[a-f0-9]{24})--heliosailol\.netlify\.app$/.test(url.hostname));
 }
-const allowedRead=path=>['/api/health','/api/catalog','/api/laws','/api/session','/api/constitution','/api/law-drafts/config'].includes(path)||/^\/api\/laws\/[A-Z0-9-]+$/i.test(path);
-const allowedWrite=path=>['/api/laws','/api/law-drafts/generate','/api/law-drafts/publish','/api/constitution/vote','/api/constitution/comment','/api/constitution/contribute'].includes(path)||/^\/api\/laws\/[A-Z0-9-]+\/amendments$/i.test(path);
+const allowedRead=path=>['/api/health','/api/catalog','/api/laws','/api/session','/api/constitution','/api/contributions','/api/law-drafts/config'].includes(path)||/^\/api\/laws\/[A-Z0-9-]+$/i.test(path);
+const allowedWrite=path=>['/api/laws','/api/law-drafts/generate','/api/law-drafts/publish','/api/constitution/vote','/api/constitution/comment','/api/constitution/contribute','/api/contributions'].includes(path)||/^\/api\/laws\/[A-Z0-9-]+\/amendments$/i.test(path);
 const unavailable=(message='The shared civic backend is temporarily unavailable.')=>json({error:message,code:'SHARED_BACKEND_UNAVAILABLE',liveUrl:FLY_ORIGIN+'/'},503);
 async function boundedBody(request){
  const declared=Number(request.headers.get('content-length')||0);if(declared>MAX_BODY)return null;
@@ -24,12 +24,15 @@ async function boundedBody(request){
 export async function forwardCivic(request,context,{fetchImpl=fetch}={}){
  const url=new URL(request.url),path=url.pathname,method=request.method;
  if(!trustedSite(url,context))return unavailable('Shared data is not configured for this deployment.');
+ // The deployed legacy service does not understand account identities. Never
+ // turn an authenticated request into an anonymous vote by dropping its token.
+ if(request.headers.has('x-helios-access-token'))return json({error:'Account saving is not available on this backend. Continue as a guest or use a deployment with account storage.',code:'ACCOUNT_STORAGE_UNAVAILABLE'},503);
  if(!(method==='GET'&&allowedRead(path)||method==='POST'&&allowedWrite(path)))return unavailable('This operation needs the configured backend. It is not forwarded to the shared civic service.');
  const out=new Headers({Accept:'application/json'});
  // Never forward maintainer authorization, arbitrary cookies, IP headers,
  // or client-selected destinations. This gateway only handles civic routes.
  const cookie=request.headers.get('cookie')?.match(/(?:^|;\s*)helios_session=([a-f0-9]{64})(?:;|$)/i)?.[1];
- if(cookie&&(method==='POST'||path==='/api/session'||path==='/api/constitution'))out.set('Cookie','helios_session='+cookie);
+ if(cookie&&(method==='POST'||path==='/api/session'||path==='/api/constitution'||path==='/api/contributions'))out.set('Cookie','helios_session='+cookie);
  let body;
  if(method==='POST'){
    if(request.headers.get('origin')!==url.origin)return json({error:'A same-origin request is required.'},403);

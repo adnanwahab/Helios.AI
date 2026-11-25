@@ -1,3 +1,5 @@
+"$schema" = "https://open-api.netlify.com/netlify.schema.json"
+
 # Publish only the built static folder. Source, data, scripts and .git are not served.
 [build]
   command = "node scripts/build-netlify.mjs"
@@ -7,8 +9,34 @@
 [build.environment]
   NODE_VERSION = "22"
 
+# Geographic preference lab; all assets stay in the copied public directory.
+[[redirects]]
+  from = "/world-map"
+  to = "/public/world-map/index.html"
+  status = 200
+
 # /api/*, /email/unsubscribe and /proxy/ycr/* are served by netlify/functions/api.mjs
 # (paths declared in that file). The backend runs on Supabase Postgres.
+
+[[redirects]]
+  from = "/research"
+  to = "/research.html"
+  status = 200
+
+[[redirects]]
+  from = "/keyframes"
+  to = "/research.html"
+  status = 200
+
+[[redirects]]
+  from = "/launch"
+  to = "/launch-dashboard.html"
+  status = 200
+
+[[redirects]]
+  from = "/contribute"
+  to = "/contribute.html"
+  status = 200
 
 [[redirects]]
   from = "/laws"
@@ -208,4 +236,21 @@
 [[redirects]]
   from = "/story"
   to = "/grid.html"
+  status = 200
+
+# Linked constitution workbench; query parameters retain the selected record.
+[[redirects]]
+  from = "/constitution"
+  to = "/public/government-ide.html"
+  status = 200
+
+# Fixed, synthetic voting lab. Explicit rewrite also supports the Fly dev server.
+[[redirects]]
+  from = "/consensus-lab"
+  to = "/consensus-lab/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/consensus-lab/"
+  to = "/consensus-lab/index.html"
   status = 200

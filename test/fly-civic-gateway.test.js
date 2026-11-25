@@ -40,6 +40,17 @@ test('upstream outage and old Fly releases return explicit 503, not fake counts 
  }
 });
 
+test('account requests are rejected before the legacy gateway can drop their identity',async()=>{
+ let calls=0;
+ const fetchImpl=async()=>{calls++;return Response.json({ok:true})};
+ for(const path of ['/api/session','/api/constitution','/api/constitution/vote']){
+   const response=await forwardCivic(new Request(origin+path,{headers:{'X-Helios-Access-Token':'account-proof'}}),context,{fetchImpl});
+   expect(response.status).toBe(503);
+   expect((await response.json()).code).toBe('ACCOUNT_STORAGE_UNAVAILABLE');
+ }
+ expect(calls).toBe(0);
+});
+
 test('gateway forwards only a validated public clause ID for a deep link',async()=>{
  let url;
  const fetchImpl=async u=>{url=u;return Response.json({clauses:[]})};
