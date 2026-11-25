@@ -67,6 +67,16 @@ try {
   await page.waitForTimeout(700);
   await page.screenshot({path: join(output, 'mobile.png'), animations: 'disabled'});
 
+  if (await page.locator('#world-map-feature').count()) {
+    await page.setViewportSize({width: 1440, height: 1000});
+    await page.goto(base + '/world-map?climate=70&cost=45&city=30&nature=60&coast=40', {waitUntil: 'domcontentloaded'});
+    await page.locator('#world-hex-suitability[data-ready="true"]').waitFor({timeout: 20000});
+    await page.screenshot({path: join(output, 'world-map-desktop.png'), fullPage: true, animations: 'disabled'});
+    await page.setViewportSize({width: 390, height: 844});
+    await page.screenshot({path: join(output, 'world-map-mobile.png'), fullPage: true, animations: 'disabled'});
+    await page.goto(base + '/', {waitUntil: 'domcontentloaded'});
+  }
+
   if(await page.locator('#pr-compose-open').count()){
     await page.goto(base+'/?compose=pr',{waitUntil:'domcontentloaded'});
     await page.locator('#pr-title').fill('Improve the childcare simulator');
