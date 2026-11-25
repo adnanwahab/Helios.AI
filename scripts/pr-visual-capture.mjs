@@ -227,6 +227,24 @@ try {
     await page.locator('nav a[href="#decisions"]').click();
     await page.screenshot({path:join(output,'futures-mobile.png'),animations:'disabled'});
   }
+  // Capture the actual playable Rainbow Pensieve, not only the homepage card.
+  await page.goto(base + '/', {waitUntil:'domcontentloaded'});
+  if (await page.locator('#rainbow-pensieve-link').count()) {
+    await page.setViewportSize({width:1440,height:900});
+    await page.goto(base + '/public/rainbow-pensieve.html', {waitUntil:'domcontentloaded'});
+    await page.locator('#garden-population').waitFor({state:'visible'});
+    await page.waitForFunction(() => {
+      const status=document.getElementById('garden-view-status');
+      return status && !status.textContent.startsWith('Loading');
+    }, {timeout:30000}).catch(() => {});
+    await page.locator('[data-spell="chorus"]').click();
+    await page.locator('#cast').click();
+    await page.locator('#garden-viewport, #garden-map').filter({visible:true}).first().scrollIntoViewIfNeeded();
+    await page.screenshot({path:join(output,'rainbow-pensieve-desktop.png'),animations:'disabled'});
+    await page.setViewportSize({width:390,height:844});
+    await page.locator('#scene-title').scrollIntoViewIfNeeded();
+    await page.screenshot({path:join(output,'rainbow-pensieve-mobile.png'),animations:'disabled'});
+  }
   console.log('Captured desktop and mobile screenshots from ' + (remote ? 'Netlify deployment' : 'local PR build'));
 } finally {
   await browser?.close().catch(() => {});
