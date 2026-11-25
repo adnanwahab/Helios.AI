@@ -78,6 +78,8 @@ The world map loads only when opened on the homepage. Its five sliders weight mi
 
 The geography is published map data, and city/coast distance scores are approximate straight-line proxies. Climate uses latitude; living costs and nature are explicitly synthetic layers. These are broad regional examples, not observed livability rankings. See [map sources and method](public/world-map/README.md).
 
+Press **Kaleidoscope** above the map for animated rainbow hexagons, then **Pause colors** to freeze the pattern or toggle Kaleidoscope off to return to suitability colors. Scores, preferences and the selected location stay available while the colors flow. Reduced-motion settings show a still rainbow palette. Share the effect with `/world-map?kaleidoscope=1`.
+
 Run the terminal vote lab from this checkout:
 
 ```sh

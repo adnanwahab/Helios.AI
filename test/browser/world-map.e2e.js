@@ -29,6 +29,23 @@ async function expectNoHorizontalOverflow(page) {
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 }
 
+const hexFills = page => page.locator('.hex').evaluateAll(cells => cells.map(cell => cell.getAttribute('fill')));
+const colorFilter = layer => layer.evaluate(element => getComputedStyle(element).filter);
+const analysisSnapshot = page => page.locator('#world-hex-suitability').evaluate(root => ({
+  scores: [...root.querySelectorAll('.hex')].map(cell => cell.dataset.score),
+  selection: root.querySelector('#world-hex-choice').value,
+  selectedScore: root.querySelector('.score-number').textContent,
+  paragraph: root.querySelector('.paragraph').textContent,
+}));
+
+async function sampleStillColors(layer) {
+  return layer.evaluate(async element => {
+    const before = getComputedStyle(element).filter;
+    await new Promise(resolve => setTimeout(resolve, 250));
+    return {before, after: getComputedStyle(element).filter};
+  });
+}
+
 test.describe('World suitability map', () => {
   test('the clean route renders real map geometry, finite scores and an explanatory paragraph', async ({page}) => {
     await openMap(page);
@@ -155,5 +172,108 @@ test.describe('World suitability map', () => {
     const frameBounds = await page.locator('#world-map-frame').boundingBox();
     expect(frameBounds.x).toBeGreaterThanOrEqual(0);
     expect(frameBounds.x + frameBounds.width).toBeLessThanOrEqual(390);
+  });
+
+  test('Kaleidoscope animates and pauses colors without changing the suitability analysis', async ({page}) => {
+    await page.emulateMedia({reducedMotion: 'no-preference'});
+    await openMap(page);
+    const toggle = page.locator('#kaleidoscope-toggle');
+    const pause = page.locator('#kaleidoscope-pause');
+    const layer = page.locator('.hex-layer');
+    const originalFills = await hexFills(page);
+    const originalFilter = await colorFilter(layer);
+    const originalAnalysis = await analysisSnapshot(page);
+    await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+    await expect(page.locator('.legend')).toBeVisible();
+
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('.legend')).toBeHidden();
+    await expect(pause).toHaveText('Pause colors');
+    expect(await hexFills(page)).not.toEqual(originalFills);
+    expect(await analysisSnapshot(page)).toEqual(originalAnalysis);
+    await expect.poll(() => new URL(page.url()).searchParams.get('kaleidoscope')).toBe('1');
+    const movingFilter = await colorFilter(layer);
+    await expect.poll(() => colorFilter(layer)).not.toBe(movingFilter);
+
+    await pause.click();
+    await expect(pause).toHaveText('Resume colors');
+    await expect.poll(() => layer.evaluate(element => element.getAnimations().some(animation => animation.playState === 'paused' && !animation.pending))).toBe(true);
+    const frozen = await sampleStillColors(layer);
+    expect(frozen.after).toBe(frozen.before);
+    await pause.click();
+    await expect(pause).toHaveText('Pause colors');
+    await expect.poll(() => colorFilter(layer)).not.toBe(frozen.after);
+
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+    await expect(pause).toBeHidden();
+    await expect(page.locator('.legend')).toBeVisible();
+    expect(await hexFills(page)).toEqual(originalFills);
+    await expect.poll(() => colorFilter(layer)).toBe(originalFilter);
+    expect(await analysisSnapshot(page)).toEqual(originalAnalysis);
+    await expect.poll(() => new URL(page.url()).searchParams.has('kaleidoscope')).toBe(false);
+  });
+
+  test('reduced motion keeps keyboard-selected rainbow colors still on mobile', async ({page}) => {
+    await page.setViewportSize({width: 390, height: 844});
+    await page.emulateMedia({reducedMotion: 'reduce'});
+    await openMap(page);
+    const toggle = page.locator('#kaleidoscope-toggle');
+    const layer = page.locator('.hex-layer');
+    const originalFills = await hexFills(page);
+    const originalAnalysis = await analysisSnapshot(page);
+    await toggle.focus();
+    await toggle.press('Space');
+    await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('#world-hex-suitability')).toHaveAttribute('data-color-motion', 'reduced');
+    await expect(page.locator('#kaleidoscope-pause')).toBeHidden();
+    expect(await hexFills(page)).not.toEqual(originalFills);
+    expect(await layer.evaluate(element => element.getAnimations().some(animation => animation.playState === 'running'))).toBe(false);
+    const frozen = await sampleStillColors(layer);
+    expect(frozen.after).toBe(frozen.before);
+    expect(await analysisSnapshot(page)).toEqual(originalAnalysis);
+    await expectNoHorizontalOverflow(page);
+
+    await toggle.press('Enter');
+    await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+    await expect(page.locator('.legend')).toBeVisible();
+    expect(await hexFills(page)).toEqual(originalFills);
+    await expectNoHorizontalOverflow(page);
+  });
+
+  test('a shared Kaleidoscope view survives preference changes, selection and opening the full map', async ({page}) => {
+    await openMap(page, '?embed=1&kaleidoscope=1&coast=20');
+    await expect(page.locator('#kaleidoscope-toggle')).toHaveAttribute('aria-pressed', 'true');
+    const choice = page.locator('#world-hex-choice');
+    const selected = await choice.locator('option').nth(11).getAttribute('value');
+    await choice.selectOption(selected);
+    await expect.poll(() => new URL(page.url()).searchParams.get('cell')).toBe(selected);
+    expect(new URL(page.url()).searchParams.get('kaleidoscope')).toBe('1');
+    const before = await page.locator('.paragraph').textContent();
+    await setExtreme(page, 'climate', 100);
+    await expect.poll(() => new URL(page.url()).searchParams.get('climate')).toBe('100');
+    await expect(page.locator('.paragraph')).not.toHaveText(before);
+    expect(new URL(page.url()).searchParams.get('kaleidoscope')).toBe('1');
+    const analysis = await analysisSnapshot(page);
+
+    const fullPage = page.locator('.full-page-link');
+    const fullUrl = new URL(await fullPage.getAttribute('href'), page.url());
+    expect(fullUrl.searchParams.get('kaleidoscope')).toBe('1');
+    expect(fullUrl.searchParams.get('cell')).toBe(selected);
+    expect(fullUrl.searchParams.get('climate')).toBe('100');
+    expect(fullUrl.searchParams.get('coast')).toBe('20');
+    expect(fullUrl.searchParams.has('embed')).toBe(false);
+    await fullPage.click();
+    await expect(page).toHaveURL(fullUrl.href);
+    await expect(page.locator('#world-hex-suitability')).toHaveAttribute('data-ready', 'true');
+    await expect(page.locator('#kaleidoscope-toggle')).toHaveAttribute('aria-pressed', 'true');
+    expect(await analysisSnapshot(page)).toEqual(analysis);
+
+    await page.reload();
+    await expect(page.locator('#world-hex-suitability')).toHaveAttribute('data-ready', 'true');
+    await expect(page.locator('#kaleidoscope-toggle')).toHaveAttribute('aria-pressed', 'true');
+    await expect(page).toHaveURL(fullUrl.href);
+    expect(await analysisSnapshot(page)).toEqual(analysis);
   });
 });

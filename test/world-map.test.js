@@ -42,9 +42,10 @@ describe('world suitability map',()=>{
   test('URL state is whitelisted and round-trips zeroes and selected hexagons',()=>{
     const weights={climate:0,cost:100,city:17,nature:55,coast:0};
     const selectedId=cells[400].id;
-    expect(readUrlState(stateSearch(weights,selectedId,true),ids)).toEqual({weights,selectedId,embed:true});
-    const invalid=readUrlState('?climate=Infinity&cost=-2&city=101&nature=1.5&coast=&cell=not-a-cell&embed=yes&latitude=80',ids);
-    expect(invalid).toEqual({weights:defaultWeights(),selectedId:null,embed:false});
+    expect(readUrlState(stateSearch(weights,selectedId,true),ids)).toEqual({weights,selectedId,embed:true,kaleidoscope:false});
+    expect(readUrlState(stateSearch(weights,selectedId,true,true),ids)).toEqual({weights,selectedId,embed:true,kaleidoscope:true});
+    const invalid=readUrlState('?climate=Infinity&cost=-2&city=101&nature=1.5&coast=&cell=not-a-cell&embed=yes&latitude=80&kaleidoscope=true',ids);
+    expect(invalid).toEqual({weights:defaultWeights(),selectedId:null,embed:false,kaleidoscope:false});
     expect(stateSearch({...defaultWeights(),constructor:5},'<script>')).toBe('');
   });
 
