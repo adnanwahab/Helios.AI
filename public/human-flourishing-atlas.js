@@ -113,7 +113,8 @@ export function describe(c,weights){
  const ranked=factors.map((f,k)=>({name:f[0],v:c.vals[k],w:weights[k]})).filter(v=>v.w>0);
  const good=[...ranked].sort((a,b)=>b.v*b.w-a.v*a.w)[0],bad=[...ranked].sort((a,b)=>(100-b.v)*b.w-(100-a.v)*a.w)[0];
  const priority=[...ranked].sort((a,b)=>b.w-a.w).slice(0,3).map(v=>v.name.toLowerCase());
- return 'Your current priorities are '+priority.join(', ')+'. This hypothetical community scores '+c.score.toFixed(1)+' out of 100. '+good.name+' makes the strongest positive weighted contribution; '+bad.name.toLowerCase()+' has the largest weighted shortfall. A possible next step is to explore policy experiments addressing that shortfall while preserving existing strengths. These are synthetic scenario values, not real local conditions or forecasts.';
+ const gap=(100-bad.v)*bad.w;
+ return 'Your current priorities are '+priority.join(', ')+'. This hypothetical community scores '+c.score.toFixed(1)+' out of 100. '+good.name+' makes the strongest positive weighted contribution. '+(gap>1e-9?bad.name+' has the largest weighted shortfall. A possible next step is to explore policy experiments addressing that shortfall while preserving existing strengths. ':'There is no shortfall in the active dimensions in this scenario. ')+'These are synthetic scenario values, not real local conditions or forecasts.';
 }
 function mount(){
  const $=id=>document.getElementById(id),cells=generateCells(),weights=[...presets.balanced],canvas=$('map'),ctx=canvas.getContext('2d');
