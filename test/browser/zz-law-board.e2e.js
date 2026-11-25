@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
-test('homepage shows all 100 visual law tiles and a different interactive scenario for each selection',async({page})=>{
- await page.goto('/');
+test('archived law atlas shows all 100 visual law tiles and a different interactive scenario for each selection',async({page})=>{
+ await page.goto('/law-atlas.html');
  await expect(page.locator('#law-tiles .law-tile')).toHaveCount(100);
  await expect(page.locator('#law-tiles .law-spark')).toHaveCount(100);
  await expect(page.locator('#law-title')).toHaveText('Easy Access to Public Help');
@@ -20,7 +20,7 @@ test('homepage shows all 100 visual law tiles and a different interactive scenar
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
 test('connected original law voting and public proposed updates are visible from another browser',async({page,browser})=>{
- await page.goto('/');
+ await page.goto('/law-atlas.html');
  await page.locator('#law-connect').click();
  await expect(page.locator('#law-board-status')).toContainText('Shared counts loaded');
  await page.locator('[data-law-vote="support"]').click();
