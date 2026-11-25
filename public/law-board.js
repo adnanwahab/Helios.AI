@@ -1,8 +1,9 @@
 import {modelFor,simulate,defaults} from './law-simulator.js';
+import {childcareBudget,childcareDefaults,featureFirst} from './childcare-budget.js';
 const $=id=>document.getElementById(id),el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n};
 const isStatic=document.querySelector('meta[name="helios-mode"]').content==='static';
 const fmt=x=>Number(x).toLocaleString(undefined,{maximumFractionDigits:1});
-let seed=[],records=new Map(),selected='HGA-001',connected=false,connecting=false,writing=false,loadingDetail=0,csrf=null,lastWrite=null,history=null;
+let seed=[],records=new Map(),selected='HGA-031',connected=false,connecting=false,writing=false,loadingDetail=0,csrf=null,lastWrite=null,history=null;
 const scenario=new Map(),drafts=new Map();
 function status(message,error=false){$('law-board-status').textContent=message;$('law-board-status').classList.toggle('error',error)}
 function setDetailStatus(message,error=false){$('law-detail-status').textContent=message;$('law-detail-status').classList.toggle('error',error)}
@@ -20,10 +21,10 @@ function spark(law){
 }
 function drawCatalog(){
  const query=$('law-search').value.trim().toLowerCase(),cat=$('law-category').value,root=$('law-tiles');root.replaceChildren();
- for(const row of records.values()){
+ for(const row of featureFirst(records.values())){
   const law=row.law;if(cat&&law.category!==cat||query&&![law.id,law.title,law.category,law.sourceProposalTitle,law.sharedGoal].some(s=>String(s||'').toLowerCase().includes(query)))continue;
   const b=el('button',undefined,'law-tile');b.type='button';b.dataset.law=law.id;b.setAttribute('aria-pressed',String(law.id===selected));b.setAttribute('aria-label',law.id+' '+law.title);b.title=law.title;
-  b.append(el('span',law.id.slice(4),'law-tile-number'),el('span',law.title,'law-tile-title'),spark(law));
+  b.append(el('span',law.id==='HGA-031'?'031 · FIRST':law.id.slice(4),'law-tile-number'),el('span',law.title,'law-tile-title'),spark(law));
   const total=row.votes?row.votes.support+row.votes.oppose+row.votes.unsure:null;
   b.append(el('span',total===null?'Votes not loaded':fmt(total)+' advisory votes','law-tile-votes'));
   b.addEventListener('click',()=>{selectLaw(law.id);root.querySelector('[data-law="'+law.id+'"]')?.focus({preventScroll:true})});root.append(b);
@@ -74,9 +75,42 @@ function updateDraft(){
  for(const k of ['goal','implementation','safeguards','reason'])$('law-update-'+k).value=d[k]||'';
  $('law-update-consent').checked=false;
 }
+const dollars=(amount,digits=0)=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',minimumFractionDigits:digits,maximumFractionDigits:digits}).format(amount);
+let childcareAssumptions={...childcareDefaults};
+function drawChildcare(){
+ const panel=$('childcare-budget');panel.hidden=selected!=='HGA-031';if(panel.hidden)return;
+ const model=childcareBudget(childcareAssumptions);childcareAssumptions=model.assumptions;
+ for(const [key,value] of Object.entries(model.assumptions)){
+  $('childcare-'+key).value=String(value);
+  $('childcare-value-'+key).textContent=key==='rate'?dollars(value,2):key==='subsidy'||key==='utilization'?fmt(value)+'%':fmt(value);
+ }
+ const amounts={'government-hour':dollars(model.governmentPerHour,2),'parent-hour':dollars(model.parentPerHour,2),'caregiver-hour':dollars(model.caregiverPerHour,2),savings:dollars(model.savingsPerFamily),'public':dollars(model.annualPublicCost),'parent-total':dollars(model.annualParentCost),'caregiver-total':dollars(model.annualCaregiverPayments),'used-hours':fmt(model.coveredHoursPerFamily)};
+ for(const [key,value] of Object.entries(amounts))$('childcare-'+key).textContent=value;
+ $('childcare-share').style.width=model.assumptions.subsidy+'%';
+}
+for(const key of Object.keys(childcareDefaults))$('childcare-'+key).addEventListener('input',()=>{
+ childcareAssumptions[key]=Number($('childcare-'+key).value);drawChildcare();
+ $('childcare-draft-status').textContent='Local scenario changed. Use the current assumptions to create a new update draft.';
+});
+$('childcare-reset').addEventListener('click',()=>{childcareAssumptions={...childcareDefaults};drawChildcare();$('childcare-draft-status').textContent='Budget reset. No shared data changed.'});
+$('childcare-draft-button').addEventListener('click',()=>{
+ if(selected!=='HGA-031'||writing)return;
+ const m=childcareBudget(childcareAssumptions),a=m.assumptions;
+ const proposal={
+ goal:'Make regular childcare and occasional babysitting affordable while protecting caregiver pay and giving families freedom to choose safe care.',
+ implementation:'Pilot income-sensitive childcare assistance with up to '+a.hours+' covered hours per family per month at an illustrative reimbursement rate of '+dollars(a.rate,2)+' per hour and '+a.subsidy+'% subsidy. Include approved daycare, occasional babysitting, qualifying relatives, evenings and weekends. Pair credits with supply expansion and fair-pay support. Personal leisure does not require justification.',
+ safeguards:'Require age-appropriate care, provider screening and training, transparent prices, privacy, independent evaluation and sufficient supply. Review eligibility, distributional effects, funding and labor standards before implementation.',
+ reason:'Illustrative budget: '+fmt(a.families)+' participating families, '+a.utilization+'% utilization, '+dollars(m.annualPublicCost)+' annual direct public cost, excluding administration, payroll overhead and capacity investment. These are scenario inputs for review, not measured effects.'
+ };
+ for(const [key,value] of Object.entries(proposal))$('law-update-'+key).value=value;
+ $('law-update-consent').checked=false;saveDraft();
+ $('law-update-form').closest('details').open=true;
+ $('childcare-draft-status').textContent='Update draft filled with this scenario. Review the wording and explicitly consent before submitting; existing votes and wording are unchanged.';
+ $('law-update-goal').focus();
+});
 function drawDetail({resetDraft=true}={}){
  const row=current(),law=row?.law;if(!law)return;
- const spec=modelFor(law);$('law-id').textContent=law.id+' · '+law.category;
+ const spec=modelFor(law);$('law-id').textContent=(law.id==='HGA-031'?'Featured law 01 · ':'')+law.id+' · '+law.category;
  $('law-title').textContent=law.title;$('law-goal').textContent=law.sharedGoal;
  const assemblyChapter={'HGA-012':'homes','HGA-051':'places','HGA-091':'water'}[law.id],assemblyLink=$('law-assembly-selected');
  if(assemblyLink){
@@ -96,7 +130,7 @@ function drawDetail({resetDraft=true}={}){
  for(const b of document.querySelectorAll('[data-law-vote]')){b.disabled=!connected||writing||!law.versionId;b.setAttribute('aria-pressed',String(row.myVote===b.dataset.lawVote))}
  $('law-clear-vote').disabled=!connected||writing||!law.versionId;$('law-update-submit').disabled=!connected||writing||!law.versionId;
  if(resetDraft)updateDraft();
- renderHistory()
+ drawChildcare();renderHistory()
 }
 async function request(path,options={}){
  const response=await fetch(path,{credentials:'same-origin',cache:'no-store',signal:AbortSignal.timeout(15000),...options});
@@ -165,5 +199,6 @@ $('law-connect').hidden=isStatic;
  for(const law of seed){modelFor(law);records.set(law.id,{law,votes:null,myVote:null,updates:0})}
  for(const category of result.categories){const option=el('option',category);option.value=category;$('law-category').append(option)}
  $('law-count').textContent=records.size;drawCatalog();drawDetail();$('law-connect').disabled=false;
+ if(location.hash==='#childcare-budget')requestAnimationFrame(()=>$('childcare-budget').scrollIntoView({block:'start'}));
  status(isStatic?'Static preview · simulations only, no shared votes.':'Original editorial catalog · connect to load shared Supabase votes and revisions.')
 }catch(e){status('Could not load the bundled law catalog: '+e.message,true)}})();
