@@ -7,6 +7,8 @@
 <meta name="helios-mode" content="live">
 <meta name="description" content="Explore the 100 editorial proposals, illustrative scenarios, and shared advisory discussion.">
 <link rel="icon" href="./public/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./public/account.css">
+<script type="module" src="./public/account.js"></script>
 <title>Helios AI — 100 shared goals</title>
 <style>
 :root{color-scheme:dark;--bg:#101a1a;--panel:#182625;--text:#eff7ef;--muted:#a9bdb6;--line:#35504b;--accent:#baf2be;--dark:#14251b;--danger:#ffc5b8;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -61,13 +63,28 @@ header.wrap,main.wrap,footer.wrap{width:min(100% - 40px,1560px)}#government-view
 .netherbrain-link{margin:0 0 14px;padding:9px 11px;background:#21182c;border:1px solid #59426d;border-radius:9px;font-size:12px;line-height:1.4}.netherbrain-link a{display:inline-block;color:#f4d49d;font-weight:700;text-underline-offset:3px;padding:4px 0}.netherbrain-link span{display:block;color:#c9b8dc;font-size:11px}
 .law-assembly-feature{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px 20px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(115deg,#203b32,#182625);padding:clamp(16px,3vw,24px);margin:0 0 16px}.law-assembly-feature h2{font-size:clamp(23px,4vw,35px);letter-spacing:-.04em;margin:0 0 8px;line-height:1.1}.law-assembly-feature p:not(.eyebrow){margin:0;color:var(--muted)}.law-assembly-feature .primary{display:inline-flex;align-items:center;text-decoration:none;justify-content:center}.law-assembly-links{display:flex;gap:8px 16px;flex-wrap:wrap;grid-column:1/-1}.law-assembly-links a{font-size:13px;font-weight:700}.law-assembly-feature .hint{grid-column:1/-1}#law-assembly-selected{display:inline-flex;align-items:center;text-decoration:none;margin:0 0 12px}@media(max-width:600px){.law-assembly-feature{grid-template-columns:minmax(0,1fr)}.law-assembly-feature .primary{justify-self:start}}
 .top-actions{flex-wrap:wrap;justify-content:flex-end}@media(max-width:700px){header.wrap{align-items:flex-start}.top-actions{gap:5px}#mystery-link{font-size:11px;padding:7px 8px;min-height:36px}.docs-trigger{font-size:12px}}
+
+#childcare-budget,#cannabis-budget{scroll-margin-top:16px}
+#childcare-budget[hidden],#cannabis-budget[hidden],#law-generic-sim[hidden],#law-history-section[hidden],#law-update-section[hidden],#law-votes[hidden],#law-vote-controls[hidden]{display:none}
+#cannabis-budget .law-kpi{min-width:0}#cannabis-budget .law-kpi strong{font-size:clamp(17px,2vw,23px);overflow-wrap:anywhere}
+.childcare-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0}
+.childcare-controls label{display:block;margin:0;font-size:12px;color:var(--muted)}
+.childcare-controls output{display:block;color:var(--text);font-size:15px;font-weight:700;margin:4px 0}
+.childcare-controls input[type=range]{width:100%;min-width:0;height:28px;padding:0;border:0;margin:0;background:transparent;accent-color:var(--accent)}
+.childcare-split{height:12px;border-radius:6px;background:#7f93ac;overflow:hidden;margin:8px 0}
+.childcare-split>span{display:block;height:100%;background:var(--accent)}
+.childcare-legend{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+#childcare-budget .law-kpi strong{font-size:clamp(17px,2vw,23px);overflow-wrap:anywhere}
+#childcare-budget .law-kpi{min-width:0}
+#childcare-budget .childcare-draft{line-height:1.5;font-size:13px;margin:10px 0}
+@media(max-width:430px){.childcare-controls{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<header class="wrap"><div class="brand"><span class="sun" aria-hidden="true">✳</span> HELIOS AI</div><a class="secondary" href="./index.html">← Civic workshop</a></header>
+<header class="wrap"><div class="brand"><span class="sun" aria-hidden="true">✳</span> HELIOS AI</div><div class="top-actions"><button class="helios-account-trigger" type="button" id="account-open" data-open-login>Sign in</button><a class="secondary" href="./index.html">← Civic workshop</a></div></header>
 <main class="wrap">
 <section class="law-section" id="laws-workbench" aria-labelledby="law-section-title">
-<div class="law-top"><div><p class="eyebrow">HELIOS / 100 SHARED GOALS</p><h1 id="law-section-title">A hundred possible futures.</h1><p class="lede">Explore, simulate and help improve the original 100 law proposals. Change the assumptions and see the potential trade-offs before deciding what you support.</p></div><div class="law-top-actions"><span id="law-source" class="law-source">Editorial catalog · not enacted law</span><button type="button" class="primary" id="law-connect" disabled>Connect shared votes</button><button type="button" class="secondary" id="law-refresh" hidden>Refresh votes</button><a class="secondary" href="./index.html#journal-workbench">Return to civic workshop ↗</a></div></div>
+<div class="law-top"><div><p class="eyebrow">HELIOS / 100 SHARED GOALS + NEW DRAFT</p><h1 id="law-section-title">A hundred possible futures.</h1><p class="lede">Explore the new featured draft and the original 100 law proposals. Change the assumptions and see the potential trade-offs before deciding what you support.</p></div><div class="law-top-actions"><span id="law-source" class="law-source">Editorial catalog · not enacted law</span><button type="button" class="primary" id="law-connect" disabled>Connect shared votes</button><button type="button" class="secondary" id="law-refresh" hidden>Refresh votes</button><a class="secondary" href="./index.html#journal-workbench">Return to civic workshop ↗</a></div></div>
 <aside class="law-assembly-feature" aria-labelledby="law-assembly-title">
 <div><p class="eyebrow">HELIOS / FIELD NOTES · 03 OF 100</p><h2 id="law-assembly-title">Built from the ground up.</h2><p>Scroll to assemble three proposed laws, piece by piece. Explore their physical components, implementation choices and safeguards.</p></div>
 <a class="primary" href="./public/helios-law-assembly.html" target="_blank" rel="noopener noreferrer">Explore 3D assembly ↗</a>
@@ -81,17 +98,60 @@ header.wrap,main.wrap,footer.wrap{width:min(100% - 40px,1560px)}#government-view
 </aside>
 <p id="law-board-status" class="status" role="status">Loading the original 100 proposals…</p>
 <div class="law-layout">
-<div class="law-atlas"><div class="lane-header"><div><p class="eyebrow">01 / Explore</p><h2><span id="law-count">100</span> proposals</h2></div><span class="lane-tag">HGA-001–100</span></div>
+<div class="law-atlas"><div class="lane-header"><div><p class="eyebrow">01 / Explore</p><h2><span id="law-count">101</span> proposals</h2></div><span class="lane-tag">100 originals + 1 draft</span></div>
 <div class="law-filters"><label>Search by title or number<input type="search" id="law-search" placeholder="e.g. housing, 011" autocomplete="off"></label><label>Policy area<select id="law-category"><option value="">All ten categories</option></select></label></div>
-<p id="law-results" class="hint">Loading…</p><div id="law-tiles" class="law-tiles" aria-label="100 law proposals"></div>
-<p class="notice">Each tile has an illustrative outcome sparkline. These proposals are editorial drafts, not passed laws or evidence of consensus. Shared counts are never simulated.</p></div>
+<p id="law-results" class="hint">Loading…</p><div id="law-tiles" class="law-tiles" aria-label="Law proposals and featured draft"></div>
+<p class="notice">Original law tiles have illustrative outcome sparklines; the new draft has a separate budget model. These proposals are editorial drafts, not passed laws or evidence of consensus. Shared counts are never simulated.</p></div>
 <div class="law-detail" aria-labelledby="law-title">
-<div class="law-detail-head"><div><p id="law-id" class="eyebrow">HGA-001</p><h2 id="law-title">Select a proposal</h2></div><span id="law-version" class="lane-tag">Original draft</span></div>
+<div class="law-detail-head"><div><p id="law-id" class="eyebrow">Featured law 01 · new draft</p><h2 id="law-title">Select a proposal</h2></div><span id="law-version" class="lane-tag">Original draft</span></div>
 <p id="law-goal" class="law-goal"></p>
 <a id="law-assembly-selected" class="secondary" href="./public/helios-law-assembly.html" target="_blank" rel="noopener noreferrer" hidden>See how it works · 3D assembly ↗</a>
 <div id="law-votes" class="law-counts" aria-label="Actual advisory votes on this revision"></div>
-<div class="law-controls" aria-label="Vote on selected law"><button type="button" class="secondary" data-law-vote="support" aria-pressed="false" disabled>Support law</button><button type="button" class="secondary" data-law-vote="oppose" aria-pressed="false" disabled>Oppose law</button><button type="button" class="secondary" data-law-vote="unsure" aria-pressed="false" disabled>Unsure</button><button type="button" class="quiet" id="law-clear-vote" disabled>Clear vote</button></div>
-<div class="law-sim"><div class="law-sim-top"><h3>02 / Simulate this future</h3><button type="button" class="quiet" id="law-reset">Reset assumptions</button></div>
+<div id="law-vote-controls" class="law-controls" aria-label="Vote on selected law"><button type="button" class="secondary" data-law-vote="support" aria-pressed="false" disabled>Support law</button><button type="button" class="secondary" data-law-vote="oppose" aria-pressed="false" disabled>Oppose law</button><button type="button" class="secondary" data-law-vote="unsure" aria-pressed="false" disabled>Unsure</button><button type="button" class="quiet" id="law-clear-vote" disabled>Clear vote</button>
+<button type="button" class="helios-account-save" data-open-login data-login-reason="save_votes" id="account-save-votes">Save with an account</button>
+</div>
+<section id="cannabis-budget" class="law-sim" aria-labelledby="cannabis-heading" hidden>
+<div class="law-sim-top"><p class="eyebrow">FEATURED LAW 01 · NEW DRAFT</p><button class="quiet" id="cannabis-reset" type="button">Reset budget</button></div>
+<h3 id="cannabis-heading">Free Weed for Everyone</h3>
+<p class="hint">A hypothetical public policy for eligible adults aged 21 and over. No purchase, distribution, eligibility determination or real vote occurs here. Participation is voluntary.</p>
+<div class="childcare-controls"><div><label for="cannabis-adults">Eligible adults aged 21+</label><output id="cannabis-value-adults" for="cannabis-adults"></output><input type="range" id="cannabis-adults" min="0" max="10000000" step="1000" value="100000"></div>
+<div><label for="cannabis-participation">Hypothetical participation (%)</label><output id="cannabis-value-participation" for="cannabis-participation"></output><input type="range" id="cannabis-participation" min="0" max="100" step="1" value="25"></div>
+<div><label for="cannabis-annualBudgetPerParticipant">Annual program budget per participant (USD)</label><output id="cannabis-value-annualBudgetPerParticipant" for="cannabis-annualBudgetPerParticipant"></output><input type="range" id="cannabis-annualBudgetPerParticipant" min="0" max="1000" step="10" value="120"></div>
+<div><label for="cannabis-administration">Administrative overhead (%)</label><output id="cannabis-value-administration" for="cannabis-administration"></output><input type="range" id="cannabis-administration" min="0" max="50" step="1" value="10"></div></div>
+<div class="law-kpis" aria-live="polite">
+<div class="law-kpi"><small>Hypothetical participants</small><strong id="cannabis-participants">—</strong></div>
+<div class="law-kpi"><small>Direct annual program budget</small><strong id="cannabis-direct">—</strong></div>
+<div class="law-kpi"><small>Annual administrative cost</small><strong id="cannabis-admin">—</strong></div>
+<div class="law-kpi"><small>Total annual public expenditure</small><strong id="cannabis-total">—</strong></div>
+</div>
+<p class="notice">Illustrative fiscal scenario only, not an endorsement or consumption forecast. Requires legal authority, age restrictions, independent public-health review, quality controls, funding and evaluation. The proposed program has not been enacted; shared voting is not open for this new draft.</p>
+<a class="secondary" href="./index.html#journal-workbench">Discuss in the civic workshop ↗</a>
+</section>
+<section id="childcare-budget" class="law-sim" aria-labelledby="childcare-heading" hidden>
+<div class="law-sim-top"><p class="eyebrow">FEATURED LAW 02 · DRAFT SCENARIO</p><button class="quiet" id="childcare-reset" type="button">Reset budget</button></div>
+<h3 id="childcare-heading">The Affordable Childcare and Family Freedom Act</h3>
+<p class="childcare-draft">Pilot income-sensitive childcare credits for regular daycare, occasional babysitting, and evening or weekend care. Eligible families can choose approved providers, including qualifying relatives; personal leisure does not require justification. Pair credits with provider capacity and fair-pay investments, safety checks, transparent prices and independent evaluation.</p>
+<p class="hint">Adjust the following hypothetical USD assumptions. These numbers are not the wording currently open for advisory votes above.</p>
+<div class="childcare-controls"><div><label for="childcare-families">Participating families</label><output id="childcare-value-families" for="childcare-families"></output><input type="range" id="childcare-families" min="0" max="10000000" step="10000" value="100000"></div>
+<div><label for="childcare-hours">Monthly covered hours per family</label><output id="childcare-value-hours" for="childcare-hours"></output><input type="range" id="childcare-hours" min="0" max="160" step="1" value="16"></div>
+<div><label for="childcare-rate">Caregiver hourly rate (USD)</label><output id="childcare-value-rate" for="childcare-rate"></output><input type="range" id="childcare-rate" min="10" max="100" step="1" value="20"></div>
+<div><label for="childcare-subsidy">Government subsidy (%)</label><output id="childcare-value-subsidy" for="childcare-subsidy"></output><input type="range" id="childcare-subsidy" min="0" max="100" step="1" value="75"></div>
+<div><label for="childcare-utilization">Share of covered hours actually used (%)</label><output id="childcare-value-utilization" for="childcare-utilization"></output><input type="range" id="childcare-utilization" min="0" max="100" step="1" value="100"></div></div>
+<div class="childcare-legend"><span>Government pays <strong id="childcare-government-hour"></strong>/hr</span><span>Family pays <strong id="childcare-parent-hour"></strong>/hr</span></div>
+<div class="childcare-split" aria-hidden="true"><span id="childcare-share"></span></div>
+<div class="law-kpis" aria-live="polite">
+<div class="law-kpi"><small>Caregiver receives / hour</small><strong id="childcare-caregiver-hour">—</strong></div>
+<div class="law-kpi"><small>Annual savings / family</small><strong id="childcare-savings">—</strong></div>
+<div class="law-kpi"><small>Annual public expenditure</small><strong id="childcare-public">—</strong></div>
+<div class="law-kpi"><small>Annual family co-pays (total)</small><strong id="childcare-parent-total">—</strong></div>
+<div class="law-kpi"><small>Annual caregiver payments (total)</small><strong id="childcare-caregiver-total">—</strong></div>
+<div class="law-kpi"><small>Monthly hours used / family</small><strong id="childcare-used-hours">—</strong></div>
+</div>
+<p class="notice">Illustrative direct subsidy cost only. Excludes payroll taxes, administration, capacity grants, price and labor-market changes. Family savings assume the same hourly price and hours without subsidy. This calculator does not predict consensus or outcomes.</p>
+<button type="button" class="secondary" id="childcare-draft-button">Use these assumptions in a proposed update</button>
+<p class="hint" id="childcare-draft-status" role="status">Edits are local until you explicitly submit an update for review.</p>
+</section>
+<div class="law-sim" id="law-generic-sim"><div class="law-sim-top"><h3>02 / Simulate this future</h3><button type="button" class="quiet" id="law-reset">Reset assumptions</button></div>
 <p id="law-model-family" class="hint"></p><p id="law-model-direction" class="hint"></p>
 <svg id="law-chart" class="law-chart" role="img" aria-label="Illustrative scenario chart" viewBox="0 0 600 220"></svg>
 <div class="law-legend"><span>Baseline</span><span>Intervention</span><span>Effect sensitivity ±10 percentage points</span></div>
@@ -105,7 +165,7 @@ header.wrap,main.wrap,footer.wrap{width:min(100% - 40px,1560px)}#government-view
 </div><p class="notice">Illustrative assumptions, not calibrated forecasts. The baseline is 100. Negative improvement models harm; uncertainty here is sensitivity to the assumed effect, not a confidence interval. Legal authority, budgets, distributional effects and evidence need real-world review.</p></div>
 <details><summary>Implementation, safeguards &amp; success measures</summary><p id="law-option"></p><p id="law-safeguards"></p><p id="law-measures" class="law-meta"></p></details>
 <details id="law-history-section"><summary>03 / Revision and update history</summary><div id="law-history"></div></details>
-<details><summary>Suggest a public update</summary><form id="law-update-form" class="law-update-form"><p class="hint">Changes are stored as proposed updates to the current revision, not automatic amendments to enacted laws.</p><div class="field"><label for="law-update-goal">Public goal</label><textarea id="law-update-goal" maxlength="4000" required></textarea></div><div class="field"><label for="law-update-implementation">Implementation</label><textarea id="law-update-implementation" maxlength="6000" required></textarea></div><div class="field"><label for="law-update-safeguards">Risks and safeguards</label><textarea id="law-update-safeguards" maxlength="4000" required></textarea></div><div class="field"><label for="law-update-reason">Why change it?</label><textarea id="law-update-reason" maxlength="3000" required></textarea></div><label class="consent"><input type="checkbox" id="law-update-consent"><span>I approve publishing this exact proposed update and have removed personal information.</span></label><button type="submit" id="law-update-submit" class="primary" disabled>Submit update for review</button></form></details>
+<details id="law-update-section"><summary>Suggest a public update</summary><form id="law-update-form" class="law-update-form"><p class="hint">Changes are stored as proposed updates to the current revision, not automatic amendments to enacted laws.</p><div class="field"><label for="law-update-goal">Public goal</label><textarea id="law-update-goal" maxlength="4000" required></textarea></div><div class="field"><label for="law-update-implementation">Implementation</label><textarea id="law-update-implementation" maxlength="6000" required></textarea></div><div class="field"><label for="law-update-safeguards">Risks and safeguards</label><textarea id="law-update-safeguards" maxlength="4000" required></textarea></div><div class="field"><label for="law-update-reason">Why change it?</label><textarea id="law-update-reason" maxlength="3000" required></textarea></div><label class="consent"><input type="checkbox" id="law-update-consent"><span>I approve publishing this exact proposed update and have removed personal information.</span></label><button type="submit" id="law-update-submit" class="primary" disabled>Submit update for review</button></form></details>
 <p id="law-detail-status" class="status" role="status"></p></div></div></section>
 </main>
 <footer class="wrap site-footer"><span>Editorial proposals and illustrative scenarios, not enacted laws.</span><a href="./experiments.html">Docs &amp; Experiments ↗</a></footer>
