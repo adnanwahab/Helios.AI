@@ -271,6 +271,37 @@ try {
     await page.locator('#scene-title').scrollIntoViewIfNeeded();
     await page.screenshot({path:join(output,'rainbow-pensieve-mobile.png'),animations:'disabled'});
   }
+  // Research evidence is retained in the capture artifact. The trusted publisher
+  // on main has its own filename allowlist; a PR cannot expand that allowlist.
+  await page.goto(base + '/', {waitUntil:'domcontentloaded'});
+  if (await page.locator('#research-entry-title').count()) {
+    await page.setViewportSize({width:1440,height:1000});
+    await page.goto(base + '/research', {waitUntil:'domcontentloaded'});
+    await page.locator('#agent-grid [data-task]').first().waitFor({state:'visible'});
+    await page.waitForFunction(() => !document.getElementById('save-status')?.textContent.includes('Loading'));
+    await page.screenshot({path:join(output,'research-desktop.png'),animations:'disabled'});
+    await page.locator('#keyframes').scrollIntoViewIfNeeded();
+    await page.screenshot({path:join(output,'keyframe.png'),animations:'disabled'});
+    await page.setViewportSize({width:390,height:844});
+    await page.goto(base + '/research', {waitUntil:'domcontentloaded'});
+    await page.locator('#agent-grid [data-task]').first().waitFor({state:'visible'});
+    await page.waitForFunction(() => !document.getElementById('save-status')?.textContent.includes('Loading'));
+    await page.screenshot({path:join(output,'research-mobile.png'),animations:'disabled'});
+    await page.locator('#keyframes').scrollIntoViewIfNeeded();
+    await page.screenshot({path:join(output,'keyframe-mobile.png'),animations:'disabled'});
+    // The optional account panel is public UI. Never enter credentials or send
+    // login email during visual capture; guests can dismiss it and keep working.
+    if (await page.locator('[data-open-login]').count()) {
+      await page.setViewportSize({width:1440,height:1000});
+      await page.goto(base + '/research?open_login=1#coordinator', {waitUntil:'domcontentloaded'});
+      await page.locator('#helios-account-dialog').waitFor({state:'visible'});
+      await page.waitForFunction(() => !document.getElementById('helios-account-status')?.textContent.includes('Checking'));
+      await page.screenshot({path:join(output,'optional-login-desktop.png'),animations:'disabled'});
+      await page.setViewportSize({width:390,height:844});
+      await page.screenshot({path:join(output,'optional-login-mobile.png'),animations:'disabled'});
+      await page.locator('#helios-account-guest').click();
+    }
+  }
   // The launch dashboard is a public, source-controlled evidence view. Older
   // preview backfills may not contain it; no data is submitted by this capture.
   await page.goto(base + '/launch', {waitUntil:'domcontentloaded'});

@@ -24,6 +24,9 @@ async function boundedBody(request){
 export async function forwardCivic(request,context,{fetchImpl=fetch}={}){
  const url=new URL(request.url),path=url.pathname,method=request.method;
  if(!trustedSite(url,context))return unavailable('Shared data is not configured for this deployment.');
+ // The deployed legacy service does not understand account identities. Never
+ // turn an authenticated request into an anonymous vote by dropping its token.
+ if(request.headers.has('x-helios-access-token'))return json({error:'Account saving is not available on this backend. Continue as a guest or use a deployment with account storage.',code:'ACCOUNT_STORAGE_UNAVAILABLE'},503);
  if(!(method==='GET'&&allowedRead(path)||method==='POST'&&allowedWrite(path)))return unavailable('This operation needs the configured backend. It is not forwarded to the shared civic service.');
  const out=new Headers({Accept:'application/json'});
  // Never forward maintainer authorization, arbitrary cookies, IP headers,

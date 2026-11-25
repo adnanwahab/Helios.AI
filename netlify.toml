@@ -13,6 +13,16 @@
 # (paths declared in that file). The backend runs on Supabase Postgres.
 
 [[redirects]]
+  from = "/research"
+  to = "/research.html"
+  status = 200
+
+[[redirects]]
+  from = "/keyframes"
+  to = "/research.html"
+  status = 200
+
+[[redirects]]
   from = "/launch"
   to = "/launch-dashboard.html"
   status = 200
