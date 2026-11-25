@@ -61,6 +61,8 @@ header.wrap,main.wrap,footer.wrap{width:min(100% - 40px,1560px)}#government-view
 .netherbrain-link{margin:0 0 14px;padding:9px 11px;background:#21182c;border:1px solid #59426d;border-radius:9px;font-size:12px;line-height:1.4}.netherbrain-link a{display:inline-block;color:#f4d49d;font-weight:700;text-underline-offset:3px;padding:4px 0}.netherbrain-link span{display:block;color:#c9b8dc;font-size:11px}
 .law-assembly-feature{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px 20px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(115deg,#203b32,#182625);padding:clamp(16px,3vw,24px);margin:0 0 16px}.law-assembly-feature h2{font-size:clamp(23px,4vw,35px);letter-spacing:-.04em;margin:0 0 8px;line-height:1.1}.law-assembly-feature p:not(.eyebrow){margin:0;color:var(--muted)}.law-assembly-feature .primary{display:inline-flex;align-items:center;text-decoration:none;justify-content:center}.law-assembly-links{display:flex;gap:8px 16px;flex-wrap:wrap;grid-column:1/-1}.law-assembly-links a{font-size:13px;font-weight:700}.law-assembly-feature .hint{grid-column:1/-1}#law-assembly-selected{display:inline-flex;align-items:center;text-decoration:none;margin:0 0 12px}@media(max-width:600px){.law-assembly-feature{grid-template-columns:minmax(0,1fr)}.law-assembly-feature .primary{justify-self:start}}
 .top-actions{flex-wrap:wrap;justify-content:flex-end}@media(max-width:700px){header.wrap{align-items:flex-start}.top-actions{gap:5px}#mystery-link{font-size:11px;padding:7px 8px;min-height:36px}.docs-trigger{font-size:12px}}
+ 
+.idea-context{margin:12px 0;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--panel);overflow-wrap:anywhere}.idea-context p{margin:6px 0}.idea-context button{margin:4px 4px 4px 0}.idea-context [aria-pressed=true]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}.idea-context ul{padding-left:20px;max-height:220px;overflow:auto}.idea-context input[type=range]{width:100%;accent-color:var(--accent)}.idea-comparison{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}.idea-comparison>div{min-width:0;padding:8px;border:1px solid var(--line);border-radius:8px}.idea-scene{display:flex;flex-wrap:wrap;align-items:end;gap:4px;min-height:64px;margin:8px 0}.idea-building,.idea-stop,.idea-bus{border:1px solid var(--line);padding:4px;min-width:20px;border-radius:3px;font-size:11px;color:var(--muted)}.idea-building span,.idea-building small{display:block}.idea-building.lit,.idea-stop.lit,.idea-bus{background:var(--accent);color:var(--dark);border-color:var(--accent)}.idea-bus{font-size:16px}.idea-context output{display:block;font-weight:700}.idea-context .actions{flex-wrap:wrap}.idea-context strong{overflow-wrap:anywhere}
 </style>
 </head>
 <body>
@@ -148,7 +150,8 @@ header.wrap,main.wrap,footer.wrap{width:min(100% - 40px,1560px)}#government-view
 <p class="lede">Separate the concern from the personal details. Define what should change and what could be tested.</p>
 <form id="synthesis-form" class="panel">
 <details><summary>Look back at your private journal</summary><p id="journal-excerpt" class="excerpt"></p></details>
-<div class="notice">Guided local synthesis suggests a topic and an excerpt. Review or replace the text; only the proposal you explicitly approve on the next screen can become public.</div>
+<div class="notice">Local, rule-based interpretation · review every suggestion. Your full journal remains private. Only the public draft you explicitly approve can be submitted.</div>
+<div id="idea-interpretation" class="idea-context" aria-label="Interpretation of your journal"></div>
 <div class="field"><label for="issue">What is the public problem or opportunity?</label><textarea id="issue" required maxlength="1500"></textarea><p class="hint">Remove names, addresses and any personal details.</p></div>
 <div class="field"><label for="category">Policy area</label><select id="category" required></select></div>
 <hr class="section-line">
@@ -183,11 +186,11 @@ header.wrap,main.wrap,footer.wrap{width:min(100% - 40px,1560px)}#government-view
 <div class="field"><label for="option">Illustrative implementation</label><textarea id="option" required maxlength="6000"></textarea></div>
 <div class="field"><label for="safeguards">Risks and safeguards</label><textarea id="safeguards" required maxlength="4000"></textarea></div>
 <div class="field"><label for="measures">Success measures (one per line, up to eight)</label><textarea id="measures" required rows="3"></textarea></div>
-<label class="consent" id="consent-label"><input id="consent" type="checkbox" required><span>I have reviewed all fields above, removed private information, and agree to save this exact proposal to the public Helios library. Public copies may persist.</span></label>
+<div id="idea-experiment-anchor"></div><label class="consent" id="consent-label"><input id="consent" type="checkbox" required><span>I have reviewed all fields above, removed private information, and agree to save this exact proposal to the public Helios library. Public copies may persist.</span></label>
 <div class="actions"><button class="secondary" type="button" data-back="2">← Synthesis</button><button class="secondary" type="button" id="download">Download draft</button><button class="primary" id="publish" type="submit" disabled>Submit public proposal</button></div>
 <p id="publish-status" class="status" role="status" aria-live="polite"></p>
 </form>
-<div id="receipt" class="receipt" hidden><h2 tabindex="-1" id="receipt-heading">Proposal submitted for review.</h2><p id="receipt-id"></p><p>It is a public proposal, not a passed law. You can revisit its record and suggest amendments.</p><div class="actions"><a id="receipt-link" class="secondary" href="/laws">View proposal ↗</a><button type="button" id="review-published" class="secondary">Review in government preview →</button><button type="button" id="restart" class="primary">Start a new journal →</button></div></div>
+<section class="idea-context" id="idea-experiment" aria-label="Explore a possible version" hidden></section><div id="receipt" class="receipt" hidden><h2 tabindex="-1" id="receipt-heading">Proposal submitted for review.</h2><p id="receipt-id"></p><p>It is a public proposal, not a passed law. You can revisit its record and suggest amendments.</p><div class="actions"><a id="receipt-link" class="secondary" href="/laws">View proposal ↗</a><button type="button" id="review-published" class="secondary">Review in government preview →</button><button type="button" id="restart" class="primary">Start a new journal →</button></div></div>
 </section>
 </div>
 <aside class="constitution-board loop-lane" aria-labelledby="constitution-title">
@@ -198,14 +201,14 @@ header.wrap,main.wrap,footer.wrap{width:min(100% - 40px,1560px)}#government-view
 <div class="notice">Illustrative synthetic votes are not real people, public opinion, or election results. Shared votes are counted separately by browser session.</div>
 <div class="board-controls"><button type="button" class="primary" id="board-connect">Connect shared board</button><button type="button" class="secondary" id="board-refresh" hidden>Refresh</button></div>
 <p class="hint">Shared board votes are recorded in the live civic database after you connect; on Helios Netlify previews they use the existing Fly backend when no Netlify database is configured.</p><p id="board-status" class="status" role="status">Loading synthetic corpus…</p><p class="hint" id="board-live-link" hidden>Use the <a href="https://helios-ai-laws.fly.dev/" target="_blank" rel="noopener noreferrer">live Fly app</a> for the shared board.</p>
-<div class="board-filter"><label for="clause-search">Find a clause</label><input type="search" id="clause-search" placeholder="Filter shared constitution"></div>
+<div id="active-board-idea" class="idea-context" hidden></div><div class="board-filter"><label for="clause-search">Find a clause</label><input type="search" id="clause-search" placeholder="Filter shared constitution"></div>
 <div id="constitution-list" class="board-scroll" aria-label="Constitution clauses"></div>
 <div id="pending-clauses" class="review-pending" hidden></div>
 </aside>
 <aside class="clause-review loop-lane" aria-labelledby="review-title">
 <div class="lane-header"><div><p class="eyebrow">03 / Decide</p><h2 id="review-title">Clause review</h2></div><span class="lane-tag" id="review-mode">Practice</span></div>
 <p class="netherbrain-link"><a href="./public/netherbrain.html" target="_blank" rel="noopener noreferrer">Please vote for the Netherbrain ↗</a><span>Fictional campaign · opens in a new tab</span></p>
-<p id="clause-topic" class="eyebrow"></p><p id="clause-text" class="clause-detail"></p><div id="clause-synthetic" class="vote-counts"></div><div id="clause-real" class="real-tally"></div>
+<div id="active-draft-review" class="idea-context" hidden></div><p class="hint" id="shared-review-explanation" hidden>Separate shared/sample clause review below. Its votes and comments do not apply to your active draft.</p><p id="clause-topic" class="eyebrow"></p><p id="clause-text" class="clause-detail"></p><div id="clause-synthetic" class="vote-counts"></div><div id="clause-real" class="real-tally"></div>
 <div class="vote-actions" role="group" aria-label="Advisory position on selected clause"><button type="button" class="secondary" data-clause-vote="support" aria-pressed="false">Support</button><button type="button" class="secondary" data-clause-vote="oppose" aria-pressed="false">Oppose</button><button type="button" class="secondary" data-clause-vote="unsure" aria-pressed="false">Unsure</button></div>
 <button type="button" class="quiet" id="clear-vote">Clear my position</button><p id="clause-status" class="status" role="status"></p>
 <hr class="section-line"><h2>Discuss this clause</h2><p class="hint">Comments refer to the selected wording. Connected comments are reviewed before becoming public. Practice comments stay in this page.</p><div id="clause-comments"></div>
@@ -266,9 +269,14 @@ header.wrap,main.wrap,footer.wrap{width:min(100% - 40px,1560px)}#government-view
 </div>
 </main>
 <footer class="wrap site-footer"><span>Helios AI · Citizen contributions → public deliberation → government response → feedback. No official vote or government action is simulated as real.</span><a class="footer-archive" href="./experiments.html" target="_blank" rel="noopener noreferrer" aria-label="Docs &amp; Experiments (opens in a new tab)">Docs &amp; Experiments ↗</a></footer>
+<script src="./public/civic-ideas.js"></script>
+<script src="./public/idea-preview.js"></script>
 <script>
 'use strict';
 const $=id=>document.getElementById(id);
+const Ideas=globalThis.HeliosIdeas;
+const branchPreview=location.hostname.startsWith('deploy-preview-')&&location.hostname.endsWith('.netlify.app');
+if(branchPreview)document.querySelector('meta[name="helios-mode"]').content='static';
 const categories=[
 'Economic security and freedom from desperation','Housing and livable cities','Physical and mental health','Education and human development','Meaningful work, autonomy, and time','Friendship, community, and belonging','Justice, dignity, and second chances','Democracy, wisdom, and government','Technology, AI, and digital freedom','Nature, safety, and future generations'];
 const topics=[/\b(wages?|income|poverty|prices?|food|money|bills?)\b/i,/\b(housing|rent|homes?|transit|bus|buses|traffic|streets?|roads?|commute)\b/i,/\b(health|hospital|mental|medicine|medical|care)\b/i,/\b(school|schools|education|students?|teachers?|learning)\b/i,/\b(work|jobs?|hours|employment|workers?)\b/i,/\b(community|friends?|parks?|libraries|lonely|neighbou?rhood)\b/i,/\b(justice|prison|jail|courts?|rights|police)\b/i,/\b(vot(e|ing)|government|council|democracy|elections?)\b/i,/\b(ai|internet|digital|privacy|technology|software)\b/i,/\b(climate|flood|nature|water|pollution|energy|environment)\b/i];
@@ -279,21 +287,46 @@ $('consent-label').hidden=isStatic;
 $('consent').required=!isStatic;
 $('publish').hidden=isStatic;
 let priorJournal='', priorSynthesis='', busy=false, submitted=false, receiptKey=null, receiptBody=null;
+let interpretation=null, activeConcern=0;
+function activeIdea(detail){document.dispatchEvent(new CustomEvent('helios:active-idea',{detail}));$('shared-review-explanation').hidden=!detail}
+function currentIdea(){
+ if($('screen-3').hidden){if($('screen-2').hidden)return null;return {title:interpretation?.concerns[activeConcern]?.label||$('issue').value,issue:$('issue').value,goal:$('outcome').value,option:$('approach').value,review:false}}
+ if(!$('decision-panel').hidden&&selectedDecision)return {title:selectedDecision.title,issue:selectedDecision.sharedGoal,goal:selectedDecision.sharedGoal,option:selectedDecision.illustrativeLocalOption,review:true,related:true,id:selectedDecision.id};
+ if(!$('proposal-form').hidden)return {title:$('title').value,issue:$('issue').value,goal:$('goal').value,option:$('option').value,safeguards:$('safeguards').value,measures:$('measures').value,category:$('public-category').value,review:true};
+ return null;
+}
+function syncActive(){activeIdea(currentIdea())}
+function showInterpretation(){
+ const box=$('idea-interpretation');box.replaceChildren();if(!interpretation)return;
+ const h=document.createElement('h2');h.textContent='Choose a concern to explore';box.append(h);
+ const hint=document.createElement('p');hint.className='hint';hint.textContent='Suggested topics, not judgments. Choose one, or edit the wording below. Other concerns remain in your private journal.';box.append(hint);
+ for(const [i,c] of interpretation.concerns.entries()){
+  const b=document.createElement('button');b.type='button';b.className='secondary';b.textContent=c.label;b.setAttribute('aria-pressed',String(i===activeConcern));b.addEventListener('click',()=>{if(i===activeConcern)return;if(!confirm('Switch concerns and replace the current synthesis? Your private journal remains available.'))return;activeConcern=i;fillInterpretation();showInterpretation();clearRelated();syncActive();$('find-related').click()});box.append(b);
+ }
+ const details=document.createElement('details');details.open=interpretation.conditions.length>0;const summary=document.createElement('summary');summary.textContent='Original concerns and conditions ('+interpretation.parts.length+' distinct passages)';details.append(summary);
+ const ul=document.createElement('ul');for(const part of interpretation.parts){const li=document.createElement('li');li.textContent=(interpretation.conditions.includes(part)?'Condition to review: ':'')+part;ul.append(li)}details.append(ul);box.append(details);
+}
+function fillInterpretation(){
+ const d=Ideas.draft(interpretation,activeConcern,categories);if(!d)return;
+ $('issue').value=d.issue.slice(0,1500);$('category').value=d.category;$('outcome').value=d.outcome;$('approach').value=d.approach.slice(0,2500);
+ if(d.issue.length>1500||d.approach.length>2500)message('synthesis-status','Some wording exceeds the draft field limits. Review all original passages above and explicitly restore essential conditions before continuing.',true);else message('synthesis-status','Suggested outcome and first step are editable. Review them before drafting.');
+}
+
 function show(step){for(let i=1;i<=3;i++)$('screen-'+i).hidden=i!==step;for(const el of document.querySelectorAll('[data-step]')){const n=Number(el.dataset.step);el.classList.toggle('done',n<step);if(n===step)el.setAttribute('aria-current','step');else el.removeAttribute('aria-current')} $('heading-'+step).focus({preventScroll:true});$('journal-workbench').scrollIntoView({block:'start'})}
 function message(id,text,error=false){$(id).textContent=text;$(id).classList.toggle('error',error)}
 function count(){$('journal-count').textContent=$('journal').value.length.toLocaleString()+' / 10,000'}
 $('journal').addEventListener('input',count);
 $('example').addEventListener('click',()=>{if($('journal').value.trim()&&!confirm('Replace your journal with the example?'))return;$('journal').value='My neighborhood bus stops have no shade. Waiting in the summer heat is difficult, especially for older people and children. I wish our city would make public transit more comfortable.';count();$('journal').focus()});
-function suggestCategory(text){const i=topics.findIndex(re=>re.test(text));return categories[i<0?7:i]}
+function suggestCategory(text){const result=Ideas.analyze(text);return Ideas.draft(result,0,categories)?.category||categories[7]}
 function firstThought(text){return (text.trim().split(/(?<=[.!?])\s+|\n/)[0]||'').slice(0,1500)}
 $('journal-form').addEventListener('submit',e=>{e.preventDefault();const value=$('journal').value.trim();if(!value){message('journal-status','Write a thought before continuing.',true);return}
-if(value!==priorJournal){if(priorJournal&&$('issue').value.trim()&&!confirm('Use the revised journal to replace the previous synthesis and proposal draft?'))return;priorJournal=value;priorSynthesis='';$('issue').value=firstThought(value);$('category').value=suggestCategory(value);$('outcome').value='';$('approach').value=''}
-$('journal-excerpt').textContent=value;message('journal-status','');show(2)});
+if(value!==priorJournal){if(priorJournal&&$('issue').value.trim()&&!confirm('Use the revised journal to replace the previous synthesis and proposal draft?'))return;priorJournal=value;priorSynthesis='';interpretation=Ideas.analyze(value);activeConcern=0;fillInterpretation();showInterpretation()}
+$('journal-excerpt').textContent=value;message('journal-status','');show(2);queueMicrotask(()=>{$('find-related').click()})});
 function readSynthesis(){return {issue:$('issue').value.trim(),category:$('category').value,outcome:$('outcome').value.trim(),approach:$('approach').value.trim()}}
 function setPublish(){ $('publish').disabled=isStatic||busy||submitted||!$('consent').checked; $('mode-government').disabled=busy; $('mode-citizen').disabled=busy }
 $('synthesis-form').addEventListener('submit',e=>{e.preventDefault();const d=readSynthesis();if(!d.issue||!d.outcome||!d.approach){message('synthesis-status','Complete all three fields before drafting.',true);return}
 const signature=JSON.stringify(d);if(signature!==priorSynthesis){if(priorSynthesis&&!confirm('Regenerate the public draft from your revised synthesis? This replaces previous proposal edits.'))return;priorSynthesis=signature;
-$('title').value=(firstThought(d.issue).replace(/[.!?]+$/,'').slice(0,139)+' — Initiative').slice(0,160);
+$('title').value=((interpretation?.concerns[activeConcern]?.label||firstThought(d.issue)).replace(/[.!?]+$/,'').slice(0,139)+' — Initiative').slice(0,160);
 $('public-category').value=d.category;
 $('goal').value='Public concern: '+d.issue+'\n\nIntended outcome: '+d.outcome;
 $('option').value=d.approach+'\n\nIdentify the responsible public authority, consult affected people, estimate costs, and test feasibility before wider implementation.';
@@ -325,17 +358,21 @@ const sample2={id:'DEMO-002',title:'Neighborhood Library Access',category:catego
 const samples=[sample,sample2];let catalogCache=null,lastPublished=null,selectedDecision=null,selectedGovernment=null,governmentRecords=[],govStep=1,citizenStep=1,mode='citizen',lastFeedback=null;const positions=new Map();
 const originalHeading=$('heading-3').textContent, originalLede=$('decision-lede').textContent;
 function safeRecord(p){return p&&typeof p.id==='string'&&/^(HGA|HGP)-[A-Za-z0-9-]+$/.test(p.id)&&typeof p.title==='string'}
-async function publicCatalog(){if(isStatic)return {records:samples,label:'Illustrative sample proposals · no live library on this static site.'};if(catalogCache)return catalogCache;const result=await jsonRequest('/api/catalog');if(!Array.isArray(result.goals))throw Error('Unexpected catalog response.');catalogCache={records:result.goals.filter(safeRecord).map(p=>({...p,source:'Public library'})),label:'Live public proposal library · not a representative poll.'};return catalogCache}
+async function publicCatalog(){if(isStatic){if(catalogCache)return catalogCache;try{const data=await jsonRequest('/public/law-catalog.json');if(Array.isArray(data.goals))return catalogCache={records:data.goals.filter(safeRecord).map(p=>({...p,source:'Editorial preview'})),label:'Editorial preview · no public writes.'}}catch{}return {records:samples,label:'Illustrative sample proposals · no live library on this static site.'}}if(catalogCache)return catalogCache;const result=await jsonRequest('/api/catalog');if(!Array.isArray(result.goals))throw Error('Unexpected catalog response.');catalogCache={records:result.goals.filter(safeRecord).map(p=>({...p,source:'Public library'})),label:'Live public proposal library · not a representative poll.'};return catalogCache}
 function make(tag,text,cls){const node=document.createElement(tag);if(text!==undefined)node.textContent=text;if(cls)node.className=cls;return node}
 function recordPath(p){return isStatic||!safeRecord(p)?null:'/laws?goal='+encodeURIComponent(p.id)}
 function recordSummary(target,p,full=false){target.replaceChildren(make('p',p.source+' · '+p.id,'eyebrow'),make('h2',p.title),make('p',p.sharedGoal||'No public goal provided.'));if(full){target.append(make('p','Implementation: '+(p.illustrativeLocalOption||'Not specified.')),make('p','Safeguards: '+(p.risksAndSafeguards||'Not specified.')));if(Array.isArray(p.suggestedMeasures))target.append(make('p','Measures: '+p.suggestedMeasures.join('; ')))}const position=positions.get(p.id);if(position)target.append(make('p','Your local preview choice: '+position,'hint'))}
 function words(text){return new Set((String(text).toLowerCase().match(/[a-z0-9]{3,}/g)||[]).filter(w=>!['the','and','that','with','from','this','have','should','would','what','their','need','people','more','make','public','for','are','was','about','into','our','could'].includes(w)))}
-function rank(records,text,category){const query=words(text);return records.map(p=>{const terms=words([p.title,p.sharedGoal,p.illustrativeLocalOption].join(' '));let overlap=0;for(const word of query)if(terms.has(word))overlap++;const categoryMatch=p.category===category;return {p,score:overlap*4+(categoryMatch?2:0),overlap,categoryMatch}}).filter(x=>x.score>0).sort((a,b)=>b.score-a.score||a.p.title.localeCompare(b.p.title))}
-function renderCards(target,rows,onSelect,buttonText){target.replaceChildren();if(!rows.length){target.append(make('p','No matches in this list. Try another topic or create a new proposal.','hint'));return}for(const row of rows){const p=row.p||row,card=make('article',undefined,'candidate');card.append(make('p',p.source+' · '+p.id,'eyebrow'),make('h3',p.title),make('p',p.sharedGoal||''));if(row.p)card.append(make('p',row.overlap?'Shared keywords'+(row.categoryMatch?' + policy area':''):'Same policy area · check relevance yourself','hint'));const action=make('button',buttonText,'secondary');action.type='button';action.addEventListener('click',()=>onSelect(p));card.append(action);target.append(card)}}
+function rank(records,text,category){return Ideas.rank(records,text,category)}
+function renderCards(target,rows,onSelect,buttonText){target.replaceChildren();if(!rows.length){target.append(make('p','No matches in this list. Try another topic or create a new proposal.','hint'));return}for(const row of rows){const p=row.p||row,card=make('article',undefined,'candidate');card.append(make('p',p.source+' · '+p.id,'eyebrow'),make('h3',p.title),make('p',p.sharedGoal||''));if(row.p)card.append(make('p',row.shared?.length?'Related topics: '+row.shared.join(', ')+' · check relevance yourself':'Shared specific wording · check relevance yourself','hint'));const action=make('button',buttonText,'secondary');action.type='button';action.addEventListener('click',()=>onSelect(p));card.append(action);target.append(card)}}
 function refreshFeedback(){const box=$('citizen-feedback');box.replaceChildren();if(!lastFeedback){box.hidden=true;return}box.hidden=false;box.append(make('p','Preview feedback · not an official government response','eyebrow'),make('p',lastFeedback.proposalTitle+' — '+lastFeedback.disposition,'feedback-title'),make('p',lastFeedback.reason),make('p','Suggested owner: '+lastFeedback.owner+' · Review date: '+lastFeedback.reviewDate,'hint'));const metrics=make('p','Proposed measures: '+lastFeedback.metrics.join('; '),'hint');box.append(metrics)}
 function setMode(next){if(busy)return;mode=next;$('citizen-view').hidden=next!=='citizen';$('government-view').hidden=next!=='government';$('mode-citizen').setAttribute('aria-pressed',String(next==='citizen'));$('mode-government').setAttribute('aria-pressed',String(next==='government'));$('mode-caption').textContent=next==='citizen'?'Express → Synthesize → Decide':'Understand → Evaluate → Respond → Measure';if(next==='citizen'){refreshFeedback();const h=$('heading-'+citizenStep);h.focus({preventScroll:true})}else $('gov-heading-'+govStep).focus({preventScroll:true});$('journal-workbench').scrollIntoView({block:'start'})}
 // Track the existing three-step citizen flow without changing the journal or submission API.
-const originalShow=show;show=function(step){citizenStep=step;originalShow(step)};
+const originalShow=show;show=function(step){citizenStep=step;originalShow(step);syncActive()};
+$('synthesis-form').addEventListener('input',syncActive);
+$('proposal-form').addEventListener('input',syncActive);
+$('public-category').addEventListener('change',syncActive);
+$('idea-experiment-anchor').replaceWith($('idea-experiment'));
 $('mode-citizen').addEventListener('click',()=>setMode('citizen'));$('mode-government').addEventListener('click',()=>setMode('government'));
 function showNewProposal(){selectedDecision=null;$('decision-panel').hidden=true;$('proposal-form').hidden=false;$('heading-3').textContent=originalHeading;$('decision-lede').textContent=originalLede}
 function chooseRelated(p){selectedDecision=p;$('decision-panel').hidden=false;$('proposal-form').hidden=true;$('receipt').hidden=true;$('heading-3').textContent='Contribute to a shared proposal.';$('decision-lede').textContent='Decide whether to support, question or improve the existing idea.';recordSummary($('decision-record'),p,true);const href=recordPath(p);$('amend-link').hidden=!href;if(href)$('amend-link').href=href;else $('amend-link').removeAttribute('href');syncPosition();show(3)}
@@ -365,6 +402,7 @@ $('gov-respond').addEventListener('submit',e=>{e.preventDefault();if(!selectedGo
 function reviewDraft(){if(!selectedGovernment||!requiredText(['gov-authority','gov-evidence','gov-dissent','gov-disposition','gov-reason','gov-owner','gov-metrics','gov-date']))throw Error('Complete each review field before sharing the preview.');return {kind:'helios-government-review-preview',official:false,proposalId:selectedGovernment.id,proposalTitle:selectedGovernment.title,source:selectedGovernment.source,authority:$('gov-authority').value.trim(),evidence:$('gov-evidence').value.trim(),affectedGroups:$('gov-dissent').value.trim(),disposition:$('gov-disposition').value,reason:$('gov-reason').value.trim(),owner:$('gov-owner').value.trim(),metrics:$('gov-metrics').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean),reviewDate:$('gov-date').value}}
 $('gov-export').addEventListener('click',()=>{try{const data=reviewDraft(),url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)+'\n'],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='helios-government-review-preview.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);message('gov-feedback-status','Draft downloaded. Nothing was sent.')}catch(err){message('gov-feedback-status',err.message,true)}});
 $('gov-measure').addEventListener('submit',e=>{e.preventDefault();try{lastFeedback=reviewDraft();message('gov-feedback-status','Preview available in citizen view only.');setMode('citizen');refreshFeedback();$('citizen-feedback').scrollIntoView({block:'start'})}catch(err){message('gov-feedback-status',err.message,true)}});
+if(branchPreview)$('static-notice').textContent='PR preview · local drafting, simulation and practice only. Public submission is disabled to protect production data.';
 count();setPublish();
 </script>
 <script type="module" src="./public/constitution-workbench.js"></script>
