@@ -9,6 +9,7 @@ const root = process.cwd();
 const out = join(root, 'dist');
 const pages = [
   'index.html',
+  'research.html',
   'law-atlas.html',
   'welcome.html',
   'helios_mail.html',

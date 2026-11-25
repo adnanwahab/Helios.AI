@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1018">
+  <meta name="description" content="Supervise collaborative research, connect proposed laws to future keyframes, and design possible worlds together.">
+  <title>Research playground · Helios AI</title>
+  <link rel="icon" href="./public/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./public/research.css">
+  <script type="module" src="./public/research.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#coordinator">Skip to research workspace</a>
+<header class="site-header">
+  <a class="brand" href="./"><span class="brand-mark" aria-hidden="true">✳</span> HELIOS <span class="brand-light">/ RESEARCH</span></a>
+  <nav aria-label="Research sections"><a href="#coordinator" aria-current="page">Coordinator</a><a href="#keyframes">Future keyframes</a><a href="./">Civic workshop</a></nav>
+  <span class="mode-label" id="room-mode">Browser draft</span>
+</header>
+<main>
+  <section class="hero" aria-labelledby="research-title">
+    <div><p class="eyebrow"><span class="tiny-star" aria-hidden="true">✳</span> MINI_SYMPHONY · HUMAN-DIRECTED RESEARCH</p><h1 id="research-title">research coordinator playground<br><span>supervision center</span></h1><p class="hero-copy">Give a hundred agents a shared question.<br>Give a thousand people a future they can help design.</p></div>
+    <div class="hero-actions"><span class="room-caption" id="room-caption">Your draft stays in this browser until you share it.</span><button class="button primary" id="create-room" type="button">Create shared room <span aria-hidden="true">+</span></button><button class="button subtle" id="copy-room" type="button" hidden>Copy collaboration link</button><button class="button subtle" id="export-room" type="button">Export research plan</button></div>
+  </section>
+  <div class="status-bar" aria-live="polite"><span class="connection-indicator" id="connection-indicator" aria-hidden="true"></span><p id="save-status" role="status">Loading the research workspace…</p><button class="text-button" id="reload-room" type="button" hidden>Reload saved version</button></div>
+  <div class="metrics" aria-label="Research workspace metrics">
+    <div class="metric"><span class="metric-icon lavender" aria-hidden="true">▦</span><div><strong id="agent-count">100</strong><span>planned agent slots</span></div><span class="metric-detail">5 research roles</span></div>
+    <div class="metric"><span class="metric-icon mint" aria-hidden="true">⌁</span><div><strong id="worker-count">0</strong><span>connected workers</span></div><span class="metric-detail" id="worker-caption">Awaiting a worker connection</span></div>
+    <div class="metric"><span class="metric-icon peach" aria-hidden="true">◫</span><div><strong id="review-count">0</strong><span>awaiting review</span></div><span class="metric-detail">Human judgment stays in the loop</span></div>
+    <div class="metric"><span class="metric-icon cyan" aria-hidden="true">◎</span><div><strong id="contributor-count">0 <small>/ 1,000</small></strong><span>contributors / target</span></div><span class="metric-detail">Designing keyframes together</span></div>
+  </div>
+
+  <section id="coordinator" class="section-anchor" aria-labelledby="coordinator-title">
+    <div class="section-heading"><div><p class="eyebrow">THE RESEARCH FLOOR</p><h2 id="coordinator-title">One mission. Many perspectives.</h2></div><span class="pill" id="dispatch-state">Dispatch paused</span></div>
+    <div class="coordinator-layout">
+      <form id="brief-form" class="panel brief-panel">
+        <div class="panel-heading"><h3>Research inputs</h3><span class="editable-label">EDITABLE</span></div>
+        <p class="muted intro">A shared brief gives every specialist the same starting point.</p>
+        <label for="room-title">Room name</label><input id="room-title" name="title" maxlength="160" required>
+        <label for="research-brief">Research question</label><textarea id="research-brief" name="brief" rows="3" maxlength="4000" required></textarea>
+        <label for="research-inputs">Data, sources &amp; context</label><textarea id="research-inputs" name="inputData" rows="4" maxlength="6000" placeholder="Source URLs, datasets, observations…"></textarea>
+        <label for="research-constraints">Boundaries &amp; review criteria</label><textarea id="research-constraints" name="constraints" rows="3" maxlength="4000"></textarea>
+        <div class="form-row"><div><label for="agent-capacity">Agent slots</label><input id="agent-capacity" name="agentCount" type="number" min="100" max="1000" step="1" value="100" required></div><div><label for="agent-concurrency">Concurrent limit</label><input id="agent-concurrency" name="maxConcurrent" type="number" min="1" max="100" step="1" value="20" required></div></div>
+        <label for="collaborator-target">Collaborator target</label><input id="collaborator-target" name="collaboratorGoal" type="number" min="1" max="10000" step="1" value="1000" required>
+        <button class="button primary wide" id="save-brief" type="submit">Save research inputs</button>
+        <p class="field-help" id="brief-permission">You supervise this draft. People with a shared link can contribute keyframes.</p>
+      </form>
+      <div class="research-floor">
+        <div class="panel agents-panel">
+          <div class="panel-heading"><div><h3>Agent constellation</h3><p class="muted">Select a slot to inspect its brief and leave direction.</p></div><div class="floor-controls"><button class="button compact secondary" type="button" id="queue-plan">Queue 100 tasks</button><button class="button compact subtle" type="button" id="toggle-dispatch" disabled>Resume dispatch</button></div></div>
+          <div class="agent-legend" aria-label="Task status legend"><span><i class="legend-mark planned"></i>Planned</span><span><i class="legend-mark queued"></i>Queued</span><span><i class="legend-mark running"></i>Working</span><span><i class="legend-mark review"></i>Review</span><span><i class="legend-mark approved"></i>Reviewed</span></div>
+          <div id="agent-grid" class="agent-grid" aria-label="Research agent slots"></div>
+          <p class="floor-note" id="floor-note">A plan is ready to shape. Connected workers will report their own progress here.</p>
+        </div>
+        <div class="panel task-panel" id="task-inspector">
+          <div class="panel-heading"><div><p class="eyebrow" id="task-role">DISCOVERY</p><h3 id="task-title">Agent 001</h3></div><span class="pill" id="task-state">Planned</span></div>
+          <div class="task-details"><div><h4>Assignment</h4><p class="task-prompt" id="task-prompt"></p><details id="task-result-details" hidden><summary>View returned research</summary><pre id="task-result"></pre></details></div><form id="task-form"><label for="task-notes">Supervisor direction</label><textarea id="task-notes" rows="3" maxlength="4000" placeholder="Ask for a source, challenge an assumption, or focus the next pass…"></textarea><div class="task-actions"><select id="task-review" aria-label="Task review decision"><option value="">Keep current state</option><option value="approved">Approve reviewed result</option><option value="rejected">Request changes</option><option value="queued">Queue another attempt</option></select><button class="button compact secondary" id="save-task" type="submit">Save direction</button></div><p class="field-help" id="task-help">Queue the plan to save directions with a task.</p></form></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="keyframes" class="section-anchor keyframes-section" aria-labelledby="keyframes-title">
+    <div class="section-heading keyframe-heading"><div><p class="eyebrow">THE FUTURE IS A SHARED DRAFT</p><h2 id="keyframes-title">key frame interpolation: future projection</h2><p class="section-copy">Write the world between now and then. Put proposed laws in each keyframe, and build the next version together.</p></div><button class="button secondary" id="add-frame" type="button">Add keyframe <span aria-hidden="true">+</span></button></div>
+    <div id="frame-timeline" class="frame-timeline" aria-label="Future keyframe timeline"></div>
+    <div class="keyframe-layout">
+      <div class="future-panel panel">
+        <div class="panel-heading"><span class="eyebrow">POSSIBLE WORLD</span><span class="pill lavender-pill">Illustrative scenario</span></div>
+        <div class="world-stage"><svg id="future-world" viewBox="0 0 640 370" role="img" aria-labelledby="world-title world-desc"><title id="world-title">A possible future city</title><desc id="world-desc">An illustrative city changes as you move between shared keyframes. The drawing is not a data forecast.</desc><defs><linearGradient id="city-ground" x1="0" x2="1" y2="1"><stop stop-color="#243133"/><stop offset="1" stop-color="#121e26"/></linearGradient><radialGradient id="city-halo"><stop stop-color="#9381ff" stop-opacity=".2"/><stop offset="1" stop-color="#9381ff" stop-opacity="0"/></radialGradient></defs><ellipse cx="330" cy="180" rx="300" ry="180" fill="url(#city-halo)"/><g id="city-art"></g></svg><div class="world-year"><strong id="projection-year">2028</strong><span id="projection-phase">Small experiments, shared learning</span></div><span class="world-caption">A visual sketch, open to revision</span></div>
+        <div class="scrubber"><div><label for="future-year">Move between keyframes</label><output id="year-output" for="future-year">2028</output></div><input id="future-year" type="range" min="2026" max="2036" step="0.1" value="2028"><div class="range-endpoints"><span id="first-year">2026</span><span id="last-year">2036</span></div></div>
+        <div class="projection-text"><p class="eyebrow" id="projection-range">2026 TO 2028</p><h3>What changes along the way?</h3><p id="projection-narrative"></p><p class="field-help">Scenario text is composed from your keyframes, laws, and assumptions. It is not an evidence-based prediction.</p></div>
+      </div>
+      <form id="frame-form" class="panel frame-editor">
+        <div class="panel-heading"><h3>Design this keyframe</h3><span class="editable-label" id="frame-revision">DRAFT</span></div>
+        <div class="form-row frame-title-row"><div><label for="frame-title">Keyframe title</label><input id="frame-title" maxlength="160" required></div><div><label for="frame-year">Year</label><input id="frame-year" type="number" min="2020" max="2200" required></div></div>
+        <div class="label-row"><label for="frame-summary">What might the world look like?</label><button class="text-button" id="draft-paragraph" type="button">Draft future paragraph</button></div>
+        <textarea id="frame-summary" rows="5" maxlength="6000" placeholder="Describe the changes since the previous keyframe…"></textarea>
+        <label for="frame-assumptions">What needs to be true?</label><textarea id="frame-assumptions" rows="2" maxlength="4000" placeholder="Assumptions, resources, tradeoffs, and open questions…"></textarea>
+        <div class="label-row"><h4>Proposed laws in this keyframe</h4><span class="subtle-text" id="frame-law-count">0 laws</span></div>
+        <div id="frame-laws" class="frame-laws"></div>
+        <div class="law-adder"><label for="law-select">Connect a law from the shared catalog</label><div class="law-picker-row"><select id="law-select"><option value="">Choose a proposed law…</option></select><button class="button compact secondary" id="attach-law" type="button">Add law</button></div><details class="new-law-details"><summary>Propose a new law for this future</summary><label for="new-law-title">Proposed law title</label><input id="new-law-title" maxlength="240" placeholder="A new possibility…"><label for="new-law-change">What would it change?</label><textarea id="new-law-change" rows="2" maxlength="2000" placeholder="Describe the practical change and who it would help."></textarea><button class="button compact secondary" id="add-new-law" type="button">Add new proposal</button></details></div>
+        <div class="frame-save-row"><button class="button primary" id="save-frame" type="submit">Save keyframe</button><span class="field-help" id="frame-save-help">Your scenario stays editable.</span></div>
+        <details id="frame-history" class="frame-history"><summary>Revision history</summary><div id="frame-history-list"><p class="field-help">Shared rooms keep earlier keyframe revisions.</p></div><button class="text-button" id="older-frame-history" type="button" hidden>Load older revisions</button></details>
+      </form>
+    </div>
+    <div class="collaboration-layout">
+      <section class="panel contribution-panel" aria-labelledby="contribute-title"><div class="panel-heading"><h3 id="contribute-title">Build on each other’s thinking</h3><span class="pill" id="contribution-target">1,000-person design goal</span></div><p class="muted">Add evidence, a concern, or an alternative future to the selected keyframe.</p><form id="contribution-form"><label for="contribution-text">Your contribution</label><textarea id="contribution-text" maxlength="4000" rows="3" placeholder="What should this future make room for?" required></textarea><button class="button secondary" type="submit" id="post-contribution">Add contribution</button><span class="field-help" id="contribution-help">Shared rooms count actual contributing browser sessions.</span></form></section>
+      <section class="panel activity-panel" aria-labelledby="activity-title"><div class="panel-heading"><h3 id="activity-title">Room activity</h3><span class="subtle-text">Latest 50 updates</span></div><ol id="activity-list" class="activity-list"></ol></section>
+    </div>
+  </section>
+</main>
+<footer><a class="brand" href="./"><span class="brand-mark" aria-hidden="true">✳</span> HELIOS AI</a><p>Research together. Keep the assumptions visible. Leave room for a better idea.</p><a href="#coordinator">Back to the research floor</a></footer>
+<noscript><p class="noscript">This interactive workspace requires JavaScript. You can still visit the <a href="./">civic workshop</a>.</p></noscript>
+</body>
+</html>

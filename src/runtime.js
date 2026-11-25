@@ -30,6 +30,7 @@ export async function createRuntime(options = {}) {
     health,
     origins: originList,
     adminToken: 'adminToken' in options ? adminToken : (env.HELIOS_ADMIN_TOKEN || null),
+    researchWorkerToken: env.HELIOS_RESEARCH_WORKER_TOKEN || null,
     secure: secure ?? env.HELIOS_INSECURE_COOKIES !== '1',
   });
   return {app, store, email, notion, db: database};

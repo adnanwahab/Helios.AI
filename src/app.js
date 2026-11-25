@@ -1,5 +1,6 @@
 import {Problem, hash} from './store.js';
 import {timingSafeEqual} from 'node:crypto';
+import {createResearchApi} from './research-api.js';
 
 // Static files, redirects and embed routes are served by Netlify's CDN (netlify.toml).
 // This module only handles the dynamic paths: /api/*, the email endpoints and the YCR proxy.
@@ -17,9 +18,10 @@ const rewriteYcrText = text => text
   .replace(/(["'`])\/api\//g, `$1${YCR_PROXY_PREFIX}/api/`)
   .replace(/https?:\/\/(?:www\.)?(?:ycr\.org|openresearchlab\.org)\//gi, `${YCR_PROXY_PREFIX}/`);
 
-export function createApp({store, email, notion = null, morphlab = null, moderator = null, origins = [], adminToken = null, secure = true, health = {storage: 'unknown', runtime: 'unknown'}} = {}) {
+export function createApp({store, email, notion = null, morphlab = null, moderator = null, origins = [], adminToken = null, researchWorkerToken = null, secure = true, health = {storage: 'unknown', runtime: 'unknown'}} = {}) {
   if (!store) throw Error('Store required');
   const response = (data, status = 200, extra = {}) => Response.json(data, {status, headers: {'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', ...extra}});
+  const research = createResearchApi({store, health, workerToken: researchWorkerToken, Problem, hash, response});
 
   async function ycr(request, url) {
     const path = url.pathname, method = request.method;
@@ -48,6 +50,8 @@ export function createApp({store, email, notion = null, morphlab = null, moderat
   async function api(request, url, remoteIP) {
     const method = request.method, path = url.pathname;
     const cookie = request.headers.get('cookie')?.split(';').map(x => x.trim()).find(x => x.startsWith('helios_session='))?.slice(15);
+    const researchResponse = await research.readOrWorker(request, url, cookie);
+    if (researchResponse) return researchResponse;
 
     // A separate, opt-in paid capability. The prompt is sent only after a
     // same-origin, CSRF-protected request and durable per-IP/session limits.
@@ -95,8 +99,8 @@ export function createApp({store, email, notion = null, morphlab = null, moderat
       const {goals} = await store.catalog();
       return response({status: 'ok', storage: health.storage, runtime: health.runtime, schemaVersion: 1, seedCount: 100, proposalCount: goals.length, catalogHash: store.catalogHash});
     }
-    if (method === 'GET' && path === '/api/session') {
-      if (!(await store.authenticate(cookie))) await store.limit('session-issue:' + hash(remoteIP), 120, 3600000);
+    if (method === 'GET' && (path === '/api/session' || path === '/api/research/session')) {
+      if (!(await store.authenticate(cookie))) await store.limit((path === '/api/research/session' ? 'research-session-issue:' : 'session-issue:') + hash(remoteIP), path === '/api/research/session' ? 2000 : 120, 3600000);
       const session = await store.session(cookie);
       return response({csrfToken: session.csrf, expiresAt: new Date(session.expires).toISOString(), identity: 'Pseudonymous browser session; not verified civic identity'}, 200,
         session.raw ? {'Set-Cookie': `helios_session=${session.raw}; HttpOnly; SameSite=Lax; Path=/api; Max-Age=7776000${secure ? '; Secure' : ''}`} : {});
@@ -141,8 +145,10 @@ export function createApp({store, email, notion = null, morphlab = null, moderat
     if (!request.headers.get('content-type')?.toLowerCase().startsWith('application/json')) throw new Problem(415, 'Use application/json.');
     const session = await store.authenticate(cookie);
     if (!session || !equal(request.headers.get('x-csrf-token'), session.csrf)) throw new Problem(403, 'Reload the page to establish a valid session.');
-    await store.limit('session:' + session.id, 20, 60000);
-    await store.limit('ip:' + hash(remoteIP), 120, 3600000);
+    const researchWritePath = path.startsWith('/api/research/');
+    await store.limit((researchWritePath ? 'research-session:' : 'session:') + session.id, researchWritePath ? 40 : 20, 60000);
+    await store.limit((researchWritePath ? 'research-ip:' : 'ip:') + hash(remoteIP), researchWritePath ? 12000 : 120, 3600000);
+    if (path === '/api/research/rooms') await store.limit('research-create:' + session.id, 10, 3600000);
     if (Number(request.headers.get('content-length') || 0) > 32768) throw new Problem(413, 'Submission is too large.');
     const reader = request.body?.getReader();
     let size = 0; const chunks = [];
@@ -155,6 +161,9 @@ export function createApp({store, email, notion = null, morphlab = null, moderat
     }
     let body;
     try { body = JSON.parse(Buffer.concat(chunks).toString('utf8')); } catch { throw new Problem(400, 'Invalid JSON.'); }
+
+    const researchWrite = await research.write(path, body, session, request.headers.get('idempotency-key'));
+    if (researchWrite) return researchWrite;
 
     if (lawBoardPath?.[2]) {
       const key=request.headers.get('idempotency-key');
