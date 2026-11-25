@@ -113,6 +113,7 @@ async function api(path, body) {
     ...(write ? {body: payload} : {})});
   if (requestRevision !== accountRevision) throw new Error('Your account changed while the request was in progress. Refresh the room to check its saved state.');
   const data = await response.json().catch(() => ({error: 'The research service returned an unexpected response.'}));
+  if (requestRevision !== accountRevision) throw new Error('Your account changed while the request was in progress. Refresh the room to check its saved state.');
   if (!response.ok) {
     const error = new Error(data.error || 'The request could not be saved.');
     error.status = response.status;

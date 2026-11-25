@@ -160,7 +160,9 @@ async function request(path,options={}){
  const revision=accountRevision;
  const r=await fetch(path,{credentials:'same-origin',cache:'no-store',signal:AbortSignal.timeout(15000),...options,headers});
  if(revision!==accountRevision)throw Error('Your account changed. Refresh the board before trying again.');
- const data=await r.json().catch(()=>null);if(!r.ok||!data)throw Error(data?.error||'HTTP '+r.status);return data;
+ const data=await r.json().catch(()=>null);
+ if(revision!==accountRevision)throw Error('Your account changed. Refresh the board before trying again.');
+ if(!r.ok||!data)throw Error(data?.error||'HTTP '+r.status);return data;
 }
 async function refresh(){
  if(!connected||refreshing||busy)return;refreshing=true;$('board-refresh').disabled=true;
