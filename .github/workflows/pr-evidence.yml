@@ -1,0 +1,33 @@
+name: Helios PR evidence
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited, ready_for_review]
+
+# Forks receive only a read-only token. No secrets, approvals, comments, or merges.
+# Do not convert this to pull_request_target with a PR checkout.
+permissions:
+  actions: read
+  contents: read
+  pull-requests: read
+  statuses: read
+
+concurrency:
+  group: pr-evidence-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify preview, tests, and visual evidence for this PR head
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/verify-launch-pr.mjs
