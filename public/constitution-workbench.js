@@ -111,7 +111,7 @@ function liveLabel(l){return fmt(l.support)+' support · '+fmt(l.oppose)+' oppos
 function meter(s){const el=create('div',undefined,'vote-meter');el.setAttribute('aria-hidden','true');for(const name of ['support','oppose','unsure']){const span=create('span',undefined,'vote-'+name);span.style.flexGrow=String(s[name]||0);el.append(span)}return el}
 function drawList(){
  const filter=$('clause-search').value.trim().toLowerCase(),root=$('constitution-list');root.replaceChildren();
- for(const row of rows().filter(x=>[x.text,x.topic,x.id].some(v=>String(v).toLowerCase().includes(filter)))){
+ for(const row of rows().filter(x=>globalThis.HeliosIdeas.matches(filter,[x.text,x.topic,x.id].join(' ')))){
    const btn=create('button',undefined,'clause-card');btn.type='button';btn.dataset.clauseId=row.id;btn.setAttribute('aria-pressed',String(row.id===selected));
    const meta=create('span',undefined,'clause-meta');meta.append(create('span',row.topic),create('span',row.source==='synthetic'?fmt(row.synthetic.mentions)+' sample mentions':row.source==='practice'?'Your practice clause':'Community clause'));btn.append(meta,create('span',row.text,'clause-text'));
    if(row.source==='synthetic')btn.append(meter(row.synthetic),create('span','Synthetic: '+syntheticLabel(row.synthetic),'vote-counts'));
@@ -225,13 +225,20 @@ function tokens(text){return new Set((text.toLowerCase().match(/[a-z0-9]{3,}/g)|
 function updatePulse(){
  const value=$('journal').value.trim(),ts=tokens(value);pulse.classList.toggle('active',!!value);
  [...pulse.children].forEach((bar,i)=>{bar.style.height=value?(5+((value.charCodeAt((i*7)%value.length)||0)+i*11+value.length*3)%25)+'px':'5px'});
- const candidates=rows().map(row=>{const words=tokens(row.text+' '+row.topic);let score=0;for(const w of ts)if(words.has(w))score++;return {row,score}}).sort((a,b)=>b.score-a.score||a.row.id.localeCompare(b.row.id));
+ const candidates=globalThis.HeliosIdeas.rank(rows(),value).map(({p,score})=>({row:p,score}));
  related=candidates[0]?.score>0?candidates[0].row:null;const label=$('local-signal');label.replaceChildren();
- label.append(document.createTextNode(value?fmt(value.split(/\s+/).length)+' words · ':''));label.append(related?create('strong','Related wording: '+related.topic+' · '+related.id.slice(0,14)):document.createTextNode(value?'No strong keyword match yet. Your idea can remain distinct.':'Write a thought to discover related clauses as you type.'));
+ label.append(document.createTextNode(value?fmt(value.split(/\s+/).length)+' words · ':''));label.append(related?create('strong','Related topic / wording: '+related.topic+' · '+related.id.slice(0,14)):document.createTextNode(value?'No strong match yet. Your idea can remain distinct.':'Write a thought to discover related clauses as you type.'));
  $('review-match').hidden=!related;
 }
 $('journal').addEventListener('input',updatePulse);
 $('example').addEventListener('click',updatePulse);
 $('restart').addEventListener('click',updatePulse);
 $('review-match').addEventListener('click',()=>{if(related){choose(related.id);$('review-title').scrollIntoView({block:'nearest'})}});
+document.addEventListener('helios:active-idea',e=>{
+ const idea=e.detail;if(!idea)return;
+ const query=idea.issue||idea.title||'';
+ const candidates=globalThis.HeliosIdeas.rank(rows(),query).slice(0,3);
+ const box=$('active-board-idea');const summary=create('p',candidates.length?'Related sample/shared clauses to compare:':'No confident clause match. Your concern remains distinct.','hint');box.append(summary);
+ for(const hit of candidates){const b=create('button',hit.p.topic+' · '+hit.p.id.slice(0,14),'secondary');b.type='button';b.addEventListener('click',()=>choose(hit.p.id));box.append(b)}
+});
 draw();message('board-status',isStatic?'Static practice · no network writes or public tallies.':'Practice mode · connect to load shared counts and cast advisory votes.');updatePulse();

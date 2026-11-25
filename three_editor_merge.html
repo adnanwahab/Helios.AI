@@ -184,6 +184,8 @@ legend{padding:0;margin-bottom:7px;font-size:14px;color:var(--mute)}
 @media (pointer:coarse){.opt span,.sw,.btn,.card .btn,.jump input{min-height:44px}}
 .ios .box textarea,.ios .hl{font-size:16px}
 @media (prefers-reduced-motion:reduce){.flow i{animation:none!important}.trk,.trk::after,.dock{transition:none}}
+
+#merge-review-dialog{width:min(680px,calc(100% - 24px));max-height:90vh;overflow:auto;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:20px;font:inherit}#merge-review-dialog::backdrop{background:#0008}#merge-review-dialog section{padding:12px 0;border-top:1px solid var(--rule)}#merge-review-dialog h2,#merge-review-dialog h3{margin:0 0 8px}#merge-review-dialog ul{padding-left:20px;margin:8px 0;overflow-wrap:anywhere}#merge-review-dialog textarea{display:block;width:100%;min-height:120px;background:var(--canvas);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px;font:inherit}#merge-review-dialog button{margin:8px 4px 0 0}.merge-review-pair{white-space:pre-wrap}
 </style>
 </head>
 <body>
@@ -289,11 +291,13 @@ legend{padding:0;margin-bottom:7px;font-size:14px;color:var(--mute)}
 <template id="rowT"><div class="row">
   <article class="card a"><header><span class="badge b1" aria-hidden="true">1</span><h2>Journal <span class="num"></span></h2></header><div class="box"><div class="back" aria-hidden="true"><div class="hl"></div></div><textarea data-role="a" spellcheck="false" autocomplete="off"></textarea></div><footer class="key"><code></code><span></span></footer></article>
   <span class="ar a1" aria-hidden="true"><i></i><b></b></span>
-  <article class="card c"><header><span class="badge b3" aria-hidden="true">3</span><h2>Constitution</h2><span class="state">Live</span><button class="btn rs" type="button" hidden>Resync</button><button class="btn cp" type="button">Copy</button></header><div class="box"><div class="back" aria-hidden="true"><div class="hl"></div></div><textarea data-role="c" spellcheck="false" autocomplete="off"></textarea></div><footer class="key"><code></code><span></span></footer></article>
+  <article class="card c"><header><span class="badge b3" aria-hidden="true">3</span><h2>Constitution</h2><span class="state">Live</span><button class="btn rs" type="button" hidden>Resync</button><button class="btn cp" type="button">Copy</button><button class="btn review-merge" type="button">Resolve differences</button></header><div class="box"><div class="back" aria-hidden="true"><div class="hl"></div></div><textarea data-role="c" spellcheck="false" autocomplete="off"></textarea></div><footer class="key"><code></code><span></span></footer></article>
   <span class="ar a2" aria-hidden="true"><i></i><b></b></span>
   <article class="card b"><header><span class="badge b2" aria-hidden="true">2</span><h2>Journal <span class="num"></span></h2></header><div class="box"><div class="back" aria-hidden="true"><div class="hl"></div></div><textarea data-role="b" spellcheck="false" autocomplete="off"></textarea></div><footer class="key"><code></code><span></span></footer></article>
 </div></template>
 
+<dialog id="merge-review-dialog" aria-labelledby="merge-review-title"><h2 id="merge-review-title">Resolve differences</h2><p>Local suggestions from the included journals. Similar wording is not proof of agreement; disagreements remain visible.</p><div id="merge-review-results"></div><section><h3>Try a revision</h3><label for="merge-revision">Editable candidate constitution (not consensus)</label><textarea id="merge-revision"></textarea><p id="merge-review-status" role="status"></p><button class="btn" id="merge-example" type="button">Suggest a compromise</button><button class="btn" id="merge-apply" type="button">Use this draft in the editor</button><button class="btn" id="merge-review-close" type="button">Close</button></section></dialog>
+<script src="/public/civic-ideas.js"></script>
 <script>
 {
 // BUCKET is a placeholder name: change it here to the bucket that will hold the journals.
@@ -578,11 +582,33 @@ feed.addEventListener('input', e => {
   paintRow(row);
   if (i === focus) { tally(); if (role !== 'c') pulse(role === 'b' ? 2 : 1); }
 });
+let reviewingPair=null;
+const reviewDialog=$('merge-review-dialog'),reviewResults=$('merge-review-results');
+function reviewPair(row){
+ reviewingPair=+row.dataset.i;const a=st.on1?row.A.ta.value:'',b=st.on2?row.B.ta.value:'';
+ const result=globalThis.HeliosIdeas.mergeReview(a,b);
+ reviewResults.replaceChildren();
+ const section=(title,items,empty)=>{const el=document.createElement('section'),h=document.createElement('h3'),ul=document.createElement('ul');h.textContent=title;el.append(h);for(const item of items){const li=document.createElement('li');li.className='merge-review-pair';li.textContent=typeof item==='string'?item:'Journal A: '+item.a+'\nJournal B: '+item.b;ul.append(li)}if(items.length)el.append(ul);else{const p=document.createElement('p');p.textContent=empty;el.append(p)}reviewResults.append(el)};
+ section('Shared wording',result.shared,'No exact shared wording identified.');
+ section('Potentially similar ideas',result.similar,'No similar pairs detected.'); 
+ section('Conditions to preserve',result.conditions,'No explicit conditions detected. Check the source journals.');
+ section('Unresolved choices',result.conflicts,'No rule-based conflict detected. Review both journals; other disagreements may exist.');
+ if(result.limited){const p=document.createElement('p');p.textContent='Review is limited to the first 200 distinct passages per journal. The complete journals and merged text remain in their editors.';reviewResults.append(p)}
+ $('merge-revision').value=row.C.ta.value;$('merge-review-status').textContent='Pair '+fmt(reviewingPair)+' · revisions are private and manual.';
+ $('merge-example').onclick=()=>{const current=$('merge-revision').value;let candidate;
+ if(result.conflicts.some(x=>/\b(library|open|close)\b/i.test(x.a+' '+x.b)))candidate='Candidate for discussion: pilot two later library evenings, keep existing weekend hours, and agree a staffing plan before expansion. Review after 90 days.';
+ else candidate='Candidate for discussion: test a small, reversible option with both contributors. Preserve their conditions, define a review date, and explicitly revisit unresolved choices.';
+ $('merge-revision').value=current+'\n\n'+candidate;$('merge-review-status').textContent='Suggestion appended; edit or remove it. No agreement is inferred.'};
+ reviewDialog.showModal();
+}
+$('merge-review-close').addEventListener('click',()=>reviewDialog.close());
+$('merge-apply').addEventListener('click',()=>{if(reviewingPair===null)return;const row=live.get(reviewingPair);if(!row){$('merge-review-status').textContent='The pair is no longer visible. Return to it and reopen review.';return}cEdit.set(reviewingPair,$('merge-revision').value);paintRow(row);reviewDialog.close();tally()});
 feed.addEventListener('click', e => {
   const btn = e.target.closest('button'), row = btn && btn.closest('.row');
   if (!row) return;
   if (btn.classList.contains('rs')) { cEdit.delete(+row.dataset.i); paintRow(row); }
   else if (btn.classList.contains('cp')) copy(btn);
+  else if (btn.classList.contains('review-merge')&&row.r) reviewPair(row);
 });
 document.addEventListener('change', e => {
   const el = e.target;
