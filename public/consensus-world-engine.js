@@ -14,14 +14,14 @@ export function identity(id, seed) {
   const lo=id>>>0, hi=Math.floor(id/4294967296)>>>0;
   return hash(lo ^ hash((hi ^ seed)>>>0));
 }
-export function evaluate(id, effects, seed=20261125, day=0) {
-  const key=identity(id,seed), weights=[];
+export function evaluate(id, effects, seed=20261125, day=0, inspect=true) {
+  const key=identity(id,seed), weights=inspect?[]:null;
   let score=(hash(key ^ 0xb5297a4d)%121)-60;
   score+=(hash(key ^ hash(day>>>0))%13)-6;
   let worst=2147483647, objection=0;
   for(let i=0;i<8;i++){
     const weight=1+hash(key ^ Math.imul(i+1,0x9e3779b9))%8;
-    weights.push(weight);
+    if(inspect)weights.push(weight);
     const contribution=weight*effects[i]*3;
     score+=contribution;
     // Lowest contribution; weight breaks ties, then stable axis order.
@@ -37,9 +37,9 @@ export function validateRequest(r){
 export function cpuBatch(r){
   validateRequest(r);const bins=new Uint32Array(BINS);
   for(let id=r.start;id<r.start+r.count;id++){
-    const now=evaluate(id,r.effects,r.seed,r.day); bins[now.vote]++;
+    const now=evaluate(id,r.effects,r.seed,r.day,false); bins[now.vote]++;
     if(now.vote!==0)bins[12+now.objection]++;
-    if(r.compare){const old=evaluate(id,r.prior,r.seed,r.day);bins[3+old.vote*3+now.vote]++;}
+    if(r.compare){const old=evaluate(id,r.prior,r.seed,r.day,false);bins[3+old.vote*3+now.vote]++;}
   }return bins;
 }
 export function assertBatch(bins,count,compare){
@@ -128,7 +128,7 @@ export function suggestEffects(text){
     [/\b(?:unpaid work|reduce wages)\b/i,-1,/\b(?:fair wages|worker protections|paid training)\b/i],
     [/\b(?:immediate nationwide rollout)\b/i,-1,/\b(?:pilot program|sunset clause|independent evaluation|phased rollout)\b/i]
   ];
-  const clauses=text.split(/[.!?;\n]+/).filter(c=>!(/\b(?:not|never|without|if|unless|might|could|prohibit|prohibits)\b/i.test(c)));
+  const clauses=text.split(/[.!?;\n]+/).filter(c=>!(/\b(?:no|not|never|without|if|unless|might|could|cannot|can\'t|doesn\'t|don\'t|won\'t|prohibit|prohibits)\b/i.test(c)));
   rules.forEach(([negative,impact,positive],i)=>{
     const n=clauses.find(c=>negative.test(c)),p=clauses.find(c=>positive.test(c));
     if(n&&p){reasons[i]='Conflicting signals — assess manually';return;}
