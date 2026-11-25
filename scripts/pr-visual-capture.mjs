@@ -53,6 +53,18 @@ try {
     viewport: {width: 1440, height: 900}, deviceScaleFactor: 1,
     reducedMotion: 'reduce',
   });
+  // Capture the research dashboard from its exact route and a measured baseline.
+  const researchResponse=await page.goto(base+'/public/law-research.html?law=HGA-031',{waitUntil:'domcontentloaded'});
+  if(!remote||(researchResponse?.ok()&&await page.locator('#law-rows').count())){
+    await page.locator('#law-rows button[data-law]').first().waitFor({state:'visible',timeout:25000});
+    if(await page.locator('#law-rows button[data-law]').count()!==100)throw Error('Expected 100 research proposals');
+    await page.locator('#run-one').click();
+    await page.locator('#run-status').filter({hasText:'Complete · 1 laws'}).waitFor({timeout:30000});
+    await page.screenshot({path:join(output,'law-research-desktop.png'),animations:'disabled'});
+    await page.setViewportSize({width:390,height:844});
+    await page.screenshot({path:join(output,'law-research-mobile.png'),animations:'disabled'});
+    await page.setViewportSize({width:1440,height:900});
+  }
   // The fixed synthetic report is part of the local static build. Capture its exact route.
   const labResponse = await page.goto(base + '/consensus-lab/', {waitUntil:'domcontentloaded'});
   if (!remote || (labResponse?.ok() && await page.locator('#consensus-app').count())) {
