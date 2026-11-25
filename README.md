@@ -115,6 +115,8 @@ These are candidate objections and compromises to investigate, not measured publ
 
 For backend setup see [backend documentation](docs/backend.md). For preview review see [PR visual previews](docs/pr-visual-previews.md). For persistence and recovery checks see [data safety and launch](docs/data-safety-and-launch.md). Public proposal text, private journal content, browser practice data, and simulated votes have different handling requirements; preserve those boundaries when changing a feature.
 
+Maintainers: run the [private traffic-light security registry](docs/security-registry.md) with `bun --env-file=.env.security run security:registry` after setting up the secret. Local-only; not connected to public authentication.
+
 ## Community and launch operations
 
 Read the [code of conduct](CODE_OF_CONDUCT.md), [maintainer roles and progression](GOVERNANCE.md), and [public roadmap](docs/contributor-launch.md). The [community operations kit](docs/launch/community-operations.md) contains the invitation, one-hour workshop, onboarding process, demonstration script, launch posts, and weekly report template. Prepared materials are not evidence that invitations were sent, an event happened, or a report was published.
