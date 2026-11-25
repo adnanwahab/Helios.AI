@@ -5,7 +5,28 @@ const $=id=>document.getElementById(id);
 const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n};
 const fields=[{id:'goal',name:'Shared goal',key:'sharedGoal',max:4000},{id:'implementation',name:'Implementation',key:'illustrativeLocalOption',max:6000},{id:'safeguards',name:'Risks & safeguards',key:'risksAndSafeguards',max:4000}];
 const fmt=n=>Number(n).toLocaleString(undefined,{maximumFractionDigits:1});
-const preview=/^deploy-preview-\d+--heliosailol\.netlify\.app$/.test(location.hostname)||location.hostname.endsWith('github.io');
+const connectionKey='helios-government-ide-connected-v1';
+let capability=null,checking=false,restoreRequired=false;
+function remembered(){try{return sessionStorage.getItem(connectionKey)==='1'}catch{return false}}
+function remember(){try{sessionStorage.setItem(connectionKey,'1')}catch{}}
+function canWrite(){return connected&&capability?.writable===true&&!checking}
+function blocked(){return connected&&!canWrite()||!connected&&restoreRequired}
+function dbAction(msg,error=false){status('db-last',msg,error)}
+function paintDatabase(){
+ const c=capability;
+ $('db-storage').textContent=checking?'Checking…':c?.storage==='supabase-postgres'?'Supabase PostgreSQL':c?.storage==='pglite'?(c.runtime==='node-server'?'Local PGlite test DB':'Fly PGlite'):c?.storage||'Unavailable';
+ $('db-write').textContent=checking?'Checking…':canWrite()?(c.mode==='preview-test'?'Persistent · test database':c.runtime==='node-server'?'Persistent · local test':'Persistent'):restoreRequired?'Blocked · reconnect':c?.writable?'Available · connect to save':'Practice · not saved';
+ $('db-reason').textContent=c?.reason||'Checking database availability.';
+ $('db-recheck').disabled=checking||busy;$('connect').disabled=checking||busy||!selection;
+ $('connect').textContent=canWrite()?'Refresh shared data':c?.writable?'Connect shared data':'Check database';
+}
+async function probe(){
+ if(checking)return false;checking=true;paintDatabase();
+ try{const c=await request('/api/workspace-status');if(typeof c.writable!=='boolean'||typeof c.storage!=='string')throw Error('Invalid capability response');capability=c;return c.writable}
+ catch(e){capability={storage:'unavailable',mode:'practice',writable:false,reason:'Database check failed: '+e.message};return false}
+ finally{checking=false;paintDatabase();if(selection&&row())render()}
+}
+
 const routePath='/constitution';
 let laws=new Map(),community=new Map(sampleBoard().clauses.map(r=>[r.id,r])),connected=false,busy=false,selection=null,history=null,historyTicket=0,tab='discussion',lastWrite=null;
 const practiceVotes=new Map(),practiceComments=new Map(),practiceUpdates=new Map(),drafts=new Map(),scenarios=new Map();
@@ -83,7 +104,7 @@ function renderEditor(){
  if(old)$('revision-message').textContent=connected?'This link names a different revision. Current wording is shown; reviewing or editing is disabled until you open the current revision.':'This link names a shared revision. Connect shared data to resolve it, or open the editorial draft.';
  $('clause-title').textContent=isLaw?'§'+(fields.indexOf(f)+1)+'  '+f.name:'Selected clause';
  $('published-text').textContent=isLaw?law[f.key]:record.text;
- $('edit-tools').hidden=!isLaw||old;$('edit-toggle').disabled=busy;
+ $('edit-tools').hidden=!isLaw||old;$('edit-toggle').disabled=busy||blocked();
  const order=isLaw?fields.map(x=>x.id):[...community.keys()],at=order.indexOf(isLaw?f.id:record.id);
  $('previous').disabled=busy||at<=0;$('next').disabled=busy||at>=order.length-1;
  $('selection-count').textContent=(at+1)+' of '+order.length+' '+(isLaw?'sections':'clauses');
@@ -111,8 +132,8 @@ function renderDiscussion(){
  }
  $('comment-form').hidden=isLaw||tab!=='discussion';$('comment-consent').parentElement.hidden=!connected;
  const position=connected?r.myVote:practiceVotes.get(k);
- for(const b of document.querySelectorAll('[data-vote]')){b.setAttribute('aria-pressed',String(b.dataset.vote===position));b.disabled=busy||stale()}
- $('clear-vote').disabled=busy||stale();$('post-comment').disabled=busy;
+ for(const b of document.querySelectorAll('[data-vote]')){b.setAttribute('aria-pressed',String(b.dataset.vote===position));b.disabled=busy||stale()||blocked()}
+ $('clear-vote').disabled=busy||stale()||blocked();$('post-comment').disabled=busy||blocked();$('save-edit').disabled=busy||blocked();
  $('vote-title').textContent=isLaw?'Law revision position':'Clause position';
  $('vote-scope').textContent=isLaw?'Applies to the complete '+(connected?'current revision':'editorial proposal')+', not only this section.':'Applies to the selected community clause.';
  const counts=connected?(isLaw?r.votes:r.live):null;
@@ -144,38 +165,62 @@ function renderSimulation(){
   const anchor=$('assembly-link'),chapter={'HGA-012':'homes','HGA-051':'places','HGA-091':'water'}[selection.id];anchor.hidden=!chapter;if(chapter)anchor.href='/public/helios-law-assembly.html#'+chapter;chart();
  }else{const list=$('related-laws');list.replaceChildren();for(const id of related[selection.id]||[]){const law=laws.get(id)?.law;if(!law)continue;const b=el('button',law.id+' · '+law.title,'secondary');b.type='button';b.disabled=busy;b.addEventListener('click',()=>selectLaw(id,'goal'));list.append(b)}if(!list.childElementCount)list.append(el('p','Search the proposal catalog to find a related scenario.','small'))}
 }
-function render(){if(!selection||!row())return;renderTree();renderEditor();renderDiscussion();renderSimulation();$('show-laws').disabled=busy;$('show-community').disabled=busy;$('connect').disabled=busy||preview;$('connect').textContent=connected?'Refresh shared data':preview?'Practice preview':'Connect shared data'}
+function render(){if(!selection||!row())return;renderTree();renderEditor();renderDiscussion();renderSimulation();$('show-laws').disabled=busy;$('show-community').disabled=busy;paintDatabase()}
 async function request(path,options={}){const res=await fetch(path,{credentials:'same-origin',cache:'no-store',signal:AbortSignal.timeout(15000),...options});const data=await res.json().catch(()=>null);if(!res.ok||!data)throw Error(data?.error||'HTTP '+res.status);return data}
 async function loadHistory(){
  const id=selection.id,ticket=++historyTicket;history=null;renderDiscussion();
  try{const data=await request('/api/law-board/'+encodeURIComponent(id));if(ticket!==historyTicket||selection.id!==id||selection.kind!=='law')return;history=data;renderDiscussion()}catch(e){if(ticket===historyTicket)status('review-status','History unavailable: '+e.message,true)}
 }
 async function shared(){
+ if(!capability?.writable)throw Error('Persistent database writes are not enabled.');
  const [board,clauses]=await Promise.all([request('/api/law-board'),request('/api/constitution')]);
  if(!board.writable||!Array.isArray(board.records)||board.records.length!==100||!Array.isArray(clauses.clauses))throw Error('Shared database is not ready');
  const local=['localhost','127.0.0.1'].includes(location.hostname);
  if(board.storage!=='supabase-postgres'&&!local)throw Error('Supabase shared database is not connected');
- laws=new Map(board.records.map(r=>[r.law.id,r]));community=new Map(clauses.clauses.map(r=>[r.id,r]));connected=true;$('mode').textContent=local?'Local test database':'Shared Supabase';
+ laws=new Map(board.records.map(r=>[r.law.id,r]));community=new Map(clauses.clauses.map(r=>[r.id,r]));connected=true;restoreRequired=false;remember();$('mode').textContent=local?'Local test database':capability.mode==='preview-test'?'Isolated preview database':'Shared Supabase';
 }
 async function connect(){
- if(busy||preview||!selection)return;saveDraft();$('edit-form').hidden=true;$('edit-toggle').setAttribute('aria-expanded','false');busy=true;render();status('connection-status','Loading shared law revisions and community clauses…');
+ if(busy||checking||!selection)return;
+ if(!await probe()){status('connection-status',capability?.reason||'Database unavailable.',true);return}
+ saveDraft();$('edit-form').hidden=true;$('edit-toggle').setAttribute('aria-expanded','false');busy=true;render();status('connection-status','Loading shared law revisions and community clauses…');
  try{await request('/api/session');await shared();let s=selection;
   if(!valid(s)){s=initial;status('connection-status','Requested record is not visible; showing the editorial default.',true)}
   else status('connection-status','Shared advisory counts loaded. Practice activity was not uploaded.');
+  dbAction('Loaded from database');
   if(s.kind==='law'&&!s.revision)s={...s,revision:laws.get(s.id).law.versionId};navigate(s,{replace:true});
- }catch(e){status('connection-status','Could not connect: '+e.message+'. '+(connected?'Last loaded records remain visible.':'Practice mode remains available.'),true)}
+ }catch(e){restoreRequired=restoreRequired||remembered()||connected;capability={...capability,writable:false,reason:'Connection failed; recheck to retry.'};dbAction('Connection failed',true);status('connection-status','Could not connect: '+e.message+'. '+(restoreRequired?'Persistent actions blocked until reconnect.':'Practice mode remains available.'),true)}
  finally{busy=false;render()}
 }
 async function write(path,payload,statusId,onSuccess){
- if(!connected||busy||stale())return;const body=JSON.stringify(payload),fingerprint=path+'|'+body;
+ if(!canWrite()||busy||stale())return;const body=JSON.stringify(payload),fingerprint=path+'|'+body;
  if(lastWrite?.fingerprint!==fingerprint)lastWrite={fingerprint,key:crypto.randomUUID()};
- busy=true;render();status(statusId,'Submitting…');
- try{const session=await request('/api/session');await request(path,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':session.csrfToken,'Idempotency-Key':lastWrite.key},body});lastWrite=null;onSuccess();status(statusId,'Saved.');try{await shared();if(selection.kind==='law')await loadHistory()}catch(e){status(statusId,'Saved, but refresh failed: '+e.message,true)}}
- catch(e){status(statusId,'Submission not confirmed: '+e.message+' Retry unchanged or refresh the board.',true)}
- finally{busy=false;render()}
+ busy=true;render();status(statusId,'Saving to database…');dbAction('Saving…');
+ let committed=false;
+ try{
+  const session=await request('/api/session');
+  const result=await request(path,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':session.csrfToken,'Idempotency-Key':lastWrite.key},body});
+  committed=true;lastWrite=null;onSuccess();
+  const pending=path.endsWith('/update')||path.endsWith('/comment')&&result.status==='pending';
+  status(statusId,pending?'Saved to database · pending review.':'Saved to database.');dbAction('Saved to database');
+  await shared();
+  let detail=null;
+  if(selection.kind==='law'){detail=await request('/api/law-board/'+encodeURIComponent(selection.id));history=detail;renderDiscussion()}
+  let confirmed=false;
+  if(path.endsWith('/vote'))confirmed=row()?.myVote===payload.position&&(!payload.versionId||revision()===payload.versionId);
+  else if(path.endsWith('/comment'))confirmed=!!row()?.comments?.some(c=>c.id===result.id);
+  else if(path.endsWith('/update')){
+   const ids=new Set((result.amendments||[]).filter(a=>a.baseVersionId===payload.versionId&&a.reason===payload.reason&&a.proposed?.sharedGoal===payload.goal&&a.proposed?.illustrativeLocalOption===payload.implementation&&a.proposed?.risksAndSafeguards===payload.safeguards).map(a=>a.id));
+   confirmed=!!detail?.amendments?.some(a=>ids.has(a.id));
+  }
+  if(!confirmed)throw Error('Read-back did not match the saved response.');
+  dbAction('Saved & read-back verified');status(statusId,pending?'Saved to database and verified · pending review.':'Saved to database and verified.');
+ }catch(e){
+  if(committed){status(statusId,'Database acknowledged the save, but read-back failed: '+e.message,true);dbAction('Saved · verification incomplete',true)}
+  else{status(statusId,'Save not confirmed: '+e.message+' Retry unchanged to reuse the request key.',true);dbAction('Save not confirmed',true)}
+ }finally{busy=false;render()}
 }
 function openEdit(){
- if(busy||stale()||selection.kind!=='law')return;
+ if(busy||stale()||blocked()||selection.kind!=='law')return;
  const d=drafts.get(draftKey()),f=field();$('edit-text').value=d?.text??row().law[f.key];$('edit-text').maxLength=f.max;$('edit-reason').value=d?.reason??'';$('edit-consent').checked=false;$('edit-consent').parentElement.hidden=!connected;
  $('save-edit').textContent=connected?'Submit for review':'Add practice update';$('edit-form').hidden=false;$('edit-toggle').setAttribute('aria-expanded','true');$('edit-text').focus();
 }
@@ -185,32 +230,32 @@ $('previous').onclick=()=>{if(selection.kind==='law')selectLaw(selection.id,fiel
 $('next').onclick=()=>{if(selection.kind==='law')selectLaw(selection.id,fields[fields.indexOf(field())+1].id);else selectCommunity([...community.keys()][[...community.keys()].indexOf(selection.id)+1])};
 $('current-version').onclick=()=>navigate({...selection,revision:null},{replace:true});
 $('copy-link').onclick=async()=>{try{await navigator.clipboard.writeText(new URL(href(selection),location.origin).href);status('editor-status','Link copied.')}catch{status('editor-status','Copy the selection URL from the address bar.',true)}};
-$('connect').onclick=connect;$('edit-toggle').onclick=()=>{$('edit-form').hidden?openEdit():$('cancel-edit').click()};
+$('connect').onclick=connect;$('db-recheck').onclick=async()=>{if(!selection)return;if(connected||restoreRequired)await connect();else await probe()};$('edit-toggle').onclick=()=>{$('edit-form').hidden?openEdit():$('cancel-edit').click()};
 $('cancel-edit').onclick=()=>{saveDraft();$('edit-form').hidden=true;$('edit-toggle').setAttribute('aria-expanded','false');$('edit-toggle').focus()};
 for(const id of ['edit-text','edit-reason'])$(id).oninput=()=>{$('edit-consent').checked=false;saveDraft()};
 $('edit-form').onsubmit=e=>{
- e.preventDefault();if(busy||stale()||selection.kind!=='law')return;
+ e.preventDefault();if(busy||stale()||blocked()||selection.kind!=='law')return;
  const law=row().law,f=field(),text=$('edit-text').value.trim(),reason=$('edit-reason').value.trim();if(!text||!reason||text===law[f.key])return status('editor-status','Change the wording and explain why.',true);
  const proposed=Object.fromEntries(fields.map(item=>[item.key,item.id===f.id?text:law[item.key]]));
  const finish=()=>{drafts.delete(draftKey());$('edit-form').hidden=true;$('edit-toggle').setAttribute('aria-expanded','false');$('edit-consent').checked=false};
- if(!connected){const k=key(),a=practiceUpdates.get(k)||[];a.push({status:'practice · not public',reason,proposed});practiceUpdates.set(k,a);finish();renderDiscussion();status('editor-status','Practice update added. Nothing was sent.');return}
+ if(!connected){const k=key(),a=practiceUpdates.get(k)||[];a.push({status:'practice · not public',reason,proposed});practiceUpdates.set(k,a);finish();renderDiscussion();status('editor-status','Practice update added. Nothing was sent.');dbAction('Practice update · not sent');return}
  if(!$('edit-consent').checked)return status('editor-status','Confirm publication of this exact proposed update.',true);
  const payload={versionId:law.versionId,consent:true,reason,goal:proposed.sharedGoal,implementation:proposed.illustrativeLocalOption,safeguards:proposed.risksAndSafeguards};
  write('/api/law-board/'+law.id+'/update',payload,'editor-status',finish);
 };
 function vote(position){
- if(busy||stale())return;
- if(!connected){if(position===null)practiceVotes.delete(key());else practiceVotes.set(key(),position);renderDiscussion();status('review-status','Practice only · nothing was sent.');return}
+ if(busy||stale()||blocked())return;
+ if(!connected){if(position===null)practiceVotes.delete(key());else practiceVotes.set(key(),position);renderDiscussion();status('review-status','Practice only · nothing was sent.');dbAction('Practice vote · not sent');return}
  const isLaw=selection.kind==='law',path=isLaw?'/api/law-board/'+selection.id+'/vote':'/api/constitution/vote',payload=isLaw?{versionId:revision(),position}:{clauseId:selection.id,position};
  write(path,payload,'review-status',()=>{});
 }
 for(const b of document.querySelectorAll('[data-vote]'))b.onclick=()=>vote(b.dataset.vote);$('clear-vote').onclick=()=>vote(null);
 $('comment-text').oninput=()=>{$('comment-consent').checked=false};
 $('comment-form').onsubmit=e=>{
- e.preventDefault();if(busy||selection.kind!=='community')return;
+ e.preventDefault();if(busy||blocked()||selection.kind!=='community')return;
  const text=$('comment-text').value.trim();if(!text)return;
  const finish=()=>{$('comment-text').value='';$('comment-consent').checked=false};
- if(!connected){const k=key(),items=practiceComments.get(k)||[];items.unshift({text,status:'practice'});practiceComments.set(k,items);finish();renderDiscussion();status('review-status','Practice comment added. Nothing was sent.');return}
+ if(!connected){const k=key(),items=practiceComments.get(k)||[];items.unshift({text,status:'practice'});practiceComments.set(k,items);finish();renderDiscussion();status('review-status','Practice comment added. Nothing was sent.');dbAction('Practice comment · not sent');return}
  if(!$('comment-consent').checked)return status('review-status','Confirm publication of this exact comment.',true);
  write('/api/constitution/comment',{clauseId:selection.id,text,consent:true},'review-status',finish);
 };
@@ -222,10 +267,17 @@ window.addEventListener('popstate',()=>{const s=readRoute();if(busy){window.hist
  laws=new Map(catalog.goals.map(law=>[law.id,{law,votes:null,myVote:null}]));
  for(const name of catalog.categories){const option=el('option',name);option.value=name;$('category').append(option)}
  const requested=readRoute();
- if(!valid(requested)&&requested.kind==='community'&&!preview){try{await request('/api/session');await shared()}catch{}}
- const s=valid(requested)?requested:initial;
+ restoreRequired=remembered();
+ await probe();
+ if(capability?.writable&&(restoreRequired||(!valid(requested)&&requested.kind==='community'))){
+  try{await request('/api/session');await shared();dbAction('Restored from database')}
+  catch(e){restoreRequired=true;dbAction('Restore failed',true)}
+ }
+ let s=valid(requested)?requested:initial;
+ if(connected&&s.kind==='law'&&!s.revision)s={...s,revision:laws.get(s.id).law.versionId};
  if(!valid(requested))status('connection-status','Requested record is not available; showing the default proposal.',true);
- else status('connection-status',connected?'Shared record loaded. Advisory positions are per browser session.':preview?'Deploy preview · practice only, no shared writes.':'Practice mode · connect explicitly to load and review shared data.');
- $('mode').textContent=connected?'Shared database':preview?'Preview · practice':'Editorial catalog · practice';
+ else if(restoreRequired)status('connection-status','Could not restore shared data. Reconnect before submitting changes.',true);
+ else status('connection-status',connected?'Shared record restored. Advisory positions are per browser session.':capability?.writable?'Connect shared data to save changes. Until then, edits and votes are practice only.':'Practice only · '+(capability?.reason||'Database unavailable.'));
+ $('mode').textContent=connected?(capability.mode==='preview-test'?'Isolated preview database':'Shared database'):'Editorial catalog · practice';
  $('workspace').inert=false;navigate(s,{replace:true});
  }catch(e){status('connection-status','Could not load workspace: '+e.message,true);$('mode').textContent='Catalog unavailable'}})();

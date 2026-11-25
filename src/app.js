@@ -1,3 +1,4 @@
+import {capability} from './workspace-persistence.js';
 import {Problem, hash} from './store.js';
 import {timingSafeEqual} from 'node:crypto';
 
@@ -91,6 +92,7 @@ export function createApp({store, email, notion = null, morphlab = null, moderat
       }
     }
 
+    if (method === 'GET' && path === '/api/workspace-status') return response(capability(health));
     if (method === 'GET' && path === '/api/health') {
       const {goals} = await store.catalog();
       return response({status: 'ok', storage: health.storage, runtime: health.runtime, schemaVersion: 1, seedCount: 100, proposalCount: goals.length, catalogHash: store.catalogHash});

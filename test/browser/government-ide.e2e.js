@@ -55,3 +55,41 @@ test('mobile fits viewport and homepage opens selected community clause',async({
  await expect(page.locator('#record-id')).toContainText('S-002');
  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
 });
+
+test('persistent workspace verifies votes, updates and comments after reload',async({page})=>{
+ await page.goto('/constitution?law=HGA-012&clause=implementation');
+ await expect(page.locator('#db-storage')).toHaveText('Local PGlite test DB');
+ await page.locator('#connect').click();
+ await expect(page.locator('#db-write')).toContainText('Persistent');
+ await page.locator('[data-vote="support"]').click();
+ await expect(page.locator('#db-last')).toHaveText('Saved & read-back verified');
+ await page.reload();
+ await expect(page.locator('#db-write')).toContainText('Persistent');
+ await expect(page.locator('[data-vote="support"]')).toHaveAttribute('aria-pressed','true');
+ await page.locator('#edit-toggle').click();
+ await page.locator('#edit-text').fill('Test-only proposal wording for persistence verification.');
+ await page.locator('#edit-reason').fill('Verify database persistence after refresh.');
+ await page.locator('#edit-consent').check();
+ await page.locator('#save-edit').click();
+ await expect(page.locator('#db-last')).toHaveText('Saved & read-back verified');
+ await page.reload();
+ await expect(page.locator('#discussion-list')).toContainText('Verify database persistence after refresh.');
+ await expect(page.locator('#published-text')).not.toContainText('Test-only proposal wording');
+ await page.locator('#show-community').click();
+ await page.locator('#comment-text').fill('Test-only persistence comment.');
+ await page.locator('#comment-consent').check();
+ await page.locator('#post-comment').click();
+ await expect(page.locator('#db-last')).toHaveText('Saved & read-back verified');
+ await page.reload();
+ await expect(page.locator('#discussion-list')).toContainText('Test-only persistence comment.');
+ await expect(page.locator('#discussion-list')).toContainText('pending moderation');
+});
+test('unavailable backend stays visibly practice-only without POST requests',async({page})=>{
+ await page.route('**/api/workspace-status',route=>route.fulfill({status:200,json:{storage:'pglite',runtime:'fly-machine',mode:'practice',writable:false,reason:'Preview writes disabled.'}}));
+ const posts=[];page.on('request',r=>{if(r.method()==='POST')posts.push(r.url())});
+ await page.goto('/constitution');
+ await expect(page.locator('#db-write')).toHaveText('Practice · not saved');
+ await page.locator('[data-vote="support"]').click();
+ await expect(page.locator('#db-last')).toHaveText('Practice vote · not sent');
+ expect(posts).toEqual([]);
+});
