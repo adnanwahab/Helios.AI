@@ -10,7 +10,7 @@ for(let i=0;i<AXES.length;i++){
   const select=document.createElement('select');select.id=label.htmlFor;
   for(let v=-2;v<=2;v++){const o=document.createElement('option');o.value=v;o.textContent=v===0?'0 · unknown':v>0?'+'+v:String(v);select.append(o);}
   const reason=document.createElement('small');
-  select.addEventListener('change',()=>{effects[i]=Number(select.value);reasons[i]='Manually assessed';reason.textContent=reasons[i];dirty=false;save();});
+  select.addEventListener('change',()=>{effects[i]=Number(select.value);reasons[i]='Manually assessed';reason.textContent=reasons[i];save();});
   wrap.append(label,select,reason);$('axes').append(wrap);axisInputs.push(select);axisReasons.push(reason);
 }
 function draft(){return {bill:$('bill').value,effects:[...effects],reasons:[...reasons],population:Number($('population').value),day:Number($('day').value),baseline:$('baseline').value,dirty};}
@@ -95,7 +95,7 @@ async function run(){
   busy=true;stop=false;render();status('Initializing compute backend…');
   try {
     if(!gpu){try{gpu=await createGPU();}catch{gpu=null;}}
-    backend=gpu?'WebGPU':'CPU fallback';
+    backend=gpu?'WebGPU':'CPU fallback';let lastPaint=0;
     while(!stop&&active.done<active.population){
       const r=active,count=Math.min(r.population-r.done,gpu?GPU_BATCH:CPU_BATCH);
       const req={start:r.done,count,effects:r.effects,prior:r.prior,compare:r.compare,seed:r.seed,day:r.day};
@@ -103,7 +103,7 @@ async function run(){
       try{bins=gpu?await gpu.batch(req):cpuBatch(req);assertBatch(bins,count,r.compare);}
       catch(e){if(gpu){gpu.close();gpu=null;backend='CPU fallback after GPU failure';continue;}throw e;}
       for(let i=0;i<BINS;i++)r.bins[i]+=bins[i];r.done+=count;
-      assertBatch(r.bins,r.done,r.compare);save();render();status(backend+' · '+pct(r.done,r.population)+' complete');
+      assertBatch(r.bins,r.done,r.compare);const now=performance.now();if(now-lastPaint>=250||r.done===r.population||stop){save();render();status(backend+' · '+pct(r.done,r.population)+' complete');lastPaint=now;}
       await new Promise(resolve=>setTimeout(resolve,0));
     }
     if(active.done===active.population){
