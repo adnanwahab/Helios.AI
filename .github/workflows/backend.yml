@@ -14,6 +14,8 @@ jobs:
           bun-version: 1.4.2
       - run: bun install --frozen-lockfile
       - run: bun --no-env-file test
+      - name: Verify launch dashboard and status documentation agree
+        run: node scripts/launch-status.mjs --check
       - run: node --check public/goals.js
       - run: node --check public/eta.js
       - run: node --check scripts/pin-fly-memory.mjs

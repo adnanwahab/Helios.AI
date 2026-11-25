@@ -5,6 +5,7 @@ const $=id=>document.getElementById(id),el=(tag,text,cls)=>{const n=document.cre
 const isStatic=document.querySelector('meta[name="helios-mode"]').content==='static';
 const fmt=x=>Number(x).toLocaleString(undefined,{maximumFractionDigits:1});
 let seed=[],records=new Map(),selected=location.hash==='#childcare-budget'?'HGA-031':cannabisDraft.id,connected=false,connecting=false,writing=false,loadingDetail=0,csrf=null,lastWrite=null,history=null;
+let accountRevision=0,accountKey='guest||false',accountRefreshPending=false;
 const scenario=new Map(),drafts=new Map();
 function status(message,error=false){$('law-board-status').textContent=message;$('law-board-status').classList.toggle('error',error)}
 function setDetailStatus(message,error=false){$('law-detail-status').textContent=message;$('law-detail-status').classList.toggle('error',error)}
@@ -129,6 +130,7 @@ $('childcare-draft-button').addEventListener('click',()=>{
 function drawDetail({resetDraft=true}={}){
  const row=current(),law=row?.law;if(!law)return;
  const draft=isCannabisDraft();
+ const ide=$('atlas-ide-link');if(ide){ide.hidden=draft;if(!draft){const p=new URLSearchParams({law:law.id,clause:'implementation'});if(connected&&law.versionId)p.set('revision',law.versionId);ide.href='/constitution?'+p.toString()}}
  for(const id of ['law-votes','law-vote-controls','law-generic-sim','law-history-section','law-update-section'])$(id).hidden=draft;
  if(draft){
   $('law-id').textContent='Featured law 01 · New draft';$('law-title').textContent=law.title;$('law-goal').textContent=law.sharedGoal;$('law-version').textContent='Unpublished draft';
@@ -161,8 +163,13 @@ function drawDetail({resetDraft=true}={}){
  drawChildcare();drawCannabis();renderHistory()
 }
 async function request(path,options={}){
- const response=await fetch(path,{credentials:'same-origin',cache:'no-store',signal:AbortSignal.timeout(15000),...options});
+ const headers=new Headers(options.headers),accountHeaders=await window.HeliosAccount?.fetchHeaders('votes')||{};
+ for(const [key,value] of Object.entries(accountHeaders))headers.set(key,value);
+ const revision=accountRevision;
+ const response=await fetch(path,{credentials:'same-origin',cache:'no-store',signal:AbortSignal.timeout(15000),...options,headers});
+ if(revision!==accountRevision)throw Error('Your account changed. Refresh the board before trying again.');
  const data=await response.json().catch(()=>null);
+ if(revision!==accountRevision)throw Error('Your account changed. Refresh the board before trying again.');
  if(!response.ok||!data)throw Error(data?.error||'Shared database unavailable (HTTP '+response.status+')');
  return data
 }
@@ -185,28 +192,43 @@ async function loadBoard({preserveDraft=true}={}){
  for(const [id,d] of drafts)if(d.versionId!==incoming.get(id)?.law.versionId)drafts.delete(id);
  records=incoming;connected=true;$('law-connect').hidden=true;$('law-refresh').hidden=false;
  $('law-source').textContent=result.storage==='supabase-postgres'?'Supabase · shared advisory board':'Local test database';
- status('Shared counts loaded. Votes are per browser session, not official votes or a representative poll.');
+ status('Shared counts loaded. Votes are per account or guest browser session; they are advisory, not official votes or a representative poll.');
  drawCatalog();drawDetail({resetDraft:true});await loadHistory()
 }
+async function refreshAccountVotes(){
+ if(!connected)return;
+ if(writing||connecting){accountRefreshPending=true;return;}
+ accountRefreshPending=false;connecting=true;
+ try{await loadBoard()}catch(error){status('Account view could not refresh: '+error.message,true)}
+ finally{connecting=false;if(accountRefreshPending)refreshAccountVotes()}
+}
+window.addEventListener('helios:auth-changed',event=>{
+ const state=event.detail||{},key=[state.status,state.user?.id||'',state.persistence?.votes===true].join('|');
+ if(key===accountKey)return;accountKey=key;accountRevision++;csrf=null;lastWrite=null;
+ if(!connected)return;
+ for(const row of records.values())row.myVote=null;
+ drawDetail({resetDraft:false});refreshAccountVotes();
+});
 $('law-connect').addEventListener('click',async()=>{
  if(isStatic||connecting||connected)return;connecting=true;$('law-connect').disabled=true;status('Connecting to the shared civic database…');
  try{const s=await request('/api/session');if(!s.csrfToken)throw Error('No valid session');csrf=s.csrfToken;await loadBoard()}
  catch(e){status('Shared database not connected: '+e.message+' You can still explore all 100 simulations.',true)}
- finally{connecting=false;$('law-connect').disabled=false}
+ finally{connecting=false;$('law-connect').disabled=false;if(accountRefreshPending)refreshAccountVotes()}
 });
-$('law-refresh').addEventListener('click',async()=>{if(writing||connecting)return;connecting=true;try{await loadBoard()}catch(e){status('Refresh failed: '+e.message,true)}finally{connecting=false}});
+$('law-refresh').addEventListener('click',async()=>{if(writing||connecting)return;connecting=true;try{await loadBoard()}catch(e){status('Refresh failed: '+e.message,true)}finally{connecting=false;if(accountRefreshPending)refreshAccountVotes()}});
 async function write(action,payload){
- if(!connected||writing||connecting||isCannabisDraft())return;const id=selected,body=JSON.stringify(payload),fingerprint=id+'|'+action+'|'+body;
+ if(!connected||writing||connecting||isCannabisDraft())return;const id=selected,body=JSON.stringify(payload),fingerprint=id+'|'+action+'|'+body,revision=accountRevision;
  if(lastWrite?.fingerprint!==fingerprint)lastWrite={fingerprint,key:crypto.randomUUID()};
  writing=true;drawDetail({resetDraft:false});setDetailStatus('Submitting…');
  try{
   const session=await request('/api/session');csrf=session.csrfToken;
+  if(revision!==accountRevision)throw Error('Your account changed. Review the action and try again.');
   await request('/api/law-board/'+id+'/'+action,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrf,'Idempotency-Key':lastWrite.key},body});
   lastWrite=null;if(action==='update')drafts.delete(id);
-  setDetailStatus(action==='vote'?'Advisory position saved.':'Public update proposed; existing wording remains unchanged pending review.');
+  setDetailStatus(action==='vote'?(window.HeliosAccount?.isSavingWithAccount('votes')?'Advisory position saved with your account.':'Advisory position saved for this guest browser session.'):'Public update proposed; existing wording remains unchanged pending review.');
   try{await loadBoard({preserveDraft:action!=='update'})}catch(e){status('Submission saved, but the board refresh failed: '+e.message,true)}
  }catch(e){setDetailStatus('Submission not confirmed: '+e.message+' Refresh if the version changed; retry unchanged to reuse the request key.',true)}
- finally{writing=false;drawDetail({resetDraft:false})}
+ finally{writing=false;drawDetail({resetDraft:false});if(accountRefreshPending)refreshAccountVotes()}
 }
 for(const b of document.querySelectorAll('[data-law-vote]'))b.addEventListener('click',()=>{const law=currentLaw();if(law)write('vote',{versionId:law.versionId,position:b.dataset.lawVote})});
 $('law-clear-vote').addEventListener('click',()=>{const law=currentLaw();if(law)write('vote',{versionId:law.versionId,position:null})});
