@@ -50,8 +50,17 @@ form.onsubmit=async event=>{event.preventDefault();const submit=$('publishPropos
  const existing=goals.findIndex(x=>x.id===record.law.id);if(existing>=0)goals[existing]=record.law;else goals.push(record.law);const wasAmendment=Boolean(editorTarget);editor.close();mode='goals';category='all';query='';$('searchInput').value='';render();open(record.law,$('newProposal'));$('recordStatus').textContent=wasAmendment?'Amendment saved for review. The current revision is unchanged.':'Proposal saved to the shared library. It will survive browser refreshes and server restarts.';libraryStatus.textContent=`Connected · ${goals.length} stored proposals. ${wasAmendment?'Amendment saved for review.':'New proposal saved.'}`;
  const deep=new URL(location.href);deep.searchParams.set('goal',record.law.id);history.replaceState(null,'',deep);submissionKey=null;
  }catch(error){$('editorStatus').textContent=error.message+' Your text is still here; review and retry.';}finally{submit.disabled=false;}};
-(async()=>{try{const remote=await api('/api/catalog');if(remote.metadata?.collectionId!==data.metadata.collectionId||!Array.isArray(remote.goals))throw Error('The library collection did not match this page.');goals.splice(0,goals.length,...remote.goals);connected=true;$('newProposal').disabled=false;libraryStatus.textContent=`Connected · ${goals.length} stored proposals · original 100 editorial goals preserved.`;render();}catch{libraryStatus.textContent='Offline preview · server persistence is unavailable. Local notes still stay on this device.';}
- const selected=new URLSearchParams(location.search).get('goal');if(selected){const item=goals.find(x=>x.id===selected);if(item)open(item,$('newProposal'));}
-})();
+const branchPreview=location.hostname.startsWith('deploy-preview-')&&location.hostname.endsWith('.netlify.app');
+async function connectLibrary(){
+ const retry=$('retryLibrary');retry.hidden=true;
+ if(branchPreview){libraryStatus.textContent='PR preview · editorial catalog and local notes only; production writes disabled.';return}
+ libraryStatus.textContent='Connecting to the shared proposal library…';
+ try{const remote=await api('/api/catalog');if(remote.metadata?.collectionId!==data.metadata.collectionId||!Array.isArray(remote.goals))throw Error('The library collection did not match this page.');goals.splice(0,goals.length,...remote.goals);connected=true;$('newProposal').disabled=false;libraryStatus.textContent='Connected · '+goals.length+' stored proposals · original 100 editorial goals preserved.';render();}
+ catch{libraryStatus.textContent='Offline preview · server persistence is unavailable. Editorial goals and local notes still work.';retry.hidden=false}
+}
+$('retryLibrary').addEventListener('click',connectLibrary);
+const selected=new URLSearchParams(location.search).get('goal');if(selected){const item=goals.find(x=>x.id===selected);if(item)open(item,$('newProposal'))}
+connectLibrary().then(()=>{if(selected&&!focused){const item=goals.find(x=>x.id===selected);if(item)open(item,$('newProposal'))}else if(focused&&connected)void loadHistory(focused)});
+
 
 })();
