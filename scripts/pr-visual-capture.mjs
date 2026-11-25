@@ -53,6 +53,17 @@ try {
     viewport: {width: 1440, height: 900}, deviceScaleFactor: 1,
     reducedMotion: 'reduce',
   });
+  // The fixed synthetic report is part of the local static build. Capture its exact route.
+  const labResponse = await page.goto(base + '/consensus-lab/', {waitUntil:'domcontentloaded'});
+  if (!remote || (labResponse?.ok() && await page.locator('#consensus-app').count())) {
+    if (!labResponse?.ok()) throw new Error('Consensus Lab route failed');
+    await page.locator('#agent-grid button').first().waitFor({state:'visible', timeout:15000});
+    if (await page.locator('#agent-grid button').count() !== 100) throw new Error('Expected 100 synthetic agent buttons');
+    await page.screenshot({path:join(output,'consensus-lab-desktop.png'),fullPage:true,animations:'disabled'});
+    await page.setViewportSize({width:390,height:844});
+    await page.screenshot({path:join(output,'consensus-lab-mobile.png'),fullPage:true,animations:'disabled'});
+    await page.setViewportSize({width:1440,height:900});
+  }
   // Capture the new workspace first so its artifacts survive unrelated legacy failures.
   const workspaceResponse=await page.goto(base+'/constitution?law=HGA-012&clause=implementation',{waitUntil:'domcontentloaded'});
   if(workspaceResponse?.ok()&&await page.locator('#explorer-title').count()){
