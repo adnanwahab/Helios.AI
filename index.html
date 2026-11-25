@@ -295,7 +295,7 @@ function currentIdea(){
  if(!$('proposal-form').hidden)return {title:$('title').value,issue:$('issue').value,goal:$('goal').value,option:$('option').value,safeguards:$('safeguards').value,measures:$('measures').value,category:$('public-category').value,review:true};
  return null;
 }
-function syncActive(){activeIdea(currentIdea())}
+function syncActive(){const idea=currentIdea();if(idea?.review){const host=$('idea-experiment');const target=idea.related?$('decision-panel'):$('idea-experiment-anchor');if(idea.related){target.after(host)}else target.after(host)}activeIdea(idea)}
 function showInterpretation(){
  const box=$('idea-interpretation');box.replaceChildren();if(!interpretation)return;
  const h=document.createElement('h2');h.textContent='Choose a concern to explore';box.append(h);
@@ -336,7 +336,7 @@ $('measures').value='Progress toward the intended outcome\nParticipation and equ
 $('consent').checked=false;setPublish();message('synthesis-status','');showNewProposal();show(3)});
 for(const b of document.querySelectorAll('[data-back]'))b.addEventListener('click',()=>{if(!busy&&!submitted)show(Number(b.dataset.back))});
 $('consent').addEventListener('change',setPublish);
-$('proposal-form').addEventListener('input',e=>{if(e.target!==$('consent')){$('consent').checked=false;setPublish()}});
+$('proposal-form').addEventListener('input',e=>{if(e.target!==$('consent')&&!e.target.closest('#idea-experiment')){$('consent').checked=false;setPublish()}});
 function getProposal(){const p={title:$('title').value.trim(),category:$('public-category').value,sharedGoal:$('goal').value.trim(),illustrativeLocalOption:$('option').value.trim(),risksAndSafeguards:$('safeguards').value.trim(),suggestedMeasures:$('measures').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean)};if(!p.title||!p.sharedGoal||!p.illustrativeLocalOption||!p.risksAndSafeguards||!categories.includes(p.category)||!p.suggestedMeasures.length||p.suggestedMeasures.length>8||p.suggestedMeasures.some(s=>s.length>240))throw Error('Complete all proposal fields and provide 1–8 measures, each at most 240 characters.');return p}
 $('download').addEventListener('click',()=>{try{const p=getProposal();const url=URL.createObjectURL(new Blob([JSON.stringify(p,null,2)+'\n'],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='helios-proposal-draft.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);message('publish-status','Public proposal draft downloaded. Nothing was submitted.')}catch(err){message('publish-status',err.message,true)}});
 async function jsonRequest(path,options){const response=await fetch(path,{credentials:'same-origin',cache:'no-store',signal:AbortSignal.timeout(20000),...options});const data=await response.json().catch(()=>null);if(!response.ok)throw Error(typeof data?.error==='string'?data.error:'Request failed (HTTP '+response.status+').');if(!data)throw Error('The server did not confirm a JSON response.');return data}
@@ -370,9 +370,9 @@ function setMode(next){if(busy)return;mode=next;$('citizen-view').hidden=next!==
 // Track the existing three-step citizen flow without changing the journal or submission API.
 const originalShow=show;show=function(step){citizenStep=step;originalShow(step);syncActive()};
 $('synthesis-form').addEventListener('input',syncActive);
-$('proposal-form').addEventListener('input',syncActive);
+$('proposal-form').addEventListener('input',e=>{if(!e.target.closest('#idea-experiment'))syncActive()});
 $('public-category').addEventListener('change',syncActive);
-$('idea-experiment-anchor').replaceWith($('idea-experiment'));
+
 $('mode-citizen').addEventListener('click',()=>setMode('citizen'));$('mode-government').addEventListener('click',()=>setMode('government'));
 function showNewProposal(){selectedDecision=null;$('decision-panel').hidden=true;$('proposal-form').hidden=false;$('heading-3').textContent=originalHeading;$('decision-lede').textContent=originalLede}
 function chooseRelated(p){selectedDecision=p;$('decision-panel').hidden=false;$('proposal-form').hidden=true;$('receipt').hidden=true;$('heading-3').textContent='Contribute to a shared proposal.';$('decision-lede').textContent='Decide whether to support, question or improve the existing idea.';recordSummary($('decision-record'),p,true);const href=recordPath(p);$('amend-link').hidden=!href;if(href)$('amend-link').href=href;else $('amend-link').removeAttribute('href');syncPosition();show(3)}
