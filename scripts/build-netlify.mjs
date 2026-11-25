@@ -1,6 +1,6 @@
 // Copies the static pages into dist/ for Netlify. Only these files are published;
 // the source tree, data, scripts and .git stay out of the site.
-import {copyFile, cp, mkdir, rm, writeFile} from 'node:fs/promises';
+import {copyFile, cp, mkdir, readFile, rm, writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {buildAccount} from './build-account.mjs';
 import {buildPlanDocument} from '../src/notion.js';
@@ -11,6 +11,8 @@ const out = join(root, 'dist');
 const pages = [
   'index.html',
   'research.html',
+  'contribute.html',
+  'launch-dashboard.html',
   'law-atlas.html',
   'welcome.html',
   'helios_mail.html',
@@ -48,6 +50,17 @@ const pages = [
 await rm(out, {recursive: true, force: true});
 await mkdir(out, {recursive: true});
 for (const name of pages) await copyFile(join(root, name), join(out, name));
+// Preview deployments must not advertise the production contribution inbox.
+// Stamp only the built homepage; local and Fly source pages keep their live mode.
+const previewBuild = ['deploy-preview','branch-deploy'].includes(process.env.CONTEXT) ||
+  (process.env.NETLIFY === 'true' && process.env.CONTEXT !== 'production');
+if (previewBuild) {
+  const homepage = join(out, 'index.html');
+  const html = await readFile(homepage, 'utf8');
+  const marker = '<meta name="helios-contribution-mode" content="live">';
+  if (html.split(marker).length !== 2) throw new Error('Missing unique contribution mode marker');
+  await writeFile(homepage, html.replace(marker, '<meta name="helios-contribution-mode" content="preview">'));
+}
 await copyFile(join(root, 'docs', 'legacy-home.html'), join(out, 'experiments.html'));
 await cp(join(root, 'public'), join(out, 'public'), {recursive: true});
 await buildAccount(root, out);

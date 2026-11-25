@@ -153,20 +153,36 @@ export function createApp({store, email, notion = null, morphlab = null, moderat
       try { return response(await notion.publish(), 201); }
       catch (error) { if (error.status === 503) throw new Problem(503, error.message); throw new Problem(502, 'Notion rejected the page: ' + (error.message || 'unknown error')); }
     }
+    if(method==='GET'&&path==='/api/contributions'){
+      const session=await store.authenticate(cookie);
+      return response(await store.contributions.mine(session?.id));
+    }
+    if(method==='GET'&&path==='/api/contributions/inbox'){
+      if(!adminToken||!equal(request.headers.get('authorization'),'Bearer '+adminToken))throw new Problem(403,'Maintainer authorization required.');
+      return response(await store.contributions.inbox());
+    }
+    const contributionStatus=path.match(/^\/api\/contributions\/([a-f0-9-]{36})\/status$/);
     const match = path.match(/^\/api\/laws\/([A-Z0-9-]+)(?:\/(amendments)(?:\/([A-Z0-9a-f-]+)\/(accept))?)?$/i);
     if (method === 'GET' && match && !match[2]) return response(await store.detail(match[1]));
     if (method !== 'POST') return response({error: 'Not found'}, 404);
 
-    if (![url.origin, ...origins].includes(request.headers.get('origin'))) throw new Problem(403, 'A same-origin request is required.');
+    // Operator status updates use the existing server-side maintainer authorization,
+    // not GitHub credentials. Public message writes retain normal session and CSRF checks.
+    if(contributionStatus){
+      if(!adminToken||!equal(request.headers.get('authorization'),'Bearer '+adminToken))throw new Problem(403,'Maintainer authorization required.');
+      const origin=request.headers.get('origin');
+      if(origin&&![url.origin,...origins].includes(origin))throw new Problem(403,'A same-origin request is required.');
+    }else if (![url.origin, ...origins].includes(request.headers.get('origin'))) throw new Problem(403, 'A same-origin request is required.');
     if (!request.headers.get('content-type')?.toLowerCase().startsWith('application/json')) throw new Problem(415, 'Use application/json.');
-    const session = await store.authenticate(cookie);
-    if (!session || !equal(request.headers.get('x-csrf-token'), session.csrf)) throw new Problem(403, 'Reload the page to establish a valid session.');
-    const actor = identity.actorId ?? session.id;
-    const researchWritePath = path.startsWith('/api/research/');
-    await store.limit((researchWritePath ? 'research-session:' : 'session:') + session.id, researchWritePath ? 40 : 20, 60000);
-    await store.limit((researchWritePath ? 'research-ip:' : 'ip:') + hash(remoteIP), researchWritePath ? 12000 : 120, 3600000);
-    if (path === '/api/research/rooms') await store.limit('research-create:' + session.id, 10, 3600000);
-    if (identity.actorId) await store.limit('account:' + identity.actorId, 60, 60000);
+    const session = contributionStatus?null:await store.authenticate(cookie);
+    if(!contributionStatus){
+      if (!session || !equal(request.headers.get('x-csrf-token'), session.csrf)) throw new Problem(403, 'Reload the page to establish a valid session.');
+      const researchWritePath = path.startsWith('/api/research/');
+      await store.limit((researchWritePath ? 'research-session:' : 'session:') + session.id, researchWritePath ? 40 : 20, 60000);
+      await store.limit((researchWritePath ? 'research-ip:' : 'ip:') + hash(remoteIP), researchWritePath ? 12000 : 120, 3600000);
+      if (path === '/api/research/rooms') await store.limit('research-create:' + session.id, 10, 3600000);
+      if (identity.actorId) await store.limit('account:' + identity.actorId, 60, 60000);
+    }else await store.limit('contribution-operator:'+hash(remoteIP),120,60000);
     if (Number(request.headers.get('content-length') || 0) > 32768) throw new Problem(413, 'Submission is too large.');
     const reader = request.body?.getReader();
     let size = 0; const chunks = [];
@@ -180,12 +196,21 @@ export function createApp({store, email, notion = null, morphlab = null, moderat
     let body;
     try { body = JSON.parse(Buffer.concat(chunks).toString('utf8')); } catch { throw new Problem(400, 'Invalid JSON.'); }
 
+    if(contributionStatus)return response(await store.contributions.update(contributionStatus[1],body));
+    const actor = identity.actorId ?? session.id;
     const researchWrite = await research.write(path, body, session, request.headers.get('idempotency-key'), actor);
     if (researchWrite) return researchWrite;
     // A browser can switch accounts without changing its CSRF session. Bind
     // retry receipts to the verified actor to prevent cross-account replays.
     const writeHash = hash((identity.actorId ? identity.actorId + '\n' : '') + path + JSON.stringify(body));
 
+    if(path==='/api/contributions'){
+      const key=request.headers.get('idempotency-key');
+      if(!key||!/^[a-zA-Z0-9-]{16,80}$/.test(key))throw new Problem(400,'A unique Idempotency-Key is required.');
+      await store.limit('contribution-session:'+session.id,8,3600000);
+      await store.limit('contribution-ip:'+hash(remoteIP),40,3600000);
+      return response(await store.idempotent(session.id,key,writeHash,q=>store.contributions.createIn(q,body,session.id)),201);
+    }
     if (lawBoardPath?.[2]) {
       const key=request.headers.get('idempotency-key');
       if(!key||!/^[a-zA-Z0-9-]{16,80}$/.test(key))throw new Problem(400,'A unique Idempotency-Key is required.');

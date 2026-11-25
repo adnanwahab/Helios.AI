@@ -5,6 +5,7 @@ test('HGA-090 links to the standalone futures experience',async({page,context})=
  await expect(page.locator('#law-tiles .law-tile')).toHaveCount(101);
  await expect(page.locator('#law-tiles .law-tile[data-law^="HGA-"]')).toHaveCount(100);
  await expect(page.locator('#law-tiles .law-tile[data-law="DRAFT-CANNABIS"]')).toHaveCount(1);
+ await expect(page.locator('#law-tiles [data-law="DRAFT-CANNABIS"]')).toContainText('Voting not open');
  await page.locator('#law-search').fill('HGA-090');
  await page.locator('[data-law="HGA-090"]').click();
  const link=page.locator('#law-assembly-selected');
