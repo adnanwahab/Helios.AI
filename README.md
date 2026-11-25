@@ -1,5 +1,8 @@
 # Helios.AI
 
+# We welcome contributors
+pls edit the readme and then we will regenerate the html.
+
 ## Consensus World — bill revision workshop
 
 Open [Consensus World](https://helioshtml.com/public/consensus-world) and select **Improve draft bill** or, after a completed round, **Address remaining objections**. Choose revision modes, generate a local draft or explicitly opt into the configured AI provider, edit the proposed text and policy assumptions, then keep the revision. Unrun originals are retained locally in the draft archive, separate from completed simulations. Complete the original round first to compare exactly the same population, seed and simulated day. The quick preview evaluates 10,000 matching synthetic IDs; it is not a survey. Diagnostics report the lowest weighted contribution among non-yes agents, not actual people's reasons. A high score does not demonstrate real consent or policy effectiveness.
