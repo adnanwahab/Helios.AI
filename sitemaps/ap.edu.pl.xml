@@ -1,5 +1,0 @@
-<br />
-<b>Warning</b>:  get_class() expects parameter 1 to be object, null given in <b>/home/vehzsuumbr/domains/ap.edu.pl/public_html/wp-content/plugins/loftloader-pro/inc/class-loftloader-front.php</b> on line <b>296</b><br />
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="https://ap.edu.pl/wp-sitemap-index.xsl" ?>
-<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><sitemap><loc>https://ap.edu.pl/wp-sitemap-posts-post-1.xml</loc></sitemap><sitemap><loc>https://ap.edu.pl/wp-sitemap-posts-page-1.xml</loc></sitemap><sitemap><loc>https://ap.edu.pl/wp-sitemap-posts-popupbuilder-1.xml</loc></sitemap><sitemap><loc>https://ap.edu.pl/wp-sitemap-taxonomies-category-1.xml</loc></sitemap><sitemap><loc>https://ap.edu.pl/wp-sitemap-users-1.xml</loc></sitemap></sitemapindex>

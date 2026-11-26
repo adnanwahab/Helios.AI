@@ -1,6 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?><?xml-stylesheet type='text/xml' href='//www.upike.edu/?wds_sitemap_styling=1&#038;template=sitemapIndexBody'?><!-- SMARTCRAWL SITEMAP -->
-<sitemapindex
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/siteindex.xsd"
-	xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-			<sitemap><loc>https://www.upike.edu/post-sitemap.xml</loc></sitemap>			<sitemap><loc>https://www.upike.edu/page-sitemap.xml</loc></sitemap>			<sitemap><loc>https://www.upike.edu/calendar_event-sitemap.xml</loc></sitemap>			<sitemap><loc>https://www.upike.edu/calendar_event-sitemap2.xml</loc></sitemap>			<sitemap><loc>https://www.upike.edu/calendar_event-sitemap3.xml</loc></sitemap>			<sitemap><loc>https://www.upike.edu/da_image-sitemap.xml</loc></sitemap>			<sitemap><loc>https://www.upike.edu/extras-sitemap.xml</loc></sitemap>	</sitemapindex>

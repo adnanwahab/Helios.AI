@@ -1,6 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?><?xml-stylesheet type='text/xml' href='//www.sheltonstate.edu/?wds_sitemap_styling=1&#038;template=sitemapIndexBody&#038;whitelabel=1'?><!-- SMARTCRAWL SITEMAP -->
-<sitemapindex
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/siteindex.xsd"
-	xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-			<sitemap><loc>https://www.sheltonstate.edu/post-sitemap.xml</loc></sitemap>			<sitemap><loc>https://www.sheltonstate.edu/page-sitemap.xml</loc></sitemap>			<sitemap><loc>https://www.sheltonstate.edu/tribe_venue-sitemap.xml</loc></sitemap>			<sitemap><loc>https://www.sheltonstate.edu/tribe_organizer-sitemap.xml</loc></sitemap>			<sitemap><loc>https://www.sheltonstate.edu/tribe_events-sitemap.xml</loc></sitemap>			<sitemap><loc>https://www.sheltonstate.edu/cpt_staff_lst-sitemap.xml</loc></sitemap>			<sitemap><loc>https://www.sheltonstate.edu/category-sitemap.xml</loc></sitemap>			<sitemap><loc>https://www.sheltonstate.edu/post_tag-sitemap.xml</loc></sitemap>			<sitemap><loc>https://www.sheltonstate.edu/tribe_events_cat-sitemap.xml</loc></sitemap>	</sitemapindex>

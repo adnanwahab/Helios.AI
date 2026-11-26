@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="https://www.juw.edu.pk/wp-sitemap-index.xsl" ?>
-<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><sitemap><loc>https://www.juw.edu.pk/wp-sitemap-posts-post-1.xml</loc></sitemap><sitemap><loc>https://www.juw.edu.pk/wp-sitemap-posts-page-1.xml</loc></sitemap><sitemap><loc>https://www.juw.edu.pk/wp-sitemap-posts-znpb_template_mngr-1.xml</loc></sitemap><sitemap><loc>https://www.juw.edu.pk/wp-sitemap-taxonomies-category-1.xml</loc></sitemap><sitemap><loc>https://www.juw.edu.pk/wp-sitemap-taxonomies-post_tag-1.xml</loc></sitemap><sitemap><loc>https://www.juw.edu.pk/wp-sitemap-taxonomies-post_format-1.xml</loc></sitemap><sitemap><loc>https://www.juw.edu.pk/wp-sitemap-users-1.xml</loc></sitemap></sitemapindex>
-<!-- permalink_structure ends with slash (/) but REQUEST_URI does not end with slash (/) -->

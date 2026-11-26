@@ -1,88 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ============================================================
-  SITEMAP INDEX - UAG (Universidad Autónoma de Guadalajara)
-  Generado con criterios SEO experto | Abril 2026
-  Estrategia: Sitemap Index + Sitemaps por categoría
--->
-<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
-  <!-- CATEGORÍA 1: Páginas principales / Home -->
-  <sitemap>
-    <loc>https://www.uag.mx/sitemap-home.xml</loc>
-    <lastmod>2026-06-05</lastmod>
-  </sitemap>
-
-  <!-- CATEGORÍA 2: Preparatoria -->
-  <sitemap>
-    <loc>https://www.uag.mx/sitemap-preparatoria.xml</loc>
-    <lastmod>2026-06-05</lastmod>
-  </sitemap>
-
-  <!-- CATEGORÍA 3: Licenciaturas presenciales (Campus Guadalajara) -->
-  <sitemap>
-    <loc>https://www.uag.mx/sitemap-licenciaturas.xml</loc>
-    <lastmod>2026-06-05</lastmod>
-  </sitemap>
-
-  <!-- CATEGORÍA 4: Licenciaturas en línea -->
-  <sitemap>
-    <loc>https://www.uag.mx/sitemap-licenciaturas-online.xml</loc>
-    <lastmod>2026-06-05</lastmod>
-  </sitemap>
-
-  <!-- CATEGORÍA 5: Campus Tabasco - Licenciaturas -->
-  <sitemap>
-    <loc>https://www.uag.mx/sitemap-tabasco-licenciaturas.xml</loc>
-    <lastmod>2026-06-05</lastmod>
-  </sitemap>
-
-  <!-- CATEGORÍA 6: Posgrados presenciales (Especialidades, Maestrías, Doctorados) -->
-  <sitemap>
-    <loc>https://www.uag.mx/sitemap-posgrados.xml</loc>
-    <lastmod>2026-06-05</lastmod>
-  </sitemap>
-
-  <!-- CATEGORÍA 7: Posgrados en línea -->
-  <sitemap>
-    <loc>https://www.uag.mx/sitemap-posgrados-online.xml</loc>
-    <lastmod>2026-06-05</lastmod>
-  </sitemap>
-
-  <!-- CATEGORÍA 8: Campus Tabasco - Posgrados -->
-  <sitemap>
-    <loc>https://www.uag.mx/sitemap-tabasco-posgrados.xml</loc>
-    <lastmod>2026-06-05</lastmod>
-  </sitemap>
-
-  <!-- CATEGORÍA 9: Educación Continua -->
-  <sitemap>
-    <loc>https://www.uag.mx/sitemap-educacion-continua.xml</loc>
-    <lastmod>2026-06-05</lastmod>
-  </sitemap>
-
-  <!-- CATEGORÍA 10: Admisiones y Financiamiento -->
-  <sitemap>
-    <loc>https://www.uag.mx/sitemap-admisiones.xml</loc>
-    <lastmod>2026-06-05</lastmod>
-  </sitemap>
-
-  <!-- CATEGORÍA 11: Vida Universitaria e Institucional -->
-  <sitemap>
-    <loc>https://www.uag.mx/sitemap-institucional.xml</loc>
-    <lastmod>2026-06-05</lastmod>
-  </sitemap>
-
-  <!-- CATEGORÍA 12: Egresados -->
-  <sitemap>
-    <loc>https://www.uag.mx/sitemap-egresados.xml</loc>
-    <lastmod>2026-06-05</lastmod>
-  </sitemap>
-
-  <!-- CATEGORÍA 13: MediaHub / Blog -->
-  <sitemap>
-    <loc>https://www.uag.mx/sitemap-mediahub.xml</loc>
-    <lastmod>2026-06-05</lastmod>
-  </sitemap>
-
-</sitemapindex>
