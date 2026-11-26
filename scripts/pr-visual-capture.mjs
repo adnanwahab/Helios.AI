@@ -106,6 +106,16 @@ try {
     await page.screenshot({path: join(output, 'world-map-desktop.png'), fullPage: true, animations: 'disabled'});
     await page.setViewportSize({width: 390, height: 844});
     await page.screenshot({path: join(output, 'world-map-mobile.png'), fullPage: true, animations: 'disabled'});
+    if (await page.locator('#kaleidoscope-toggle').count()) {
+      await page.emulateMedia({reducedMotion: 'no-preference'});
+      await page.setViewportSize({width: 1440, height: 1000});
+      await page.goto(base + '/world-map?kaleidoscope=1&climate=70&cost=45&city=30&nature=60&coast=40', {waitUntil: 'domcontentloaded'});
+      await page.locator('#world-hex-suitability[data-ready="true"][data-color-mode="kaleidoscope"][data-color-motion="running"]').waitFor({timeout: 20000});
+      await page.screenshot({path: join(output, 'world-map-kaleidoscope-desktop.png'), fullPage: true, animations: 'disabled'});
+      await page.setViewportSize({width: 390, height: 844});
+      await page.screenshot({path: join(output, 'world-map-kaleidoscope-mobile.png'), fullPage: true, animations: 'disabled'});
+      await page.emulateMedia({reducedMotion: 'reduce'});
+    }
     await page.goto(base + '/', {waitUntil: 'domcontentloaded'});
   }
 
@@ -123,7 +133,8 @@ try {
     await page.goto(base+'/',{waitUntil:'domcontentloaded'});
   }
   await page.setViewportSize({width: 1440, height: 900});
-  if (!(await page.locator('#law-tiles').count())) await page.goto(base + '/law-atlas.html',{waitUntil:'domcontentloaded'});
+  // The homepage lab embeds the board behind a tab, so capture the standalone atlas unless it is already showing.
+  if (!(await page.locator('#law-tiles').isVisible())) await page.goto(base + '/law-atlas.html',{waitUntil:'domcontentloaded'});
   if (await page.locator('#law-tiles').count()) {
     await page.locator('#law-tiles .law-tile').first().waitFor({state:'visible'});
     await page.locator('#laws-workbench').scrollIntoViewIfNeeded();

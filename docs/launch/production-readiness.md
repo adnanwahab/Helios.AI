@@ -59,3 +59,23 @@ curl --fail --silent --show-error --max-time 20 https://helios-ai-laws.fly.dev/a
 - [ ] Human reviewer and review date recorded, with current-head CI and deployment links.
 
 Owner: project maintainer. Current next action: inspect canonical Netlify deployment/backend configuration, then complete the isolated recovery evidence.
+
+## Post-merge addendum — November 25, 2026, 3:09 p.m. Chicago
+
+Fresh read-only probes after [PR #75](https://github.com/adnanwahab/HeliosHTML/pull/75) was merged still found the canonical API unavailable. Health responses were dated **21:09:23 UTC (3:09:23 p.m. America/Chicago)**; Netlify deployment metadata was checked immediately afterward.
+
+| Check | Verified result |
+| --- | --- |
+| Canonical homepage | HTTP 200. |
+| Canonical `/api/health` | HTTP 502, still reporting missing `SUPABASE_DB_URL` and returning stack frames. |
+| Fly `/api/health` | HTTP 200; `status: ok`, `storage: pglite`, `runtime: fly-machine`, `seedCount: 100`, `proposalCount: 104`. |
+| Currently published Netlify deployment | [`6b045bf3586967f4843f46bc`](https://app.netlify.com/projects/heliosailol/deploys/6b045bf3586967f4843f46bc), state `ready`, context `production`. |
+| Published source | [`fcd1aacb09a27b53dfc95834500f050fd19cc000`](https://github.com/adnanwahab/HeliosHTML/commit/fcd1aacb09a27b53dfc95834500f050fd19cc000), published November 23 at 15:30:11.056 UTC. |
+
+The Netlify project response identified that deployment as the currently published site. Its source is **older than the PR #75 merge commit** `792993a8fa9509e33e7af3b09993ff2f3815cfae`. The merge therefore does not establish that the launch changes or improved error handling are running on the canonical domain. This check did not determine why the older deployment remained published.
+
+**Item 19 remains blocked.** Verify the intended production release and authoritative backend before changing database configuration, then repeat health and staging recovery checks. A successful Fly health read still does not prove production backup/restore readiness. This addendum records observations only; no deployment, configuration, credential or participant-data changes were performed.
+
+## Follow-up observation — November 25, 2026, 3:29 p.m. Chicago
+
+At **21:29:43 UTC**, a fresh read-only canonical health probe again returned **HTTP 502**, reporting the missing `SUPABASE_DB_URL` and including stack frames. Netlify still identified deployment `6b045bf3586967f4843f46bc` and source `fcd1aacb09a27b53dfc95834500f050fd19cc000` as the published production release. The deploy's `locked` value was `null`; that alone does not explain why the older release is published. The license and production gates remain open after main's research/account merge and the separate branch-protection setup. Inspect publication history and confirm the intended release/store before making a configuration change.

@@ -1,11 +1,11 @@
 # Helios launch status
 
-**9 / 22 tasks complete.** Target: December 1, 2026, subject to readiness.
-Snapshot: 2026-11-25T20:47:21Z. User-facing dates use America/Chicago.
+**14 / 22 tasks complete.** Target: December 1, 2026, subject to readiness.
+Snapshot: 2026-11-25T21:31:28Z. User-facing dates use America/Chicago.
 
-[Dashboard preview](https://deploy-preview-75--heliosailol.netlify.app/launch) · [Launch PR](https://github.com/adnanwahab/HeliosHTML/pull/75)
+[Dashboard preview](https://deploy-preview-108--heliosailol.netlify.app/launch) · [Launch PR](https://github.com/adnanwahab/HeliosHTML/pull/108)
 
-This file is generated from `public/launch-checklist.json`. A prepared plan does not count as an executed task. Work in this PR is available in its preview; it reaches production after review and merge.
+This file is generated from `public/launch-checklist.json`. A prepared plan does not count as an executed task. Work in this PR is available in its preview; production deployment and readiness are tracked separately.
 
 ## Establish the foundation — November 25–26
 
@@ -18,10 +18,9 @@ This file is generated from `public/launch-checklist.json`. A prepared plan does
   Next: Resolve the asset and data provenance inventory, preserve required notices, and approve the exact scope of the license.
   Evidence: [Rights audit](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/license-audit.md) · [License task #99](https://github.com/adnanwahab/HeliosHTML/issues/99).
 
-- [ ] **L03: Rewrite the README with screenshots, a live demo and five-minute setup instructions.** — In progress
-  The focused README contains the mission, real setup commands, demo and preview links, contribution paths, and architecture links. Desktop and mobile screenshot verification is being completed.
-  Next: Attach and inspect the dashboard screenshots, and verify the documented fresh local setup.
-  Evidence: [README](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/README.md).
+- [x] **L03: Rewrite the README with screenshots, a live demo and five-minute setup instructions.** — Done
+  The README now includes the mission, live demo and preview links, five-minute setup commands, and inspected desktop/mobile screenshots from the hosted capture run. Dependency installation and builds passed; screenshot progress is labeled as a dated snapshot.
+  Evidence: [README](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/README.md) · [Desktop/mobile capture](https://github.com/adnanwahab/HeliosHTML/actions/runs/45698534055).
 
 - [x] **L04: Create CONTRIBUTING.md and a code of conduct.** — Done
   Contribution and conduct guides cover developers and non-programmers, evidence, consent, review, and reporting. A private moderation contact and backup coverage remain a separately identified staffing gate.
@@ -35,7 +34,7 @@ This file is generated from `public/launch-checklist.json`. A prepared plan does
 
 - [x] **L06: Support contributions from non-programmers as well as developers.** — Done
   The contributor hub offers proposal, research, design, simulation, testing, documentation and code paths. A GitHub web-editor walkthrough requires no local development setup.
-  Evidence: [Contributor hub](https://deploy-preview-75--heliosailol.netlify.app/contribute) · [No-terminal walkthrough](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/CONTRIBUTING.md#your-first-contribution-without-a-terminal).
+  Evidence: [Contributor hub](https://deploy-preview-108--heliosailol.netlify.app/contribute) · [No-terminal walkthrough](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/CONTRIBUTING.md#your-first-contribution-without-a-terminal).
 
 - [x] **L07: Create 30 well-scoped GitHub issues with acceptance criteria.** — Done
   All 30 launch issues, #76–#105, are published with scoped deliverables and acceptance criteria. Existing issues were verified instead of duplicated.
@@ -45,15 +44,13 @@ This file is generated from `public/launch-checklist.json`. A prepared plan does
   21 of the 30 launch issues have the good first issue label; larger infrastructure, modeling and rights-review tasks remain separate.
   Evidence: [Beginner-friendly issues](https://github.com/adnanwahab/HeliosHTML/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
 
-- [ ] **L09: Require automated tests, screenshots and deployment previews for relevant PRs.** — In progress
-  CI, desktop/mobile capture, preview deployment, a PR evidence check and review template are implemented. Stale catalog and archive test expectations are repaired in this PR.
-  Next: Verify the current PR head and require the successful check contexts in branch protection.
-  Evidence: [PR evidence workflow](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/.github/workflows/pr-evidence.yml) · [Review policy](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/.github/REVIEW_POLICY.md) · [PR checks](https://github.com/adnanwahab/HeliosHTML/pull/75/checks).
+- [x] **L09: Require automated tests, screenshots and deployment previews for relevant PRs.** — Done
+  Automated unit/browser tests, desktop/mobile capture, container persistence smoke, Netlify deployment previews and current-head PR evidence are now required checks on main. All five delivery checks passed on the preceding launch head; every new head must satisfy them again.
+  Evidence: [PR evidence workflow](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/.github/workflows/pr-evidence.yml) · [Review policy](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/.github/REVIEW_POLICY.md) · [PR checks](https://github.com/adnanwahab/HeliosHTML/pull/108/checks) · [Verified protection and required checks](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/branch-protection.md).
 
-- [ ] **L10: Establish human review and branch protection.** — Blocked
-  The independent-review policy is written and the main protection form was prepared with one approval, stale-review dismissal, latest-push approval, up-to-date tests, screenshots, container smoke, Netlify preview, resolved conversations and no admin bypass. GitHub stopped saving at its re-authentication screen.
-  Next: The repository owner must complete GitHub’s passkey/security-key or password re-authentication in the prepared settings tab; then verify the saved rule. Protection is not yet enabled.
-  Evidence: [Human review policy](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/.github/REVIEW_POLICY.md) · [Branch settings](https://github.com/adnanwahab/HeliosHTML/settings/branches).
+- [x] **L10: Establish human review and branch protection.** — Done
+  Main branch protection was saved and reopened to verify one required approval, stale-review dismissal, latest-push approval, an up-to-date branch, all five required checks, resolved conversations and no administrator bypass. Public GitHub metadata independently confirms protection for everyone. The policy requires independent human review.
+  Evidence: [Saved branch-protection receipt](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/branch-protection.md) · [Human review policy](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/.github/REVIEW_POLICY.md) · [Branch settings](https://github.com/adnanwahab/HeliosHTML/settings/branches).
 
 ## Create a community — November 27–28
 
@@ -63,12 +60,11 @@ This file is generated from `public/launch-checklist.json`. A prepared plan does
 
 - [x] **L12: Create a public roadmap and contributor dashboard.** — Done
   The roadmap is paired with this 22-item dashboard, dated evidence, phase/status/search filters, task permalinks and a downloadable evidence ledger. Its completion count is derived from the records.
-  Evidence: [Launch dashboard](https://deploy-preview-75--heliosailol.netlify.app/launch) · [Public roadmap](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/contributor-launch.md) · [Evidence source](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/public/launch-checklist.json).
+  Evidence: [Launch dashboard](https://deploy-preview-108--heliosailol.netlify.app/launch) · [Public roadmap](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/contributor-launch.md) · [Evidence source](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/public/launch-checklist.json).
 
-- [ ] **L13: Publish a short video demonstrating the entire contribution workflow.** — Ready to run
-  A concrete demonstration script covers choosing work, drafting, GitHub submission, checks, human review, and progress updates. The public video has not been recorded or published yet.
-  Next: Record the real preview-to-GitHub workflow, caption it, and publish the accessible video with a link here.
-  Evidence: [Demonstration script](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/community-operations.md#short-contribution-workflow-video).
+- [x] **L13: Publish a short video demonstrating the entire contribution workflow.** — Done
+  A 96-second captioned tutorial is published in this PR preview, with a transcript and capture provenance. It uses real app captures and clearly labeled GitHub/check/review instruction panels; no demonstration proposal was submitted or accepted.
+  Evidence: [Watch the tutorial](https://deploy-preview-108--heliosailol.netlify.app/launch#workflow-video) · [Transcript and capture provenance](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/public/launch/contribution-workflow-transcript.md) · [Original capture run](https://github.com/adnanwahab/HeliosHTML/actions/runs/45698534170).
 
 - [x] **L14: Define maintainer roles and how contributors earn additional responsibility.** — Done
   Governance defines contributor, reviewer, area-maintainer and release-owner responsibilities, evidence-based progression, recusal and access boundaries. It does not invent named staff or automatically grant repository access.
@@ -99,7 +95,7 @@ This file is generated from `public/launch-checklist.json`. A prepared plan does
 ## Public launch — December 1 target
 
 - [ ] **L19: Verify production reliability, privacy and data persistence.** — Blocked
-  The canonical Netlify homepage returned 200 but its API health returned 502 twice. Fly health and isolated persistence tests passed. Production restore evidence is still missing; this PR sanitizes unexpected initialization errors.
+  Fresh checks at 3:29 p.m. Chicago on November 25 still found canonical API health 502. Netlify is publishing an older November 23 source, not the new merges. Fly health and isolated persistence checks pass, but canonical readiness and production recovery remain unverified.
   Next: Verify the deployed version and intended authoritative store, repair production API configuration, and complete an isolated privacy, persistence and backup-restore drill.
   Evidence: [Production audit and recovery gates](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/production-readiness.md) · [Data safety runbook](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/data-safety-and-launch.md).
 
@@ -108,15 +104,14 @@ This file is generated from `public/launch-checklist.json`. A prepared plan does
   Next: Clear the launch gates, select permitted communities and the publishing accounts, then post and record each public URL.
   Evidence: [Public launch kit](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/community-operations.md#public-launch-publication-kit).
 
-- [ ] **L21: Run the first public collaborative law-design experiment.** — Ready to run
-  A bounded Backyard Homes pilot experiment includes source gathering, objections, proposed compromises, exact-revision feedback and a published outcome format. No participant activity or agreement is fabricated.
-  Next: Recruit willing participants, confirm a working shared submission path, run the experiment, and publish the revision, evidence and remaining disagreement.
-  Evidence: [First experiment runbook](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/community-operations.md#first-public-collaborative-law-design-experiment).
+- [ ] **L21: Run the first public collaborative law-design experiment.** — In progress
+  The first asynchronous public experiment is open on GitHub with exact draft BH-PILOT-v1, an objection/evidence template, two revision rounds and voluntary participation. Opening the issue does not establish participant activity or agreement. A round-one synthesis is scheduled for November 30 morning, with human review required before round two.
+  Next: Invite willing participants to issue #107, review real round-one responses by November 29 at 6 p.m. Chicago time, and publish a reviewed revision and outcome without inventing participation.
+  Evidence: [Join the public experiment #107](https://github.com/adnanwahab/HeliosHTML/issues/107) · [First experiment runbook](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/community-operations.md#first-public-collaborative-law-design-experiment).
 
-- [ ] **L22: Publish weekly progress, accepted contributions and upcoming challenges.** — In progress
-  Weekly factual GitHub progress reports are scheduled for Monday mornings around 9 a.m. Chicago time, starting November 30. Reports will include verified outcomes, accepted contributions and upcoming challenges; none has yet been published.
-  Next: Publish the first evidence-backed report, link it here, and keep future weekly reports grounded in actual merged work and accepted contributions.
-  Evidence: [Weekly progress template](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/community-operations.md#weekly-progress-update).
+- [x] **L22: Publish weekly progress, accepted contributions and upcoming challenges.** — Done
+  The initial public progress report is published with the merged foundation, pending follow-up work, verified accomplishments, unresolved gates and next challenges. Future factual reports are scheduled for Monday mornings around 9 a.m. Chicago time, starting November 30.
+  Evidence: [Published progress report #109](https://github.com/adnanwahab/HeliosHTML/issues/109) · [Weekly progress template](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/community-operations.md#weekly-progress-update).
 
 ## Update the dashboard
 

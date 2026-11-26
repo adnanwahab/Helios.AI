@@ -42,3 +42,29 @@ test('launch status export contains the checked-in evidence without private brow
  expect(JSON.parse(contents)).toEqual(checklist);
  expect(contents).not.toContain('PRIVATE-LAUNCH-SENTINEL');
 });
+
+test('filtering away a deep-linked task clears its stale hash and sidebar links reopen it',async({page})=>{
+ await page.goto('/launch#launch-L02');
+ await expect(page.locator('#launch-L02')).toHaveAttribute('open','');
+ await page.locator('[data-status-filter="done"]').click();
+ await expect(page).not.toHaveURL(/#launch-L02/);
+ await page.reload();
+ await expect(page.locator('[data-status-filter="done"]')).toHaveAttribute('aria-pressed','true');
+ await page.locator('#launch-next a[href="#launch-L02"]').click();
+ await expect(page.locator('#launch-L02')).toHaveAttribute('open','');
+});
+
+test('the published workflow tutorial loads with captions and never autoplays',async({page})=>{
+ await page.goto('/launch#workflow-video');
+ const video=page.locator('#workflow-video video');
+ await expect(video).toBeVisible();
+ await expect.poll(()=>video.evaluate(element=>element.readyState)).toBeGreaterThan(0);
+ expect(await video.evaluate(element=>element.duration)).toBeCloseTo(96,0);
+ expect(await video.evaluate(element=>element.paused)).toBe(true);
+ await expect(video.locator('track')).toHaveAttribute('kind','captions');
+ await expect(video.locator('track')).toHaveAttribute('srclang','en');
+ await expect(page.locator('#workflow-video a').first()).toHaveAttribute('href',/contribution-workflow-transcript\.md$/);
+ const captions=await page.request.get('/public/launch/contribution-workflow.vtt');
+ expect(captions.headers()['content-type']).toContain('text/vtt');
+ expect(await captions.text()).toMatch(/^WEBVTT/);
+});

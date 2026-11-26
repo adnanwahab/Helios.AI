@@ -46,12 +46,13 @@ export function readUrlState(search,validIds=new Set()) {
     if(raw!==null && /^\d{1,3}$/.test(raw) && Number(raw)<=100) weights[f.key]=Number(raw);
   }
   const id=params.get('cell');
-  return {weights,selectedId:validIds.has(id)?id:null,embed:params.get('embed')==='1'};
+  return {weights,selectedId:validIds.has(id)?id:null,embed:params.get('embed')==='1',kaleidoscope:params.get('kaleidoscope')==='1'};
 }
 
-export function stateSearch(weights,selectedId,embed=false) {
+export function stateSearch(weights,selectedId,embed=false,kaleidoscope=false) {
   const params=new URLSearchParams();
   if(embed) params.set('embed','1');
+  if(kaleidoscope===true) params.set('kaleidoscope','1');
   for(const f of FACTORS) {
     const weight=weights[f.key];
     if(Number.isInteger(weight)&&weight>=0&&weight<=100&&weight!==f.weight) params.set(f.key,String(weight));

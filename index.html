@@ -89,6 +89,18 @@ header.wrap,main.wrap,footer.wrap{width:min(100% - 40px,1560px)}#government-view
 .netherbrain-link{margin:0 0 14px;padding:9px 11px;background:#21182c;border:1px solid #59426d;border-radius:9px;font-size:12px;line-height:1.4}.netherbrain-link a{display:inline-block;color:#f4d49d;font-weight:700;text-underline-offset:3px;padding:4px 0}.netherbrain-link span{display:block;color:#c9b8dc;font-size:11px}
 .law-assembly-feature{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px 20px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(115deg,#203b32,#182625);padding:clamp(16px,3vw,24px);margin:0 0 16px}.law-assembly-feature h2{font-size:clamp(23px,4vw,35px);letter-spacing:-.04em;margin:0 0 8px;line-height:1.1}.law-assembly-feature p:not(.eyebrow){margin:0;color:var(--muted)}.law-assembly-feature .primary{display:inline-flex;align-items:center;text-decoration:none;justify-content:center}.law-assembly-links{display:flex;gap:8px 16px;flex-wrap:wrap;grid-column:1/-1}.law-assembly-links a{font-size:13px;font-weight:700}.law-assembly-feature .hint{grid-column:1/-1}#law-assembly-selected{display:inline-flex;align-items:center;text-decoration:none;margin:0 0 12px}@media(max-width:600px){.law-assembly-feature{grid-template-columns:minmax(0,1fr)}.law-assembly-feature .primary{justify-self:start}}
 .top-actions{flex-wrap:wrap;justify-content:flex-end}@media(max-width:700px){header.wrap{align-items:flex-start}.top-actions{gap:5px}#mystery-link{font-size:11px;padding:7px 8px;min-height:36px}.docs-trigger{font-size:12px}}
+
+/* Communal Science Lab — compact on first load; expand only the chosen view. */
+.research-lab{margin-top:36px;scroll-margin-top:16px;border-top:1px solid var(--line);padding-top:28px}
+.research-intro{display:flex;justify-content:space-between;align-items:center;gap:16px}.research-intro h2{font-size:clamp(30px,4.2vw,54px);letter-spacing:-.055em;line-height:1.05;margin:0 0 12px}
+.research-orb{flex:none;display:grid;place-items:center;width:clamp(65px,10vw,130px);aspect-ratio:1;border-radius:50%;font-size:clamp(36px,6vw,70px);color:#f0ffe9;background:radial-gradient(circle at 35% 30%,#c3d8a5,#4b866b 45%,#233b35 75%);box-shadow:0 0 36px #9be8b026}
+.research-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 16px}.research-tabs button[aria-pressed=true],.research-agent[aria-pressed=true]{border-color:var(--accent);background:#314e3d;color:var(--text)}
+.research-featured{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 20px}.research-featured button{background:linear-gradient(145deg,#213a31,#162723);color:var(--text);border:1px solid var(--line);border-radius:14px;padding:15px;text-align:left;min-width:0;display:grid;gap:5px;overflow-wrap:anywhere}.research-featured button:hover{border-color:var(--accent)}.research-featured small{color:var(--accent);font-size:10px;letter-spacing:.12em;font-weight:750}.research-featured strong{font-size:clamp(18px,2vw,24px);letter-spacing:-.04em}.research-featured button>span:last-child{font-size:13px;color:var(--muted)}.research-feature-icon{font-size:32px;line-height:1;color:#baf2be}
+.research-workshop-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;margin:22px 0 12px}.research-workshop-head h3{font-size:24px;letter-spacing:-.04em;margin:0}.research-workshop-head>div:first-child{flex:1;min-width:240px}
+.research-benches{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:16px 0}.research-bench{min-width:0;padding:12px;background:#182925;border:1px solid var(--line);border-radius:12px}.research-bench h3{margin:3px 0 0;font-size:18px}.research-symbol{color:#baf2be;font-size:26px}.research-slots{display:grid;gap:6px;margin-top:10px}.research-agent{color:var(--text);background:#101d1c;border:1px solid var(--line);border-radius:8px;text-align:left;padding:10px 8px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 8px;align-items:center;min-height:48px;font-size:13px}.research-agent:hover{border-color:var(--accent)}.research-slot-number{font-variant-numeric:tabular-nums;color:var(--accent);grid-row:span 2}.research-agent small{color:var(--muted);font-size:10px}
+.research-mission-layout{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:14px;margin-top:16px;align-items:start}.research-mission-layout h3{margin:0 0 8px}.research-budget{display:grid;grid-template-columns:1fr 1fr;gap:12px}.research-review-item{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}.research-review-item p{margin:4px 0;font-size:14px;color:var(--muted)}#research-workshop-panel,#research-research-panel{scroll-margin-top:16px}
+@media(max-width:950px){.research-benches{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:600px){.research-featured,.research-mission-layout{grid-template-columns:1fr}.research-featured button{grid-template-columns:auto 1fr;column-gap:14px}.research-feature-icon{grid-row:span 3;align-self:center}.research-bench{padding:8px}.research-agent{padding:8px 5px;font-size:12px}.research-workshop-head>div:first-child{min-width:0}.research-orb{display:none}}
+
 </style>
 <style>.top-actions{flex-wrap:wrap;justify-content:flex-end;min-width:0}.community-link{display:inline-flex;align-items:center}.community-link:hover{border-color:var(--accent)}@media(max-width:700px){header.wrap{flex-wrap:wrap}.top-actions{justify-content:flex-start;width:100%}}</style>
 <link rel="stylesheet" href="./public/pr-composer.css">
@@ -323,6 +335,78 @@ header.wrap,main.wrap,footer.wrap{width:min(100% - 40px,1560px)}#government-view
 <a class="primary" href="./law-atlas.html#childcare-budget">Explore the second law ↗</a>
 <p class="hint">Draft policy scenario · not enacted law or evidence of consensus.</p>
 </aside>
+
+<section id="communal-science-lab" class="research-lab" aria-labelledby="research-lab-title">
+ <div class="research-intro">
+  <div><p class="eyebrow">HELIOS / OPEN RESEARCH WORKSHOP</p><h2 id="research-lab-title">The Communal Science Lab</h2><p class="lede">A hundred proposals. A thousand questions. Pick one, explore possible futures, and help make the draft clearer.</p></div>
+  <div class="research-orb" aria-hidden="true">✳</div>
+ </div>
+ <p class="notice">Editorial drafts, not enacted laws. Research planning slots are illustrative, not live agents or votes. Only the connected shared law board records advisory positions and proposed updates.</p>
+ <div class="research-tabs" role="group" aria-label="Communal Science Lab views">
+  <button type="button" class="secondary" id="research-workshop-tab" aria-pressed="false" aria-controls="research-workshop-panel">Public workshop</button>
+  <button type="button" class="secondary" id="research-research-tab" aria-pressed="false" aria-controls="research-research-panel">Research coordinator playground</button>
+ </div>
+ <div class="research-featured" aria-label="Featured proposals">
+  <button type="button" data-research-feature="HGA-051"><span class="research-feature-icon" aria-hidden="true">⌂</span><small>051 · THIRD PLACES</small><strong>Where can we gather?</strong><span>Explore accessible community spaces →</span></button>
+  <button type="button" data-research-feature="HGA-012"><span class="research-feature-icon" aria-hidden="true">▧</span><small>012 · BACKYARD HOMES</small><strong>Room to grow.</strong><span>Explore flexible housing →</span></button>
+  <button type="button" data-research-feature="HGA-091"><span class="research-feature-icon" aria-hidden="true">≈</span><small>091 · LEAD-FREE WATER</small><strong>Water we can trust.</strong><span>Explore safer infrastructure →</span></button>
+ </div>
+ <div id="research-workshop-panel" hidden>
+  <div class="research-workshop-head"><div><p class="eyebrow">EXPLORE → EXPERIMENT → IMPROVE</p><h3>Public proposal workshop</h3><p class="hint">Select a draft, compare assumptions, then record a position or propose a revision. Shared counts refer to browser-session advisory responses, not a representative poll.</p></div><div class="law-top-actions"><span id="law-source" class="law-source">Editorial catalog · not enacted law</span><button type="button" class="primary" id="law-connect" disabled>Connect shared votes</button><button type="button" class="secondary" id="law-refresh" hidden>Refresh votes</button><a class="secondary" href="./law-atlas.html">Open full atlas ↗</a></div></div>
+  <p id="law-board-status" class="status" role="status">Loading the original 100 proposals…</p>
+<div class="law-layout">
+<div class="law-atlas"><div class="lane-header"><div><p class="eyebrow">01 / Explore</p><h2><span id="law-count">100</span> proposals</h2></div><span class="lane-tag">HGA-001–100</span></div>
+<div class="law-filters"><label>Search by title or number<input type="search" id="law-search" placeholder="e.g. housing, 011" autocomplete="off"></label><label>Policy area<select id="law-category"><option value="">All ten categories</option></select></label></div>
+<p id="law-results" class="hint">Loading…</p><div id="law-tiles" class="law-tiles" aria-label="100 law proposals"></div>
+<p class="notice">Each tile has an illustrative outcome sparkline. These proposals are editorial drafts, not passed laws or evidence of consensus. Shared counts are never simulated.</p></div>
+<div class="law-detail" aria-labelledby="law-title">
+<div class="law-detail-head"><div><p id="law-id" class="eyebrow">HGA-001</p><h2 id="law-title">Select a proposal</h2></div><span id="law-version" class="lane-tag">Original draft</span></div>
+<p id="law-goal" class="law-goal"></p>
+<a id="law-assembly-selected" class="secondary" href="./public/helios-law-assembly.html" target="_blank" rel="noopener noreferrer" hidden>See how it works · 3D assembly ↗</a>
+<div id="law-votes" class="law-counts" aria-label="Actual advisory votes on this revision"></div>
+<div id="law-vote-controls" class="law-controls" aria-label="Vote on selected law"><button type="button" class="secondary" data-law-vote="support" aria-pressed="false" disabled>Support</button><button type="button" class="secondary" data-law-vote="oppose" aria-pressed="false" disabled>Oppose</button><button type="button" class="secondary" data-law-vote="unsure" aria-pressed="false" disabled>Unsure</button><button type="button" class="quiet" id="law-clear-vote" disabled>Clear vote</button></div>
+<div class="law-sim" id="law-generic-sim"><div class="law-sim-top"><h3>02 / Simulate this future</h3><button type="button" class="quiet" id="law-reset">Reset assumptions</button></div>
+<p id="law-model-family" class="hint"></p><p id="law-model-direction" class="hint"></p>
+<svg id="law-chart" class="law-chart" role="img" aria-label="Illustrative scenario chart" viewBox="0 0 600 220"></svg>
+<div class="law-legend"><span>Baseline</span><span>Intervention</span><span>Effect sensitivity ±10 percentage points</span></div>
+<div class="law-kpis"><div class="law-kpi"><small>Final normalized outcome</small><strong id="law-outcome">—</strong><small id="law-change"></small></div><div class="law-kpi"><small>Effective implementation</small><strong id="law-reach-result">—</strong><small>Reach × capacity × rollout</small></div></div>
+<div class="law-sliders">
+<div class="law-slider wide"><label for="law-input-reach" id="law-lever-label">Eligible population reached</label><output id="law-value-reach" for="law-input-reach"></output><input type="range" id="law-input-reach" min="0" max="100" step="5" value="60"></div>
+<div class="law-slider"><label for="law-input-capacity">Implementation capacity</label><output id="law-value-capacity" for="law-input-capacity"></output><input type="range" id="law-input-capacity" min="0" max="100" step="5" value="70"></div>
+<div class="law-slider"><label for="law-input-effect">Assumed full-scale improvement</label><output id="law-value-effect" for="law-input-effect"></output><input type="range" id="law-input-effect" min="-50" max="50" step="5" value="20"></div>
+<div class="law-slider"><label for="law-input-years">Time horizon</label><output id="law-value-years" for="law-input-years"></output><input type="range" id="law-input-years" min="1" max="30" step="1" value="10"></div>
+<div class="law-slider"><label for="law-input-lag">Rollout lag</label><output id="law-value-lag" for="law-input-lag"></output><input type="range" id="law-input-lag" min=".5" max="15" step=".5" value="2"></div>
+</div><p class="notice">Illustrative assumptions, not calibrated forecasts. The baseline is 100. Negative improvement models harm; uncertainty here is sensitivity to the assumed effect, not a confidence interval. Legal authority, budgets, distributional effects and evidence need real-world review.</p></div>
+<details><summary>Implementation, safeguards &amp; success measures</summary><p id="law-option"></p><p id="law-safeguards"></p><p id="law-measures" class="law-meta"></p></details>
+<details id="law-history-section"><summary>03 / Revision and update history</summary><div id="law-history"></div></details>
+<details id="law-update-section"><summary>Needs changes? Suggest a public update</summary><form id="law-update-form" class="law-update-form"><p class="hint">Changes are stored as proposed updates to the current revision, not automatic amendments to enacted laws.</p><div class="field"><label for="law-update-goal">Public goal</label><textarea id="law-update-goal" maxlength="4000" required></textarea></div><div class="field"><label for="law-update-implementation">Implementation</label><textarea id="law-update-implementation" maxlength="6000" required></textarea></div><div class="field"><label for="law-update-safeguards">Risks and safeguards</label><textarea id="law-update-safeguards" maxlength="4000" required></textarea></div><div class="field"><label for="law-update-reason">Why change it?</label><textarea id="law-update-reason" maxlength="3000" required></textarea></div><label class="consent"><input type="checkbox" id="law-update-consent"><span>I approve publishing this exact proposed update and have removed personal information.</span></label><button type="submit" id="law-update-submit" class="primary" disabled>Submit update for review</button></form></details>
+<p id="law-detail-status" class="status" role="status"></p></div></div>
+ </div>
+ <div id="research-research-panel" hidden>
+  <div class="research-workshop-head"><div><p class="eyebrow">RESEARCH COORDINATOR PLAYGROUND · SUPERVISION CENTER</p><h3>Twenty research slots</h3><p class="hint">Choose a workbench and draft a mission for a proposal. This planner is local; the distributed Mini Symphony runtime is not connected.</p></div><span class="lane-tag">Planning preview · 0 live workers verified</span></div>
+  <div class="research-benches" id="research-benches" aria-label="Research workbenches"></div>
+  <div class="research-mission-layout">
+   <form class="panel" id="research-mission-form">
+    <p class="eyebrow">MISSION BRIEF</p><h3 id="research-selected-role">Select a role</h3><p id="research-role-output" class="hint"></p>
+    <div class="field"><label for="research-proposal">Proposal</label><select id="research-proposal" disabled><option>Loading 100 proposals…</option></select></div>
+    <div class="field"><label for="research-question">Research question</label><textarea required id="research-question" maxlength="3000" placeholder="What evidence would resolve the most important uncertainty?"></textarea></div>
+    <div class="field"><label for="research-output">Expected output</label><textarea required id="research-output" maxlength="2000"></textarea></div>
+    <div class="research-budget"><div class="field"><label for="research-minutes">Maximum minutes (draft)</label><input id="research-minutes" type="number" min="1" max="120" step="1" value="20" required></div><div class="field"><label for="research-budget">Maximum USD (draft)</label><input id="research-budget" type="number" min="0" max="50" step=".01" value="1" required></div></div>
+    <p class="hint">A human must resolve the exact proposal revision and approve the mission before execution. Export does not start work, spend money, or send private information.</p>
+    <button type="submit" id="research-export" class="primary" disabled>Download mission brief</button><p id="research-mission-status" class="status" role="status"></p>
+   </form>
+   <aside class="panel"><p class="eyebrow">HUMAN REVIEW TRAY</p><h3>Questions worth answering</h3><p>These are suggested review tasks, not agent findings or real queued jobs.</p>
+   <div class="research-review-item"><strong>Evidence</strong><p>Which source supports the proposed benefit? What remains uncertain?</p></div>
+   <div class="research-review-item"><strong>Challenge</strong><p>Who may be excluded, and what would make the proposal fairer?</p></div>
+   <div class="research-review-item"><strong>Scenario</strong><p>Which assumption changes the result most?</p></div>
+   <div class="research-review-item"><strong>Revision</strong><p>Can the proposed wording address the concern without removing a safeguard?</p></div>
+   <p class="hint">Research activity, review readiness, and real public positions are different signals. No automatic approvals, simulated public support, or live job controls are shown here.</p>
+   <a href="./public/helios-futures.html" target="_blank" rel="noopener noreferrer">Explore 100 illustrative futures ↗</a>
+   </aside>
+  </div>
+ </div>
+</section>
+
 </main>
 <footer class="wrap site-footer"><span>Helios AI · Citizen contributions → public deliberation → government response → feedback. No official vote or government action is simulated as real.</span><a class="footer-archive" href="./experiments.html" target="_blank" rel="noopener noreferrer" aria-label="Docs &amp; Experiments (opens in a new tab)">Docs &amp; Experiments ↗</a></footer>
 <script>
@@ -428,5 +512,6 @@ count();setPublish();
 </script>
 <script type="module" src="./public/constitution-workbench.js"></script>
 <script type="module" src="./public/pr-composer.js"></script>
+<script type="module" src="./public/research-lab.js"></script>
 </body>
 </html>

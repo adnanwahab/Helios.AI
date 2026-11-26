@@ -7,7 +7,7 @@ please use https://greydanus.github.io/2026/11/12/pengpt/ to make a signature.
 pls edit the readme and then we will regenerate the html.
 Helios is a collaborative civic research workshop where people turn everyday concerns into proposals, compare evidence and simulated scenarios, and improve drafts together. Our mission is to make the path from “I have an idea” to a clear, reviewable contribution understandable and useful for citizens, researchers, designers, and developers. Participation is voluntary, people retain control over what they share, and human review determines what enters the project; simulated responses are tools for exploring assumptions and never stand in for real people's consent.
 
-**[Live demo](https://helioshtml.com/) · [Launch dashboard preview](https://deploy-preview-75--heliosailol.netlify.app/launch) · [Contribution hub preview](https://deploy-preview-75--heliosailol.netlify.app/contribute) · [Good first issues](https://github.com/adnanwahab/HeliosHTML/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) · [Contributing](CONTRIBUTING.md)**
+**[Live demo](https://helioshtml.com/) · [Launch dashboard preview](https://deploy-preview-108--heliosailol.netlify.app/launch) · [Contribution hub preview](https://deploy-preview-108--heliosailol.netlify.app/contribute) · [Good first issues](https://github.com/adnanwahab/HeliosHTML/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) · [Contributing](CONTRIBUTING.md)**
 
 ## Start with one useful contribution
 
@@ -15,13 +15,13 @@ Open the demo and choose **Propose a change**. Write the problem, the change you
 
 You can also contribute a source-backed research note, an objection to a proposal, a design sketch, an accessibility review, a reproducible bug report, or a code change. Pick one of the [30 starter issues](https://github.com/adnanwahab/HeliosHTML/issues?q=is%3Aissue+in%3Atitle+%22Launch%3A%22). Each has acceptance criteria; 21 are labeled `good first issue`. See the [first-contribution walkthrough](CONTRIBUTING.md#your-first-contribution-without-a-terminal).
 
-Helios is an independent experiment. Its proposals are drafts, and its participation features are advisory. Deployed environments have different storage capabilities; a homepage loading successfully does not verify that a public submission will persist. See the [launch evidence dashboard](https://deploy-preview-75--heliosailol.netlify.app/launch) before planning a public event.
+Helios is an independent experiment. Its proposals are drafts, and its participation features are advisory. Deployed environments have different storage capabilities; a homepage loading successfully does not verify that a public submission will persist. See the [launch evidence dashboard](https://deploy-preview-108--heliosailol.netlify.app/launch) before planning a public event.
 
 ## Launch dashboard
 
 The dashboard tracks the 22 launch tasks, with an owner, next action, and evidence for each. Completed work is distinguished from prepared materials and unresolved launch gates. Updating the versioned checklist in a reviewed PR keeps the page, progress count, and review record aligned. Target launch: **December 1, 2026**, subject to the remaining gates.
 
-[Open the dashboard preview](https://deploy-preview-75--heliosailol.netlify.app/launch). `/launch` becomes part of the main site after the launch PR is merged and deployed.
+[Open the dashboard preview](https://deploy-preview-108--heliosailol.netlify.app/launch). The dashboard foundation landed in [PR #75](https://github.com/adnanwahab/HeliosHTML/pull/75). [PR #108](https://github.com/adnanwahab/HeliosHTML/pull/108) adds the tutorial, screenshots and latest evidence; use its preview to review that work.
 
 ![Helios launch dashboard on desktop](docs/launch/assets/launch-dashboard-desktop.png)
 
@@ -31,6 +31,12 @@ The dashboard tracks the 22 launch tasks, with an owner, next action, and eviden
 ![Helios launch dashboard on mobile](docs/launch/assets/launch-dashboard-mobile.png)
 
 </details>
+
+These screenshots were captured from PR head `2eaab74` in the [desktop/mobile capture run](https://github.com/adnanwahab/HeliosHTML/actions/runs/45698534055). Their progress count is a dated snapshot; the live dashboard carries subsequent updates.
+
+### Watch the contribution workflow
+
+[Watch the 96-second captioned walkthrough](https://deploy-preview-108--heliosailol.netlify.app/launch#workflow-video), or read its [transcript and capture notes](public/launch/contribution-workflow-transcript.md). It covers choosing a task, drafting, reviewing public text, opening a GitHub proposal, PR evidence, automated checks, human review, and recording completion. Real app captures use fictitious input; later GitHub steps are clearly labeled instructions, and no demonstration proposal was published.
 
 ## Five-minute local setup
 
@@ -70,13 +76,15 @@ The browser suite starts its own server on port 3101 and uses a temporary databa
 | Launch dashboard | `/launch` | Evidence and remaining work for the 22 launch checklist items. |
 | Editorial law atlas | `/laws` | Proposed goals, scenario assumptions, revision review, and environment-dependent shared features. |
 
-The contribution hub and launch dashboard are delivered in [PR #75](https://github.com/adnanwahab/HeliosHTML/pull/75); use its preview until merged. Other experiences and implementation details are cataloged in [the archive](docs/experiences.md) and [implementation notes](docs/launch/implementation-notes.md).
+The contribution hub and dashboard foundation were merged in [PR #75](https://github.com/adnanwahab/HeliosHTML/pull/75). Current evidence and tutorial improvements are in [PR #108](https://github.com/adnanwahab/HeliosHTML/pull/108). Other experiences and implementation details are cataloged in [the archive](docs/experiences.md) and [implementation notes](docs/launch/implementation-notes.md).
 
 ### World preferences and paced voting
 
 The world map loads only when opened on the homepage. Its five sliders weight mild climate, lower living costs, city access, nature, and coastal proximity. Click a hexagon or use the location selector to read its explanation. The full map keeps its preferences and selected cell in the URL so a refresh or shared link restores the same view. All-zero preferences produce an unranked map.
 
 The geography is published map data, and city/coast distance scores are approximate straight-line proxies. Climate uses latitude; living costs and nature are explicitly synthetic layers. These are broad regional examples, not observed livability rankings. See [map sources and method](public/world-map/README.md).
+
+Press **Kaleidoscope** above the map for animated rainbow hexagons, then **Pause colors** to freeze the pattern or toggle Kaleidoscope off to return to suitability colors. Scores, preferences and the selected location stay available while the colors flow. Reduced-motion settings show a still rainbow palette. Share the effect with `/world-map?kaleidoscope=1`.
 
 Run the terminal vote lab from this checkout:
 
@@ -89,6 +97,19 @@ bun run votes:world --proposal "A voluntary childcare pilot" --batch-size 100m -
 ```
 
 The prompt asks for a proposal and five assumed impacts. The default represents exactly **8,000,000,000 synthetic votes**, releasing **200 million every two seconds** in a live Yes/No/Abstain dashboard with a written summary. Space/P pauses, Q saves a partial result, and Ctrl+C stops cleanly. Results and a Markdown summary are saved under `.data/world-vote-lab/` by default. The model uses eight fictional cohorts and approximate aggregate sampling; explicit assumptions determine support, while proposal text labels the experiment. See [the vote lab guide](scripts/world-vote-lab/README.md). The existing exact-range shard tool remains available at `scripts/population-vote.mjs`.
+
+### Weighted eight-billion console
+
+For a second, profile-level simulation with six explicit assumptions and a paced console dashboard, run:
+
+```sh
+bun run votes:8b
+bun run votes:8b --demo
+bun run votes:8b --demo --fast --json --no-save
+bun run test:votes:8b
+```
+
+This model represents exactly eight billion fictional votes using 80,000 weighted profiles. The default is 250 million every three seconds, with pause/resume, speed controls and local JSON/TXT/Markdown reports. It is not a poll, and the supplied text labels the scenario rather than predicting responses. The existing `votes:world` task remains available. See the [weighted vote lab guide](scripts/vote-profile-lab/README.md).
 
 ### Example: address the strongest objections
 
@@ -123,6 +144,8 @@ For backend setup see [backend documentation](docs/backend.md). For preview revi
 Maintainers: run the [private traffic-light security registry](docs/security-registry.md) with `bun --env-file=.env.security run security:registry` after setting up the secret. Local-only; not connected to public authentication.
 
 ## Community and launch operations
+
+Read the [first public progress report](https://github.com/adnanwahab/HeliosHTML/issues/109) and join the [Backyard Homes design experiment](https://github.com/adnanwahab/HeliosHTML/issues/107). The experiment is open for voluntary responses; a published draft does not establish public agreement.
 
 Read the [code of conduct](CODE_OF_CONDUCT.md), [maintainer roles and progression](GOVERNANCE.md), and [public roadmap](docs/contributor-launch.md). The [community operations kit](docs/launch/community-operations.md) contains the invitation, one-hour workshop, onboarding process, demonstration script, launch posts, and weekly report template. Prepared materials are not evidence that invitations were sent, an event happened, or a report was published.
 

@@ -36,6 +36,14 @@
       </section>
       <div id="map-content" hidden>
         <section class="map-region" aria-label="World suitability map">
+          <div class="map-toolbar" aria-label="Map color controls">
+            <button class="kaleidoscope-toggle" id="kaleidoscope-toggle" type="button" aria-pressed="false" aria-controls="world-map">
+              <span class="kaleidoscope-icon" aria-hidden="true"></span>
+              <span>Kaleidoscope</span>
+              <span class="kaleidoscope-state" aria-hidden="true">Off</span>
+            </button>
+            <button class="kaleidoscope-pause" id="kaleidoscope-pause" type="button" aria-controls="world-map" hidden>Pause colors</button>
+          </div>
           <div class="map-stage">
             <svg class="world-map" id="world-map" role="img" aria-labelledby="map-title map-description">
               <title id="map-title">World hexagon suitability map</title>
@@ -46,6 +54,7 @@
             <div class="legend" aria-label="Modeled fit from zero to one hundred">
               <span class="legend-low">Lower fit</span><span class="legend-scale" aria-hidden="true"></span><span class="legend-high">Higher fit</span><span class="legend-units muted">0–100</span>
             </div>
+            <p class="kaleidoscope-status" id="kaleidoscope-status" role="status" hidden>Rainbow colors · scores in the details</p>
             <span class="cell-count muted"></span>
           </div>
         </section>
@@ -72,7 +81,7 @@
 
         <details class="model-note">
           <summary>How the model works &amp; data sources</summary>
-          <p>Each slider sets a criterion’s importance. The overall score is the weighted average of five 0–100 criterion scores; zero excludes a criterion. Colors use the same fixed scale as you adjust preferences. This is an illustrative model, not a verified quality-of-life ranking or probability.</p>
+          <p>Each slider sets a criterion’s importance. The overall score is the weighted average of five 0–100 criterion scores; zero excludes a criterion. The default colors use the same fixed scale as you adjust preferences. Kaleidoscope adds decorative rainbow colors; scores and explanations continue to update in the details. This is an illustrative model, not a verified quality-of-life ranking or probability.</p>
           <p><strong>Real geography:</strong> H3 resolution-2 cells, published country boundaries, and Natural Earth city points and coastlines. City and coast scores use approximate straight-line distance from each cell’s center. City proximity does not measure transport, jobs, or services.</p>
           <p><strong>Illustrative layers:</strong> mild climate uses latitude alone, peaking around 32° north or south. Living costs and nature access use independent synthetic patterns to demonstrate the interface. These are not observed prices, vegetation, protected areas, or climate data.</p>
           <p>The cells cover broad regions, averaging about 86,800 km² globally. H3 cells vary in area and the global grid includes pentagons. A country label identifies the cell’s center; a cell can cross a border or coastline. Land-center sampling omits some islands and coastal fragments. Antarctica has no suitability scores.</p>

@@ -30,3 +30,21 @@ test('documentation-only changes need verification but no UI deployment or scree
 test('renaming a UI file is still evaluated as user-facing work',()=>{
  const input=fixture();input.changedFiles=['archive/home.txt','index.html'];expect(verifyPREvidence(input).ui).toBe(true);
 });
+test('an unrelated image cannot stand in for current-head visual evidence',()=>{
+ const input=fixture();input.pr.body=input.pr.body.replace(`https://github.com/${repo}/actions/runs/2`,'https://unrelated.example/old-image.png');
+ expect(verifyPREvidence(input).passed).toBe(false);
+});
+test('a homepage-only UI change can use the homepage as its direct feature preview',()=>{
+ const input=fixture();input.changedFiles=['index.html','public/home.css'];input.pr.body=input.pr.body.replace('https://deploy-preview-75--heliosailol.netlify.app/launch\n','');
+ expect(verifyPREvidence(input).passed).toBe(true);
+});
+test('a change to another page still needs a direct feature preview',()=>{
+ const input=fixture();input.changedFiles=['index.html','launch-dashboard.html'];input.pr.body=input.pr.body.replace('https://deploy-preview-75--heliosailol.netlify.app/launch\n','');
+ expect(verifyPREvidence(input).errors).toContain('Include a direct preview link to the changed route, section, or feature.');
+});
+test('public tutorial video and caption changes still require UI delivery evidence',()=>{
+ for(const path of ['public/launch/tutorial.mp4','public/launch/tutorial.webm','public/launch/tutorial.vtt']){
+  const input=fixture();input.changedFiles=[path];input.status={sha,statuses:[]};
+  const result=verifyPREvidence(input);expect(result.ui).toBe(true);expect(result.passed).toBe(false);
+ }
+});
