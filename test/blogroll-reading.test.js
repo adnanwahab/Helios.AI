@@ -94,14 +94,17 @@ test('RSS, Atom, RSS 1.0 and JSON feeds are read, skipping quoted and code block
 });
 
 test('hostile markup costs linear time', () => {
+  // Sized so a quadratic parser would take seconds; a linear one takes milliseconds.
   const started = performance.now();
-  for (const html of ['<code>'.repeat(60000), '<!--'.repeat(90000), '<br '.repeat(90000), '<'.repeat(350000), '<a>'.repeat(100000) + '</b>'.repeat(30000)]) {
+  for (const html of ['<code>'.repeat(40000), '<!--'.repeat(40000), '<br '.repeat(40000), '<'.repeat(150000), '<a>'.repeat(30000) + '</b>'.repeat(30000)]) {
     htmlToText(html);
     discoverFeeds(html.replaceAll('<br', '<link'), 'https://a.blog/');
     parseXml(html);
-    parseHeliosLines('Helios: ' + 'support HGA-001 '.repeat(20000));
   }
-  expect(performance.now() - started).toBeLessThan(3000);
+  parseHeliosLines('Helios: ' + 'support HGA-001 '.repeat(20000));
+  expect(performance.now() - started).toBeLessThan(1500);
+  // Collect the large test strings now, not during a later timing-sensitive test.
+  globalThis.Bun?.gc(true);
   expect(parseHeliosLines('Helios: ' + 'x '.repeat(500)).ignored).toHaveLength(20);
   expect(parseHeliosLines(Array(50).fill('Helios: support HGA-001').join('\n')).lines).toHaveLength(10);
 });
