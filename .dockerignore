@@ -22,6 +22,20 @@
 !public/**
 !data/
 !data/catalog.json
+
+# Only tracked build inputs for the fixed synthetic Consensus Lab report.
+# Do not include generated runs, custom bill inputs, tests or local files.
+!consensus-lab/
+consensus-lab/**
+!consensus-lab/src/
+!consensus-lab/src/preview.ts
+!consensus-lab/src/report.ts
+!consensus-lab/src/simulate.ts
+!consensus-lab/src/model.ts
+!consensus-lab/src/types.ts
+!consensus-lab/data/
+!consensus-lab/data/bills.example.json
+!consensus-lab/data/model-metadata.json
 # Only this archived HTML file is needed at build time; keep other docs excluded.
 !docs/
 docs/**

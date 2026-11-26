@@ -1,0 +1,155 @@
+{
+  "dimensions": [
+    {
+      "id": "affordability",
+      "label": "Everyday affordability",
+      "positiveMeaning": "Everyday affordability"
+    },
+    {
+      "id": "equity",
+      "label": "Fair access",
+      "positiveMeaning": "Fair access"
+    },
+    {
+      "id": "privacy",
+      "label": "Privacy & agency",
+      "positiveMeaning": "Privacy & agency"
+    },
+    {
+      "id": "environment",
+      "label": "Environment & resilience",
+      "positiveMeaning": "Environment & resilience"
+    },
+    {
+      "id": "cost",
+      "label": "Public budget discipline",
+      "positiveMeaning": "Public budget discipline"
+    },
+    {
+      "id": "delivery",
+      "label": "Reliable delivery",
+      "positiveMeaning": "Reliable delivery"
+    }
+  ],
+  "groups": [
+    {
+      "id": "access",
+      "label": "Access & affordability",
+      "description": "Synthetic priority group favoring affordable services and fair access.",
+      "weights": {
+        "affordability": 0.36,
+        "equity": 0.27,
+        "privacy": 0.08,
+        "environment": 0.1,
+        "cost": 0.08,
+        "delivery": 0.11
+      }
+    },
+    {
+      "id": "delivery",
+      "label": "Budget & delivery",
+      "description": "Synthetic priority group favoring budget discipline and dependable implementation.",
+      "weights": {
+        "affordability": 0.12,
+        "equity": 0.08,
+        "privacy": 0.08,
+        "environment": 0.08,
+        "cost": 0.34,
+        "delivery": 0.3
+      }
+    },
+    {
+      "id": "agency",
+      "label": "Privacy & agency",
+      "description": "Synthetic priority group favoring personal control, privacy and rights.",
+      "weights": {
+        "affordability": 0.1,
+        "equity": 0.12,
+        "privacy": 0.48,
+        "environment": 0.08,
+        "cost": 0.1,
+        "delivery": 0.12
+      }
+    },
+    {
+      "id": "resilience",
+      "label": "Care & resilience",
+      "description": "Synthetic priority group favoring environmental resilience and fair access.",
+      "weights": {
+        "affordability": 0.1,
+        "equity": 0.24,
+        "privacy": 0.08,
+        "environment": 0.36,
+        "cost": 0.08,
+        "delivery": 0.14
+      }
+    }
+  ],
+  "stages": [
+    {
+      "id": "first-impressions",
+      "index": 0,
+      "label": "First impressions",
+      "description": "Private initial preference check on the original text; agents retain uncertainty and may be absent.",
+      "version": "v1",
+      "ballotKind": "preference-check"
+    },
+    {
+      "id": "evidence",
+      "index": 1,
+      "label": "Scenario briefing",
+      "description": "Agents read invented scenario assumptions; trust changes their response, not the truth of the assumptions.",
+      "version": "v1",
+      "ballotKind": "preference-check"
+    },
+    {
+      "id": "discussion",
+      "index": 2,
+      "label": "Peer discussion",
+      "description": "A small, bounded peer influence updates modeled preferences; disagreement remains visible.",
+      "version": "v1",
+      "ballotKind": "preference-check"
+    },
+    {
+      "id": "amended-text",
+      "index": 3,
+      "label": "Amended text",
+      "description": "A fixed amendment changes benefits and costs. Preferences are recomputed for a new text hash; earlier support is not carried into a ballot.",
+      "version": "v2",
+      "ballotKind": "preference-check"
+    },
+    {
+      "id": "re-vote",
+      "index": 4,
+      "label": "Fresh vote",
+      "description": "Each available agent casts a fresh simulated support, oppose or abstain response on the amended text.",
+      "version": "v2",
+      "ballotKind": "final-simulation-ballot"
+    }
+  ],
+  "assumptions": [
+    "Four priority groups, assigned as evenly as possible, are design fixtures, not discovered clusters or demographic populations.",
+    "Every agent has continuous value weights, an individual decision threshold, openness, trust, and a participation propensity.",
+    "Positive effects describe benefits; a positive cost score means public budget discipline. All effect values and evidence quality are authored assumptions.",
+    "Initial opinion = clamp(1.65 × weighted initial effects + individual lean + bill-specific seeded jitter).",
+    "Briefing change = 1.65 × 0.70 × agent trust × weighted scenario adjustments. Confidence changes with authored quality; it is not a calibrated probability.",
+    "Discussion samples up to four participating peers inside and four outside the preset group. Influence = 0.18 × openness × (peer mean − own opinion). Absent peers are excluded.",
+    "Amendment opinion shift = 1.65 × weighted effect difference × (0.75 + 0.25 × openness). New text lowers confidence while it is reviewed; support can rise or fall.",
+    "The final vote recomputes preferences for v2: 55% amended assessment and 45% fresh utility. Every recorded response references a version record containing the full text hash.",
+    "Participation uses one seeded roll per agent and bill against the individual propensity plus stage offsets [0, 0.025, 0.025, 0.005, 0.035].",
+    "Present agents abstain when confidence is too low or modeled opinion is within their decision threshold. Absent agents cast no response; their opinion fields are latent diagnostics only.",
+    "Earlier stages are preference checks. Only the final stage is called a simulated ballot; v1 support is never an approval of v2.",
+    "Reproducibility requires the same seed, date, model version, agent count and bill input. Changing the date intentionally changes the synthetic population."
+  ],
+  "metricDefinitions": {
+    "supportAll": "support / all eligible synthetic agents; absence and abstention remain in the denominator",
+    "supportCast": "support / (support + oppose + explicit abstain); null if nobody participates",
+    "supportDecisive": "support / (support + oppose); null if neither is recorded",
+    "participation": "(support + oppose + explicit abstain) / all eligible synthetic agents",
+    "minimumGroupSupport": "lowest support / eligible within the four preset groups with members; not a Polis consensus metric",
+    "opinionSpread": "population standard deviation of modeled opinion among participants; not a bimodality or political polarization measure",
+    "unanimousEligibleSupport": "true only if every eligible agent explicitly supports this exact revision"
+  },
+  "method": "Seeded, rule-based agent model; no LLM calls, no real participants, no calibrated prediction.",
+  "disclaimer": "All agents and default bills are invented for testing voting interfaces. Synthetic agreement is not human consent, public opinion, or a legislative forecast."
+}

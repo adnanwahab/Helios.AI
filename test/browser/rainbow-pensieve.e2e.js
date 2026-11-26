@@ -21,6 +21,9 @@ test('homepage launches the native rainbow Pensieve and a full mission completes
   await story.screenshot({path: testInfo.outputPath('rainbow-pensieve-desktop.png'),fullPage:true,animations:'disabled'});
 });
 test('spell undo preserves explicit sharing, sources and local-only notes', async ({page}, testInfo) => {
+  // This mobile journey covers sharing, undo, several spells, and a full-page image.
+  // Keep its CI budget separate from the shorter interactions in this suite.
+  test.setTimeout(60000);
   // These sharing/undo invariants must also work in the supported SVG view.
   // Isolate them from the optional software-rendered WebGL scene; the first
   // test and visual-capture workflow continue to exercise the native scene.
