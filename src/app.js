@@ -142,6 +142,26 @@ export function createApp({store, email, notion = null, morphlab = null, moderat
     }
     if(method==='GET'&&lawBoardPath&&!lawBoardPath[2])return response(await store.lawHistory(lawBoardPath[1]));
     if(method==='POST'&&lawBoardPath?.[2]&&!lawBoardWritable)throw new Problem(503,'Shared law votes and updates require the configured Supabase database.');
+    // Blogs vote by writing a Helios line in a post (docs/blogroll.md). Anyone
+    // can read the tally. Blog votes follow the law board's database rule.
+    if (method === 'GET' && path === '/api/blogroll') {
+      const session = await store.authenticate(cookie);
+      return response({writable: lawBoardWritable, ...(await store.blogroll.overview(identity.actorId ?? session?.id))});
+    }
+    if (method === 'GET' && path === '/api/blogroll/opml') {
+      return new Response(await store.blogroll.opml(), {headers: {'Content-Type': 'text/x-opml; charset=utf-8', 'Content-Disposition': 'attachment; filename="helios-blogroll.opml"', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff'}});
+    }
+    if (path === '/api/blogroll/poll' || path === '/api/blogroll/hide') {
+      if (method !== 'POST') return response({error: 'Use POST'}, 405);
+      if (!adminToken || !equal(request.headers.get('authorization'), 'Bearer ' + adminToken)) throw new Problem(403, 'Maintainer authorization required.');
+      if (!lawBoardWritable) throw new Problem(503, 'Blog votes are kept in the shared law-board database, which this deployment does not have.');
+      if (path === '/api/blogroll/poll') return response(await store.blogroll.poll({max: Number(url.searchParams.get('max')) || 25}));
+      if (!request.headers.get('content-type')?.toLowerCase().startsWith('application/json')) throw new Problem(415, 'Use application/json.');
+      let input;
+      try { input = JSON.parse((await request.text()).slice(0, 2048)); } catch { throw new Problem(400, 'Invalid JSON.'); }
+      return response(await store.blogroll.hide(input));
+    }
+    if (method === 'POST' && path === '/api/blogroll/blogs' && !lawBoardWritable) throw new Problem(503, 'Blog votes are kept in the shared law-board database, which this deployment does not have.');
     if (method === 'GET' && ['/api/catalog', '/api/laws'].includes(path)) return response(await store.catalog());
     if (path === '/api/notion/preview' && method === 'GET') {
       if (!notion) throw new Problem(503, 'Notion preview is not configured.');
@@ -206,6 +226,16 @@ export function createApp({store, email, notion = null, morphlab = null, moderat
     // retry receipts to the verified actor to prevent cross-account replays.
     const writeHash = hash((identity.actorId ? identity.actorId + '\n' : '') + path + JSON.stringify(body));
 
+    if (path === '/api/blogroll/blogs') {
+      const key = request.headers.get('idempotency-key');
+      if (!key || !/^[a-zA-Z0-9-]{16,80}$/.test(key)) throw new Problem(400, 'A unique Idempotency-Key is required.');
+      await store.limit('blogroll-session:' + session.id, 30, 3600000);
+      await store.limit('blogroll-ip:' + hash(remoteIP), 120, 3600000);
+      const result = await store.idempotent(session.id, key, writeHash, q => store.blogroll.addIn(q, body, actor));
+      // A single address is read right away so its author sees what Helios found.
+      // The receipt keeps the queue result; a retried request reads again.
+      return response({...result, read: result.readNow ? await store.blogroll.readNow(result.readNow) : null}, 201);
+    }
     if(path==='/api/contributions'){
       const key=request.headers.get('idempotency-key');
       if(!key||!/^[a-zA-Z0-9-]{16,80}$/.test(key))throw new Problem(400,'A unique Idempotency-Key is required.');

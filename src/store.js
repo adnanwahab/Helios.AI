@@ -2,6 +2,7 @@ import {createHash, randomBytes, randomUUID} from 'node:crypto';
 import {CONSTITUTION_SCHEMA,constitutionStore} from './constitution.js';
 import {RESEARCH_SCHEMA, RESEARCH_TABLES, researchStore} from './research.js';
 import {CONTRIBUTION_SCHEMA,contributionStore} from './contributions.js';
+import {BLOGROLL_SCHEMA,BLOGROLL_TABLES,blogrollStore} from './blogroll/store.js';
 import seedCatalog from '../data/catalog.json' with {type: 'json'};
 
 export const hash = value => createHash('sha256').update(value).digest('hex');
@@ -79,6 +80,8 @@ export const SCHEMA = [
   'ALTER TABLE email_inbound ADD COLUMN IF NOT EXISTS auto_reply_status TEXT',
   'ALTER TABLE email_inbound ADD COLUMN IF NOT EXISTS auto_reply_id TEXT',
   'ALTER TABLE email_inbound ADD COLUMN IF NOT EXISTS auto_reply_at BIGINT',
+  // Blogs that vote with a Helios line in their posts (see docs/blogroll.md).
+  ...BLOGROLL_SCHEMA,
 ];
 
 // Transaction-scoped advisory lock: serializes writers that must not race
@@ -92,14 +95,15 @@ export function multiInsert(table, columns, rows) {
   return {text: `INSERT INTO ${table}(${columns.join(',')}) VALUES ${groups.join(',')}`, params};
 }
 
-export async function openStore(db) {
+// options.blogroll lets tests replace the network reader and clock.
+export async function openStore(db, options = {}) {
   const seedHash = hash(JSON.stringify(seedCatalog));
   await db.transaction(async tx => {
     await lock(tx, 'helios-schema');
     for (const sql of SCHEMA) await tx.query(sql);
     // The Supabase adapter owns a private schema; enable RLS as defense in
     // depth. The database owner used by the server retains normal access.
-    if(db.kind==='supabase-postgres')for(const table of ['metadata','sessions','laws','versions','amendments','receipts','limits','email_subscribers','email_inbound','constitution_clauses','constitution_contributions','constitution_votes','constitution_comments','law_votes','contribution_inbox',...RESEARCH_TABLES])await tx.query('ALTER TABLE '+table+' ENABLE ROW LEVEL SECURITY');
+    if(db.kind==='supabase-postgres')for(const table of ['metadata','sessions','laws','versions','amendments','receipts','limits','email_subscribers','email_inbound','constitution_clauses','constitution_contributions','constitution_votes','constitution_comments','law_votes','contribution_inbox',...RESEARCH_TABLES,...BLOGROLL_TABLES])await tx.query('ALTER TABLE '+table+' ENABLE ROW LEVEL SECURITY');
     const prior = (await tx.query('SELECT value FROM metadata WHERE key=$1', ['catalog_hash'])).rows[0];
     if (prior && prior.value !== seedHash) fail(500, 'Catalog seed changed. A reviewed migration is required; stored records were not overwritten.');
     if (!prior) {
@@ -112,10 +116,10 @@ export async function openStore(db) {
       await tx.query('INSERT INTO metadata(key, value) VALUES($1, $2)', ['schema_version', '1']);
     }
   });
-  return createStore(db, seedHash);
+  return createStore(db, seedHash, options);
 }
 
-function createStore(db, catalogHash) {
+function createStore(db, catalogHash, options = {}) {
   const publicLaw = row => ({...JSON.parse(row.content), id: row.id, version: row.number, versionId: row.current_version, createdAt: row.created_at});
   const currentRow = async (q, id, {forUpdate = false} = {}) => (await q.query(
     `SELECT l.*, v.content, v.number FROM laws l JOIN versions v ON v.id = l.current_version WHERE l.id = $1${forUpdate ? ' FOR UPDATE OF l' : ''}`, [id])).rows[0];
@@ -221,6 +225,7 @@ function createStore(db, catalogHash) {
     constitution: constitutionStore(db, Problem),
     research: researchStore(db, Problem),
     contributions: contributionStore(db, Problem),
+    blogroll: blogrollStore(db, Problem, options.blogroll),
     async catalog() {
       const rows = (await db.query('SELECT l.*, v.content, v.number FROM laws l JOIN versions v ON v.id = l.current_version ORDER BY l.id')).rows;
       return {...seedCatalog, goals: rows.map(publicLaw)};

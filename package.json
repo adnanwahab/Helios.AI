@@ -17,6 +17,8 @@
     "votes:world:demo": "bun run scripts/world-vote-lab/cli.ts --proposal-file scripts/world-vote-lab/examples/childcare.txt --interval 2 --batch-size 200000000",
     "security:registry": "bun scripts/security-registry.js",
     "test:security": "bun test scripts/security-registry.test.js",
+    "blogroll:poll": "node scripts/blogroll-poll.mjs",
+    "test:blogroll": "bun test test/blogroll-reading.test.js test/blogroll.test.js",
     "simulate:votes": "cd consensus-lab && bun run simulate",
     "serve:votes": "cd consensus-lab && bun run serve",
     "test:votes": "cd consensus-lab && bun test",
