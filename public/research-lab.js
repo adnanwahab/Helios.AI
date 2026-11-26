@@ -1,4 +1,5 @@
-// Homepage workshop controller. This is a planning UI, not a worker control API.
+// Homepage workshop controller. Planning slots remain local; the separate pilot panel uses an operator-authorized Fly API.
+import './research-pilot.js';
 const root=document.getElementById('communal-science-lab');
 if(root){
 const $=id=>document.getElementById(id);
