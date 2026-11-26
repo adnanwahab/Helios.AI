@@ -10,7 +10,7 @@ import {createRuntime} from '../src/runtime.js';
 
 const root = process.cwd();
 const dist = resolve(root, 'dist');
-const types = {'.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.ico': 'image/x-icon'};
+const types = {'.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.webmanifest': 'application/manifest+json', '.mp4': 'video/mp4', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.ico': 'image/x-icon'};
 
 const toml = await readFile(join(root, 'netlify.toml'), 'utf8');
 const redirects = new Map([...toml.matchAll(/\[\[redirects\]\]\s*from\s*=\s*"([^"]+)"\s*to\s*=\s*"([^"]+)"/g)].map(m => [m[1], decodeURI(m[2])]));
@@ -25,7 +25,7 @@ async function serveStatic(path, res, method) {
   if (!file.startsWith(dist + sep)) return false;
   const info = await stat(file).catch(() => null);
   if (!info?.isFile()) return false;
-  res.writeHead(200, {'Content-Type': types[extname(file)] || 'application/octet-stream', 'X-Content-Type-Options': 'nosniff'});
+  res.writeHead(200, {'Content-Type': types[extname(file)] || 'application/octet-stream', 'Content-Length': info.size, 'X-Content-Type-Options': 'nosniff'});
   res.end(method === 'HEAD' ? undefined : await readFile(file));
   return true;
 }

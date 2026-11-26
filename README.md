@@ -498,7 +498,7 @@ The Helios dashboard includes **MorphLab · WebGPU** (`/morphlab.html`): type a 
 
 # contact
 
-please email shel.bernstein123@gmail.com
+please email shel.bernstein123@gmail.com for human review and hello@heliosai.lol for making a pull request.
 
 
 https://claude.ai/chat/80840df3-8f63-4cb3-9335-0b6bec7598e3
