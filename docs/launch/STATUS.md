@@ -1,7 +1,7 @@
 # Helios launch status
 
 **14 / 22 tasks complete.** Target: December 1, 2026, subject to readiness.
-Snapshot: 2026-11-25T21:31:28Z. User-facing dates use America/Chicago.
+Snapshot: 2026-11-26T18:47:15Z. User-facing dates use America/Chicago.
 
 [Dashboard preview](https://deploy-preview-108--heliosailol.netlify.app/launch) · [Launch PR](https://github.com/adnanwahab/HeliosHTML/pull/108)
 
@@ -13,10 +13,10 @@ This file is generated from `public/launch-checklist.json`. A prepared plan does
   A single mission now leads the README and defines who can contribute, voluntary participation, human review, and the role of simulations.
   Evidence: [Read the mission](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/README.md).
 
-- [ ] **L02: Select an open-source license after checking third-party rights.** — Blocked
-  MIT is the candidate for original code. The audit found missing provenance for bundled assets, downloaded data, and external dependencies, so a blanket license has not been applied.
-  Next: Resolve the asset and data provenance inventory, preserve required notices, and approve the exact scope of the license.
-  Evidence: [Rights audit](https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/license-audit.md) · [License task #99](https://github.com/adnanwahab/HeliosHTML/issues/99).
+- [ ] **L02: Select an open-source license after checking third-party rights.** — In progress
+  AGPL-3.0-or-later now covers original code and documentation, and CC0 1.0 covers the policy text. Third-party material keeps its own terms; the flags, illustrations, site icons and some map and population data stay excluded until their sources are recorded.
+  Next: Record the source and terms of each excluded asset or replace it, then mark this task done and close #99.
+  Evidence: [LICENSE (AGPL-3.0-or-later)](https://github.com/adnanwahab/HeliosHTML/blob/main/LICENSE) · [LICENSE-CC0](https://github.com/adnanwahab/HeliosHTML/blob/main/LICENSE-CC0) · [Rights audit](https://github.com/adnanwahab/HeliosHTML/blob/main/docs/launch/license-audit.md) · [License task #99](https://github.com/adnanwahab/HeliosHTML/issues/99).
 
 - [x] **L03: Rewrite the README with screenshots, a live demo and five-minute setup instructions.** — Done
   The README now includes the mission, live demo and preview links, five-minute setup commands, and inspected desktop/mobile screenshots from the hosted capture run. Dependency installation and builds passed; screenshot progress is labeled as a dated snapshot.

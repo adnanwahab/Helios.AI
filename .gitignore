@@ -14,3 +14,5 @@ dist-pages/
 /fly.toml
 /fly.toml.before-memory-pin.*.bak
 dist-pages/
+# Output of fetch_university_sitemaps.ts: third-party downloads, not project files.
+/sitemaps/

@@ -1,6 +1,7 @@
 {
   "name": "helios-ai",
   "private": true,
+  "license": "(AGPL-3.0-or-later AND CC0-1.0)",
   "type": "module",
   "scripts": {
     "build": "node scripts/build-netlify.mjs",
