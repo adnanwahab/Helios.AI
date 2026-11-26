@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "Helios",
-  "updatedAt": "2026-11-25T21:31:28Z",
+  "updatedAt": "2026-11-26T18:47:15Z",
   "launchTarget": "2026-12-01",
   "timezone": "America/Chicago",
   "sourcePR": "https://github.com/adnanwahab/HeliosHTML/pull/108",
@@ -53,20 +53,28 @@
       "id": "L02",
       "phase": "foundation",
       "title": "Select an open-source license after checking third-party rights.",
-      "status": "blocked",
+      "status": "in_progress",
       "owner": "Maintainer / rights reviewer",
-      "summary": "MIT is the candidate for original code. The audit found missing provenance for bundled assets, downloaded data, and external dependencies, so a blanket license has not been applied.",
+      "summary": "AGPL-3.0-or-later now covers original code and documentation, and CC0 1.0 covers the policy text. Third-party material keeps its own terms; the flags, illustrations, site icons and some map and population data stay excluded until their sources are recorded.",
       "evidence": [
         {
+          "label": "LICENSE (AGPL-3.0-or-later)",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/main/LICENSE"
+        },
+        {
+          "label": "LICENSE-CC0",
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/main/LICENSE-CC0"
+        },
+        {
           "label": "Rights audit",
-          "url": "https://github.com/adnanwahab/HeliosHTML/blob/feat/contributor-launch/docs/launch/license-audit.md"
+          "url": "https://github.com/adnanwahab/HeliosHTML/blob/main/docs/launch/license-audit.md"
         },
         {
           "label": "License task #99",
           "url": "https://github.com/adnanwahab/HeliosHTML/issues/99"
         }
       ],
-      "nextAction": "Resolve the asset and data provenance inventory, preserve required notices, and approve the exact scope of the license.",
+      "nextAction": "Record the source and terms of each excluded asset or replace it, then mark this task done and close #99.",
       "completedAt": null
     },
     {

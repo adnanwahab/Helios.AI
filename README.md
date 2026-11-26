@@ -153,7 +153,16 @@ The first-maintainer-response target is **within 24 hours**. The process is docu
 
 ## Licensing
 
-**MIT is the candidate for original project code. The repository does not yet have a project-wide license.** The initial [rights audit](docs/launch/license-audit.md) identifies third-party images, geographic data, downloaded sitemaps, external libraries, fonts, and model assets that need provenance and notice review before that license can be applied safely. Follow [issue #99](https://github.com/adnanwahab/HeliosHTML/issues/99) for the remaining work.
+Helios uses two licenses:
+
+- **Code, tests, scripts and documentation: [GNU AGPL v3.0 or later](LICENSE)** (`AGPL-3.0-or-later`). You may use, study, change and share Helios. If you run a modified version for other people over a network, you must offer them its source code.
+- **Policy text: [CC0 1.0](LICENSE-CC0)** (`CC0-1.0`). The goals, bills, acts and moonshots (IDs starting `HGA-`, `HFL-`, `HEL-` or `HBL-`) are dedicated to the public domain wherever their text appears, including `data/catalog.json`, `data/contributions/` and `consensus-lab/data/bills.example.json`. Anyone may copy, edit, merge or adopt the wording, including into real legislation, without asking or giving credit.
+
+Copyright © 2026 Adnan Wahab and Helios contributors.
+
+**Not covered by either license.** Third-party material keeps its own terms: D3 in `public/world-map/vendor/` (ISC), the fonts embedded in `helios_ai_landing_page.html` (SIL Open Font License 1.1), and the libraries, fonts and models that pages load from CDNs. Files that the [rights audit](docs/launch/license-audit.md) lists without a recorded source, including the flag images in `public/flags/`, the illustrations and site icons, and some map and population data, are excluded until their source is recorded ([issue #99](https://github.com/adnanwahab/HeliosHTML/issues/99)).
+
+These licenses cover this repository, not private journals or other participant data that a Helios service stores. Contributions are accepted under the same terms; see [CONTRIBUTING.md](CONTRIBUTING.md#license-privacy-and-attribution).
 
 not everyone has polticial expertise but everybody probably has good ideas for a better world
 so we use tranformer APIs to convert your idea to a law that people want to implement

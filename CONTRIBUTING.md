@@ -71,7 +71,9 @@ A useful review identifies the relevant acceptance criterion, explains an observ
 
 ## License, privacy, and attribution
 
-The project-wide license is pending the [rights audit](docs/launch/license-audit.md). MIT is a candidate for original code, not a license grant for the entire repository. Identify the source and terms of third-party material and submit only work you have permission to contribute.
+Helios code, tests, scripts and documentation are licensed under [AGPL-3.0-or-later](LICENSE). Policy text, meaning goals, bills, acts, moonshots and public proposals, is dedicated to the public domain under [CC0 1.0](LICENSE-CC0). The [README](README.md#licensing) lists exactly what each license covers and what is excluded.
+
+By submitting a contribution, you agree to license code and documentation under AGPL-3.0-or-later and to dedicate policy wording under CC0 1.0, and you confirm that you have the right to do both. Third-party material keeps its own terms: name its source and license in your PR, and include it only if those terms allow redistribution here. A proposal sent by email is added to the repository only after its sender agrees to these terms.
 
 Never post private journals, secret keys, contact lists, unpublished participant data, or unredacted personal details in public issues, PRs, screenshots, or recordings. Use fictitious examples for walkthroughs. Accepted contributors may opt into public credit; declining credit does not affect review.
 
