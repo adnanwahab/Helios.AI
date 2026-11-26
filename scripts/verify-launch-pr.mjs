@@ -3,7 +3,7 @@ import {appendFile,readFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {resolve} from 'node:path';
 
-const isUIFile=path=>/\.html$/.test(path)||/^(?:public|frontend|app)\/.*\.(?:[cm]?[jt]sx?|css|json|svg|png|jpe?g|webp)$/.test(path);
+const isUIFile=path=>/\.html$/.test(path)||/^(?:public|frontend|app)\/.*\.(?:[cm]?[jt]sx?|css|json|svg|png|jpe?g|webp|mp4|webm|vtt)$/.test(path);
 const urls=body=>[...body.matchAll(/https:\/\/[^\s<>"\)]+/g)].map(match=>{
  try{return new URL(match[0]);}catch{return null;}
 }).filter(Boolean);
@@ -27,15 +27,15 @@ export function verifyPREvidence({pr,changedFiles,status,runs}){
  if(ui){
   const hostname=`deploy-preview-${pr.number}--heliosailol.netlify.app`;
   const previews=links.filter(url=>url.hostname===hostname&&url.protocol==='https:');
-  if(!previews.some(url=>url.pathname!=='/'||url.search||url.hash))errors.push('Include a direct preview link to the changed route, section, or feature.');
+  const homepageOnly=changedFiles.includes('index.html')&&!changedFiles.some(path=>path!=='index.html'&&/\.html$/.test(path));
+  if(!previews.some(url=>homepageOnly||url.pathname!=='/'||url.search||url.hash))errors.push('Include a direct preview link to the changed route, section, or feature.');
   if(!previews.some(url=>url.pathname==='/'&&!url.search&&!url.hash))errors.push('Include the preview homepage as well as the feature link.');
   const deploy=status.sha===pr.head.sha?status.statuses?.find(item=>item.context==='netlify/heliosailol/deploy-preview'):null;
   if(!deploy||deploy.state==='pending')pending.push('Netlify deployment is still pending for this PR head.');
   else if(deploy.state!=='success')errors.push(`Netlify deployment did not pass for this PR head (${deploy.state}).`);
   const capture=checkRun('.github/workflows/pr-visual-capture.yml','Desktop/mobile visual capture');
-  const hasImage=links.some(url=>/\.(png|jpe?g|webp)(?:$|[?#])/i.test(url.href));
   const hasRun=capture&&links.some(url=>url.href===capture.html_url);
-  if(!hasImage&&!hasRun)errors.push('Link desktop/mobile screenshots or the current visual-capture run in the PR description.');
+  if(!hasRun)errors.push('Link the current visual-capture run in the PR description so screenshots can be traced to this head.');
  }
  return {ui,errors,pending,passed:errors.length===0&&pending.length===0};
 }

@@ -1,12 +1,18 @@
 # Founding contributor operations kit
 
-Prepared November 25, 2026 for the December 1 launch target. This file makes the recruiting, onboarding, workshop, experiment, and publication work ready to run. It does **not** record those activities as completed. Actual delivery, attendance, accepted contributions, and published links belong in the [launch dashboard](https://deploy-preview-75--heliosailol.netlify.app/launch) with evidence.
+Prepared November 25, 2026 for the December 1 launch target. This file makes the recruiting, onboarding, workshop, experiment, and publication work ready to run. It does **not** record those activities as completed. Actual delivery, attendance, accepted contributions, and published links belong in the [launch dashboard](https://deploy-preview-108--heliosailol.netlify.app/launch) with evidence.
 
 ## Operating owners and prerequisites
 
 A named volunteer must accept each duty: outreach coordinator, workshop facilitator, first-contribution reviewer, release maintainer, and moderator with a backup. One person may cover several duties if their availability is stated. Use the role definitions in [GOVERNANCE.md](../../GOVERNANCE.md); this kit does not appoint anyone.
 
 Before inviting a broad public audience, verify the advertised contribution route works, the public/private distinction is clear, a private moderation channel is available, reviewers can handle the queue, and the launch dashboard's privacy/persistence and licensing gates are resolved for the proposed release. If the live backend is unavailable, a workshop can use a clearly labeled local demonstration and public GitHub submissions; do not tell participants their practice responses were saved centrally.
+
+## Active public work
+
+- [Initial progress report — November 25](https://github.com/adnanwahab/HeliosHTML/issues/109) is published. Future reports are scheduled for Monday mornings around 9 a.m. Chicago time, beginning November 30.
+- [Backyard Homes experiment — BH-PILOT-v1](https://github.com/adnanwahab/HeliosHTML/issues/107) is open for real participant responses. A round-one synthesis is scheduled for November 30 morning. Round two still requires an accepted human facilitator/reviewer and the exact revised draft.
+- Contributor triage is scheduled around 9 a.m. and 9 p.m. Chicago time daily. Human primary/backup coverage and measured 24-hour response compliance remain outstanding.
 
 ## Invite 20–30 founding contributors
 

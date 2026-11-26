@@ -10,7 +10,8 @@ The `evidence` workflow verifies the PR description and current-head backend,
 browser, visual-capture, and Netlify results with a read-only token. It waits for
 the other workflows and reruns when the PR description changes. Forks need no
 repository secrets. This check never approves, merges, changes access, or runs
-privileged PR code. A screenshot of an old revision does not verify a new one.
+privileged PR code. Link the current visual-capture run in the PR so its screenshots can be traced
+to the checked head. A screenshot of an old revision does not verify a new one.
 
 ## Repository settings
 

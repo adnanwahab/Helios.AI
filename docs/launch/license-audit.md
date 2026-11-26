@@ -47,3 +47,14 @@ The static build's allowlist and `public/` copy in [`scripts/build-netlify.mjs`]
 6. Link the completed review and license commit in the launch dashboard, then mark the license item complete. Until then, it remains a launch blocker.
 
 This document records what was actually inspected and the unresolved work. It is not a full legal clearance or an assertion that all dependencies are compatible with a blanket MIT license.
+
+## Dependency delta after the research/account merge
+
+On November 25, 2026, main commit `f8199008b15821f48ca93df3ad138cd1e05408ba` added two direct packages. Their exact versions were checked in `package.json`, `bun.lock`, and the installed package metadata after a successful frozen-lockfile install:
+
+| Dependency | Locked version | License metadata and notice file observed |
+| --- | --- | --- |
+| `@supabase/supabase-js` (runtime) | 2.119.2 | MIT; `LICENSE` present |
+| `esbuild` (development/build) | 0.28.2 | MIT; `LICENSE.md` present |
+
+The lock also adds Supabase's `auth-js`, `functions-js`, `postgrest-js`, `realtime-js`, and `storage-js` packages at 2.119.2. Include their notices and the generated browser account bundle in the release inventory. This metadata check expands the initial inventory; it does not resolve the missing asset/data provenance or close the project-wide licensing task.

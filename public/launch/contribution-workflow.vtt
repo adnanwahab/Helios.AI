@@ -1,0 +1,33 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:10.000
+Find one useful task. Research, design, testing, docs and code all count. Pick a small issue and read its acceptance criteria. Start with one contribution you can finish.
+
+2
+00:00:10.000 --> 00:00:23.000
+Describe a change. Choose Propose a change. Write a short title, the problem, and what would improve it. Fictitious example shown. No submission is made.
+
+3
+00:00:23.000 --> 00:00:36.000
+Review the exact text. Choose the GitHub route. Remove private details and inspect the public proposal before giving permission. Your reviewed text is what you choose to share.
+
+4
+00:00:36.000 --> 00:00:48.000
+Continue on GitHub. Copy the proposal. Open the editor, sign in, paste the file, choose a branch or fork, and open a pull request. This tutorial stops before publishing a dummy PR.
+
+5
+00:00:48.000 --> 00:01:00.000
+Make the PR reviewable. Link the issue. Explain the problem and change. Put the exact feature preview first, followed by screenshots and verification. The title and description should make the result easy to review.
+
+6
+00:01:00.000 --> 00:01:12.000
+Let the checks run. Run relevant tests and wait for the build and deployment checks on the current commit. Investigate failures before merging. A successful older preview does not verify a newer change.
+
+7
+00:01:12.000 --> 00:01:24.000
+Ask for human review. A reviewer examines the change and evidence. Address feedback, keep checks current, and follow the repository rules before merging. An automated check or simulated vote is not human approval.
+
+8
+00:01:24.000 --> 00:01:36.000
+Record what happened. Update the launch task with a dated result and evidence link. Completed work counts as done; prepared future work stays ready to run. Link accepted contributions, artifacts, and decisions to the PR.
