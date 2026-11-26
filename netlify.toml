@@ -254,3 +254,15 @@
   from = "/consensus-lab/"
   to = "/consensus-lab/index.html"
   status = 200
+
+# Everyone blogs: write a Helios line in any post and add your blog. The page
+# calls /api/blogroll; netlify/functions/blogroll-tick.mjs reads the blogs.
+[[redirects]]
+  from = "/blogs"
+  to = "/public/blogroll.html"
+  status = 200
+
+[[redirects]]
+  from = "/blogs/"
+  to = "/public/blogroll.html"
+  status = 200

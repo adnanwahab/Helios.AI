@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0e1511">
+<title>Everyone blogs · Helios</title>
+<meta name="description" content="Blog anywhere. Add one Helios line to a post to vote on Free Weed for Everyone and the 100 laws.">
+<link rel="icon" href="/public/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/public/blogroll.css">
+</head>
+<body>
+<main>
+<header><strong>✳ HELIOS / BLOGS</strong><nav aria-label="Helios"><a href="/">← Homepage</a> · <a href="/law-atlas.html">Law atlas</a> · <a href="/constitution">Constitution</a></nav></header>
+
+<section class="hero">
+  <div>
+    <p class="eyebrow">Helios = everyone blogs whenever</p>
+    <h1>Blog anywhere. One line votes.</h1>
+    <p class="lede">Keep writing wherever you already write. Put one Helios line in a post, and Helios counts your blog's vote on Free Weed for Everyone and the 100 laws.</p>
+    <p class="sample"><code>Helios: support FREE-WEED HGA-031; oppose HGA-012</code></p>
+  </div>
+  <dl class="metrics" aria-label="Blogroll totals">
+    <div><dt>Blogs voting</dt><dd id="stat-voting">—</dd></div>
+    <div><dt>Blog votes</dt><dd id="stat-votes">—</dd></div>
+    <div><dt>Blogs Helios reads</dt><dd id="stat-watching">—</dd></div>
+    <div><dt>Last read</dt><dd id="stat-read">—</dd></div>
+  </dl>
+</section>
+
+<p id="backend-status" class="status banner" role="status">Loading the blogroll…</p>
+
+<div class="steps">
+  <section class="panel" id="write" aria-labelledby="write-title">
+    <p class="eyebrow">Step 1</p>
+    <h2 id="write-title">Write your Helios line</h2>
+    <p class="muted">Pick a position on the laws you care about and leave the rest blank.</p>
+    <div id="featured-pick" class="pick featured"></div>
+    <label for="law-search">More laws</label>
+    <input id="law-search" type="search" placeholder="HGA-031, childcare, housing…" autocomplete="off">
+    <ul id="law-picker" class="picker" aria-label="The 100 laws"></ul>
+    <div class="line-out">
+      <code id="line-output" aria-live="polite">Choose a position to write your line.</code>
+      <button id="copy-line" type="button" disabled>Copy line</button>
+    </div>
+    <p class="muted small">Paste it anywhere in a post. Put it near the top if your feed only shows the start of each post. To change your mind, publish a new line; <code>Helios: withdraw HGA-031</code> takes one vote back.</p>
+    <details id="checker">
+      <summary>Check a post before you publish</summary>
+      <label for="check-text">Paste your post</label>
+      <textarea id="check-text" rows="5" placeholder="…and that's why I think adults should get it free.&#10;&#10;Helios: support FREE-WEED"></textarea>
+      <ul id="check-result" class="chips" aria-live="polite"></ul>
+    </details>
+  </section>
+
+  <section class="panel" id="add" aria-labelledby="add-title">
+    <p class="eyebrow">Step 2</p>
+    <h2 id="add-title">Add your blog</h2>
+    <form id="add-form" novalidate>
+      <label for="blog-url">Blog or feed address</label>
+      <div class="row">
+        <input id="blog-url" type="text" inputmode="url" autocomplete="url" spellcheck="false" placeholder="yourname.substack.com" required>
+        <button class="primary" id="add-submit" type="submit">Add blog</button>
+      </div>
+    </form>
+    <p class="muted small">Works with Substack, WordPress, Ghost, Medium, Blogger, Tumblr, Bear, Write.as, Micro.blog and any site with an RSS, Atom or JSON feed. Helios reads it now, and again on its own every few hours. After you publish a line, press Read now to count it right away.</p>
+    <div id="add-result" class="result" aria-live="polite" hidden></div>
+    <details id="import">
+      <summary>Add a whole list of blogs</summary>
+      <label for="import-text">One address per line, or an OPML blogroll</label>
+      <textarea id="import-text" rows="6" spellcheck="false" placeholder="alice.substack.com&#10;bob.wordpress.com&#10;https://carol.blog/feed.xml"></textarea>
+      <div class="row">
+        <label class="file">Or choose an OPML file <input id="import-file" type="file" accept=".opml,.xml,text/xml,application/xml,text/x-opml"></label>
+        <button id="import-submit" type="button">Add list</button>
+      </div>
+      <p id="import-status" class="status" role="status"></p>
+    </details>
+    <section id="mine" hidden aria-labelledby="mine-title">
+      <h3 id="mine-title">Blogs you added</h3>
+      <ul id="mine-list" class="mine"></ul>
+    </section>
+  </section>
+</div>
+
+<section class="panel" id="board" aria-labelledby="board-title">
+  <div class="head">
+    <div><p class="eyebrow">Where the blogs stand</p><h2 id="board-title">Free Weed for Everyone and the 100 laws</h2></div>
+    <div class="controls">
+      <div><label for="board-search">Find a law</label><input id="board-search" type="search" placeholder="Title or ID" autocomplete="off"></div>
+      <div><label for="board-sort">Sort by</label><select id="board-sort"><option value="support">Most support</option><option value="votes">Most blog votes</option><option value="id">Law number</option></select></div>
+    </div>
+  </div>
+  <article id="featured-law" class="featured-law" aria-labelledby="featured-title"></article>
+  <ol id="law-board" class="laws"></ol>
+  <button id="board-more" class="more" type="button" hidden>Show all 100 laws</button>
+</section>
+
+<section class="panel" id="roll" aria-labelledby="roll-title">
+  <div class="head">
+    <div><p class="eyebrow">The list of blogs</p><h2 id="roll-title">Blogs that have voted</h2></div>
+    <a id="opml-link" class="button" href="/api/blogroll/opml" download="helios-blogroll.opml">Download as OPML</a>
+  </div>
+  <p class="muted">Only blogs whose authors have written a Helios line are listed. Import the OPML file into any feed reader to follow them all.</p>
+  <ul id="blog-list" class="roll"></ul>
+</section>
+
+<footer class="note">Blog votes are advisory and unverified. One blog is one voice per law, and its newest post wins. Helios reads public feeds: every 15 minutes for blogs that vote and post often, every few hours for the rest. It keeps only posts that contain a Helios line (their title, link and the line itself), and never guesses a position from anything else a post says. Lines inside quotes and code blocks are ignored. Blog votes are counted separately from the advisory votes on the <a href="/law-atlas.html">law board</a>. Free Weed for Everyone is a policy draft for adults 21 and over; nothing is provided by Helios.</footer>
+</main>
+<script type="module" src="/public/blogroll.js"></script>
+</body>
+</html>

@@ -372,6 +372,16 @@ try {
     await page.setViewportSize({width:390,height:844});
     await page.screenshot({path:join(output,'contribute-mobile.png'),fullPage:true,animations:'disabled'});
   }
+  // Everyone blogs: the Helios line builder with Free Weed picked, and the blog
+  // board. Previews without the shared database show the builder only.
+  await page.goto(base + '/blogs?support=FREE-WEED', {waitUntil:'domcontentloaded'});
+  if (await page.locator('#law-picker').count()) {
+    await page.waitForFunction(() => !document.querySelector('#backend-status')?.textContent.startsWith('Loading'), null, {timeout: 20000});
+    await page.setViewportSize({width:1440,height:1000});
+    await page.screenshot({path:join(output,'blogs-desktop.png'),fullPage:true,animations:'disabled'});
+    await page.setViewportSize({width:390,height:844});
+    await page.screenshot({path:join(output,'blogs-mobile.png'),fullPage:true,animations:'disabled'});
+  }
   console.log('Captured desktop and mobile screenshots from ' + (remote ? 'Netlify deployment' : 'local PR build'));
 } finally {
   await browser?.close().catch(() => {});

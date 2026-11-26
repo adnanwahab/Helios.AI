@@ -70,6 +70,7 @@ The browser suite starts its own server on port 3101 and uses a temporary databa
 | Experience | Start here | What it shows |
 | --- | --- | --- |
 | Civic workshop | `/` | Express a concern, develop a proposal, inspect revisions and advisory feedback. |
+| Everyone blogs | `/blogs` | Blog anywhere: one Helios line in a post votes on Free Weed for Everyone and the 100 laws. Add your blog or import a list; see [docs/blogroll.md](docs/blogroll.md). |
 | Consensus World | `/public/consensus-world` | Revise a draft and compare synthetic responses under explicit assumptions. |
 | World preference map | `/world-map` or the homepage's **Explore the world map here** section | Compare 1,526 geographic hexagons using five importance sliders and a live explanation. |
 | Contribution hub | `/contribute` | Paths for research, design, testing, documentation, and code contributions. |
