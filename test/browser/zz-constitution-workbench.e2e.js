@@ -99,3 +99,28 @@ test('Docs opens a full archive with one toggled iframe and preserves the journa
  await page.locator('#docs-close').click();
  await expect(page.locator('#journal')).toHaveValue('Private journal draft retained across archive views.');
 });
+
+test('homepage opens on the three-lane workshop with the law links below',async({page})=>{
+ await page.setViewportSize({width:1664,height:878});
+ await page.goto('/');
+ await expect(page.locator('#mode-citizen')).toHaveAttribute('aria-pressed','true');
+ await expect(page.locator('#docs-open')).toBeInViewport();
+ for(const href of ['./grid.html','./lunch.html','./public/mystery.html']) {
+   await expect(page.locator(`header a[href="${href}"]`)).toHaveCount(0);
+   await expect(page.locator(`footer a[href="${href}"]`)).toHaveCount(1);
+ }
+ for(const id of ['heading-1','constitution-title','review-title','journal']) {
+   await expect(page.locator('#'+id)).toBeInViewport();
+ }
+ const layout=await page.evaluate(()=>{
+   const rect=selector=>document.querySelector(selector).getBoundingClientRect();
+   const left=rect('.citizen-main'),middle=rect('.constitution-board'),right=rect('.clause-review');
+   return {aligned:left.top===middle.top&&middle.top===right.top,ordered:left.right<middle.left&&middle.right<right.left,lawsBelow:rect('#first-law').top>Math.max(left.bottom,middle.bottom,right.bottom)};
+ });
+ expect(layout).toEqual({aligned:true,ordered:true,lawsBelow:true});
+ await expect(page.locator('#first-law a')).toHaveAttribute('href','./law-atlas.html#cannabis-budget');
+ await expect(page.locator('footer #mystery-link')).toBeAttached();
+ await page.setViewportSize({width:390,height:844});
+ await expect(page.locator('#heading-1')).toBeInViewport();
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
