@@ -81,8 +81,12 @@ test('account preferences require verified proof and retain edits on a revision 
     if(writes.length===1){revision=2;settings={...settings,displayName:'Changed elsewhere'};return json(route,{error:'Your settings changed on another device. Reload before saving.'},409);}
     settings=writes.at(-1).body.preferences;revision++;return json(route,{preferences:settings,revision,updatedAt:'2026-11-28T12:00:00Z'});
   });
-  await page.goto('/account');await expect(page.locator('#preferences-fields')).toBeDisabled();
-  await signIn(page,'#account-open');await expect(page.locator('#preferences-fields')).toBeEnabled();
+  await page.goto('/account');
+  // Assert a real form control: Playwright's disabled matcher does not classify
+  // the fieldset itself, although its disabled attribute gates every input.
+  await expect(page.locator('#preferences-fields')).toHaveAttribute('disabled','');
+  await expect(page.locator('#preference-name')).toBeDisabled();
+  await signIn(page,'#account-open');await expect(page.locator('#preference-name')).toBeEnabled();
   await page.locator('#preference-name').fill('My unsaved choice');await page.locator('#preferences-save').click();
   await expect(page.locator('#preferences-status')).toContainText('changed on another device');await expect(page.locator('#preference-name')).toHaveValue('My unsaved choice');
   expect(writes[0].headers['x-helios-access-token']).toBe(token);expect(writes[0].headers['x-csrf-token']).toBe('test-session-csrf');
