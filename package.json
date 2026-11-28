@@ -23,7 +23,9 @@
     "serve:votes": "cd consensus-lab && bun run serve",
     "test:votes": "cd consensus-lab && bun test",
     "votes:8b": "bun scripts/vote-profile-lab/cli.ts",
-    "test:votes:8b": "bun test test/vote-profile-lab.test.ts"
+    "test:votes:8b": "bun test test/vote-profile-lab.test.ts",
+    "research:worker": "node scripts/mini-symphony-worker.mjs",
+    "research:worker:demo": "node scripts/mini-symphony-worker.mjs --demo --once"
   },
   "engines": {
     "bun": ">=1.3.0",

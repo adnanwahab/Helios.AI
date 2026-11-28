@@ -113,7 +113,7 @@
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(response.status === 429 ? messages.rate : data.error || messages.failed);
       form.reset();
-      show('ok', messages.done);
+      show('ok', typeof data.message === 'string' ? data.message : 'Your request was received. No email delivery date has been confirmed.');
       if (window.parent !== window) window.parent.postMessage({type: 'helios:email-signup', status: 'subscribed'}, '*');
     } catch (error) {
       show('bad', error instanceof TypeError ? messages.failed : error.message);

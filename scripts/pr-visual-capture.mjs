@@ -22,9 +22,10 @@ const base = remote || `http://127.0.0.1:${port}`;
 const server = remote ? null : spawn(process.execPath, ['scripts/dev-server.js'], {
   env: {
     ...process.env, HOST: '127.0.0.1', PORT: String(port),
-    SUPABASE_DB_URL: '', HELIOS_PGLITE_DIR: dbPath,
+    SUPABASE_DB_URL: '', DATABASE_URL: '', HELIOS_PGLITE_DIR: dbPath,
     RESEND_API_KEY: '', RESEND_WEBHOOK_SECRET: '', HELIOS_ADMIN_TOKEN: '',
     NOTION_TOKEN: '', NOTION_API_KEY: '',
+    OPENAI_API_KEY: '', HELIOS_GITHUB_TOKEN: '', HELIOS_RESEARCH_WORKER_TOKEN: '',
   },
   stdio: ['ignore', 'pipe', 'pipe'],
 });
@@ -53,6 +54,26 @@ try {
     viewport: {width: 1440, height: 900}, deviceScaleFactor: 1,
     reducedMotion: 'reduce',
   });
+  // Capture the complete feature directory and new workspaces first. These
+  // views make no public submissions and need no provider credentials.
+  for (const [route, selector, name] of [
+    ['/features', '#feature-list .feature-card', 'features'],
+    ['/journal', '#journal-body', 'private-journal'],
+    ['/draft', '#draft-bill', 'ai-drafting'],
+    ['/pull-requests', '#proposal-message', 'proposal-pull-requests'],
+    ['/notifications', '#notification-email', 'email-follow-up'],
+    ['/account', '#preferences-heading', 'account-preferences'],
+    ['/agents', '#brief-form', 'research-agents'],
+  ]) {
+    const response = await page.goto(base + route, {waitUntil:'domcontentloaded'});
+    if (remote && (!response?.ok() || !(await page.locator(selector).count()))) continue;
+    if (!response?.ok()) throw new Error(`Feature route failed: ${route}`);
+    await page.locator(selector).first().waitFor({state:'visible',timeout:20000});
+    await page.screenshot({path:join(output,`${name}-desktop.png`),animations:'disabled'});
+    await page.setViewportSize({width:390,height:844});
+    await page.screenshot({path:join(output,`${name}-mobile.png`),animations:'disabled'});
+    await page.setViewportSize({width:1440,height:900});
+  }
   // Capture the research dashboard from its exact route and a measured baseline.
   const researchResponse=await page.goto(base+'/public/law-research.html?law=HGA-031',{waitUntil:'domcontentloaded'});
   if(!remote||(researchResponse?.ok()&&await page.locator('#law-rows').count())){

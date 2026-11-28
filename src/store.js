@@ -3,6 +3,7 @@ import {CONSTITUTION_SCHEMA,constitutionStore} from './constitution.js';
 import {RESEARCH_SCHEMA, RESEARCH_TABLES, researchStore} from './research.js';
 import {CONTRIBUTION_SCHEMA,contributionStore} from './contributions.js';
 import {BLOGROLL_SCHEMA,BLOGROLL_TABLES,blogrollStore} from './blogroll/store.js';
+import {PREFERENCE_SCHEMA, preferenceStore} from './account-preferences.js';
 import seedCatalog from '../data/catalog.json' with {type: 'json'};
 
 export const hash = value => createHash('sha256').update(value).digest('hex');
@@ -32,6 +33,7 @@ export const SCHEMA = [
   ...CONSTITUTION_SCHEMA,
   ...RESEARCH_SCHEMA,
   ...CONTRIBUTION_SCHEMA,
+  ...PREFERENCE_SCHEMA,
   'CREATE TABLE IF NOT EXISTS metadata(key TEXT PRIMARY KEY, value TEXT NOT NULL)',
   'CREATE TABLE IF NOT EXISTS sessions(id TEXT PRIMARY KEY, csrf TEXT NOT NULL, expires BIGINT NOT NULL)',
   'CREATE TABLE IF NOT EXISTS laws(id TEXT PRIMARY KEY, current_version TEXT NOT NULL, author TEXT, created_at TEXT NOT NULL)',
@@ -103,7 +105,7 @@ export async function openStore(db, options = {}) {
     for (const sql of SCHEMA) await tx.query(sql);
     // The Supabase adapter owns a private schema; enable RLS as defense in
     // depth. The database owner used by the server retains normal access.
-    if(db.kind==='supabase-postgres')for(const table of ['metadata','sessions','laws','versions','amendments','receipts','limits','email_subscribers','email_inbound','constitution_clauses','constitution_contributions','constitution_votes','constitution_comments','law_votes','contribution_inbox',...RESEARCH_TABLES,...BLOGROLL_TABLES])await tx.query('ALTER TABLE '+table+' ENABLE ROW LEVEL SECURITY');
+    if(db.kind==='supabase-postgres')for(const table of ['metadata','sessions','laws','versions','amendments','receipts','limits','email_subscribers','email_inbound','constitution_clauses','constitution_contributions','constitution_votes','constitution_comments','law_votes','contribution_inbox','account_preferences',...RESEARCH_TABLES,...BLOGROLL_TABLES])await tx.query('ALTER TABLE '+table+' ENABLE ROW LEVEL SECURITY');
     const prior = (await tx.query('SELECT value FROM metadata WHERE key=$1', ['catalog_hash'])).rows[0];
     if (prior && prior.value !== seedHash) fail(500, 'Catalog seed changed. A reviewed migration is required; stored records were not overwritten.');
     if (!prior) {
@@ -225,6 +227,7 @@ function createStore(db, catalogHash, options = {}) {
     constitution: constitutionStore(db, Problem),
     research: researchStore(db, Problem),
     contributions: contributionStore(db, Problem),
+    preferences: preferenceStore(db, Problem),
     blogroll: blogrollStore(db, Problem, options.blogroll),
     async catalog() {
       const rows = (await db.query('SELECT l.*, v.content, v.number FROM laws l JOIN versions v ON v.id = l.current_version ORDER BY l.id')).rows;
@@ -233,6 +236,13 @@ function createStore(db, catalogHash, options = {}) {
     detail: id => detailIn(db, id),
     createIn, amendIn, acceptIn,
     accept: (id, aid) => db.transaction(q => acceptIn(q, id, aid)),
+
+    async receipt(actor, key, requestHash) {
+      const prior = (await db.query('SELECT request_hash,response FROM receipts WHERE actor=$1 AND key=$2', [actor, key])).rows[0];
+      if (!prior) return null;
+      if (prior.request_hash !== requestHash) fail(409, 'This submission key was already used for different content. Reopen the editor for a new submission.');
+      return JSON.parse(prior.response);
+    },
 
     async idempotent(actor, key, requestHash, write) {
       return db.transaction(async q => {

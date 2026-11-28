@@ -3,6 +3,10 @@ import {Problem, hash} from './store.js';
 import {timingSafeEqual} from 'node:crypto';
 import {createResearchApi} from './research-api.js';
 import {AccountError, createAccountService} from './account.js';
+import {createFeatureApi} from './feature-api.js';
+import {createDraftingService} from './drafting.js';
+import {createGitHubProposalService} from './github-proposals.js';
+import {featureStatus} from './feature-status.js';
 
 // Static files, redirects and embed routes are served by Netlify's CDN (netlify.toml).
 // This module only handles the dynamic paths: /api/*, the email endpoints and the YCR proxy.
@@ -20,10 +24,11 @@ const rewriteYcrText = text => text
   .replace(/(["'`])\/api\//g, `$1${YCR_PROXY_PREFIX}/api/`)
   .replace(/https?:\/\/(?:www\.)?(?:ycr\.org|openresearchlab\.org)\//gi, `${YCR_PROXY_PREFIX}/`);
 
-export function createApp({store, email, notion = null, morphlab = null, moderator = null, account = createAccountService(), origins = [], adminToken = null, researchWorkerToken = null, secure = true, health = {storage: 'unknown', runtime: 'unknown'}} = {}) {
+export function createApp({store, email, notion = null, morphlab = null, moderator = null, account = createAccountService(), drafting = createDraftingService({env: {}}), github = createGitHubProposalService({env: {}}), origins = [], adminToken = null, researchWorkerToken = null, secure = true, health = {storage: 'unknown', runtime: 'unknown'}} = {}) {
   if (!store) throw Error('Store required');
   const response = (data, status = 200, extra = {}) => Response.json(data, {status, headers: {'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', ...extra}});
   const research = createResearchApi({store, health, workerToken: researchWorkerToken, Problem, hash, response});
+  const features = createFeatureApi({store, health, github, drafting, Problem, response, hash});
 
   async function ycr(request, url) {
     const path = url.pathname, method = request.method;
@@ -51,6 +56,15 @@ export function createApp({store, email, notion = null, morphlab = null, moderat
 
   async function api(request, url, remoteIP) {
     const method = request.method, path = url.pathname;
+    const featureConfig = features.publicRead(request, path);
+    if (featureConfig) return featureConfig;
+    if (path === '/api/features') {
+      if (method !== 'GET') return response({error: 'Use GET'}, 405, {Allow: 'GET'});
+      const writable = health.storage === 'supabase-postgres' || (health.storage === 'pglite' && health.runtime === 'node-server');
+      const workerState = store.research.workerStatus ? await store.research.workerStatus() : {};
+      return response(featureStatus({health, writable, github: features.githubConfig(), drafting: features.draftingConfig(),
+        email: email?.publicConfig?.() || {}, research: {...workerState, workerConfigured: writable && typeof researchWorkerToken === 'string' && researchWorkerToken.length >= 32}}));
+    }
     const cookie = request.headers.get('cookie')?.split(';').map(x => x.trim()).find(x => x.startsWith('helios_session='))?.slice(15);
     const accountRoute = path.match(/^\/api\/(research\/)?account\/(config|me)$/);
     let accountContext;
@@ -67,6 +81,8 @@ export function createApp({store, email, notion = null, morphlab = null, moderat
     // guest activity. New signed-in writes use a stable, server-verified actor.
     const identity = await account.identify(request);
     if (accountRoute) return response(account.me(identity, accountContext));
+    const featureRead = await features.read(request, path, identity);
+    if (featureRead) return featureRead;
     const researchResponse = await research.readOrWorker(request, url, cookie, identity.actorId);
     if (researchResponse) return researchResponse;
 
@@ -225,6 +241,8 @@ export function createApp({store, email, notion = null, morphlab = null, moderat
     // A browser can switch accounts without changing its CSRF session. Bind
     // retry receipts to the verified actor to prevent cross-account replays.
     const writeHash = hash((identity.actorId ? identity.actorId + '\n' : '') + path + JSON.stringify(body));
+    const featureWrite = await features.write(path, body, session, identity, request.headers.get('idempotency-key'), writeHash, remoteIP);
+    if (featureWrite) return featureWrite;
 
     if (path === '/api/blogroll/blogs') {
       const key = request.headers.get('idempotency-key');

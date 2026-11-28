@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#10211d">
+  <meta name="helios-mode" content="live">
+  <meta name="description" content="Every Helios feature, its route, and where your work is saved. Explore locally or connect to shared civic research.">
+  <title>Find your next idea · Helios</title>
+  <link rel="icon" href="/public/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/public/feature-directory.css">
+  <script type="module" src="/public/feature-directory.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#feature-list">Skip to features</a>
+  <header class="site-header wrap">
+    <a class="brand" href="/" aria-label="Helios home"><span class="brand-sun" aria-hidden="true">✳</span> HELIOS <span class="brand-caption">a little more possible</span></a>
+    <nav aria-label="Primary"><a href="/laws">100 laws</a><a href="/research">Research rooms</a><a href="/journal">Private journal</a></nav>
+  </header>
+  <main class="wrap">
+    <section class="hero" aria-labelledby="directory-title">
+      <div class="hero-copy"><p class="eyebrow">THE HELIOS FIELD GUIDE</p><h1 id="directory-title">One thought.<br><span>Many ways forward.</span></h1><p class="lede">A place to explore, disagree thoughtfully, and make an idea better. Find every tool here—and see where your work goes.</p><div class="hero-links"><a class="button primary" href="/journal">Begin with a thought</a><a class="button secondary" href="/proposals">Propose a change</a></div></div>
+      <aside class="field-note" aria-label="How Helios works"><span class="orbit-mark" aria-hidden="true"><i></i><i></i><i></i><b>✳</b></span><p class="eyebrow">YOUR IDEAS, YOUR CHOICE</p><h2>Explore freely.<br>Share deliberately.</h2><p>Local tools work in your browser. Shared tools tell you when a database or integration is connected.</p><a href="#connection-note">What “available” means</a></aside>
+    </section>
+    <div class="directory-toolbar"><div class="filters" role="group" aria-label="Filter features"><button type="button" data-filter="all" aria-pressed="true">All 15 features</button><button type="button" data-filter="browser" aria-pressed="false">In your browser</button><button type="button" data-filter="server" aria-pressed="false">Shared & connected</button></div><label class="search-box"><span class="sr-only">Find a feature or route</span><input id="feature-search" type="search" placeholder="Find a feature or route…" autocomplete="off"></label></div>
+    <p class="directory-status" id="directory-status" role="status">Checking which shared tools are available on this deployment…</p>
+    <div id="feature-list" tabindex="-1"></div>
+    <p id="empty-results" class="empty" hidden>No matching features. Try another word or show all features.</p>
+    <section class="connection-note" id="connection-note"><div><p class="eyebrow">BUILT TO BE CLEAR</p><h2>A tool can be ready<br>before a service is connected.</h2></div><div><p><strong>Browser tools</strong> run here without a shared database. Their local records stay in this browser unless you export or explicitly share them.</p><p><strong>Shared tools</strong> require the service shown on their card. A configured worker connection does not mean a worker is running; research rooms show actual active leases.</p><p>“Setup needed” means you can still open the interface and keep a draft. A saved vote, shared revision, sent request, or GitHub PR is confirmed only by its backend.</p><button class="text-button" id="refresh-capabilities" type="button">Check connections again</button></div></section>
+  </main>
+  <footer class="wrap"><a class="brand" href="/">✳ HELIOS</a><p>Human ideas. Shared work. Room to change your mind.</p><a href="https://github.com/adnanwahab/HeliosHTML">Source & contributions</a></footer>
+  <noscript><p class="wrap empty">JavaScript loads the complete feature directory. You can still visit <a href="/laws">the laws</a>, <a href="/journal">your journal</a>, or <a href="/research">research rooms</a>.</p></noscript>
+</body>
+</html>

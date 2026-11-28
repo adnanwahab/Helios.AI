@@ -234,7 +234,7 @@ async function refreshCatalog(initial=false){
    let laws,sourceNote;
    try{laws=sharedCatalog(await readCatalog('/api/law-board'));sourceNote='100 shared Supabase revisions';}
    catch{
-     const data=await readCatalog(new URL('./law-catalog.json',location.href));
+     const data=await readCatalog(new URL('./law-catalog.json',import.meta.url));
      laws=canonicalCatalog(data.goals);sourceNote='100 bundled editorial proposals · shared database unavailable or not configured';
    }
    catalog=[featuredDraft(),...laws];fillCatalog(initial?(requestedLaw||origin?.lawId||'HGA-001'):(origin?.lawId||$('catalog-law').value));

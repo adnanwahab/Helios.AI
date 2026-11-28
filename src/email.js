@@ -30,6 +30,14 @@ export function emailConfig(env = process.env) {
   };
 }
 
+// Public capability discovery exposes no addresses, credentials or webhook keys.
+export function emailPublicConfig(config, {subscriptionsEnabled = true} = {}) {
+  const deliveryEnabled = subscriptionsEnabled && Boolean(config?.apiKey && config?.from);
+  return {subscriptionsEnabled, deliveryEnabled, delayHours: (config?.delayMs ?? 72 * HOUR) / HOUR,
+    reason: !subscriptionsEnabled ? 'Email subscriptions require the configured shared database.'
+      : deliveryEnabled ? null : 'Email delivery is not configured. A saved signup has no confirmed delivery date.'};
+}
+
 export function normalizeEmail(value) {
   if (typeof value !== 'string') return null;
   const email = value.trim().toLowerCase();
@@ -436,7 +444,11 @@ export function createEmail({store, origins = [], adminToken = null, config = em
 
   // Answer for browsers posting the form without JavaScript: a tiny page that fits the same iframe.
   function formResult(kind, status, inline) {
-    const text = {done: 'Thanks! Your one email arrives in about three days.', invalid: 'Enter a valid email address.', rate: 'Too many tries. Please wait a bit and try again.', failed: 'Something went wrong. Please try again.'}[kind];
+    const publicConfig = emailPublicConfig(config);
+    const done = !publicConfig.deliveryEnabled ? 'Your signup is saved. Email delivery is not configured, so no delivery date is confirmed.'
+      : publicConfig.delayHours === 72 ? 'Thanks! Your one email arrives in about three days.'
+      : 'Your signup is saved. One email is scheduled in about ' + publicConfig.delayHours + ' hours.';
+    const text = {done, invalid: 'Enter a valid email address.', rate: 'Too many tries. Please wait a bit and try again.', failed: 'Something went wrong. Please try again.'}[kind];
     const back = kind === 'done' ? '' : ` <a href="/signup${inline ? '?layout=inline' : ''}" style="color:#7ce4cf">Try again</a>`;
     const style = inline ? 'margin:0;height:44px;display:flex;align-items:center;padding:0 8px;white-space:nowrap' : 'margin:0;padding:22px;border:1px solid #26344e;border-radius:16px;background:#121b2d';
     const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Helios email signup</title></head>
@@ -460,7 +472,10 @@ export function createEmail({store, origins = [], adminToken = null, config = em
       await store.limit('email-signup:' + hash(ip), 20, HOUR);
       // "company" is a hidden field people never see; bots that fill it get the normal answer and nothing is stored.
       if (!(typeof body.company === 'string' && body.company.trim())) await subscribe(body.email, {source: cleanSource(body.source)});
-      return isForm ? formResult('done', 200, inline) : json({ok: true, message: 'Thanks! Watch your inbox in about three days.'}, 202);
+      const publicConfig = emailPublicConfig(config);
+      const message = publicConfig.deliveryEnabled ? 'Your signup is saved. One email is scheduled in about ' + publicConfig.delayHours + ' hours.'
+        : 'Your signup is saved. Email delivery is not configured, so no delivery date is confirmed.';
+      return isForm ? formResult('done', 200, inline) : json({ok: true, message, deliveryEnabled: publicConfig.deliveryEnabled, delayHours: publicConfig.delayHours}, 202);
     } catch (error) {
       if (!isForm || !(error instanceof Problem)) throw error;
       return formResult(error.status === 429 ? 'rate' : error.status === 400 ? 'invalid' : 'failed', error.status, inline);
@@ -532,6 +547,7 @@ export function createEmail({store, origins = [], adminToken = null, config = em
     const url = new URL(request.url), path = url.pathname, method = request.method;
     const only = allowed => (allowed.includes(method) ? null : json({error: 'Method not allowed'}, 405, {Allow: allowed.join(', ')}));
     try {
+      if (path === '/api/email/config') return only(['GET']) ?? json(emailPublicConfig(config));
       if (path === '/api/email/subscribe') return only(['POST']) ?? await signup(request, url, ip);
       if (path === '/email/unsubscribe') return only(['GET', 'HEAD', 'POST']) ?? await unsubscribe(request, url);
       if (path === '/api/email/inbound') return only(['POST']) ?? await receive(request);
@@ -544,5 +560,5 @@ export function createEmail({store, origins = [], adminToken = null, config = em
     }
   }
 
-  return {config, handle, tick, subscribe, sendOne};
+  return {config, publicConfig: () => emailPublicConfig(config), handle, tick, subscribe, sendOne};
 }

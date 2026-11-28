@@ -27,6 +27,7 @@ let browserStorageAvailable = true;
 let historyCursor = null;
 let historyFrame = null;
 let accountRevision = 0, accountKey = 'guest||false', accountRefreshPending = false;
+let roomsRequest = 0;
 const safeParse = value => { try { return JSON.parse(value); } catch { return null; } };
 const roleFor = id => RESEARCH_ROLES.find(r => r.id === id) || RESEARCH_ROLES[0];
 const displayState = value => ({planned: 'Planned', queued: 'Queued', running: 'Working', needs_review: 'Needs review', review: 'Needs review', approved: 'Reviewed', rejected: 'Changes requested', failed: 'Failed', paused: 'Paused'}[value] || String(value || 'Planned').replaceAll('_', ' '));
@@ -145,10 +146,46 @@ async function refreshAccountRoom() {
   try { applySnapshot(await api(roomPath())); status('Account view refreshed. Existing browser-owned rooms and unsaved drafts stay separate.'); }
   catch (error) { status(error.message + ' Your draft is preserved.', 'error'); $('reload-room').hidden = false; }
 }
+async function refreshRooms() {
+  const request = ++roomsRequest;
+  $('shared-rooms-list').replaceChildren();
+  $('shared-rooms-caption').textContent = 'Loading rooms you created or contributed to…';
+  $('refresh-shared-rooms').disabled = true;
+  try {
+    const data = await api('/api/research/rooms');
+    if (request !== roomsRequest) return;
+    $('shared-rooms-caption').textContent = data.scope === 'account'
+      ? 'Rooms saved with your signed-in account follow you across devices. Earlier guest rooms stay separate.'
+      : 'Rooms belong to this browser session. Sign in before creating or contributing to a room to reconnect across devices.';
+    if (!data.rooms?.length) {
+      $('shared-rooms-list').append(textNode('li','No shared rooms yet. Create one or contribute using a collaboration link.'));
+      return;
+    }
+    for (const room of data.rooms) {
+      const row = textNode('li','');
+      const link = textNode('a',room.title,'text-button');
+      const url = new URL(location.href);
+      url.searchParams.set('room',room.id);url.searchParams.delete('frame');
+      let frame;
+      if (shared && snapshot.room.id === room.id) frame = selectedFrame;
+      else try { frame = safeParse(localStorage.getItem(`helios-research-v1:${room.id}`))?.selectedFrame; } catch {}
+      if (frame) url.searchParams.set('frame',frame);
+      if (!url.hash && location.pathname.replace(/\/$/,'')==='/keyframes') url.hash='keyframes';
+      link.href=url.pathname+url.search+url.hash;
+      link.dataset.roomId=room.id;
+      row.append(link,textNode('p',`${room.canSupervise?'You supervise':'You contributed'} · ${room.paused?'Dispatch paused':'Dispatch open'}`,'field-help'));
+      $('shared-rooms-list').append(row);
+    }
+  } catch (error) {
+    if (request === roomsRequest) $('shared-rooms-caption').textContent = `${error.message || 'Shared room listing is unavailable.'} Your browser draft is still available.`;
+  } finally { if (request === roomsRequest) $('refresh-shared-rooms').disabled = false; }
+}
+$('refresh-shared-rooms').addEventListener('click',refreshRooms);
 window.addEventListener('helios:auth-changed', event => {
   const state = event.detail || {}, key = [state.status, state.user?.id || '', state.persistence?.research === true].join('|');
   if (key === accountKey) return;
   accountKey = key; accountRevision++; csrf = null; retryKeys.clear();
+  refreshRooms();
   if (!shared) return;
   persistDraft(); sharedReady = false; snapshot.room.canSupervise = false;
   renderControls(); refreshAccountRoom();
@@ -247,7 +284,20 @@ function renderTask() {
   $('task-state').textContent = displayState(task.status);
   $('task-prompt').textContent = task.prompt || (failedDetails.has(task.id) ? 'This assignment could not be loaded. Select it again to retry.' : 'Loading the saved assignment…');
   $('task-result-details').hidden = !task.result;
-  $('task-result').textContent = typeof task.result === 'string' ? task.result : task.result ? JSON.stringify(task.result, null, 2) : '';
+  const result = typeof task.result === 'string' ? task.result : task.result ? JSON.stringify(task.result, null, 2) : '';
+  const output = $('task-result');output.replaceChildren();
+  let cursor=0;
+  for (const match of result.matchAll(/https:\/\/[^\s<>"']+/g)) {
+    output.append(document.createTextNode(result.slice(cursor,match.index)));
+    const raw=match[0], value=raw.replace(/[.,;!?)\]]+$/,'');
+    let url;try{url=new URL(value);}catch{}
+    if (url?.protocol==='https:'&&!url.username&&!url.password) {
+      const link=textNode('a',value,'text-button');link.href=url.href;link.target='_blank';link.rel='noopener noreferrer';
+      output.append(link,document.createTextNode(raw.slice(value.length)));
+    } else output.append(document.createTextNode(raw));
+    cursor=match.index+raw.length;
+  }
+  output.append(document.createTextNode(result.slice(cursor)));
   if (!dirty.has('task')) { $('task-notes').value = task.notes || ''; $('task-review').value = ''; bases.task = task.revision; }
   $('task-help').textContent = !snapshot.tasks.length ? 'Queue the plan to save directions with a task.' : shared ? 'Directions are saved with this assignment. Results require human review.' : 'Directions are part of this browser draft.';
   renderControls();
@@ -428,6 +478,7 @@ async function createRoom() {
   frameDrafts.clear(); dirty.clear();
   applySnapshot(data, ['brief','frame','task']);
   status('Shared room created. Copy its link to invite people to design these keyframes with you.', 'success');
+  refreshRooms();
   return true;
 }
 
@@ -535,6 +586,7 @@ $('contribution-form').addEventListener('submit',event=>{
     if(shared)applySnapshot(await api(roomPath()+'/contributions',{frameId:currentFrame().id,text}),['contribution']);
     else{localEvent('Draft contribution',text);dirty.delete('contribution');renderActivity();}
     $('contribution-text').value='';persistDraft();status(shared?'Your contribution was saved in the shared room.':'Your contribution was saved in this browser.', 'success');
+    if(shared)refreshRooms();
   });
 });
 $('copy-room').addEventListener('click',()=>action(async()=>{
@@ -600,7 +652,8 @@ async function init(){
     }catch(error){status(`${error.message} This shared room has not loaded. No changes will be sent until the connection is restored.`, 'error');$('reload-room').hidden=false;}
   }else status(capabilities.writable?'Browser draft ready. Create a shared room to save together and invite collaborators.':'Shared persistence is currently unavailable. You can design, save, and export a browser draft here.');
   renderControls();poll();
-  if(location.hash==='#keyframes')$('keyframes').scrollIntoView();
+  refreshRooms();
+  if(location.hash==='#keyframes'||location.pathname.replace(/\/$/,'')==='/keyframes')$('keyframes').scrollIntoView({behavior:'instant',block:'start'});
 }
 
 init().catch(error=>status(`The workspace could not finish loading: ${error.message}`, 'error'));

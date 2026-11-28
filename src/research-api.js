@@ -18,14 +18,18 @@ export function createResearchApi({store, health, workerToken, Problem, hash, re
     if (path === '/api/research/session') return null;
     if (path === '/api/research/status') {
       if (method !== 'GET') return response({error: 'Use GET'}, 405);
-      return response({available: true, storage: health.storage, writable: writable(), workerEnabled: enabled(), workerReason: enabled() ? null : 'No research worker adapter is configured. Saving a plan does not start agents.'});
+      return response({available: true, storage: health.storage, writable: writable(), workerEnabled: enabled(), workerConfigured: enabled(), ...(await store.research.workerStatus()), workerReason: enabled() ? 'Worker credentials are configured. Active leases show whether a runner is actually processing tasks.' : 'No research worker adapter is configured. Saving a plan does not start agents.'});
+    }
+    if (path === '/api/research/rooms' && method === 'GET') {
+      const session = await store.authenticate(cookie);
+      return response({...(await store.research.listRooms(accountActor ?? session?.id)),scope:accountActor?'account':'browser'});
     }
     if (path.startsWith('/api/research/worker/')) {
       if (method !== 'POST') return response({error: 'Use POST'}, 405);
       if (!enabled()) throw new Problem(503, 'No research worker adapter is configured. Saved research plans remain available.');
       if (!same(request.headers.get('authorization'), 'Bearer ' + workerToken)) throw new Problem(403, 'Research worker authorization required.');
       const action = path.slice('/api/research/worker/'.length);
-      if (!['claim', 'heartbeat', 'complete'].includes(action)) throw new Problem(404, 'Worker operation not found.');
+      if (!['claim', 'heartbeat', 'complete', 'fail'].includes(action)) throw new Problem(404, 'Worker operation not found.');
       if (!request.headers.get('content-type')?.toLowerCase().startsWith('application/json')) throw new Problem(415, 'Use application/json.');
       if (Number(request.headers.get('content-length') || 0) > 32768) throw new Problem(413, 'Worker submission is too large.');
       const chunks = [], reader = request.body?.getReader(); let size = 0;

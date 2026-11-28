@@ -86,6 +86,47 @@ test.describe('Research supervision and future keyframes', () => {
     await expect(page.locator('#agent-capacity')).toBeDisabled();
   });
 
+  test('shared room links reconnect from research, agents, and keyframes while keeping the selected frame', async ({page}) => {
+    const roomId = await createRoom(page);
+    const frameId = new URL(page.url()).searchParams.get('frame');
+    for (const route of ['/research', '/agents#coordinator', '/keyframes#keyframes']) {
+      await page.goto(route);
+      const link = page.locator(`#shared-rooms-list a[data-room-id="${roomId}"]`);
+      await expect(link).toBeVisible();
+      const href = new URL(await link.getAttribute('href'), page.url());
+      expect(href.pathname).toBe(route.split('#')[0]);
+      expect(href.searchParams.get('room')).toBe(roomId);
+      expect(href.searchParams.get('frame')).toBe(frameId);
+      expect(href.hash).toBe(route.includes('#') ? '#' + route.split('#')[1] : '');
+      await link.click();
+      await expect(page.locator('#save-status')).toContainText('Connected to the shared room');
+      expect(new URL(page.url()).searchParams.get('frame')).toBe(frameId);
+      await expect(page.locator('#shared-rooms-list')).toContainText('You supervise');
+    }
+  });
+
+  test('generated research sources are clickable HTTPS links while result markup remains text', async ({page}) => {
+    const roomId = await createRoom(page);
+    await page.locator('#queue-plan').click();
+    await expect(page.locator('#agent-grid [data-state="queued"]')).toHaveCount(100);
+    const selectedId = await page.locator('#agent-grid [aria-pressed="true"]').getAttribute('data-task');
+    await page.route(`**/api/research/rooms/${roomId}/tasks/${selectedId}`, async route => {
+      const response = await route.fetch();
+      const task = await response.json();
+      await route.fulfill({response, json: {...task, result: 'AI research draft — human review required.\n<img src=x onerror=alert(1)>\nSource (https://example.org/research?finding=1&view=full).\nhttp://insecure.example/reference'}});
+    });
+    await page.reload();
+    await expect(page.locator('#task-result-details')).toBeVisible();
+    await page.locator('#task-result-details summary').click();
+    const result = page.locator('#task-result');
+    await expect(result.locator('a')).toHaveCount(1);
+    await expect(result.locator('a')).toHaveAttribute('href', 'https://example.org/research?finding=1&view=full');
+    await expect(result.locator('a')).toHaveAttribute('rel', 'noopener noreferrer');
+    await expect(result.locator('img')).toHaveCount(0);
+    await expect(result).toContainText('<img src=x onerror=alert(1)>');
+    await expect(result).toContainText('http://insecure.example/reference');
+  });
+
   test('a new proposed law and generated paragraph persist at the selected future keyframe', async ({page}) => {
     const roomId = await createRoom(page);
     await page.locator('#keyframes').scrollIntoViewIfNeeded();
