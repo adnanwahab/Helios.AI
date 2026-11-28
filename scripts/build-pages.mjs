@@ -47,6 +47,18 @@ await buildAccount(root, out);
 // The public editorial catalog is bundled for offline simulations; no database rows or secrets.
 await writeFile(join(out, 'public', 'law-catalog.json'), JSON.stringify(seedCatalog));
 
+// Feature pages remain explicitly browser-only on the static mirror.
+for (const name of ['feature-directory.html', 'feature-workspace.html']) {
+  const path = join(out, 'public', name);
+  const html = await readFile(path, 'utf8');
+  await writeFile(path, html.replace('<meta name="helios-mode" content="live">', '<meta name="helios-mode" content="static">')
+    .replaceAll('href="/public/', 'href="./').replaceAll('src="/public/', 'src="./'));
+}
+// Preserve the simulator's portable module URLs under repository subpaths.
+const consensusPath = join(out, 'public', 'consensus-world.html');
+await writeFile(consensusPath, (await readFile(consensusPath, 'utf8'))
+  .replaceAll('href="/public/', 'href="./').replaceAll('src="/public/', 'src="./'));
+
 // The Notion screen reads /api/notion/preview on the live app; Pages gets a build-time snapshot.
 const notionPage = (await readFile(join(root, 'helios_notion_preview.html'), 'utf8')).replaceAll('href="/public/', 'href="./public/');
 await writeFile(join(out, 'helios_notion_preview.html'), notionPage);
@@ -121,13 +133,13 @@ await writeFile(join(out, 'experiments.html'), index);
 const loop = await readFile(join(root, 'index.html'), 'utf8');
 const mode = '<meta name="helios-mode" content="live">';
 if (!loop.includes(mode)) throw new Error('Helios Loop mode marker missing');
-await writeFile(join(out, 'index.html'), loop.replace(mode, '<meta name="helios-mode" content="static">'));
+await writeFile(join(out, 'index.html'), loop.replace(mode, '<meta name="helios-mode" content="static">').replaceAll('href="./features"', 'href="./public/feature-directory.html"'));
 const atlas = await readFile(join(root, 'law-atlas.html'), 'utf8');
 if (!atlas.includes(mode)) throw new Error('Law atlas mode marker missing');
-await writeFile(join(out, 'law-atlas.html'), atlas.replace(mode, '<meta name="helios-mode" content="static">'));
+await writeFile(join(out, 'law-atlas.html'), atlas.replace(mode, '<meta name="helios-mode" content="static">').replaceAll('href="./features"', 'href="./public/feature-directory.html"'));
 const research = await readFile(join(root, 'research.html'), 'utf8');
 if (!research.includes(mode)) throw new Error('Research mode marker missing');
-await writeFile(join(out, 'research.html'), research.replace(mode, '<meta name="helios-mode" content="static">'));
+await writeFile(join(out, 'research.html'), research.replace(mode, '<meta name="helios-mode" content="static">').replaceAll('href="./features"', 'href="./public/feature-directory.html"'));
 // All welcome links remain under a fork's GitHub Pages base path.
 const welcome = (await readFile(join(root, 'welcome.html'), 'utf8'))
   .replaceAll('href="/laws"', 'href="./helios_100_frontend_demo.html"')

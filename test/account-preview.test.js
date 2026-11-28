@@ -15,7 +15,7 @@ test('preview reports optional authentication separately from unavailable accoun
     expect(response.headers.get('cache-control')).toBe('no-store');
     const config = await response.json();
     expect(config.loginOptional).toBe(true);
-    expect(config.accountPersistence).toEqual({votes:false,research:false});
+    expect(config.accountPersistence).toEqual({votes:false,research:false,preferences:false});
     expect(config.emailSignInEnabled).toBe(false);
     const me = await handler(new Request(origin + prefix + '/me'), context);
     expect((await me.json()).signedIn).toBe(false);

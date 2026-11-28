@@ -1,0 +1,22 @@
+# Supply a separate app explicitly: fly deploy -a YOUR_WORKER_APP --config fly.worker.toml
+# This worker has no public HTTP service and never mounts the civic data volume.
+primary_region = "ord"
+kill_signal = "SIGTERM"
+kill_timeout = "30s"
+
+[build]
+  dockerfile = "scripts/Dockerfile.mini-symphony"
+
+[env]
+  NODE_ENV = "production"
+  HELIOS_RESEARCH_CONCURRENCY = "2"
+  HELIOS_RESEARCH_MAX_TASKS = "100"
+
+[[vm]]
+  cpus = 1
+  cpu_kind = "shared"
+  memory_mb = 512
+
+[[restart]]
+  policy = "on-failure"
+  retries = 3

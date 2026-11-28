@@ -1,9 +1,9 @@
 import {AXES,validEffects} from './consensus-world-engine.js';
 import {MODES,rankDiagnostics,quickCompare,localRevision,proposedEffects} from './consensus-world-workshop-logic.js';
 const $=id=>document.getElementById(id);
-const endpoint='/.netlify/functions/consensus-revise';
+const endpoint='/api/drafting/revise';
 export function initWorkshop({getDraft,getRound,canOpen,getSeed,apply}){
- let original=null,baseline=null,diagnostics=[],modes=new Set(['objections']),effects=[],reasons=[],configured=false,pending=false,requestId=0,generatedText='';
+ let original=null,baseline=null,diagnostics=[],modes=new Set(['objections']),effects=[],reasons=[],configured=false,pending=false,requestId=0,generatedText='',aiAttempt=null;
  const modal=$('workshop'), modeContainer=$('workshop-modes'), inputs=[],reasonEls=[];
  const pct=(n,total)=>(100*n/total).toFixed(2)+'%';
  const msg=s=>$('workshop-status').textContent=s;
@@ -64,7 +64,7 @@ export function initWorkshop({getDraft,getRound,canOpen,getSeed,apply}){
   $('workshop-ai-config').textContent='Checking optional AI availability…';
   modesUI();controls();modal.showModal();
   const token=++requestId;
-  try{const res=await fetch(endpoint,{cache:'no-store',signal:AbortSignal.timeout(5000)});if(!res.ok)throw Error();const data=await res.json();if(token!==requestId||!modal.open)return;configured=data.enabled===true;$('workshop-ai-config').textContent=configured?'AI drafting is available; consent is required.':'AI drafting is not configured. Local drafting works offline.';}
+  try{const res=await fetch('/api/drafting/config',{cache:'no-store',signal:AbortSignal.timeout(5000)});if(!res.ok)throw Error();const data=await res.json();if(token!==requestId||!modal.open)return;configured=data.enabled===true;$('workshop-ai-config').textContent=configured?'AI drafting is available; consent is required.':'AI drafting is not configured. Local drafting works offline.';}
   catch{if(token!==requestId||!modal.open)return;$('workshop-ai-config').textContent='AI drafting unavailable. Local drafting works offline.';}
   controls();
  }
@@ -77,7 +77,12 @@ export function initWorkshop({getDraft,getRound,canOpen,getSeed,apply}){
   if(pending||!configured||!$('workshop-consent').checked)return;
   const token=++requestId;pending=true;modesUI();controls();msg('Generating proposed revision…');
   try{
-   const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},signal:AbortSignal.timeout(30000),body:JSON.stringify({consent:true,bill:original.bill,modes:[...modes],prompt:$('workshop-prompt').value,diagnostics:diagnostics.map(({axis,count})=>({axis,count}))})});
+   const body=JSON.stringify({consent:true,bill:original.bill,modes:[...modes],prompt:$('workshop-prompt').value,diagnostics:diagnostics.map(({axis,count})=>({axis,count}))});
+   if(aiAttempt?.body!==body)aiAttempt={body,key:crypto.randomUUID()};
+   const sessionResponse=await fetch('/api/session',{credentials:'same-origin',cache:'no-store',signal:AbortSignal.timeout(10000)});
+   const session=await sessionResponse.json();
+   if(!sessionResponse.ok||typeof session.csrfToken!=='string')throw Error('A drafting session could not be established. Your draft is unchanged.');
+   const response=await fetch(endpoint,{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','X-CSRF-Token':session.csrfToken,'Idempotency-Key':aiAttempt.key},signal:AbortSignal.timeout(30000),body});
    if(!response.ok)throw Error('AI drafting unavailable or rate limited. Try a local draft.');
    const result=await response.json();if(token!==requestId||!modal.open)return;showResult(result,'AI suggestion');
   }catch(err){if(token===requestId&&modal.open)msg(err.message);}

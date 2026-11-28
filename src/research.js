@@ -136,6 +136,18 @@ export function researchStore(db, Problem) {
     if (!row) fail(404, 'Research task not found.');
     return publicTask(row);
   }
+  async function listRooms(actor) {
+    if (!actor) return {rooms:[],limit:30};
+    const rows = (await db.query(`SELECT r.id,r.title,r.paused,r.updated_at,(r.owner=$1) AS can_supervise
+      FROM research_rooms r WHERE r.owner=$1 OR EXISTS
+      (SELECT 1 FROM research_contributors c WHERE c.room_id=r.id AND c.actor=$1)
+      ORDER BY r.updated_at DESC,r.id LIMIT 30`,[actor])).rows;
+    return {rooms:rows.map(row=>({id:row.id,title:row.title,paused:row.paused,updatedAt:row.updated_at,canSupervise:row.can_supervise})),limit:30};
+  }
+  async function workerStatus() {
+    const row = (await db.query("SELECT COUNT(*) AS leases,COUNT(DISTINCT worker_id) AS workers,MAX(updated_at) AS last_seen FROM research_tasks WHERE status='running' AND lease_until>$1", [Date.now()])).rows[0];
+    return {activeWorkerLeases: Number(row.leases), connectedWorkers: Number(row.workers), lastWorkerActivityAt: row.last_seen ?? null};
+  }
   async function frameHistory(roomId, frameId, beforeRevision) {
     const before = beforeRevision == null ? 2147483647 : integer(Number(beforeRevision), 'History cursor', 1, 2147483647);
     if (!(await db.query('SELECT id FROM research_frames WHERE room_id=$1 AND id=$2', [roomId, frameId])).rows.length) fail(404, 'Keyframe not found.');
@@ -233,7 +245,7 @@ export function researchStore(db, Problem) {
     if (expired.rows.length) await activity(q, roomId, 'worker-system', 'leases_expired', `${expired.rows.length} expired worker assignments require supervisor review.`, {contributor: false});
   }
   async function worker(action, input) {
-    shape(input, action === 'claim' ? ['roomId', 'workerId'] : action === 'heartbeat' ? ['roomId', 'taskId', 'leaseToken'] : ['roomId', 'taskId', 'leaseToken', 'result']);
+    shape(input, action === 'claim' ? ['roomId', 'workerId'] : action === 'heartbeat' ? ['roomId', 'taskId', 'leaseToken'] : action === 'fail' ? ['roomId', 'taskId', 'leaseToken', 'errorCode'] : ['roomId', 'taskId', 'leaseToken', 'result']);
     const roomId = text(input.roomId, 'Room ID', 100, true);
     return db.transaction(async q => {
       const r = await room(q, roomId, null, false, true);
@@ -248,7 +260,11 @@ export function researchStore(db, Problem) {
         const token = randomUUID(), until = Date.now() + 90000;
         const updated = (await q.query("UPDATE research_tasks SET status='running',worker_id=$3,lease_token=$4,lease_until=$5,attempt=attempt+1,revision=revision+1,updated_at=$6 WHERE room_id=$1 AND id=$2 RETURNING *", [roomId, task.id, workerId, token, until, now()])).rows[0];
         await activity(q, roomId, 'worker:' + workerId, 'worker_claimed', `A connected worker claimed assignment ${task.slot}.`, {taskId: task.id, contributor: false});
-        return {task: {...publicTask(updated), leaseToken: token}, room: {id: roomId, brief: r.brief, inputData: r.input_data, constraints: r.constraints_text}};
+        // Give the runner a bounded snapshot of reviewed context. A worker does
+        // not need browser credentials or arbitrary URL access to read it.
+        const frames = (await q.query('SELECT * FROM research_frames WHERE room_id=$1 ORDER BY year,id LIMIT 8', [roomId])).rows.map(publicFrame).map(f => ({...f, summary:f.summary.slice(0,1200), assumptions:f.assumptions.slice(0,1000), laws:f.laws.map(l=>({...l,change:l.change.slice(0,500)}))}));
+        const reviewed = (await q.query("SELECT id,role,result FROM research_tasks WHERE room_id=$1 AND status='approved' ORDER BY updated_at DESC,id LIMIT 5", [roomId])).rows.map(t=>({id:t.id,role:t.role,result:t.result.slice(0,2000)}));
+        return {task: {...publicTask(updated), leaseToken: token}, room: {id: roomId, brief: r.brief, inputData: r.input_data, constraints: r.constraints_text, frames, reviewedOutputs: reviewed, contextNote: 'Bounded context: up to eight keyframes and five approved task excerpts.'}};
       }
       const taskId = text(input.taskId, 'Task ID', 100, true), token = text(input.leaseToken, 'Lease token', 100, true);
       const task = (await q.query("SELECT * FROM research_tasks WHERE room_id=$1 AND id=$2 AND status='running' AND lease_token=$3 AND lease_until>$4 FOR UPDATE", [roomId, taskId, token, Date.now()])).rows[0];
@@ -258,6 +274,18 @@ export function researchStore(db, Problem) {
         await q.query('UPDATE research_tasks SET lease_until=$3,updated_at=$4 WHERE room_id=$1 AND id=$2', [roomId, taskId, until, now()]);
         return {ok: true, leaseExpiresAt: new Date(until).toISOString(), paused: r.paused};
       }
+      if (action === 'fail') {
+        const failures = {provider_unavailable:'The model provider could not complete this assignment.', timeout:'The research request timed out.', no_output:'The provider returned no usable research output.', interrupted:'The worker stopped before completing this assignment.', heartbeat_unavailable:'The worker could not confirm its lease.'};
+        if (!Object.hasOwn(failures, input.errorCode)) fail(400, 'Use a supported worker failure code.');
+        const timestamp = now(), message = failures[input.errorCode];
+        await q.query('INSERT INTO research_task_outputs(task_id,attempt,result,created_at) VALUES($1,$2,$3,$4)', [taskId, task.attempt, 'Worker failure (' + input.errorCode + '): ' + message, timestamp]);
+        // A failure has no approvable result. Retry remains an explicit owner
+        // action, so provider outages cannot silently spend on the whole queue.
+        await q.query("UPDATE research_tasks SET status='needs_review',result='',notes=$3,worker_id=NULL,lease_token=NULL,lease_until=NULL,revision=revision+1,updated_at=$4 WHERE room_id=$1 AND id=$2", [roomId, taskId, (task.notes + '\nWorker failure: ' + message + ' Review and queue again to retry.').trim().slice(-4000), timestamp]);
+        await q.query('UPDATE research_rooms SET paused=true,revision=revision+1,updated_at=$2 WHERE id=$1', [roomId, timestamp]);
+        await activity(q, roomId, 'worker:' + task.worker_id, 'worker_failed', `Assignment ${task.slot} failed. Dispatch was paused for supervisor review. ${message}`, {taskId, contributor: false});
+        return {ok:true,status:'needs_review',failed:true,paused:true};
+      }
       const result = text(input.result, 'Worker result', 16000, true), timestamp = now();
       await q.query('INSERT INTO research_task_outputs(task_id,attempt,result,created_at) VALUES($1,$2,$3,$4)', [taskId, task.attempt, result, timestamp]);
       await q.query("UPDATE research_tasks SET status='needs_review',result=$3,worker_id=NULL,lease_token=NULL,lease_until=NULL,revision=revision+1,updated_at=$4 WHERE room_id=$1 AND id=$2", [roomId, taskId, result, timestamp]);
@@ -265,5 +293,5 @@ export function researchStore(db, Problem) {
       return {ok: true, status: 'needs_review'};
     });
   }
-  return {snapshot, taskDetail, frameHistory, createIn, writeIn, worker};
+  return {snapshot, taskDetail, listRooms, frameHistory, workerStatus, createIn, writeIn, worker};
 }

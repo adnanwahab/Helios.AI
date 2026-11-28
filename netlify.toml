@@ -43,6 +43,62 @@
   to = "/helios_100_frontend_demo.html"
   status = 200
 
+# Canonical feature routes. The same table is used by the local/Fly server.
+[[redirects]]
+  from = "/features"
+  to = "/public/feature-directory.html"
+  status = 200
+
+[[redirects]]
+  from = "/experiences"
+  to = "/experiments.html"
+  status = 200
+
+[[redirects]]
+  from = "/simulate"
+  to = "/public/consensus-world.html"
+  status = 200
+
+[[redirects]]
+  from = "/votes"
+  to = "/law-atlas.html"
+  status = 200
+
+[[redirects]]
+  from = "/proposals"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/agents"
+  to = "/research.html"
+  status = 200
+
+[[redirects]]
+  from = "/journal"
+  to = "/public/feature-workspace.html"
+  status = 200
+
+[[redirects]]
+  from = "/account"
+  to = "/public/feature-workspace.html"
+  status = 200
+
+[[redirects]]
+  from = "/draft"
+  to = "/public/feature-workspace.html"
+  status = 200
+
+[[redirects]]
+  from = "/pull-requests"
+  to = "/public/feature-workspace.html"
+  status = 200
+
+[[redirects]]
+  from = "/notifications"
+  to = "/public/feature-workspace.html"
+  status = 200
+
 [[redirects]]
   from = "/embed/helios-ai"
   to = "/helios_ai_landing_page.html"

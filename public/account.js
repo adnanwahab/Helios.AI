@@ -5,7 +5,8 @@ import {ACCOUNT_CONFIG} from './account-config.js';
 // created for a fresh guest until they open this panel.
 const staticMode = document.querySelector('meta[name="helios-mode"]')?.content === 'static';
 const researchPage = Boolean(document.getElementById('research-title'));
-const defaultScope = researchPage ? 'research' : 'votes';
+const preferencesPage = ['/account', '/pull-requests'].includes(location.pathname.replace(/\/$/, ''));
+const defaultScope = researchPage ? 'research' : preferencesPage ? 'preferences' : 'votes';
 const hintKey = 'helios-account-present-v1';
 const clientStorageKey = 'helios-account-session-v1';
 const guestKey = 'helios-account-guest-v1';
@@ -15,7 +16,7 @@ let returnTo = '';
 let authEpoch = 0, signInPending = false, guestOverride = false;
 let verifiedAccessToken = null;
 try { guestOverride = localStorage.getItem(guestKey) === '1'; } catch {}
-let state = {status:'guest', user:null, persistence:{votes:false,research:false}, storage:null};
+let state = {status:'guest', user:null, persistence:{votes:false,research:false,preferences:false}, storage:null};
 const hint = () => { try { return localStorage.getItem(hintKey) === '1'; } catch { return false; } };
 const setHint = value => { try { if (value) localStorage.setItem(hintKey,'1'); else localStorage.removeItem(hintKey); } catch {} };
 const setGuestOverride = value => { guestOverride=value;try { if(value)localStorage.setItem(guestKey,'1');else localStorage.removeItem(guestKey); }catch{} };
@@ -66,6 +67,9 @@ function message(text, error=false) {
 
 function capabilityMessage(scope=defaultScope) {
   if (staticMode) return 'This static preview does not connect to accounts. Continue as a guest to explore.';
+  if (scope==='preferences') return state.persistence.preferences
+    ? 'Your display preferences and favorite laws can be saved with your account. Private journal entries stay on this device.'
+    : 'Account preferences cannot be saved on this deployment yet. Private journal entries stay on this device.';
   if (state.persistence[scope]) return scope==='research'
     ? 'New shared rooms and contributions can be saved with your account. Work saved as a guest stays separate.'
     : 'Connected votes you cast while signed in can be saved with your account and found on another device.';
@@ -127,7 +131,7 @@ function queueSessionVerification(session) {
 }
 
 async function loadCapabilities(scope, {refresh=false}={}) {
-  if(staticMode) return {votes:false,research:false};
+  if(staticMode) return {votes:false,research:false,preferences:false};
   if(refresh)capabilities.delete(scope);
   if(capabilities.has(scope)) return capabilities.get(scope);
   let value;
@@ -135,9 +139,9 @@ async function loadCapabilities(scope, {refresh=false}={}) {
     const response=await fetch(scopePath(scope)+'/config',{credentials:'same-origin',cache:'no-store',signal:AbortSignal.timeout(10000)});
     const config=await response.json();
     if(!response.ok||config.available!==true) throw Error('Account saving is unavailable.');
-    value={votes:config.accountPersistence?.votes===true,research:config.accountPersistence?.research===true};
+    value={votes:config.accountPersistence?.votes===true,research:config.accountPersistence?.research===true,preferences:config.accountPersistence?.preferences===true};
     state.storage=config.storage||null;
-  } catch {value={votes:false,research:false};}
+  } catch {value={votes:false,research:false,preferences:false};}
   capabilities.set(scope,value);
   // Each configuration describes its own service; a separate research runtime
   // cannot enable civic account votes or vice versa.

@@ -16,11 +16,12 @@ const toml = await readFile(join(root, 'netlify.toml'), 'utf8');
 const redirects = new Map([...toml.matchAll(/\[\[redirects\]\]\s*from\s*=\s*"([^"]+)"\s*to\s*=\s*"([^"]+)"/g)].map(m => [m[1], decodeURI(m[2])]));
 const isApi = path => path.startsWith('/api/') || path === '/email/unsubscribe' || path === '/proxy/ycr' || path.startsWith('/proxy/ycr/');
 
-const db = process.env.SUPABASE_DB_URL ? undefined : await createPGliteDatabase(pgliteDataDir());
-const runtime = await createRuntime({db, secure: false});
+const onFly = Boolean(process.env.FLY_APP_NAME);
+const db = (process.env.SUPABASE_DB_URL || process.env.DATABASE_URL || '').trim() ? undefined : await createPGliteDatabase(pgliteDataDir());
+const runtime = await createRuntime({db, secure: onFly});
 
 async function serveStatic(path, res, method) {
-  let target = path === '/' ? '/index.html' : redirects.get(path) ?? path;
+  let target = path === '/' ? '/index.html' : redirects.get(path.replace(/\/$/, '')) ?? redirects.get(path) ?? path;
   const file = resolve(dist, '.' + decodeURIComponent(target));
   if (!file.startsWith(dist + sep)) return false;
   const info = await stat(file).catch(() => null);
@@ -55,7 +56,6 @@ const server = createServer(async (req, res) => {
 });
 
 // On Fly, the service checks 0.0.0.0:8080; local development stays on 127.0.0.1:3000.
-const onFly = Boolean(process.env.FLY_APP_NAME);
 const cliValue = flag => {const index = process.argv.indexOf(flag); return index >= 0 ? process.argv[index + 1] : undefined;};
 const port = Number(cliValue('--port') || process.env.PORT || (onFly ? 8080 : 3000));
 const host = cliValue('--host') || process.env.HOST || (onFly ? '0.0.0.0' : '127.0.0.1');

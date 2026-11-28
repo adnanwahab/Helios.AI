@@ -67,6 +67,14 @@ The browser suite starts its own server on port 3101 and uses a temporary databa
 
 ## What you can explore
 
+**Open `/features` for all 15 feature routes and their current connection status.**
+The [feature and API directory](docs/feature-routes.md) lists each UI route, its
+backend contract, local-versus-shared storage, and required integration settings.
+New workspaces include `/journal`, `/account`, `/draft`, `/pull-requests`, and
+`/notifications`; `/agents`, `/research`, and `/keyframes` share saved research
+rooms. The [Mini Symphony worker guide](docs/research-worker.md) explains how to
+run actual queued research from a separate process or Fly Machine.
+
 | Experience | Start here | What it shows |
 | --- | --- | --- |
 | Civic workshop | `/` | Express a concern, develop a proposal, inspect revisions and advisory feedback. |

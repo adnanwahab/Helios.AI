@@ -14,13 +14,13 @@ const invalid = () => new AccountError(401, 'Your login expired or could not be 
 // This service needs only public Auth configuration. It can report real login
 // independently of whether a deployment has an account-capable data backend.
 export function createAccountService({fetchImpl = fetch} = {}) {
-  function config({storage = 'unavailable', runtime = 'unknown', scope = 'civic', votes = false, research = false} = {}) {
+  function config({storage = 'unavailable', runtime = 'unknown', scope = 'civic', votes = false, research = false, preferences = votes} = {}) {
     return {
       available: true, provider: 'supabase', loginOptional: true,
       projectUrl: TRUSTED_PROJECT,
       emailSignInEnabled: ACCOUNT_CONFIG.emailSignInEnabled === true,
       passwordSignInEnabled: ACCOUNT_CONFIG.passwordSignInEnabled === true,
-      accountPersistence: {votes: Boolean(votes), research: Boolean(research)},
+      accountPersistence: {votes: Boolean(votes), research: Boolean(research), preferences: Boolean(preferences)},
       storage, runtime, scope, guestActivitySeparate: true,
     };
   }

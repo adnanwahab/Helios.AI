@@ -87,6 +87,7 @@ All paths below begin with `/api/research`.
 | --- | --- |
 | `GET /status` | Actual storage, write availability, worker configuration and reason when disconnected. |
 | `GET /session` | Establish the research browser session and return its CSRF token. |
+| `GET /rooms` | Up to 30 rooms the verified account or current browser session owns or contributed to. No public enumeration or actor identifiers. |
 | `POST /rooms` | Create a paused room and 1–24 supplied or seeded keyframes. |
 | `GET /rooms/:id` | Room, up to 24 full keyframes, up to 1,000 task summaries, last 50 activity entries, and actual counts. |
 | `POST /rooms/:id/brief` | Creator-only revision-checked supervision inputs. |
@@ -110,7 +111,11 @@ room for a differently sized research cycle. A new plan never deletes completed
 work. An approved result remains approved; new research belongs in another cycle.
 Task approval is a research review state, not enactment of a law or a public vote.
 
-## Optional worker adapter
+## Mini Symphony worker
+
+The repository includes a runnable adapter at
+`scripts/mini-symphony-worker.mjs`. See [the worker guide](research-worker.md)
+for local exercises, real web research, and a separate optional Fly deployment.
 
 Set a dedicated server-side `HELIOS_RESEARCH_WORKER_TOKEN` of at least 32
 characters to enable this API on a writable database. Keep it out of browser code,
@@ -131,6 +136,12 @@ maintainer credentials and browser sessions.
    `{roomId,taskId,leaseToken,result}`. A current lease submits a result into
    `needs_review`, clears the lease, and preserves an immutable attempt output.
    Only the room creator can approve the result.
+4. **Fail** — `POST /api/research/worker/fail` with
+   `{roomId,taskId,leaseToken,errorCode}`. A current lease records a bounded
+   failure, clears its result and lease, and pauses dispatch for owner review.
+   Supported codes are `provider_unavailable`, `timeout`, `no_output`,
+   `interrupted`, and `heartbeat_unavailable`. A failed task cannot be approved
+   until a later attempt returns an actual result.
 
 Claims lock the room before checking capacity and selecting a queued task. Each
 worker ID can hold one active lease in a room. Concurrent claimers cannot exceed
@@ -139,10 +150,12 @@ retried. Duplicate or late completions are rejected. Pausing stops new claims bu
 does not kill processes that are already running. A lease limit is a database
 admission limit, not a guarantee that a remote process has exited.
 
-An external runner must fetch relevant room/keyframe/task evidence, execute its
-own research work, heartbeat, and submit a bounded text result. The runner must
-enforce its own provider credentials, spending limits, cancellation, and process
-isolation. This PR does not deploy that runner and does not depend on draft PR #65.
+Claims include bounded current keyframes and excerpts of approved outputs. The
+included runner performs web research, heartbeats, and submits a bounded text
+draft with source links. It requires its own model credentials and supports
+1–20 lanes, explicit local demo mode, cancellation, and a per-process task cap.
+No runner is deployed or paid model calls made merely by publishing the UI.
+Provider account budgets remain necessary; the task cap is not a dollar limit.
 
 ## Verification and limits
 
