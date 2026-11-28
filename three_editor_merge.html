@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Three-editor merge · HeliosAI</title>
-<meta name="description" content="Two journals in, one deduplicated constitution out, across 8 billion sample journals, with the S3 layout that would serve them.">
-<!-- Served at /merge and as the home-page tab /embed/merge. Journals are generated in the browser from their numbers; no S3 request is sent. -->
-<!-- The S3 key layout is also written up in docs/journal-merge-s3.md; keep the two in step. -->
+<meta name="description" content="Two journals in, one deduplicated constitution out, across 8 billion sample journals.">
+<!-- Served at /merge, and at /embed/merge in the archived dashboard's tab. Journals are generated in the browser from their numbers; no S3 request is sent. -->
+<!-- The S3 key layout behind the keys under each card is written up in architecture.md; keep the two in step. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@700&family=Red+Hat+Mono:wght@400&family=Red+Hat+Text:wght@400;500;600&display=swap">
@@ -53,11 +53,9 @@ h1{margin:0;font:700 clamp(24px,2.2vw,32px)/1.05 var(--disp);letter-spacing:-.02
 .pos input{width:clamp(110px,11vw,200px);accent-color:var(--c3)}
 .pos output{font-weight:600;font-variant-numeric:tabular-nums}
 .pos small{font-size:14px;color:var(--mute)}
-.last{display:none;max-width:34ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:13px var(--mono);color:var(--mute)}
 .btn{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 13px;border:1px solid var(--edge);border-radius:8px;background:var(--card);color:var(--ink);font:600 14px/1 var(--sans);white-space:nowrap;cursor:pointer}
 .btn:hover{border-color:var(--ink)}
 .btn:focus-visible{outline:2px solid var(--c3);outline-offset:2px}
-.btn.ink{background:var(--sel);border-color:var(--sel);color:var(--sel-ink)}
 .btn.rs{background:var(--c3);border-color:var(--c3);color:light-dark(#fff,#15171c)}
 #setBtn{display:none}
 
@@ -131,25 +129,6 @@ legend{padding:0;margin-bottom:7px;font-size:14px;color:var(--mute)}
 .sw input:checked+.trk::after{transform:translateX(16px)}
 .hl3{--fx:var(--c3)}
 
-.drawer{position:fixed;top:0;right:0;bottom:0;z-index:10;width:min(520px,100vw);overflow-y:auto;padding:18px 24px 40px;background:var(--card);color:var(--ink);border-left:1.5px solid var(--line);box-shadow:-8px 0 24px rgb(0 0 0/.12)}
-.dhead{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.drawer h2{margin:0;font:700 30px/1.1 var(--disp);letter-spacing:-.02em}
-.drawer h3{margin:24px 0 8px;font:700 17px/1.3 var(--disp)}
-.drawer p{margin:8px 0}
-.note{font-size:14px;color:var(--mute)}
-.tree{margin:0;padding:12px 14px;overflow-x:auto;background:var(--canvas);border-radius:8px;font:13px/1.65 var(--mono);white-space:pre}
-.rules{margin:0;padding-left:22px}
-.rules li{margin-bottom:10px}
-.rules b{font-weight:600}
-.drawer table{width:100%;border-collapse:collapse;font-size:15px}
-.drawer td{padding:7px 0;border-bottom:1px solid var(--rule);vertical-align:top}
-.drawer td+td{padding-left:14px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
-.live,.log{list-style:none;margin:0;padding:0}
-.live li,.log li{padding:7px 0;border-bottom:1px solid var(--rule);font-size:14px}
-.live span,.log span{color:var(--mute)}
-.live code,.log code{display:block;font-size:13px;line-height:1.5}
-
-@media (min-width:1600px){.last{display:block}}
 @media (max-width:1399px){.pos small{display:none}}
 @media (max-width:1179px){
 .bar{padding:12px 14px 8px}
@@ -197,8 +176,6 @@ legend{padding:0;margin-bottom:7px;font-size:14px;color:var(--mute)}
     <button class="btn" id="rand" type="button">Random pair</button>
     <div class="pos"><input type="range" id="pos" min="0" max="3999999999" step="1" value="0" aria-label="Pair position, 0 to 3,999,999,999"><output id="where" for="pos">Pair 0</output><small>of 4,000,000,000</small></div>
     <button class="btn" id="setBtn" type="button" aria-expanded="false" aria-controls="dock">Settings</button>
-    <button class="btn ink" id="s3Btn" type="button" aria-expanded="false" aria-controls="drawer">S3 layout</button>
-    <span class="last" id="last"></span>
   </div>
 </header>
 
@@ -247,45 +224,6 @@ legend{padding:0;margin-bottom:7px;font-size:14px;color:var(--mute)}
   <div class="space" id="space"></div>
 </main>
 
-<aside class="drawer" id="drawer" aria-labelledby="dh" hidden>
-  <div class="dhead"><h2 id="dh">S3 layout</h2><button class="btn" id="dclose" type="button">Close</button></div>
-  <p>One bucket, addressed by arithmetic: the client turns a scroll position into a key, so browsing never lists objects.</p>
-  <h3>Keys for the pair in view</h3>
-  <ul class="live" id="live"></ul>
-  <h3>Layout</h3>
-  <pre class="tree" id="tree"></pre>
-  <h3>Rules</h3>
-  <ol class="rules">
-    <li><b>The number is the path.</b> Write a journal's number as 10 digits: the first 5 name the chapter folder, the next 3 the page file, and the last 2 the line in that page, counting from 0. Journal 4,123,456,789 is line 89 of <code>l00/pages/41234/567</code>. Constitutions follow the same rule with their node number.</li>
-    <li><b>Scrolling is arithmetic, never LIST.</b> Pair r holds journals 2r and 2r+1, both on page floor(r ÷ 50). The client reads <code>CURRENT.json</code> once, a chapter head once per 100,000 journals, then one page per 50 pairs, fetching the next page before the reader reaches it. LIST returns at most 1,000 keys per call, so it stays out of the browse path.</li>
-    <li><b>Pages never change; heads do.</b> Rewriting a page writes the next generation (g0003, then g0004) under a new key, so the CDN can cache pages for a year. Each chapter's head lists the current generation of its 1,000 pages and is cached for 60 seconds.</li>
-    <li><b>Edits land in delta/, then compact.</b> An edit is a small PUT under <code>delta/</code>. A compactor folds a chapter's deltas into new page generations written with <code>If-None-Match: *</code>, then replaces the head with <code>If-Match</code> on its ETag, so two compactors can't overwrite each other.</li>
-    <li><b>Constitutions form a binary tree.</b> Node i at level k merges nodes 2i and 2i+1 of level k−1, so level 33 is one constitution for everyone. Editing journal n makes one node per level stale, node floor(n ÷ 2<sup>k</sup>), 33 in all. This page merges level 1 live; model-written constitutions would be read from <code>l01/</code> and up the same way as journals.</li>
-    <li><b>Number journals by place.</b> If numbers follow a Hilbert or S2 cell order of where writers live, every subtree is a place: level 10 is about 1,000 neighbors, level 20 about a million people.</li>
-    <li><b>Spread writes across chapters.</b> S3 handles at least 3,500 writes or 5,500 reads per second per partitioned prefix, with no limit on the number of prefixes. Backfill with one writer per range of chapter folders; readers come through the CDN.</li>
-    <li><b>Jump by id.</b> <code>ids/</code> maps a journal id to its number: the first 6 hex characters of the id pick one of 16,777,216 files of about 480 entries each.</li>
-  </ol>
-  <h3>Page format</h3>
-  <p>One JSON object per line, 100 lines, gzipped and served with <code>Content-Encoding: gzip</code> so the browser unpacks it.</p>
-  <pre class="tree">{"n":4123456789,"id":"8f3c2a91…","updated":"2026-11-21","text":"Need: …"}</pre>
-  <h3>Scale</h3>
-  <table>
-    <tr><td>Journals</td><td>8,000,000,000</td></tr>
-    <tr><td>Journal pages, 100 each</td><td>80,000,000</td></tr>
-    <tr><td>Chapter folders, 1,000 pages each</td><td>80,000</td></tr>
-    <tr><td>Constitutions, levels 1 to 33</td><td>about 8,000,000,000</td></tr>
-    <tr><td>Journals, gzipped</td><td>about 11 TB</td></tr>
-    <tr><td>With constitutions</td><td>about 21 TB, roughly $500 a month</td></tr>
-    <tr><td>First upload as pages</td><td>160,000,000 PUTs, about $800</td></tr>
-    <tr><td>First upload, one object per journal and node</td><td>16,000,000,000 PUTs, about $80,000</td></tr>
-    <tr><td>Scrolling 1,000 pairs</td><td>20 page GETs, 1 or 2 heads</td></tr>
-  </table>
-  <p class="note">Sizes assume about 4 KB of text per journal and 3× gzip. Prices are S3 Standard in us-east-1: $0.023 per GB-month for the first 50 TB and $0.005 per 1,000 PUTs.</p>
-  <h3>Requests from this tab</h3>
-  <p class="note">Simulated: journals are generated in the browser from their number, and each request is logged here instead of sent.</p>
-  <ul class="log" id="log"></ul>
-</aside>
-
 <template id="rowT"><div class="row">
   <article class="card a"><header><span class="badge b1" aria-hidden="true">1</span><h2>Journal <span class="num"></span></h2></header><div class="box"><div class="back" aria-hidden="true"><div class="hl"></div></div><textarea data-role="a" spellcheck="false" autocomplete="off"></textarea></div><footer class="key"><code></code><span></span></footer></article>
   <span class="ar a1" aria-hidden="true"><i></i><b></b></span>
@@ -313,7 +251,7 @@ if (/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'Mac
 
 const DEF = {unit: 'line', order: 'ab', icase: true, ispace: true, ipunct: false, hl: true, on1: true, on2: true};
 const st = {...DEF}, edits = new Map(), cEdit = new Map();
-const feed = $('feed'), space = $('space'), drawer = $('drawer');
+const feed = $('feed'), space = $('space');
 
 // Sample journals: each one is generated from its number, so all 8,000,000,000 exist without storing any.
 const NEED = ['Need: buses that come every 10 minutes.', 'Need: rent under a third of take-home pay.', 'Need: clean tap water in every home.', 'Need: safe crossings near the school.', 'Need: childcare that costs less than rent.', 'Need: a clinic within a short walk.', 'Need: shade trees on the walk to work.', 'Need: fast internet at a fair price.', 'Need: streetlights that work after dark.', 'Need: drains that keep up with storms.', 'Need: longer hours at the library.', 'Need: quieter nights on our street.', 'Need: jobs within an hour of home.', 'Need: care for parents as they age.', 'Need: cleaner air near the highway.', 'Need: sidewalks without gaps.'];
@@ -397,25 +335,18 @@ function markup(text, items, cls) {
 const srcCls = g => !g.kept ? 'gone' : g.shared ? 'both' : 'u' + g.src;
 
 // Storage: the same key arithmetic a real client would use against S3, with fetches simulated.
-const pages = new Map(), heads = new Set(), logs = [], putT = new Map();
+// The layout and its rules are in architecture.md.
+const pages = new Map(), heads = new Set();
 const parts = idx => { const s = pad(idx, 10); return {ch: s.slice(0, 5), pg: s.slice(5, 8), ln: s.slice(8)}; };
 const genOf = (lv, p) => 1 + mix(p + lv * 2654435769) % 4;
 const pageKey = (lv, idx) => { const k = parts(idx); return 'v1/l' + pad(lv, 2) + '/pages/' + k.ch + '/' + k.pg + '.g' + pad(genOf(lv, Math.floor(idx / P)), 4) + '.ndjson.gz'; };
-const headKey = (lv, idx) => 'v1/l' + pad(lv, 2) + '/heads/' + parts(idx).ch + '.json';
-function log(m, key, note) {
-  logs.unshift({m, key, note});
-  if (logs.length > 14) logs.pop();
-  $('last').textContent = m + ' ' + key;
-  if (!drawer.hidden) renderLog();
-}
 function ensure(p) {
   const e = pages.get(p);
   if (e) { e.t = performance.now(); return e.ready; }
   let wait = 30 + Math.random() * 90;
   const c = Math.floor(p / CH);
-  if (!heads.has(c)) { heads.add(c); log('GET', headKey(0, p * P), 'generation of each page in chapter ' + pad(c, 5)); wait += 45; }
+  if (!heads.has(c)) { heads.add(c); wait += 45; } // the first page of a chapter also waits for its head
   pages.set(p, {ready: false, t: performance.now()});
-  log('GET', pageKey(0, p * P), 'journals ' + fmt(p * P) + ' to ' + fmt(p * P + P - 1));
   setTimeout(() => { const x = pages.get(p); if (x) { x.ready = true; arrived(p); } }, wait);
   if (pages.size > 48) {
     const need = new Set([...live.keys()].map(i => Math.floor(2 * i / P)));
@@ -424,14 +355,6 @@ function ensure(p) {
   return false;
 }
 function arrived(p) { for (const row of live.values()) if (Math.floor(2 * +row.dataset.i / P) === p) paintRow(row); tally(); }
-function queuePut(n) {
-  clearTimeout(putT.get(n));
-  putT.set(n, setTimeout(() => {
-    putT.delete(n);
-    const ts = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z');
-    log('PUT', 'v1/delta/l00/' + parts(n).ch + '/' + ts + '-' + Math.random().toString(16).slice(2, 6) + '.ndjson', 'edit to journal ' + fmt(n) + ', folded in at the next compaction');
-  }, 900));
-}
 
 // Rows: each editor is a transparent textarea over a backdrop that paints the highlights in the same font and wrap.
 const live = new Map(), free = [];
@@ -522,7 +445,7 @@ function focused() {
   if (!sliding) $('pos').value = focus;
   const p0 = Math.floor(2 * Math.max(0, focus - 25) / P), p1 = Math.floor((2 * Math.min(ROWS - 1, focus + 60) + 1) / P);
   for (let p = p0; p <= p1; p++) ensure(p);
-  tally(); keysLive();
+  tally();
 }
 function tally() {
   const row = live.get(focus), r = row && row.r;
@@ -531,16 +454,6 @@ function tally() {
     if (r) { const L = r['L' + k]; n = st['on' + k] ? L.length : segment((k === 1 ? row.A : row.B).ta.value, st.unit).length; kept = L.filter(g => g.kept).length; gone = L.length - kept; }
     $('n' + k).textContent = n; $('l' + k).textContent = st.unit + (n === 1 ? '' : 's') + ' in'; $('k' + k).textContent = kept; $('r' + k).textContent = gone;
   }
-}
-function keysLive() {
-  if (drawer.hidden || focus < 0) return;
-  const n = 2 * focus, item = (label, lv, idx) => '<li><b>' + label + '</b> <span>line ' + Number(parts(idx).ln) + '</span><code>' + BUCKET + pageKey(lv, idx) + '</code></li>';
-  $('live').innerHTML = item('Journal ' + fmt(n), 0, n) + item('Journal ' + fmt(n + 1), 0, n + 1) + item('Constitution, level 1 node ' + fmt(focus), 1, focus) + '<li><b>Chapter head</b> <span>cached 60 s</span><code>' + BUCKET + headKey(0, n) + '</code></li>';
-}
-function renderLog() { $('log').innerHTML = logs.map(x => '<li><code>' + x.m + ' ' + x.key + '</code><span>' + esc(x.note) + '</span></li>').join(''); }
-function tree() {
-  const j = 4123456789, c = 2061728394, v = k => '    ' + k.slice(3);
-  $('tree').textContent = [BUCKET, '  CURRENT.json', '  v1/', v(headKey(0, j)), v(pageKey(0, j)), v(headKey(1, c)), v(pageKey(1, c)), '    l02/ … l32/', v(pageKey(33, 0)), '    ids/8f3/c2a.json', '    delta/l00/41234/20261123T151004Z-7f2c.ndjson'].join('\n');
 }
 
 const timers = {};
@@ -552,12 +465,6 @@ function ui() {
   document.querySelector('input[name=unit][value=' + st.unit + ']').checked = true;
   document.querySelector('input[name=order][value=' + st.order + ']').checked = true;
   feed.classList.toggle('no1', !st.on1); feed.classList.toggle('no2', !st.on2);
-}
-function openDrawer(open) {
-  drawer.hidden = !open;
-  $('s3Btn').setAttribute('aria-expanded', String(open));
-  try { history.replaceState(null, '', open ? '#s3-layout' : location.pathname + location.search); } catch (e) {}
-  if (open) { keysLive(); renderLog(); $('dclose').focus(); }
 }
 async function copy(btn) {
   const ta = btn.closest('.card').querySelector('textarea');
@@ -574,7 +481,7 @@ feed.addEventListener('input', e => {
   if (ta.tagName !== 'TEXTAREA') return;
   const row = ta.closest('.row'), i = +row.dataset.i, role = ta.dataset.role;
   if (role === 'c') cEdit.set(i, ta.value);
-  else { const n = 2 * i + (role === 'b' ? 1 : 0); edits.set(n, ta.value); queuePut(n); }
+  else edits.set(2 * i + (role === 'b' ? 1 : 0), ta.value);
   paintRow(row);
   if (i === focus) { tally(); if (role !== 'c') pulse(role === 'b' ? 2 : 1); }
 });
@@ -601,11 +508,8 @@ $('jumpForm').addEventListener('submit', e => {
 $('rand').addEventListener('click', () => jump(Math.floor(Math.random() * ROWS)));
 $('pos').addEventListener('input', () => { sliding = true; if (!slideT) slideT = setTimeout(() => { slideT = 0; jump(+$('pos').value); }, 90); });
 $('pos').addEventListener('change', () => { sliding = false; clearTimeout(slideT); slideT = 0; jump(+$('pos').value); });
-$('s3Btn').addEventListener('click', () => openDrawer(drawer.hidden));
-$('dclose').addEventListener('click', () => { openDrawer(false); $('s3Btn').focus(); });
 $('setBtn').addEventListener('click', () => { const o = $('dock').classList.toggle('open'); $('setBtn').setAttribute('aria-expanded', String(o)); });
-document.addEventListener('keydown', e => { if (e.key !== 'Escape') return; if (!drawer.hidden) openDrawer(false); $('dock').classList.remove('open'); $('setBtn').setAttribute('aria-expanded', 'false'); });
-addEventListener('hashchange', () => openDrawer(location.hash === '#s3-layout'));
+document.addEventListener('keydown', e => { if (e.key !== 'Escape') return; $('dock').classList.remove('open'); $('setBtn').setAttribute('aria-expanded', 'false'); });
 
 let lastW = 0, lastH = 0;
 const feedSize = new ResizeObserver(() => {
@@ -614,11 +518,10 @@ const feedSize = new ResizeObserver(() => {
   const f = focus < 0 ? START : focus;
   measure(); jump(f);
 });
-ui(); tree();
+ui();
 lastW = feed.clientWidth; lastH = feed.clientHeight;
 measure(); jump(START);
 feedSize.observe(feed);
-if (location.hash === '#s3-layout') openDrawer(true);
 }
 </script>
 </body>

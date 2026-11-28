@@ -1,18 +1,28 @@
-# Three-editor merge: S3 layout for 8 billion journals
+# Architecture
 
-`three_editor_merge.html` (served at `/merge` and as the home-page tab `/embed/merge`)
-shows two journals on the sides and, in the middle, the constitution merged from them
-with duplicates removed. It scrolls through 4,000,000,000 pairs: pair r holds journals
-2r and 2r+1.
+Design notes for Helios systems that need more than a line in the README. Each section
+names the page or service it covers.
 
-This document is the storage layout that would serve that scroll from S3. The page
-itself sends no requests. It generates each sample journal in the browser from its
-number and lists the requests it would make under **S3 layout → Requests from this
-tab**. The page shows the same rules in its **S3 layout** panel; keep the two in step.
+## Journal storage on S3 (`/merge`)
+
+`three_editor_merge.html` is served at `/merge`, and at `/embed/merge` inside the
+Three-Editor Merge tab of the archived dashboard (`/experiments.html`). It shows two
+journals on the sides and, in the middle, the constitution merged from them with
+duplicates removed. It scrolls through 4,000,000,000 pairs: pair r holds journals 2r
+and 2r+1.
+
+This section is the storage layout that would serve that scroll from S3: one bucket,
+addressed by arithmetic. The client turns a scroll position into a key, so browsing
+never lists objects.
+
+The page itself sends no requests. It generates each sample journal in the browser
+from its number and simulates the fetch delay. The key under each card (for example
+`l00/pages/41234/567`, line 88) follows the rules below, and hovering it shows the full
+object key.
 
 The bucket name `helios-journals` is a placeholder, set by `BUCKET` in the page.
 
-## Keys
+### Keys
 
 ```
 s3://helios-journals/
@@ -28,7 +38,7 @@ s3://helios-journals/
     delta/l00/41234/20261123T151004Z-7f2c.ndjson  an edit waiting for compaction
 ```
 
-## Rules
+### Rules
 
 1. **The number is the path.** Write a journal's number as 10 digits: the first 5 name
    the chapter folder, the next 3 the page file, the last 2 the line in that page,
@@ -66,7 +76,38 @@ s3://helios-journals/
    the id pick one of 16,777,216 files, about 480 entries each:
    `{"8f3c2a91…":4123456789,…}`.
 
-## Page format
+### Example: the pair the page opens on
+
+The page opens on pair 2,061,728,394, which holds journals 4,123,456,788 and
+4,123,456,789. These objects are behind it:
+
+| Object | Key | Line |
+| --- | --- | --- |
+| Journal 4,123,456,788 | `v1/l00/pages/41234/567.g0004.ndjson.gz` | 88 |
+| Journal 4,123,456,789 | `v1/l00/pages/41234/567.g0004.ndjson.gz` | 89 |
+| Constitution, level 1 node 2,061,728,394 | `v1/l01/pages/20617/283.g0003.ndjson.gz` | 94 |
+| Head of chapter 41234, cached 60 s | `v1/l00/heads/41234.json` | |
+
+A reader opening there makes these requests. Pages 568 and 569 are fetched before the
+reader scrolls to them:
+
+```
+GET v1/l00/heads/41234.json                    generation of each page in chapter 41234
+GET v1/l00/pages/41234/567.g0004.ndjson.gz     journals 4,123,456,700 to 4,123,456,799
+GET v1/l00/pages/41234/568.g0004.ndjson.gz     journals 4,123,456,800 to 4,123,456,899
+GET v1/l00/pages/41234/569.g0001.ndjson.gz     journals 4,123,456,900 to 4,123,456,999
+```
+
+An edit to journal 4,123,456,788 is one small write, folded in at the next compaction:
+
+```
+PUT v1/delta/l00/41234/20261123T151004Z-7f2c.ndjson
+```
+
+The generation numbers (`g0004`, `g0003`, `g0001`) are sample values the page derives
+from each page's number. A real chapter head would supply them.
+
+### Page format
 
 One JSON object per line, 100 lines, gzipped and served with `Content-Encoding: gzip`
 so browsers unpack it:
@@ -75,7 +116,7 @@ so browsers unpack it:
 {"n":4123456789,"id":"8f3c2a91…","updated":"2026-11-21","text":"Need: …"}
 ```
 
-## Scale and cost
+### Scale and cost
 
 | | |
 | --- | --- |
@@ -93,7 +134,7 @@ Sizes assume about 4 KB of text per journal (and per constitution) and 3× gzip.
 are S3 Standard in us-east-1, checked November 2026: $0.023 per GB-month for the first
 50 TB and $0.005 per 1,000 PUT requests.
 
-## References
+### References
 
 - [Amazon S3 performance guidelines](https://docs.aws.amazon.com/AmazonS3/latest/userguide/optimizing-performance.html): request rates per partitioned prefix
 - [Conditional writes](https://docs.aws.amazon.com/AmazonS3/latest/userguide/conditional-writes.html): `If-None-Match` and `If-Match` on PutObject

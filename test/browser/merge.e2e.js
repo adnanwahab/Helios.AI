@@ -31,6 +31,9 @@ test('Three-editor merge: journals merge into a constitution across 8 billion jo
   await expect(first.locator('.b .key')).toContainText('l00/pages/41234/567');
   await expect(first.locator('.b .key')).toContainText('line 89');
   await expect(first.locator('.c .key')).toContainText('l01/pages/20617/283');
+  // Hovering a key shows the full object key; these match the example in architecture.md.
+  await expect(first.locator('.b .key')).toHaveAttribute('title', 's3://helios-journals/v1/l00/pages/41234/567.g0004.ndjson.gz, line 89');
+  await expect(first.locator('.c .key')).toHaveAttribute('title', 's3://helios-journals/v1/l01/pages/20617/283.g0003.ndjson.gz, line 94');
 
   // Scrolling mounts the next pairs.
   await page.locator('#feed').evaluate(feed => {
@@ -48,15 +51,13 @@ test('Three-editor merge: journals merge into a constitution across 8 billion jo
   await page.locator('#jump').press('Enter');
   await expect(page.locator('#where')).toHaveText('Pair 2,061,728,394');
 
-  // An edit to a journal reaches the constitution and is logged as a delta PUT.
+  // An edit to a journal reaches the constitution.
   await row(page, START).locator('.a textarea').click();
   await page.keyboard.press('Control+End');
   await page.keyboard.type('\nNeed: a pool that opens in May.');
   await expect(row(page, START).locator('.c textarea')).toHaveValue(/Need: a pool that opens in May\./);
-  await page.getByRole('button', {name: 'S3 layout'}).click();
-  await expect(page.locator('#log')).toContainText('PUT v1/delta/l00/41234/');
-  await expect(page.locator('#live')).toContainText('s3://helios-journals/v1/l00/pages/41234/567.g');
-  await page.getByRole('button', {name: 'Close'}).click();
+  // The S3 layout is documented in architecture.md, not shown in a panel.
+  await expect(page.getByRole('button', {name: 'S3 layout'})).toHaveCount(0);
 
   // A hand edit to the constitution pauses merging for that pair until Resync.
   await row(page, START).locator('.c textarea').click();
