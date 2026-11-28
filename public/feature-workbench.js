@@ -1,0 +1,35 @@
+const $=id=>document.getElementById(id);
+const local=[
+['Landing page','/','Civic workshop and contribution entry.'],
+['Three.js / WebGPU','/embed/dynamicland','Interactive communal science lab.'],
+['World suitability map','/world-map','Compare places using local sliders.'],
+['Synthetic population simulations','/public/consensus-world.html','Synthetic choices, not real votes.'],
+['Read the original 100 laws','/laws','Bundled editorial catalog; connected revisions when available.'],
+['Private journal','#journal-title','Optional local notebook, no upload.']];
+const shared=[
+['Saving real advisory votes','/laws','Version-specific positions.','votes'],
+['Propose and revise shared laws','/#journal-workbench','Review before submitting public text.','votes'],
+['Accounts and saved preferences','#prefs-title','Optional account and cross-device settings.','account'],
+['GitHub proposals','/?compose=pr','Review text, submit through GitHub or the contribution inbox. Automated PR creation is not verified.','github'],
+['AI-powered law drafting','/public/consensus-world.html','Opt-in drafting; model outputs need review.','ai'],
+['Email notifications','/signup','Opt-in email; delivery is not verified here.','email'],
+['Mini Symphony research agents','/research#coordinator','Queue assignments and supervise worker leases.','workers'],
+['Shared research dashboards','/research','Shared rooms; the 100-law simulation dashboard remains browser-local.','research'],
+['Collaborative future keyframes','/research#keyframes','Revision-checked shared scenario editing.','research']];
+const labels={votes:'Not checked',account:'Not checked',github:'GitHub review flow',ai:'Not checked',email:'Delivery unverified',workers:'Not checked',research:'Not checked'};
+function render(){for(const [id,rows] of [['local',local],['shared',shared]]){$(id).replaceChildren(...rows.map(([title,url,description,key])=>{const card=document.createElement('article'),status=document.createElement('small'),h=document.createElement('h3'),p=document.createElement('p'),a=document.createElement('a');status.textContent=key?labels[key]:'Browser experience';h.textContent=title;p.textContent=description;a.href=url;a.textContent='Open experience →';card.append(status,h,p,a);return card;}));}}
+async function get(path,headers={}){const r=await fetch(path,{headers,cache:'no-store',credentials:'same-origin',signal:AbortSignal.timeout(12000)});const data=await r.json();if(!r.ok)throw Error(data.error||'Connection unavailable');return data;}
+async function check(){ $('refresh').disabled=true; $('connection-status').textContent='Checking read-only endpoints…';const [health,workspace,research,account,ai]=await Promise.allSettled(['/api/health','/api/workspace-status','/api/research/status','/api/account/config','/.netlify/functions/consensus-revise'].map(p=>get(p)));const val=x=>x.status==='fulfilled'?x.value:null;const h=val(health),w=val(workspace),r=val(research),a=val(account),d=val(ai);labels.votes=w?.writable?'Shared writes advertised':'Practice / unavailable';labels.account=a?.accountPersistence?.votes?'Account storage advertised':'Account storage unavailable';labels.research=r?.writable?'Shared storage advertised':'Local draft / unavailable';labels.workers=r?.workerEnabled?'Worker API enabled · active leases unverified':'Worker API disconnected';labels.ai=d?.enabled?'AI configured · call unverified':'AI unavailable / unverified';$('connection-status').textContent=h?.status==='ok'?'API responded · '+h.runtime+' · '+h.storage+'. No write or delivery tested.':'API health unavailable; local experiences remain usable.';render();$('refresh').disabled=false;}
+const journalKey='helios-private-notebook-v1';try{$('journal').value=localStorage.getItem(journalKey)||''}catch{$('journal-status').textContent='Local storage unavailable.'}
+$('journal-save').onclick=()=>{try{localStorage.setItem(journalKey,$('journal').value);$('journal-status').textContent='Saved only in this browser.'}catch{$('journal-status').textContent='Not saved: local storage unavailable.'}};
+$('journal-clear').onclick=()=>{try{localStorage.removeItem(journalKey);$('journal').value='';$('journal-status').textContent='Local notebook cleared.'}catch{$('journal-status').textContent='Could not clear local storage.'}};
+$('login').onclick=()=>window.HeliosAccount?.open();$('refresh').onclick=check;
+let loaded=null,busy=false;
+const apply=()=>{document.documentElement.dataset.theme=$('theme').value==='system'?(matchMedia('(prefers-color-scheme:light)').matches?'light':'dark'):$('theme').value;document.documentElement.dataset.reduced=String($('motion').checked)};
+$('theme').onchange=apply;$('motion').onchange=apply;
+function reset(){loaded=null;$('save').disabled=true;$('theme').value='system';$('motion').checked=false;apply();$('prefs-status').textContent='Account changed. Load settings again.'}
+window.addEventListener('helios:auth-changed',reset);
+async function identity(){const headers=await window.HeliosAccount?.fetchHeaders('votes');const user=window.HeliosAccount?.getState()?.user;if(!headers?.['X-Helios-Access-Token']||!user?.id)throw Error('Sign in on a deployment with account storage.');return {headers,id:user.id}}
+$('load').onclick=async()=>{if(busy)return;busy=true;$('save').disabled=true;try{const i=await identity();const d=await get('/api/account/preferences',i.headers);if(window.HeliosAccount.getState()?.user?.id!==i.id)throw Error('Account changed.');loaded={id:i.id,revision:d.revision};$('theme').value=d.settings.theme;$('motion').checked=d.settings.reducedMotion;apply();$('prefs-status').textContent='Settings loaded.';$('save').disabled=false}catch(e){loaded=null;$('prefs-status').textContent=e.message}finally{busy=false}};
+$('prefs').onsubmit=async e=>{e.preventDefault();if(!loaded||busy)return;busy=true;$('save').disabled=true;const previous=loaded;try{const i=await identity();if(i.id!==previous.id)throw Error('Account changed.');const session=await get('/api/session',i.headers);const current=await identity();if(current.id!==i.id)throw Error('Account changed.');const response=await fetch('/api/account/preferences',{method:'POST',credentials:'same-origin',headers:{...current.headers,'Content-Type':'application/json','X-CSRF-Token':session.csrfToken,'Idempotency-Key':crypto.randomUUID()},body:JSON.stringify({theme:$('theme').value,reducedMotion:$('motion').checked,revision:previous.revision}),signal:AbortSignal.timeout(12000)});const d=await response.json();if(!response.ok)throw Error(d.error||'Not saved');if(window.HeliosAccount.getState()?.user?.id!==i.id)throw Error('Account changed.');loaded={id:i.id,revision:d.revision};$('prefs-status').textContent='Account settings saved.';$('save').disabled=false}catch(err){loaded=null;$('prefs-status').textContent=err.message+' Reload settings before retrying.'}finally{busy=false}};
+render();apply();
