@@ -32,6 +32,7 @@ export const SCHEMA = [
   ...CONSTITUTION_SCHEMA,
   ...RESEARCH_SCHEMA,
   ...CONTRIBUTION_SCHEMA,
+  'CREATE TABLE IF NOT EXISTS account_preferences(actor TEXT PRIMARY KEY, settings TEXT NOT NULL, revision INTEGER NOT NULL, updated_at TEXT NOT NULL)',
   'CREATE TABLE IF NOT EXISTS metadata(key TEXT PRIMARY KEY, value TEXT NOT NULL)',
   'CREATE TABLE IF NOT EXISTS sessions(id TEXT PRIMARY KEY, csrf TEXT NOT NULL, expires BIGINT NOT NULL)',
   'CREATE TABLE IF NOT EXISTS laws(id TEXT PRIMARY KEY, current_version TEXT NOT NULL, author TEXT, created_at TEXT NOT NULL)',
@@ -103,7 +104,7 @@ export async function openStore(db, options = {}) {
     for (const sql of SCHEMA) await tx.query(sql);
     // The Supabase adapter owns a private schema; enable RLS as defense in
     // depth. The database owner used by the server retains normal access.
-    if(db.kind==='supabase-postgres')for(const table of ['metadata','sessions','laws','versions','amendments','receipts','limits','email_subscribers','email_inbound','constitution_clauses','constitution_contributions','constitution_votes','constitution_comments','law_votes','contribution_inbox',...RESEARCH_TABLES,...BLOGROLL_TABLES])await tx.query('ALTER TABLE '+table+' ENABLE ROW LEVEL SECURITY');
+    if(db.kind==='supabase-postgres')for(const table of ['metadata','sessions','laws','versions','amendments','receipts','limits','email_subscribers','email_inbound','constitution_clauses','constitution_contributions','constitution_votes','constitution_comments','law_votes','contribution_inbox','account_preferences',...RESEARCH_TABLES,...BLOGROLL_TABLES])await tx.query('ALTER TABLE '+table+' ENABLE ROW LEVEL SECURITY');
     const prior = (await tx.query('SELECT value FROM metadata WHERE key=$1', ['catalog_hash'])).rows[0];
     if (prior && prior.value !== seedHash) fail(500, 'Catalog seed changed. A reviewed migration is required; stored records were not overwritten.');
     if (!prior) {

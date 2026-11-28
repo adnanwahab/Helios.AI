@@ -23,7 +23,8 @@
     "serve:votes": "cd consensus-lab && bun run serve",
     "test:votes": "cd consensus-lab && bun test",
     "votes:8b": "bun scripts/vote-profile-lab/cli.ts",
-    "test:votes:8b": "bun test test/vote-profile-lab.test.ts"
+    "test:votes:8b": "bun test test/vote-profile-lab.test.ts",
+    "research:worker": "node scripts/research-worker.mjs"
   },
   "engines": {
     "bun": ">=1.3.0",

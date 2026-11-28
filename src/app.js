@@ -67,6 +67,15 @@ export function createApp({store, email, notion = null, morphlab = null, moderat
     // guest activity. New signed-in writes use a stable, server-verified actor.
     const identity = await account.identify(request);
     if (accountRoute) return response(account.me(identity, accountContext));
+    if (path === '/api/account/preferences') {
+      if (!identity.actorId) throw new Problem(401, 'Sign in to save account preferences.');
+      if (!(health.storage === 'supabase-postgres' || (health.storage === 'pglite' && health.runtime === 'node-server'))) throw new Problem(503, 'Account preferences require shared storage.');
+      if (method === 'GET') {
+        const row = (await store.db.query('SELECT settings,revision FROM account_preferences WHERE actor=$1',[identity.actorId])).rows[0];
+        return response(row ? {settings:JSON.parse(row.settings),revision:row.revision} : {settings:{theme:'system',reducedMotion:false},revision:0});
+      }
+      if (method !== 'POST') return response({error:'Use GET or POST'},405);
+    }
     const researchResponse = await research.readOrWorker(request, url, cookie, identity.actorId);
     if (researchResponse) return researchResponse;
 
@@ -226,6 +235,18 @@ export function createApp({store, email, notion = null, morphlab = null, moderat
     // retry receipts to the verified actor to prevent cross-account replays.
     const writeHash = hash((identity.actorId ? identity.actorId + '\n' : '') + path + JSON.stringify(body));
 
+    if (path === '/api/account/preferences') {
+      const key=request.headers.get('idempotency-key');
+      if(!key||!/^[a-zA-Z0-9-]{16,80}$/.test(key))throw new Problem(400,'A unique Idempotency-Key is required.');
+      if(!body||Object.keys(body).sort().join(',')!=='reducedMotion,revision,theme'||!['system','light','dark'].includes(body.theme)||typeof body.reducedMotion!=='boolean'||!Number.isSafeInteger(body.revision)||body.revision<0)throw new Problem(400,'Invalid preferences.');
+      const settings={theme:body.theme,reducedMotion:body.reducedMotion};
+      return response(await store.idempotent(session.id,key,writeHash,async q=>{
+        const row=(await q.query('INSERT INTO account_preferences(actor,settings,revision,updated_at) VALUES($1,$2,1,$3) ON CONFLICT(actor) DO NOTHING RETURNING revision',[identity.actorId,JSON.stringify(settings),new Date().toISOString()])).rows[0];
+        if(row){if(body.revision!==0)throw new Problem(409,'Preferences changed; reload first.');return {settings,revision:1};}
+        const updated=(await q.query('UPDATE account_preferences SET settings=$2,revision=revision+1,updated_at=$3 WHERE actor=$1 AND revision=$4 RETURNING revision',[identity.actorId,JSON.stringify(settings),new Date().toISOString(),body.revision])).rows[0];
+        if(!updated)throw new Problem(409,'Preferences changed; reload first.');return {settings,revision:updated.revision};
+      }));
+    }
     if (path === '/api/blogroll/blogs') {
       const key = request.headers.get('idempotency-key');
       if (!key || !/^[a-zA-Z0-9-]{16,80}$/.test(key)) throw new Problem(400, 'A unique Idempotency-Key is required.');
