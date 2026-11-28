@@ -71,6 +71,7 @@ The browser suite starts its own server on port 3101 and uses a temporary databa
 | --- | --- | --- |
 | Civic workshop | `/` | Express a concern, develop a proposal, inspect revisions and advisory feedback. |
 | Everyone blogs | `/blogs` | Blog anywhere: one Helios line in a post votes on Free Weed for Everyone and the 100 laws. Add your blog or import a list; see [docs/blogroll.md](docs/blogroll.md). |
+| The four apps | `/apps` | HappyBearLandia, Civic Synthesis, Digital Pensieve and Helios side by side in live iframes. Keys 1–4 show one full size, Esc shows all four. |
 | Consensus World | `/public/consensus-world` | Revise a draft and compare synthetic responses under explicit assumptions. |
 | World preference map | `/world-map` or the homepage's **Explore the world map here** section | Compare 1,526 geographic hexagons using five importance sliders and a live explanation. |
 | Contribution hub | `/contribute` | Paths for research, design, testing, documentation, and code contributions. |
@@ -317,6 +318,7 @@ Helios AI is a civic tool that reads what everyone in a community says they need
 - `communal_science_lab_webgpu (1).html` — the Communal Science Lab (WebGPU)
 - `sunshine_breakfast.html` — Sunshine for Breakfast: a PS1-style Three.js scene where the dialogue moves one line per scroll step, with original characters and dialogue (served at `/embed/sunshine`)
 - `public/eight-billion-five-laws/` — Eight Billion, Five Laws: a deck.gl map of 2.1 million sampled dots, each standing for about 3,815 people, with one simulated response per law (served at `/public/eight-billion-five-laws/`). Laws, thoughts and population are synthetic placeholders, not polling data.
+- `public/apps.html` — The four apps: HappyBearLandia, Civic Synthesis, Digital Pensieve and Helios in live iframes (served at `/apps` and `/apps/`). Civic Synthesis loads its `/embed` page, the only route it lets other sites frame.
 
 ## Running locally
 

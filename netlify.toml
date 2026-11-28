@@ -266,3 +266,15 @@
   from = "/blogs/"
   to = "/public/blogroll.html"
   status = 200
+
+# Apps: HappyBearLandia, Civic Synthesis, Digital Pensieve and Helios side by side in
+# live iframes. Civic Synthesis loads /embed, the only route it lets other sites frame.
+[[redirects]]
+  from = "/apps"
+  to = "/public/apps.html"
+  status = 200
+
+[[redirects]]
+  from = "/apps/"
+  to = "/public/apps.html"
+  status = 200

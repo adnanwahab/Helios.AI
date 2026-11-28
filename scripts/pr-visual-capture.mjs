@@ -382,6 +382,16 @@ try {
     await page.setViewportSize({width:390,height:844});
     await page.screenshot({path:join(output,'blogs-mobile.png'),fullPage:true,animations:'disabled'});
   }
+  // Apps: the four sites side by side in live iframes. A frame shows once its page
+  // loads, or after 6 s, so a slow site cannot hold up the capture.
+  await page.goto(base + '/apps', {waitUntil:'domcontentloaded'});
+  if (await page.locator('#grid .app').count()) {
+    await page.setViewportSize({width:1440,height:900});
+    await page.waitForFunction(() => document.querySelectorAll('#grid .view.ready').length === 4, null, {timeout: 20000});
+    await page.screenshot({path:join(output,'apps-desktop.png'),animations:'disabled'});
+    await page.setViewportSize({width:390,height:844});
+    await page.screenshot({path:join(output,'apps-mobile.png'),fullPage:true,animations:'disabled'});
+  }
   console.log('Captured desktop and mobile screenshots from ' + (remote ? 'Netlify deployment' : 'local PR build'));
 } finally {
   await browser?.close().catch(() => {});
